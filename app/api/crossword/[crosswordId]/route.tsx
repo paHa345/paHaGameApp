@@ -8,31 +8,31 @@ import User from "@/app/models/UserModel";
 import Workout from "@/app/models/WorkoutModel";
 import Crossword from "@/app/models/CrosswordModel";
 
-export async function GET(req: NextRequest, { params }: { params: { crosswordId: string } }) {
-  const session = await getServerSession(authOptions);
-  if (!session) {
-    return NextResponse.json(
-      { message: "Только для зарегистрированных пользователей" },
-      { status: 401 }
-    );
-  }
+// export async function GET(req: NextRequest, { params }: { params: { crosswordId: string } }) {
+//   const session = await getServerSession(authOptions);
+//   if (!session) {
+//     return NextResponse.json(
+//       { message: "Только для зарегистрированных пользователей" },
+//       { status: 401 }
+//     );
+//   }
 
-  try {
-    await connectMongoDB();
+//   try {
+//     await connectMongoDB();
 
-    const currentUser: IUser | null = await User.findOne({ email: session.user?.email });
+//     const currentUser: IUser | null = await User.findOne({ email: session.user?.email });
 
-    const crossword = await Crossword.findById(params?.crosswordId);
+//     const crossword = await Crossword.findById(params?.crosswordId);
 
-    console.log(currentUser);
-    console.log(crossword);
+//     console.log(currentUser);
+//     console.log(crossword);
 
-    return NextResponse.json({ status: "Success", result: crossword });
-    // return NextResponse.json({ message: "Olol" });
-  } catch (error: any) {
-    return NextResponse.json({ message: error?.message, status: "Error" }, { status: 400 });
-  }
-}
+//     return NextResponse.json({ status: "Success", result: crossword });
+//     // return NextResponse.json({ message: "Olol" });
+//   } catch (error: any) {
+//     return NextResponse.json({ message: error?.message, status: "Error" }, { status: 400 });
+//   }
+// }
 
 export async function DELETE(req: NextRequest, { params }: { params: { exerciseId: string } }) {
   const session = await getServerSession(authOptions);
