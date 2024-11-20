@@ -103,8 +103,8 @@ const Header = () => {
                   href="/login"
                   className=" text-2xl text-headerButtonColor hover:text-headerButtonHoverColor transition duration-800 ease-out "
                 >
-                  <FontAwesomeIcon className="" icon={faUser} />
-                  <p className=" text-xs">Login</p>
+                  <FontAwesomeIcon className=" fa-2x" icon={faUser} />
+                  {/* <p className=" text-xs">Login</p> */}
                 </Link>
               </div>
             )}

@@ -86,6 +86,10 @@ const Login = () => {
     }
   }, [loginUserStatus]);
 
+  useEffect(() => {
+    router.prefetch("/my");
+  }, []);
+
   return (
     <div>
       <div className="pb-6">
