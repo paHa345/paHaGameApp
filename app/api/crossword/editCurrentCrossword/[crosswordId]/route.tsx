@@ -6,7 +6,7 @@ import { authOptions } from "@/app/utils/authOptions";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PATCH(req: NextRequest, { params }: { params: { crosswordId: string } }) {
+export async function PATCH(req: NextRequest, segmentData: any) {
   const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json(
@@ -18,6 +18,9 @@ export async function PATCH(req: NextRequest, { params }: { params: { crosswordI
     return NextResponse.json({ message: "Для данного url только PATCH запросы" }, { status: 400 });
   }
   try {
+    const params = await segmentData.params;
+    const slug = params.slug;
+
     await connectMongoDB();
     const body = await req.json();
     // console.log(body);
