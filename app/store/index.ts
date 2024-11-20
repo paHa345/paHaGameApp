@@ -3,10 +3,12 @@ import { configureStore } from "@reduxjs/toolkit";
 import { crosswordSlice } from "./crosswordSlice";
 import { authSlice } from "./authSlice";
 import { appStateSlice } from "./appStateSlice";
+import { crosswordGameSlice } from "./crosswordGameSlice";
 
 const store = configureStore({
   reducer: {
     crosswordState: crosswordSlice.reducer,
+    crosswordGameState: crosswordGameSlice.reducer,
     authState: authSlice.reducer,
     appState: appStateSlice.reducer,
   },

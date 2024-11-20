@@ -5,7 +5,7 @@ import { faChessBoard } from "@fortawesome/free-solid-svg-icons";
 
 const GameSectionCard = () => {
   return (
-    <Link href={"/"}>
+    <Link href={"/crosswordGame"}>
       <article className=" hover:scale-110 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-slate-300 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow">
         <div className=" flex justify-center items-center flex-col px-5 py-5 ">
           <div className=" h-10 w-10">
