@@ -16,7 +16,7 @@ export const authOptions: AuthOptions = {
     strategy: "jwt",
   },
 
-  secret: "paHa345ExerciseApp",
+  secret: process.env.AUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: "Credentials",
