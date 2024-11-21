@@ -36,7 +36,7 @@ const Header = () => {
         style={{
           minWidth: `${currentCrosswordSize > 10 ? `${currentCrosswordSize * 45}px` : `${5 * 45}px`}`,
         }}
-        className={` bg-mainColor`}
+        className={`bg-gradient-to-tr from-headerFooterMainColor to-headerFooterSecoundaryColor`}
       >
         <Link rel="icon" href="./../favicon.ico"></Link>
         <nav className=" relative flex flex-row items-center justify-center mx-6 gap-5">

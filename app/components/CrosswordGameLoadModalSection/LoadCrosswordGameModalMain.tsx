@@ -83,12 +83,14 @@ const LoadCrosswordGameModalMain = () => {
               </div>
             )}
           {fetchCrosswordsGameStatus === crosswordGameFetchStatus.Resolve && (
-            <div className=" pt-4 grid lg:grid-cols-3 sm:grid-cols-2 gap-6 justify-center items-center overflow-auto h-5/6">
+            <div className=" pt-4 sm:grid lg:grid-cols-3 sm:grid-cols-2 gap-6 justify-center items-center overflow-auto h-5/6">
               {crosswordCardsEl}
             </div>
           )}
           {fetchCrosswordsGameStatus === crosswordGameFetchStatus.Loading && (
-            <LoadindAvailableCrosswordGameCards></LoadindAvailableCrosswordGameCards>
+            <div className=" flex justify-center items-center h-5/6">
+              <LoadindAvailableCrosswordGameCards></LoadindAvailableCrosswordGameCards>
+            </div>
           )}
           {fetchCrosswordsGameStatus === crosswordGameFetchStatus.Error && (
             <p>Не удалось загрузить список. Повторите попытку позднее</p>

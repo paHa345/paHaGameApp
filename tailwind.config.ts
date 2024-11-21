@@ -38,6 +38,8 @@ export default {
         headerButtonHoverColor: "#122A33",
         buttonColor: "#043039",
         buttonHoverColor: "#394FBF",
+        headerFooterMainColor: "#b3ff99",
+        headerFooterSecoundaryColor: "#c6ffb3",
       },
       boxShadow: {
         exerciseCardShadow: "0 10px 15px rgb(0 0 0/5%)",

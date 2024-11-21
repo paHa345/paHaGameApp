@@ -4,7 +4,7 @@ import React from "react";
 
 const LoadindAvailableCrosswordGameCards = () => {
   return (
-    <div className=" animate-pulse ">
+    <div className=" animate-pulse w-full">
       <article className="  px-4 mx-4 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-exerciseCardHowerShadow">
         <div className=" pb-8 flex flex-col">
           <div className=" flex flex-col gap-2">

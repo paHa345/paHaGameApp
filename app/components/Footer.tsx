@@ -15,7 +15,7 @@ const Footer = () => {
         style={{
           minWidth: `${currentCrosswordSize > 10 ? `${currentCrosswordSize * 45}px` : `${5 * 45}px`}`,
         }}
-        className={` bg-mainColor min-w-[${currentCrosswordSize * 45}px]`}
+        className={` bg-gradient-to-tl from-headerFooterMainColor to-headerFooterSecoundaryColor min-w-[${currentCrosswordSize * 45}px]`}
       >
         <div className=" footerMainContainer">
           <div className=" flex justify-center items-center">

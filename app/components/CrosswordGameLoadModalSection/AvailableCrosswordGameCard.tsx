@@ -33,7 +33,7 @@ const AvailableCrosswordGameCard = ({ crosswordData }: ICrosswordCard) => {
             <div className=" flex justify-center items-center pt-5 h-20 w-20">
               <FontAwesomeIcon className="fa-fw fa-3x" icon={faTrophy} />
             </div>
-            <h1 className=" text-center grow text-base text font-bold pl-1 py-8 my-8">
+            <h1 className=" text-center grow text-base text font-bold pl-1 py-2 my-2 sm:py-8 sm:my-8">
               {crosswordData.name}
             </h1>
           </div>
