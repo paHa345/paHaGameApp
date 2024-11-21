@@ -22,11 +22,13 @@ export const setAvailableCrosswordGame = createAsyncThunk(
   async function (crosswordGameId: string, { rejectWithValue, dispatch }) {
     try {
       const crosswordGameReq = await fetch(`/api/crosswordGame/${crosswordGameId}`);
-      const data = await crosswordGameReq.json();
+      const crosswordGame = await crosswordGameReq.json();
       if (!crosswordGameReq.ok) {
-        throw new Error(data.message);
+        throw new Error(crosswordGame.message);
       }
+      console.log(crosswordGame);
       // dispatch(crossworGamedActions.setAvailableCrosswordGame(data.result));
+      dispatch(crossworGamedActions.setCrosswordGame(crosswordGame.result));
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -44,6 +46,7 @@ export interface ICrosswordGameSlice {
   crosswordGameState: {
     test: number;
     showChooseCrosswordModal: boolean;
+    fetchCrosswordsArrStatus: crosswordGameFetchStatus;
     availableCrosswordGamesArr: {
       _id: string;
       name: string;
@@ -102,6 +105,8 @@ export interface ICrosswordGameSlice {
 interface ICrosswordGameState {
   test: number;
   showChooseCrosswordModal: boolean;
+  fetchCrosswordsArrStatus: crosswordGameFetchStatus;
+
   availableCrosswordGamesArr: {
     _id: string;
     name: string;
@@ -158,6 +163,8 @@ interface ICrosswordGameState {
 export const initCrosswordGameState: ICrosswordGameState = {
   test: 10,
   showChooseCrosswordModal: false,
+  fetchCrosswordsArrStatus: crosswordGameFetchStatus.Ready,
+
   availableCrosswordGamesArr: [],
   fetchAvailableCrosswordGamesStatus: crosswordGameFetchStatus.Ready,
   crosswordGame: {
@@ -182,25 +189,32 @@ export const crosswordGameSlice = createSlice({
     setAvailableCrosswordGamesArr(state, action) {
       state.availableCrosswordGamesArr = action.payload;
     },
+    setCrosswordGame(state, action) {
+      state.crosswordGame._id = action.payload._id;
+      state.crosswordGame.isCompleted = action.payload.isCompleted;
+      state.crosswordGame.name = action.payload.name;
+      state.crosswordGame.userId = action.payload.userId;
+      state.crosswordGame.crosswordObj = action.payload.crosswordObj;
+    },
     setFetchAvailableCrosswordGamesStatus(state, action) {
       state.fetchAvailableCrosswordGamesStatus = action.payload;
     },
   },
   extraReducers(builder) {
     builder.addCase(getAvailableCrosswords.pending, (state) => {
-      state.fetchAvailableCrosswordGamesStatus = crosswordGameFetchStatus.Loading;
+      state.fetchCrosswordsArrStatus = crosswordGameFetchStatus.Loading;
     });
     builder.addCase(setAvailableCrosswordGame.pending, (state) => {
       state.fetchAvailableCrosswordGamesStatus = crosswordGameFetchStatus.Loading;
     });
     builder.addCase(getAvailableCrosswords.fulfilled, (state) => {
-      state.fetchAvailableCrosswordGamesStatus = crosswordGameFetchStatus.Resolve;
+      state.fetchCrosswordsArrStatus = crosswordGameFetchStatus.Resolve;
     });
     builder.addCase(setAvailableCrosswordGame.fulfilled, (state) => {
       state.fetchAvailableCrosswordGamesStatus = crosswordGameFetchStatus.Resolve;
     });
     builder.addCase(getAvailableCrosswords.rejected, (state) => {
-      state.fetchAvailableCrosswordGamesStatus = crosswordGameFetchStatus.Error;
+      state.fetchCrosswordsArrStatus = crosswordGameFetchStatus.Error;
     });
     builder.addCase(setAvailableCrosswordGame.rejected, (state) => {
       state.fetchAvailableCrosswordGamesStatus = crosswordGameFetchStatus.Error;

@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import LoadindAvailableCrosswordGameCards from "./LoadindAvailableCrosswordGameCards";
-import LoadCrosswordNotification from "./LoadCrosswordNotification";
+import LoadCrosswordGameNotification from "./LoadCrosswordGameNotification";
 import {
   crosswordGameFetchStatus,
   crossworGamedActions,
@@ -36,9 +36,11 @@ const LoadCrosswordGameModalMain = () => {
     (state: ICrosswordGameSlice) => state.crosswordGameState.availableCrosswordGamesArr
   );
 
-  console.log(availableCrosswordGamesArr);
-
   const fetchCrosswordsGameStatus = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.fetchCrosswordsArrStatus
+  );
+
+  const loadCrosswordGameStatus = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.fetchAvailableCrosswordGamesStatus
   );
 
@@ -49,8 +51,6 @@ const LoadCrosswordGameModalMain = () => {
       </div>
     );
   });
-
-  console.log(crosswordCardsEl.length);
 
   useEffect(() => {
     dispatch(getAvailableCrosswords());
@@ -67,13 +67,14 @@ const LoadCrosswordGameModalMain = () => {
       <div className=" modal-wrapper">
         <div className="modal">
           <div className="modal-header">
-            <LoadCrosswordNotification></LoadCrosswordNotification>
+            <LoadCrosswordGameNotification></LoadCrosswordGameNotification>
+
             <a
-              className=" bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200"
+              className={` ${loadCrosswordGameStatus === crosswordGameFetchStatus.Loading ? "opacity-0" : ""} bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200`}
               onClick={hideLoadCrosswordGameModalHandler}
               href=""
             >
-              <FontAwesomeIcon icon={faXmark} />
+              <FontAwesomeIcon className=" fa-2x" icon={faXmark} />
             </a>
           </div>
           {fetchCrosswordsGameStatus === crosswordGameFetchStatus.Resolve &&

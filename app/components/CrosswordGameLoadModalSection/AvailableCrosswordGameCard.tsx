@@ -2,9 +2,16 @@ import { AppDispatch } from "@/app/store/index";
 import { getCurrentUserCrosswordAndSetInState } from "@/app/store/crosswordSlice";
 import Link from "next/link";
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChessBoard, faTrophy } from "@fortawesome/free-solid-svg-icons";
+import {
+  crosswordGameFetchStatus,
+  crosswordGameSlice,
+  ICrosswordGameSlice,
+  setAvailableCrosswordGame,
+} from "@/app/store/crosswordGameSlice";
+import { redirect } from "next/navigation";
 
 interface ICrosswordCard {
   crosswordData: {
@@ -17,15 +24,24 @@ interface ICrosswordCard {
 
 const AvailableCrosswordGameCard = ({ crosswordData }: ICrosswordCard) => {
   const dispatch = useDispatch<AppDispatch>();
+
+  const loadCrosswordGameStatus = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.fetchAvailableCrosswordGamesStatus
+  );
   const loadCrosswordGameHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     console.log(crosswordData._id);
+    if (loadCrosswordGameStatus !== crosswordGameFetchStatus.Ready) {
+      return;
+    }
     // dispatch(getCurrentUserCrosswordAndSetInState(crosswordData._id));
+    dispatch(setAvailableCrosswordGame(String(crosswordData._id)));
+    redirect("/crosswordGame/game");
   };
   return (
     <article
       onClick={loadCrosswordGameHandler}
-      className=" cursor-pointer px-4 mx-4  hover:scale-105 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow"
+      className={`${loadCrosswordGameStatus === crosswordGameFetchStatus.Ready ? "cursor-pointer" : ""}  px-4 mx-4  hover:scale-105 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow`}
     >
       <div className=" flex flex-col">
         <div className=" flex flex-col gap-2">
