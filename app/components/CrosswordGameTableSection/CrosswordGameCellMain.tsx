@@ -1,8 +1,8 @@
 import { AppDispatch } from "@/app/store";
-import { crossworGamedActions } from "@/app/store/crosswordGameSlice";
+import { crossworGamedActions, ICrosswordGameSlice } from "@/app/store/crosswordGameSlice";
 import { AddedWordDirection } from "@/app/store/crosswordSlice";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 interface ICellProps {
   cell: {
@@ -66,13 +66,29 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
   const changeCellInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     // dispatch(crosswordActions.setInputToCell(parseInt(e.target.value)));
   };
+
+  const highlightedCell = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.highlightedCell
+  );
+  const direction = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.addedWordDirection
+  );
+
   const clickCellNumberHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cell.questionObj) {
       return;
     }
     console.log(cell.questionObj?.horizontal?.value);
     console.log(cell.questionObj?.vertical?.value);
+    dispatch(crossworGamedActions.setHighlightedCell(cell));
+    if (cell.questionObj.horizontal?.value) {
+      dispatch(crossworGamedActions.changeAddedWordDirection(AddedWordDirection.Horizontal));
+    } else {
+      dispatch(crossworGamedActions.changeAddedWordDirection(AddedWordDirection.Vertical));
+    }
     dispatch(crossworGamedActions.setShowCrosswordGameCellMenu(true));
+    // console.log(cell.addedWordArr.filter((el) => el.direction === direction));
+    // console.log(direction);
   };
   return (
     <div

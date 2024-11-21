@@ -57,6 +57,47 @@ export interface ICrosswordGameSlice {
     showCrosswordGameCellMenu: boolean;
 
     fetchAvailableCrosswordGamesStatus: crosswordGameFetchStatus;
+
+    highlightedWordArr: {
+      row: number;
+      col: number;
+    }[];
+    highlightedCell: {
+      key: string;
+      value: string;
+      number: number;
+      row: number;
+      paragraph: number;
+      paragraphNum?: number;
+      inputStatus: number;
+      inputValue: number;
+      textQuestionStatus: number;
+      questionObj: {
+        horizontal: {
+          value: string;
+          questionNumber: number;
+          cell: { row: number; col: number };
+        } | null;
+        vertical: {
+          value: string;
+          questionNumber: number;
+          cell: { row: number; col: number };
+        } | null;
+      };
+      addedWordCell: number;
+      addedWordDirectionJbj: {
+        horizontal: Boolean;
+        vertical: Boolean;
+      };
+      addedWordArr: {
+        direction: AddedWordDirection;
+        addedWordArr: {
+          row: number;
+          col: number;
+        }[];
+      }[];
+    } | null;
+
     crosswordGame: {
       _id: string;
       name: string;
@@ -124,6 +165,47 @@ interface ICrosswordGameState {
     changeDate: Date;
   }[];
   fetchAvailableCrosswordGamesStatus: crosswordGameFetchStatus;
+  highlightedWordArr: {
+    row: number;
+    col: number;
+  }[];
+
+  highlightedCell: {
+    key: string;
+    value: string;
+    number: number;
+    row: number;
+    paragraph: number;
+    paragraphNum?: number;
+    inputStatus: number;
+    inputValue: number;
+    textQuestionStatus: number;
+    questionObj: {
+      horizontal: {
+        value: string;
+        questionNumber: number;
+        cell: { row: number; col: number };
+      } | null;
+      vertical: {
+        value: string;
+        questionNumber: number;
+        cell: { row: number; col: number };
+      } | null;
+    };
+    addedWordCell: number;
+    addedWordDirectionJbj: {
+      horizontal: Boolean;
+      vertical: Boolean;
+    };
+    addedWordArr: {
+      direction: AddedWordDirection;
+      addedWordArr: {
+        row: number;
+        col: number;
+      }[];
+    }[];
+  } | null;
+
   crosswordGame: {
     _id: string;
     name: string;
@@ -185,6 +267,8 @@ export const initCrosswordGameState: ICrosswordGameState = {
 
   availableCrosswordGamesArr: [],
   fetchAvailableCrosswordGamesStatus: crosswordGameFetchStatus.Ready,
+  highlightedWordArr: [],
+  highlightedCell: null,
   crosswordGame: {
     _id: "",
     name: "",
@@ -224,6 +308,12 @@ export const crosswordGameSlice = createSlice({
     },
     setShowCrosswordGameCellMenu(state, action) {
       state.showCrosswordGameCellMenu = action.payload;
+    },
+    setHighlightedCell(state, action) {
+      state.highlightedCell = action.payload;
+    },
+    setHighlightedWordArr(state, action) {
+      state.highlightedWordArr = action.payload;
     },
   },
   extraReducers(builder) {
