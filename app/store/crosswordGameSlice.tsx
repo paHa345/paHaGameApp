@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { AddedWordDirection } from "./crosswordSlice";
 
 export const getAvailableCrosswords = createAsyncThunk(
   "crosswordGameState/getAvailableCrosswords",
@@ -10,6 +11,22 @@ export const getAvailableCrosswords = createAsyncThunk(
         throw new Error(crosswords.message);
       }
       dispatch(crossworGamedActions.setAvailableCrosswordGamesArr(crosswords.result));
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const setAvailableCrosswordGame = createAsyncThunk(
+  "crosswordGameState/setAvailableCrosswordGame",
+  async function (crosswordGameId: string, { rejectWithValue, dispatch }) {
+    try {
+      const crosswordGameReq = await fetch(`/api/crosswordGame/${crosswordGameId}`);
+      const data = await crosswordGameReq.json();
+      if (!crosswordGameReq.ok) {
+        throw new Error(data.message);
+      }
+      // dispatch(crossworGamedActions.setAvailableCrosswordGame(data.result));
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -33,7 +50,52 @@ export interface ICrosswordGameSlice {
       iserId: string;
       changeDate: Date;
     }[];
+
     fetchAvailableCrosswordGamesStatus: crosswordGameFetchStatus;
+    crosswordGame: {
+      _id: string;
+      name: string;
+      userId: string;
+      isCompleted: boolean;
+      crosswordObj: {
+        key: string;
+        value: string;
+        number: number;
+        row: number;
+        paragraph: number;
+        paragraphNum?: number;
+        inputStatus: number;
+        inputValue: number;
+        textQuestionStatus: number;
+        questionObj: {
+          horizontal: {
+            value: string;
+            questionNumber: number;
+            cell: { row: number; col: number };
+          } | null;
+          vertical: {
+            value: string;
+            questionNumber: number;
+            cell: { row: number; col: number };
+          } | null;
+        };
+        addedWordCell: number;
+        // addedWordLetter: string | null;
+        addedWordDirectionJbj: {
+          horizontal: Boolean;
+          vertical: Boolean;
+        };
+        addedWordArr: {
+          direction: AddedWordDirection;
+          // value: string;
+          addedWordArr: {
+            row: number;
+            col: number;
+            // addedLetter: string
+          }[];
+        }[];
+      }[][];
+    };
   };
 }
 
@@ -47,6 +109,50 @@ interface ICrosswordGameState {
     changeDate: Date;
   }[];
   fetchAvailableCrosswordGamesStatus: crosswordGameFetchStatus;
+  crosswordGame: {
+    _id: string;
+    name: string;
+    userId: string;
+    isCompleted: boolean;
+    crosswordObj: {
+      key: string;
+      value: string;
+      number: number;
+      row: number;
+      paragraph: number;
+      paragraphNum?: number;
+      inputStatus: number;
+      inputValue: number;
+      textQuestionStatus: number;
+      questionObj: {
+        horizontal: {
+          value: string;
+          questionNumber: number;
+          cell: { row: number; col: number };
+        } | null;
+        vertical: {
+          value: string;
+          questionNumber: number;
+          cell: { row: number; col: number };
+        } | null;
+      };
+      addedWordCell: number;
+      // addedWordLetter: string | null;
+      addedWordDirectionJbj: {
+        horizontal: Boolean;
+        vertical: Boolean;
+      };
+      addedWordArr: {
+        direction: AddedWordDirection;
+        // value: string;
+        addedWordArr: {
+          row: number;
+          col: number;
+          // addedLetter: string
+        }[];
+      }[];
+    }[][];
+  };
 }
 
 export const initCrosswordGameState: ICrosswordGameState = {
@@ -54,6 +160,13 @@ export const initCrosswordGameState: ICrosswordGameState = {
   showChooseCrosswordModal: false,
   availableCrosswordGamesArr: [],
   fetchAvailableCrosswordGamesStatus: crosswordGameFetchStatus.Ready,
+  crosswordGame: {
+    _id: "",
+    name: "",
+    userId: "",
+    isCompleted: false,
+    crosswordObj: [],
+  },
 };
 
 export const crosswordGameSlice = createSlice({
@@ -77,10 +190,19 @@ export const crosswordGameSlice = createSlice({
     builder.addCase(getAvailableCrosswords.pending, (state) => {
       state.fetchAvailableCrosswordGamesStatus = crosswordGameFetchStatus.Loading;
     });
+    builder.addCase(setAvailableCrosswordGame.pending, (state) => {
+      state.fetchAvailableCrosswordGamesStatus = crosswordGameFetchStatus.Loading;
+    });
     builder.addCase(getAvailableCrosswords.fulfilled, (state) => {
       state.fetchAvailableCrosswordGamesStatus = crosswordGameFetchStatus.Resolve;
     });
+    builder.addCase(setAvailableCrosswordGame.fulfilled, (state) => {
+      state.fetchAvailableCrosswordGamesStatus = crosswordGameFetchStatus.Resolve;
+    });
     builder.addCase(getAvailableCrosswords.rejected, (state) => {
+      state.fetchAvailableCrosswordGamesStatus = crosswordGameFetchStatus.Error;
+    });
+    builder.addCase(setAvailableCrosswordGame.rejected, (state) => {
       state.fetchAvailableCrosswordGamesStatus = crosswordGameFetchStatus.Error;
     });
   },

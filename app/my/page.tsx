@@ -8,9 +8,9 @@ import Link from "next/link";
 const My = async () => {
   const session = await getServerSession(authOptions);
 
-  // if (!session) {
-  //   redirect("/");
-  // }
+  if (!session) {
+    redirect("/");
+  }
 
   return (
     <>

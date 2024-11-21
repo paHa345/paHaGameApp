@@ -38,7 +38,7 @@ const MyPage = () => {
     <>
       {/* <MyPageNotification></MyPageNotification> */}
 
-      <section className=" container mx-auto">
+      <section className=" h-[70vh] container mx-auto">
         <div>
           {session?.user?.name ? (
             greeting
