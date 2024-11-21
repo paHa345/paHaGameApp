@@ -53,6 +53,8 @@ export interface ICrosswordGameSlice {
       iserId: string;
       changeDate: Date;
     }[];
+    addedWordDirection: AddedWordDirection;
+    showCrosswordGameCellMenu: boolean;
 
     fetchAvailableCrosswordGamesStatus: crosswordGameFetchStatus;
     crosswordGame: {
@@ -60,6 +62,12 @@ export interface ICrosswordGameSlice {
       name: string;
       userId: string;
       isCompleted: boolean;
+      questionsArr: {
+        direction: AddedWordDirection;
+        value: string;
+        questionNumber: number;
+        cell: { row: number; col: number };
+      }[];
       crosswordObj: {
         key: string;
         value: string;
@@ -106,6 +114,8 @@ interface ICrosswordGameState {
   test: number;
   showChooseCrosswordModal: boolean;
   fetchCrosswordsArrStatus: crosswordGameFetchStatus;
+  addedWordDirection: AddedWordDirection;
+  showCrosswordGameCellMenu: boolean;
 
   availableCrosswordGamesArr: {
     _id: string;
@@ -119,6 +129,12 @@ interface ICrosswordGameState {
     name: string;
     userId: string;
     isCompleted: boolean;
+    questionsArr: {
+      direction: AddedWordDirection;
+      value: string;
+      questionNumber: number;
+      cell: { row: number; col: number };
+    }[];
     crosswordObj: {
       key: string;
       value: string;
@@ -164,6 +180,8 @@ export const initCrosswordGameState: ICrosswordGameState = {
   test: 10,
   showChooseCrosswordModal: false,
   fetchCrosswordsArrStatus: crosswordGameFetchStatus.Ready,
+  addedWordDirection: AddedWordDirection.Horizontal,
+  showCrosswordGameCellMenu: false,
 
   availableCrosswordGamesArr: [],
   fetchAvailableCrosswordGamesStatus: crosswordGameFetchStatus.Ready,
@@ -172,6 +190,7 @@ export const initCrosswordGameState: ICrosswordGameState = {
     name: "",
     userId: "",
     isCompleted: false,
+    questionsArr: [],
     crosswordObj: [],
   },
 };
@@ -195,9 +214,16 @@ export const crosswordGameSlice = createSlice({
       state.crosswordGame.name = action.payload.name;
       state.crosswordGame.userId = action.payload.userId;
       state.crosswordGame.crosswordObj = action.payload.crosswordObj;
+      state.crosswordGame.questionsArr = action.payload.questionsArr;
     },
     setFetchAvailableCrosswordGamesStatus(state, action) {
       state.fetchAvailableCrosswordGamesStatus = action.payload;
+    },
+    changeAddedWordDirection(state, action) {
+      state.addedWordDirection = action.payload;
+    },
+    setShowCrosswordGameCellMenu(state, action) {
+      state.showCrosswordGameCellMenu = action.payload;
     },
   },
   extraReducers(builder) {

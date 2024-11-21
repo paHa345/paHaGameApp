@@ -3,10 +3,16 @@ import { ICrosswordGameSlice } from "@/app/store/crosswordGameSlice";
 import React from "react";
 import { useSelector } from "react-redux";
 import CrosswordGameCellMain from "./CrosswordGameCellMain";
+import CrosswordGameQuestionsMain from "./CrosswordGameQuestionsMain";
+import CrosswordGameCellMenuMain from "../CrosswordGameCellMenuSection/CrosswordGameCellMenuMain";
 
 const CrosswordGameTableMain = () => {
   const crosswordGame = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame
+  );
+
+  const showCellMenu = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.showCrosswordGameCellMenu
   );
 
   const crosswordGameTableEl = crosswordGame.crosswordObj.map((el, i: number) => {
@@ -25,10 +31,16 @@ const CrosswordGameTableMain = () => {
 
   return (
     <div className=" py-10">
-      <div>
-        <h1>{crosswordGame.name}</h1>
+      {showCellMenu && <CrosswordGameCellMenuMain></CrosswordGameCellMenuMain>}
+
+      <div className=" pb-8">
+        <h1 className=" text-center text-4xl">{crosswordGame.name}</h1>
       </div>
       {crosswordGameTableEl}
+
+      <div>
+        <CrosswordGameQuestionsMain></CrosswordGameQuestionsMain>
+      </div>
     </div>
   );
 };

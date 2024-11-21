@@ -1,5 +1,8 @@
+import { AppDispatch } from "@/app/store";
+import { crossworGamedActions } from "@/app/store/crosswordGameSlice";
 import { AddedWordDirection } from "@/app/store/crosswordSlice";
-import React from "react";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 
 interface ICellProps {
   cell: {
@@ -50,9 +53,30 @@ interface ICellProps {
   j: number;
 }
 const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  //   const contextMenuHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+  const callContextMenuHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    console.log(cell.paragraphNum);
+  };
+
+  const [value, setValue] = useState("");
+
+  const changeCellInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // dispatch(crosswordActions.setInputToCell(parseInt(e.target.value)));
+  };
+  const clickCellNumberHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cell.questionObj) {
+      return;
+    }
+    console.log(cell.questionObj?.horizontal?.value);
+    console.log(cell.questionObj?.vertical?.value);
+    dispatch(crossworGamedActions.setShowCrosswordGameCellMenu(true));
+  };
   return (
     <div
-      //   onClick={callContextMenuHandler}
+      onClick={clickCellNumberHandler}
       data-fieldid={`${i}:${j}`}
       data-row={cell.row}
       data-number={cell.number}
@@ -62,10 +86,10 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
       //   data-textquestionvalue={cell.textQuestionValue}
       data-addedwordcell={cell.addedWordCell}
       key={`${i}:${j}`}
-      className={` ${cell.addedWordCell === Number(0) ? "" : "bg-lime-800"} 
-
-  cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
-    ></div>
+      className={` ${cell.addedWordCell === Number(0) ? "bg-headerFooterMainColor" : ""} cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
+    >
+      {cell.paragraphNum && <p className=" w-full">{cell.inputValue}</p>}
+    </div>
   );
 };
 
