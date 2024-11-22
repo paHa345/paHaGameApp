@@ -3,8 +3,6 @@ import { AddedWordDirection, crosswordActions, ICrosswordSlice } from "@/app/sto
 import {
   faXmark,
   faCheckCircle,
-  faPlus,
-  faMinus,
   faRulerHorizontal,
   faRulerVertical,
 } from "@fortawesome/free-solid-svg-icons";

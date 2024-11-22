@@ -87,9 +87,9 @@ export const setHighlightedElementAndDirection = createAsyncThunk(
     await dispatch(crossworGamedActions.setHighlightedCell(cell));
     // console.log(direction);
     if (cell.questionObj.horizontal?.value) {
-      await dispatch(crossworGamedActions.changeAddedWordDirection(AddedWordDirection.Horizontal));
+      await dispatch(crossworGamedActions.changeDirection(AddedWordDirection.Horizontal));
     } else {
-      await dispatch(crossworGamedActions.changeAddedWordDirection(AddedWordDirection.Vertical));
+      await dispatch(crossworGamedActions.changeDirection(AddedWordDirection.Vertical));
     }
     await dispatch(crossworGamedActions.setShowCrosswordGameCellMenu(true));
     // console.log(cell.addedWordArr.filter((el) => el.direction === direction));
@@ -128,6 +128,7 @@ export enum crosswordGameFetchStatus {
 
 export interface ICrosswordGameSlice {
   crosswordGameState: {
+    index: number;
     test: number;
     showChooseCrosswordModal: boolean;
     fetchCrosswordsArrStatus: crosswordGameFetchStatus;
@@ -177,9 +178,11 @@ export interface ICrosswordGameSlice {
       };
       addedWordArr: {
         direction: AddedWordDirection;
+        value?: string;
         addedWordArr: {
           row: number;
           col: number;
+          addedLetter?: string;
         }[];
       }[];
     } | null;
@@ -205,6 +208,7 @@ export interface ICrosswordGameSlice {
         inputStatus: number;
         inputValue: number;
         textQuestionStatus: number;
+        addedWordLetter?: string | null;
         questionObj: {
           horizontal: {
             value: string;
@@ -225,19 +229,26 @@ export interface ICrosswordGameSlice {
         };
         addedWordArr: {
           direction: AddedWordDirection;
-          // value: string;
+          value?: string;
           addedWordArr: {
             row: number;
             col: number;
-            // addedLetter: string
+            addedLetter?: string;
           }[];
         }[];
       }[][];
+    };
+    addedWord: {
+      direction: AddedWordDirection;
+      value: string;
+      addedWordArr: { row: number; col: number; addedLetter: string }[];
     };
   };
 }
 
 interface ICrosswordGameState {
+  index: number;
+
   test: number;
   showChooseCrosswordModal: boolean;
   fetchCrosswordsArrStatus: crosswordGameFetchStatus;
@@ -288,9 +299,12 @@ interface ICrosswordGameState {
     };
     addedWordArr: {
       direction: AddedWordDirection;
+      value?: string;
+
       addedWordArr: {
         row: number;
         col: number;
+        addedLetter?: string;
       }[];
     }[];
   } | null;
@@ -300,6 +314,7 @@ interface ICrosswordGameState {
     name: string;
     userId: string;
     isCompleted: boolean;
+
     questionsArr: {
       direction: AddedWordDirection;
       value: string;
@@ -316,6 +331,7 @@ interface ICrosswordGameState {
       inputStatus: number;
       inputValue: number;
       textQuestionStatus: number;
+      addedWordLetter?: string | null;
       questionObj: {
         horizontal: {
           value: string;
@@ -336,18 +352,25 @@ interface ICrosswordGameState {
       };
       addedWordArr: {
         direction: AddedWordDirection;
-        // value: string;
+        value?: string;
         addedWordArr: {
           row: number;
           col: number;
-          // addedLetter: string
+          addedLetter?: string;
         }[];
       }[];
     }[][];
   };
+  addedWord: {
+    direction: AddedWordDirection;
+    value: string;
+    addedWordArr: { row: number; col: number; addedLetter: string }[];
+  };
 }
 
 export const initCrosswordGameState: ICrosswordGameState = {
+  index: 0,
+
   test: 10,
   showChooseCrosswordModal: false,
   fetchCrosswordsArrStatus: crosswordGameFetchStatus.Ready,
@@ -365,6 +388,11 @@ export const initCrosswordGameState: ICrosswordGameState = {
     isCompleted: false,
     questionsArr: [],
     crosswordObj: [],
+  },
+  addedWord: {
+    direction: AddedWordDirection.Horizontal,
+    value: "",
+    addedWordArr: [],
   },
 };
 
@@ -392,7 +420,10 @@ export const crosswordGameSlice = createSlice({
     setFetchAvailableCrosswordGamesStatus(state, action) {
       state.fetchAvailableCrosswordGamesStatus = action.payload;
     },
-    changeAddedWordDirection(state, action) {
+    changeDirection(state, action) {
+      state.addedWordDirection = action.payload;
+    },
+    changeAddedWordDirectionAndSetHighlightedCells(state, action) {
       state.addedWordDirection = action.payload;
 
       console.log(state.highlightedCell?.number);
@@ -429,6 +460,53 @@ export const crosswordGameSlice = createSlice({
     },
     setHighlightedWordObj(state, action) {
       state.highlightedWordObj = action.payload;
+    },
+    changeAddedWordValue(state, action) {
+      const value = action.payload.split("");
+      const currentDirectionWordObj = state.highlightedCell?.addedWordArr.find(
+        (el) => el.direction === state.addedWordDirection
+      )?.addedWordArr;
+
+      //проверки
+
+      if (!currentDirectionWordObj) {
+        return;
+      }
+      if (value.length > currentDirectionWordObj?.length) {
+        return;
+      }
+
+      //
+
+      if (state.highlightedCell) {
+        const index = state.highlightedCell?.addedWordArr.findIndex(
+          (el) => el.direction === state.addedWordDirection
+        );
+
+        state.highlightedCell.addedWordArr[index].value = action.payload;
+
+        const currentEl = {
+          col: state.highlightedCell?.number,
+          row: state.highlightedCell?.row,
+        };
+
+        //сначала очищаеи все клетки
+
+        currentDirectionWordObj.map((el, index) => {
+          state.crosswordGame.crosswordObj[el.row][el.col].addedWordLetter = "";
+        });
+
+        //затем заполняем клетки
+
+        value.map((letter: string, index: number) => {
+          state.crosswordGame.crosswordObj[currentDirectionWordObj[index].row][
+            currentDirectionWordObj[index].col
+          ].addedWordLetter = letter;
+        });
+
+        state.crosswordGame.crosswordObj[currentEl.row][currentEl.col].addedWordArr[index].value =
+          action.payload;
+      }
     },
   },
   extraReducers(builder) {

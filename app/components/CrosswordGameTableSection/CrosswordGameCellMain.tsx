@@ -38,18 +38,18 @@ interface ICellProps {
       } | null;
     };
     addedWordCell: number;
-    //   addedWordLetter: string | null;
+    addedWordLetter?: string | null;
     addedWordDirectionJbj: {
       horizontal: Boolean;
       vertical: Boolean;
     };
     addedWordArr: {
       direction: AddedWordDirection;
-      // value: string;
+      value?: string;
       addedWordArr: {
         row: number;
         col: number;
-        //   addedLetter: string;
+        addedLetter?: string;
       }[];
     }[];
   };
@@ -83,20 +83,13 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
   //   console.log(direction);
 
   const clickCellNumberHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    console.log(cell);
     if (!cell.questionObj) {
       return;
     }
-    console.log(cell.questionObj?.horizontal?.value);
-    console.log(cell.questionObj?.vertical?.value);
     dispatch(setHighlightedElementAndDirection(cell));
-    if (highlightedCell?.questionObj.horizontal?.value) {
-      console.log("first");
-      dispatch(crossworGamedActions.changeAddedWordDirection(AddedWordDirection.Horizontal));
-      console.log("first");
-    } else {
-      console.log("first");
-      dispatch(crossworGamedActions.changeAddedWordDirection(AddedWordDirection.Vertical));
-    }
+    // console.log(cell);
+    console.log(highlightedCell);
   };
 
   const isHighlightedWord =
@@ -109,7 +102,7 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
       : false;
 
   const hasLetter = cell.addedWordCell === Number(1);
-
+  const hasAddedWord = cell.addedWordLetter;
   return (
     <div
       onClick={clickCellNumberHandler}
@@ -125,7 +118,9 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
       className={` ${isHighlightedWord ? "bg-gray-400" : ""} ${!hasLetter ? "bg-headerFooterMainColor" : ""} cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
     >
       {cell.paragraphNum && <p className=" w-full">{cell.inputValue}</p>}
-      {hasLetter && <input className=" h-4 w-4" type="text" maxLength={1} />}
+      {/* {hasLetter && <input className=" h-4 w-4" type="text" maxLength={1} />} */}
+      {hasAddedWord && <p>{cell.addedWordLetter}</p>}
+
       {/* {highlightedObj !== null &&
         cell.row >= highlightedObj?.startRow &&
         cell.row <= highlightedObj?.endRow &&

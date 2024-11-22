@@ -1,6 +1,6 @@
 import { AppDispatch } from "@/app/store";
 import { crossworGamedActions, ICrosswordGameSlice } from "@/app/store/crosswordGameSlice";
-import { AddedWordDirection } from "@/app/store/crosswordSlice";
+import { AddedWordDirection, crosswordActions } from "@/app/store/crosswordSlice";
 import {
   faCheckCircle,
   faRulerHorizontal,
@@ -8,7 +8,7 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const CrosswordGameCellMenuMain = () => {
@@ -23,23 +23,39 @@ const CrosswordGameCellMenuMain = () => {
   );
   const setAddedWordDirection = function (this: any, e: React.MouseEvent<HTMLDivElement>) {
     e.preventDefault();
-    dispatch(crossworGamedActions.changeAddedWordDirection(this));
-
-    // console.log(
-    //   highlightedCell?.addedWordArr.filter((el) => el.direction === addedWordDirection)[0]
-    //     .addedWordArr[0]
-    // );
-    // dispatch(
-    //   crossworGamedActions.setHighlightedWordArr(
-    //     highlightedCell?.addedWordArr.filter((el) => el.direction === addedWordDirection)[0]
-    //       .addedWordArr
-    //   )
-    // );
+    dispatch(crossworGamedActions.changeAddedWordDirectionAndSetHighlightedCells(this));
   };
 
   const currentDirection = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.addedWordDirection
   );
+
+  const addedWordValue = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.highlightedCell
+  );
+
+  console.log(addedWordValue);
+  console.log(addedWordDirection);
+
+  let currentValue = addedWordValue?.addedWordArr.filter(
+    (el) => el.direction === addedWordDirection
+  )[0].value;
+
+  console.log(currentValue);
+  useEffect(() => {
+    currentValue = addedWordValue?.addedWordArr.filter(
+      (el) => el.direction === addedWordDirection
+    )[0].value;
+  }, [addedWordDirection]);
+
+  const changeAddedWordValueHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // dispatch(crossworGamedActions.setAddedWordValue(e.currentTarget.value));
+    // console.log(
+    //   highlightedCell?.addedWordArr.filter((el) => el.direction === currentDirection)[0].value
+    // );
+    // console.log(first)
+    dispatch(crossworGamedActions.changeAddedWordValue(e.currentTarget.value));
+  };
 
   const hideCellMenu = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -95,19 +111,19 @@ const CrosswordGameCellMenuMain = () => {
             )}
           </div>
           <div className=" max-w-full m-2 rounded border-slate-100 border-solid border-2">
-            {/* <textarea
-            className=" ml-2"
-            onChange={changeTextQuestionValueHandler}
-            value={textQuestionValue}
-            placeholder="Введите текст вопроса"
-            name="comment"
-            cols={20}
-            rows={3}
-          ></textarea> */}
             <h1>
               <span>Вопрос: </span>
               {currentQuestion}
             </h1>
+            <textarea
+              className=" ml-2"
+              onChange={changeAddedWordValueHandler}
+              value={currentValue === undefined ? "" : currentValue}
+              placeholder="Ваш ответ"
+              name="answer"
+              cols={20}
+              rows={1}
+            ></textarea>
           </div>
         </div>
       </div>
