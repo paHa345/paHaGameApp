@@ -35,6 +35,90 @@ export const setAvailableCrosswordGame = createAsyncThunk(
   }
 );
 
+export const setHighlightedElementAndDirection = createAsyncThunk(
+  "crosswordGameState/setHighlightedElementAndDirection",
+  async function (
+    cell: {
+      key: string;
+      value: string;
+      number: number;
+      row: number;
+      paragraph: number;
+      paragraphNum?: number;
+      inputStatus: number;
+      inputValue: number;
+      textQuestionStatus: number;
+      questionObj: {
+        horizontal: {
+          value: string;
+          questionNumber: number;
+          cell: {
+            row: number;
+            col: number;
+          };
+        } | null;
+        vertical: {
+          value: string;
+          questionNumber: number;
+          cell: {
+            row: number;
+            col: number;
+          };
+        } | null;
+      };
+      addedWordCell: number;
+      addedWordDirectionJbj: {
+        horizontal: Boolean;
+        vertical: Boolean;
+      };
+      addedWordArr: {
+        direction: AddedWordDirection;
+        addedWordArr: {
+          row: number;
+          col: number;
+        }[];
+      }[];
+    },
+    { rejectWithValue, dispatch }
+  ) {
+    console.log(cell.questionObj?.horizontal?.value);
+    console.log(cell.questionObj?.vertical?.value);
+
+    await dispatch(crossworGamedActions.setHighlightedCell(cell));
+    // console.log(direction);
+    if (cell.questionObj.horizontal?.value) {
+      await dispatch(crossworGamedActions.changeAddedWordDirection(AddedWordDirection.Horizontal));
+    } else {
+      await dispatch(crossworGamedActions.changeAddedWordDirection(AddedWordDirection.Vertical));
+    }
+    await dispatch(crossworGamedActions.setShowCrosswordGameCellMenu(true));
+    // console.log(cell.addedWordArr.filter((el) => el.direction === direction));
+    // console.log(direction);
+
+    const hihlightedDirection = cell.questionObj?.horizontal
+      ? AddedWordDirection.Horizontal
+      : AddedWordDirection.Vertical;
+
+    const highlightedDirectionCells = cell.addedWordArr.filter(
+      (el) => el.direction === hihlightedDirection
+    );
+
+    const highlightedWordObj = {
+      startRow: highlightedDirectionCells[0].addedWordArr[0].row,
+      endRow:
+        highlightedDirectionCells[0].addedWordArr[
+          highlightedDirectionCells[0].addedWordArr.length - 1
+        ].row,
+      startCol: highlightedDirectionCells[0].addedWordArr[0].col,
+      endCol:
+        highlightedDirectionCells[0].addedWordArr[
+          highlightedDirectionCells[0].addedWordArr.length - 1
+        ].col,
+    };
+    dispatch(crossworGamedActions.setHighlightedWordObj(highlightedWordObj));
+  }
+);
+
 export enum crosswordGameFetchStatus {
   Ready = "ready",
   Loading = "loading",
@@ -58,10 +142,12 @@ export interface ICrosswordGameSlice {
 
     fetchAvailableCrosswordGamesStatus: crosswordGameFetchStatus;
 
-    highlightedWordArr: {
-      row: number;
-      col: number;
-    }[];
+    highlightedWordObj: {
+      startRow: number;
+      endRow: number;
+      startCol: number;
+      endCol: number;
+    } | null;
     highlightedCell: {
       key: string;
       value: string;
@@ -165,10 +251,13 @@ interface ICrosswordGameState {
     changeDate: Date;
   }[];
   fetchAvailableCrosswordGamesStatus: crosswordGameFetchStatus;
-  highlightedWordArr: {
-    row: number;
-    col: number;
-  }[];
+
+  highlightedWordObj: {
+    startRow: number;
+    endRow: number;
+    startCol: number;
+    endCol: number;
+  } | null;
 
   highlightedCell: {
     key: string;
@@ -267,7 +356,7 @@ export const initCrosswordGameState: ICrosswordGameState = {
 
   availableCrosswordGamesArr: [],
   fetchAvailableCrosswordGamesStatus: crosswordGameFetchStatus.Ready,
-  highlightedWordArr: [],
+  highlightedWordObj: null,
   highlightedCell: null,
   crosswordGame: {
     _id: "",
@@ -305,6 +394,32 @@ export const crosswordGameSlice = createSlice({
     },
     changeAddedWordDirection(state, action) {
       state.addedWordDirection = action.payload;
+
+      console.log(state.highlightedCell?.number);
+
+      if (state.highlightedCell !== null) {
+        const hihlightedDirection = state.addedWordDirection;
+
+        const highlightedDirectionCells = state.highlightedCell.addedWordArr.filter(
+          (el) => el.direction === hihlightedDirection
+        );
+
+        const highlightedWordObj = {
+          startRow: highlightedDirectionCells[0].addedWordArr[0].row,
+          endRow:
+            highlightedDirectionCells[0].addedWordArr[
+              highlightedDirectionCells[0].addedWordArr.length - 1
+            ].row,
+          startCol: highlightedDirectionCells[0].addedWordArr[0].col,
+          endCol:
+            highlightedDirectionCells[0].addedWordArr[
+              highlightedDirectionCells[0].addedWordArr.length - 1
+            ].col,
+        };
+
+        console.log(highlightedWordObj);
+        state.highlightedWordObj = highlightedWordObj;
+      }
     },
     setShowCrosswordGameCellMenu(state, action) {
       state.showCrosswordGameCellMenu = action.payload;
@@ -312,8 +427,8 @@ export const crosswordGameSlice = createSlice({
     setHighlightedCell(state, action) {
       state.highlightedCell = action.payload;
     },
-    setHighlightedWordArr(state, action) {
-      state.highlightedWordArr = action.payload;
+    setHighlightedWordObj(state, action) {
+      state.highlightedWordObj = action.payload;
     },
   },
   extraReducers(builder) {

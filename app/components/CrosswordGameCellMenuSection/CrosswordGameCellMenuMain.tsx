@@ -24,17 +24,18 @@ const CrosswordGameCellMenuMain = () => {
   const setAddedWordDirection = function (this: any, e: React.MouseEvent<HTMLDivElement>) {
     e.preventDefault();
     dispatch(crossworGamedActions.changeAddedWordDirection(this));
-    dispatch(
-      crossworGamedActions.setHighlightedWordArr(
-        highlightedCell?.addedWordArr.filter((el) => el.direction === addedWordDirection)[0]
-          .addedWordArr
-      )
-    );
+
+    // console.log(
+    //   highlightedCell?.addedWordArr.filter((el) => el.direction === addedWordDirection)[0]
+    //     .addedWordArr[0]
+    // );
+    // dispatch(
+    //   crossworGamedActions.setHighlightedWordArr(
+    //     highlightedCell?.addedWordArr.filter((el) => el.direction === addedWordDirection)[0]
+    //       .addedWordArr
+    //   )
+    // );
   };
-  console.log(
-    highlightedCell?.addedWordArr.filter((el) => el.direction === addedWordDirection)[0]
-      .addedWordArr
-  );
 
   const currentDirection = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.addedWordDirection
@@ -51,11 +52,8 @@ const CrosswordGameCellMenuMain = () => {
       : highlightedCell?.questionObj.vertical?.value;
 
   return (
-    <div
-      style={{ top: `100px`, left: `200px` }}
-      className=" absolute flex justify-center items-center  "
-    >
-      <div className=" rounded-md bg-slate-200 p-2 fixed flex  border-slate-400 border-solid border-2 ">
+    <div style={{ top: `100px`, right: `200px` }} className=" flex justify-center items-center  ">
+      <div className=" w-5/6  rounded-md bg-slate-200 p-2 fixed flex  border-slate-400 border-solid border-2 ">
         <a
           className=" h-fit bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200"
           onClick={hideCellMenu}
@@ -96,7 +94,7 @@ const CrosswordGameCellMenuMain = () => {
               </div>
             )}
           </div>
-          <div className=" m-2 rounded border-slate-100 border-solid border-2">
+          <div className=" max-w-full m-2 rounded border-slate-100 border-solid border-2">
             {/* <textarea
             className=" ml-2"
             onChange={changeTextQuestionValueHandler}
@@ -106,7 +104,10 @@ const CrosswordGameCellMenuMain = () => {
             cols={20}
             rows={3}
           ></textarea> */}
-            <h1>{currentQuestion}</h1>
+            <h1>
+              <span>Вопрос: </span>
+              {currentQuestion}
+            </h1>
           </div>
         </div>
       </div>

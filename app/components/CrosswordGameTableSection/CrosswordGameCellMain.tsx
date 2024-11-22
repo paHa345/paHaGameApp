@@ -1,5 +1,9 @@
 import { AppDispatch } from "@/app/store";
-import { crossworGamedActions, ICrosswordGameSlice } from "@/app/store/crosswordGameSlice";
+import {
+  crossworGamedActions,
+  ICrosswordGameSlice,
+  setHighlightedElementAndDirection,
+} from "@/app/store/crosswordGameSlice";
 import { AddedWordDirection } from "@/app/store/crosswordSlice";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -70,9 +74,13 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
   const highlightedCell = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.highlightedCell
   );
+  const highlightedObj = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.highlightedWordObj
+  );
   const direction = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.addedWordDirection
   );
+  //   console.log(direction);
 
   const clickCellNumberHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cell.questionObj) {
@@ -80,16 +88,28 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
     }
     console.log(cell.questionObj?.horizontal?.value);
     console.log(cell.questionObj?.vertical?.value);
-    dispatch(crossworGamedActions.setHighlightedCell(cell));
-    if (cell.questionObj.horizontal?.value) {
+    dispatch(setHighlightedElementAndDirection(cell));
+    if (highlightedCell?.questionObj.horizontal?.value) {
+      console.log("first");
       dispatch(crossworGamedActions.changeAddedWordDirection(AddedWordDirection.Horizontal));
+      console.log("first");
     } else {
+      console.log("first");
       dispatch(crossworGamedActions.changeAddedWordDirection(AddedWordDirection.Vertical));
     }
-    dispatch(crossworGamedActions.setShowCrosswordGameCellMenu(true));
-    // console.log(cell.addedWordArr.filter((el) => el.direction === direction));
-    // console.log(direction);
   };
+
+  const isHighlightedWord =
+    highlightedObj !== null &&
+    cell.row >= highlightedObj?.startRow &&
+    cell.row <= highlightedObj?.endRow &&
+    cell.number >= highlightedObj?.startCol &&
+    cell.number <= highlightedObj?.endCol
+      ? true
+      : false;
+
+  const hasLetter = cell.addedWordCell === Number(1);
+
   return (
     <div
       onClick={clickCellNumberHandler}
@@ -102,9 +122,15 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
       //   data-textquestionvalue={cell.textQuestionValue}
       data-addedwordcell={cell.addedWordCell}
       key={`${i}:${j}`}
-      className={` ${cell.addedWordCell === Number(0) ? "bg-headerFooterMainColor" : ""} cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
+      className={` ${isHighlightedWord ? "bg-gray-400" : ""} ${!hasLetter ? "bg-headerFooterMainColor" : ""} cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
     >
       {cell.paragraphNum && <p className=" w-full">{cell.inputValue}</p>}
+      {hasLetter && <input className=" h-4 w-4" type="text" maxLength={1} />}
+      {/* {highlightedObj !== null &&
+        cell.row >= highlightedObj?.startRow &&
+        cell.row <= highlightedObj?.endRow &&
+        cell.number >= highlightedObj?.startCol &&
+        cell.number <= highlightedObj?.endCol && <p className=" w-full">22</p>} */}
     </div>
   );
 };
