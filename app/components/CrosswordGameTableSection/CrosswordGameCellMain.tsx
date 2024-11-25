@@ -39,7 +39,7 @@ interface ICellProps {
     };
     addedWordCell: number;
     addedWordLetter?: string | null;
-    addedWordDirectionJbj: {
+    addedWordDirectionJbj?: {
       horizontal: Boolean;
       vertical: Boolean;
     };
@@ -59,18 +59,6 @@ interface ICellProps {
 const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  //   const contextMenuHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-  const callContextMenuHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    console.log(cell.paragraphNum);
-  };
-
-  const [value, setValue] = useState("");
-
-  const changeCellInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // dispatch(crosswordActions.setInputToCell(parseInt(e.target.value)));
-  };
-
   const highlightedCell = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.highlightedCell
   );
@@ -87,9 +75,8 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
     if (!cell.questionObj) {
       return;
     }
+
     dispatch(setHighlightedElementAndDirection(cell));
-    // console.log(cell);
-    console.log(highlightedCell);
   };
 
   const isHighlightedWord =

@@ -67,7 +67,7 @@ export const setHighlightedElementAndDirection = createAsyncThunk(
         } | null;
       };
       addedWordCell: number;
-      addedWordDirectionJbj: {
+      addedWordDirectionJbj?: {
         horizontal: Boolean;
         vertical: Boolean;
       };
@@ -81,19 +81,17 @@ export const setHighlightedElementAndDirection = createAsyncThunk(
     },
     { rejectWithValue, dispatch }
   ) {
-    console.log(cell.questionObj?.horizontal?.value);
-    console.log(cell.questionObj?.vertical?.value);
+    await dispatch(crossworGamedActions.setShowCrosswordGameCellMenu(false));
 
     await dispatch(crossworGamedActions.setHighlightedCell(cell));
-    // console.log(direction);
     if (cell.questionObj.horizontal?.value) {
       await dispatch(crossworGamedActions.changeDirection(AddedWordDirection.Horizontal));
     } else {
       await dispatch(crossworGamedActions.changeDirection(AddedWordDirection.Vertical));
     }
     await dispatch(crossworGamedActions.setShowCrosswordGameCellMenu(true));
-    // console.log(cell.addedWordArr.filter((el) => el.direction === direction));
-    // console.log(direction);
+
+    //обновляем value у конкретного поля и highlighted, это будет суммавсех букв
 
     const hihlightedDirection = cell.questionObj?.horizontal
       ? AddedWordDirection.Horizontal
@@ -116,6 +114,7 @@ export const setHighlightedElementAndDirection = createAsyncThunk(
         ].col,
     };
     dispatch(crossworGamedActions.setHighlightedWordObj(highlightedWordObj));
+    dispatch(crossworGamedActions.updateCellAndHaghlightedValue(""));
   }
 );
 
@@ -128,6 +127,7 @@ export enum crosswordGameFetchStatus {
 
 export interface ICrosswordGameSlice {
   crosswordGameState: {
+    currentWord: string;
     index: number;
     test: number;
     showChooseCrosswordModal: boolean;
@@ -172,7 +172,7 @@ export interface ICrosswordGameSlice {
         } | null;
       };
       addedWordCell: number;
-      addedWordDirectionJbj: {
+      addedWordDirectionJbj?: {
         horizontal: Boolean;
         vertical: Boolean;
       };
@@ -223,7 +223,7 @@ export interface ICrosswordGameSlice {
         };
         addedWordCell: number;
         // addedWordLetter: string | null;
-        addedWordDirectionJbj: {
+        addedWordDirectionJbj?: {
           horizontal: Boolean;
           vertical: Boolean;
         };
@@ -247,6 +247,8 @@ export interface ICrosswordGameSlice {
 }
 
 interface ICrosswordGameState {
+  currentWord: string;
+
   index: number;
 
   test: number;
@@ -293,7 +295,7 @@ interface ICrosswordGameState {
       } | null;
     };
     addedWordCell: number;
-    addedWordDirectionJbj: {
+    addedWordDirectionJbj?: {
       horizontal: Boolean;
       vertical: Boolean;
     };
@@ -346,7 +348,7 @@ interface ICrosswordGameState {
       };
       addedWordCell: number;
       // addedWordLetter: string | null;
-      addedWordDirectionJbj: {
+      addedWordDirectionJbj?: {
         horizontal: Boolean;
         vertical: Boolean;
       };
@@ -370,6 +372,7 @@ interface ICrosswordGameState {
 
 export const initCrosswordGameState: ICrosswordGameState = {
   index: 0,
+  currentWord: "",
 
   test: 10,
   showChooseCrosswordModal: false,
@@ -426,8 +429,6 @@ export const crosswordGameSlice = createSlice({
     changeAddedWordDirectionAndSetHighlightedCells(state, action) {
       state.addedWordDirection = action.payload;
 
-      console.log(state.highlightedCell?.number);
-
       if (state.highlightedCell !== null) {
         const hihlightedDirection = state.addedWordDirection;
 
@@ -448,7 +449,6 @@ export const crosswordGameSlice = createSlice({
             ].col,
         };
 
-        console.log(highlightedWordObj);
         state.highlightedWordObj = highlightedWordObj;
       }
     },
@@ -461,6 +461,11 @@ export const crosswordGameSlice = createSlice({
     setHighlightedWordObj(state, action) {
       state.highlightedWordObj = action.payload;
     },
+
+    setCurrentWord(state, action) {
+      state.currentWord = action.payload;
+    },
+
     changeAddedWordValue(state, action) {
       const value = action.payload.split("");
       const currentDirectionWordObj = state.highlightedCell?.addedWordArr.find(
@@ -493,12 +498,116 @@ export const crosswordGameSlice = createSlice({
         //сначала очищаеи все клетки
 
         currentDirectionWordObj.map((el, index) => {
-          state.crosswordGame.crosswordObj[el.row][el.col].addedWordLetter = "";
+          if (
+            state.addedWordDirection === AddedWordDirection.Horizontal &&
+            state.crosswordGame.crosswordObj[el.row][el.col].addedWordDirectionJbj?.vertical ===
+              true
+          ) {
+            state.crosswordGame.crosswordObj[el.row][el.col].addedWordDirectionJbj = {
+              horizontal: false,
+              vertical: true,
+            };
+          }
+
+          if (
+            state.addedWordDirection === AddedWordDirection.Horizontal &&
+            state.crosswordGame.crosswordObj[el.row][el.col].addedWordDirectionJbj?.vertical ===
+              false
+          ) {
+            state.crosswordGame.crosswordObj[el.row][el.col].addedWordDirectionJbj = {
+              horizontal: false,
+              vertical: false,
+            };
+          }
+
+          if (
+            state.addedWordDirection === AddedWordDirection.Vertical &&
+            state.crosswordGame.crosswordObj[el.row][el.col].addedWordDirectionJbj?.horizontal ===
+              true
+          ) {
+            state.crosswordGame.crosswordObj[el.row][el.col].addedWordDirectionJbj = {
+              horizontal: true,
+              vertical: false,
+            };
+          }
+
+          if (
+            state.addedWordDirection === AddedWordDirection.Vertical &&
+            state.crosswordGame.crosswordObj[el.row][el.col].addedWordDirectionJbj?.horizontal ===
+              false
+          ) {
+            state.crosswordGame.crosswordObj[el.row][el.col].addedWordDirectionJbj = {
+              horizontal: false,
+              vertical: false,
+            };
+          }
+
+          if (
+            state.crosswordGame.crosswordObj[el.row][el.col].addedWordDirectionJbj?.horizontal ===
+              false &&
+            state.crosswordGame.crosswordObj[el.row][el.col].addedWordDirectionJbj?.vertical ===
+              false
+          ) {
+            state.crosswordGame.crosswordObj[el.row][el.col].addedWordLetter = "";
+          }
         });
 
         //затем заполняем клетки
 
         value.map((letter: string, index: number) => {
+          if (
+            state.crosswordGame.crosswordObj[currentDirectionWordObj[index].row][
+              currentDirectionWordObj[index].col
+            ].addedWordDirectionJbj === undefined
+          ) {
+            state.crosswordGame.crosswordObj[currentDirectionWordObj[index].row][
+              currentDirectionWordObj[index].col
+            ].addedWordDirectionJbj = { horizontal: false, vertical: false };
+          }
+          if (
+            state.addedWordDirection === AddedWordDirection.Horizontal &&
+            state.crosswordGame.crosswordObj[currentDirectionWordObj[index].row][
+              currentDirectionWordObj[index].col
+            ].addedWordDirectionJbj?.vertical === false
+          ) {
+            state.crosswordGame.crosswordObj[currentDirectionWordObj[index].row][
+              currentDirectionWordObj[index].col
+            ].addedWordDirectionJbj = { horizontal: true, vertical: false };
+          }
+
+          if (
+            state.addedWordDirection === AddedWordDirection.Horizontal &&
+            state.crosswordGame.crosswordObj[currentDirectionWordObj[index].row][
+              currentDirectionWordObj[index].col
+            ].addedWordDirectionJbj?.vertical === true
+          ) {
+            state.crosswordGame.crosswordObj[currentDirectionWordObj[index].row][
+              currentDirectionWordObj[index].col
+            ].addedWordDirectionJbj = { horizontal: true, vertical: true };
+          }
+
+          if (
+            state.addedWordDirection === AddedWordDirection.Vertical &&
+            state.crosswordGame.crosswordObj[currentDirectionWordObj[index].row][
+              currentDirectionWordObj[index].col
+            ].addedWordDirectionJbj?.horizontal === false
+          ) {
+            state.crosswordGame.crosswordObj[currentDirectionWordObj[index].row][
+              currentDirectionWordObj[index].col
+            ].addedWordDirectionJbj = { horizontal: false, vertical: true };
+          }
+
+          if (
+            state.addedWordDirection === AddedWordDirection.Vertical &&
+            state.crosswordGame.crosswordObj[currentDirectionWordObj[index].row][
+              currentDirectionWordObj[index].col
+            ].addedWordDirectionJbj?.horizontal === true
+          ) {
+            state.crosswordGame.crosswordObj[currentDirectionWordObj[index].row][
+              currentDirectionWordObj[index].col
+            ].addedWordDirectionJbj = { horizontal: true, vertical: true };
+          }
+
           state.crosswordGame.crosswordObj[currentDirectionWordObj[index].row][
             currentDirectionWordObj[index].col
           ].addedWordLetter = letter;
@@ -506,6 +615,33 @@ export const crosswordGameSlice = createSlice({
 
         state.crosswordGame.crosswordObj[currentEl.row][currentEl.col].addedWordArr[index].value =
           action.payload;
+      }
+    },
+    updateCellAndHaghlightedValue(state, action) {
+      if (state.highlightedCell) {
+        let currentValue: any[] = [];
+        state.crosswordGame.crosswordObj[state.highlightedCell?.row][
+          state.highlightedCell?.number
+        ].addedWordArr
+          .filter((el) => el.direction === state.addedWordDirection)[0]
+          .addedWordArr.forEach((el) => {
+            if (state.crosswordGame.crosswordObj[el.row][el.col]?.addedWordLetter === undefined) {
+              currentValue.push(" ");
+            }
+            if (
+              state.crosswordGame.crosswordObj[el.row][el.col]?.addedWordLetter !== undefined &&
+              state.crosswordGame.crosswordObj[el.row][el.col]?.addedWordLetter !== null
+            ) {
+              currentValue.push(state.crosswordGame.crosswordObj[el.row][el.col]?.addedWordLetter);
+            }
+          });
+        state.crosswordGame.crosswordObj[state.highlightedCell.row][
+          state.highlightedCell.number
+        ].addedWordArr.filter((el) => el.direction === state.addedWordDirection)[0].value =
+          currentValue.join("");
+        state.highlightedCell.addedWordArr.filter(
+          (el) => el.direction === state.addedWordDirection
+        )[0].value = currentValue.join("");
       }
     },
   },

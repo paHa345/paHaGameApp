@@ -29,31 +29,75 @@ const CrosswordGameCellMenuMain = () => {
   const currentDirection = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.addedWordDirection
   );
+  //   const currentCrosswordGame = useSelector(
+  //     (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame.crosswordObj
+  //   );
 
-  const addedWordValue = useSelector(
-    (state: ICrosswordGameSlice) => state.crosswordGameState.highlightedCell
-  );
+  //   const currentWord = useSelector(
+  //     (state: ICrosswordGameSlice) => state.crosswordGameState.currentWord
+  //   );
+  //   console.log(currentWord);
 
-  console.log(addedWordValue);
-  console.log(addedWordDirection);
+  //   console.log(
+  //     highlightedCell?.addedWordArr
+  //       .filter((el) => el.direction === addedWordDirection)[0]
+  //       .addedWordArr.map((el) => {
+  //         console.log(currentCrosswordGame[el.row][el.col].addedWordLetter?.length);
+  //         if (currentCrosswordGame[el.row][el.col].addedWordLetter?.length === undefined) {
+  //           return " ";
+  //         } else {
+  //           return currentCrosswordGame[el.row][el.col].addedWordLetter;
+  //         }
+  //       })
+  //       .join("")
+  //   );
 
-  let currentValue = addedWordValue?.addedWordArr.filter(
+  let currentValue: string | undefined = highlightedCell?.addedWordArr.filter(
     (el) => el.direction === addedWordDirection
   )[0].value;
 
-  console.log(currentValue);
+  // .addedWordArr.map((el) => {
+  //   console.log(currentCrosswordGame[el.row][el.col].addedWordLetter?.length);
+  //   if (currentCrosswordGame[el.row][el.col].addedWordLetter?.length === 0) {
+  //     return " ";
+  //   } else {
+  //     return currentCrosswordGame[el.row][el.col].addedWordLetter;
+  //   }
+  // })
+  // .join("");
+
+  //   useEffect(() => {
+  //     dispatch(
+  //       crossworGamedActions.setCurrentWord(
+  //         highlightedCell?.addedWordArr
+  //           .filter((el) => el.direction === addedWordDirection)[0]
+  //           .addedWordArr.map((el) => {
+  //             console.log(currentCrosswordGame[el.row][el.col].addedWordLetter?.length);
+  //             if (currentCrosswordGame[el.row][el.col].addedWordLetter?.length === 0) {
+  //               return " ";
+  //             } else {
+  //               return currentCrosswordGame[el.row][el.col].addedWordLetter;
+  //             }
+  //           })
+  //           .join("")
+  //       )
+  //     );
+  //   }, []);
+
+  if (
+    highlightedCell?.addedWordArr.filter((el) => el.direction === addedWordDirection)[0] !==
+    undefined
+  ) {
+    highlightedCell?.addedWordArr.filter((el) => el.direction === addedWordDirection)[0].value;
+  }
+
   useEffect(() => {
-    currentValue = addedWordValue?.addedWordArr.filter(
+    currentValue = highlightedCell?.addedWordArr.filter(
       (el) => el.direction === addedWordDirection
     )[0].value;
   }, [addedWordDirection]);
 
   const changeAddedWordValueHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    // dispatch(crossworGamedActions.setAddedWordValue(e.currentTarget.value));
-    // console.log(
-    //   highlightedCell?.addedWordArr.filter((el) => el.direction === currentDirection)[0].value
-    // );
-    // console.log(first)
     dispatch(crossworGamedActions.changeAddedWordValue(e.currentTarget.value));
   };
 
@@ -118,7 +162,7 @@ const CrosswordGameCellMenuMain = () => {
             <textarea
               className=" ml-2"
               onChange={changeAddedWordValueHandler}
-              value={currentValue === undefined ? "" : currentValue}
+              value={currentValue}
               placeholder="Ваш ответ"
               name="answer"
               cols={20}

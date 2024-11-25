@@ -27,6 +27,7 @@ export async function GET(req: NextRequest, segmentData: any) {
 
     const crossword = await Crossword.findById(params.crosswordId, {
       "crosswordObj.addedWordLetter": 0,
+      "crosswordObj.addedWordDirectionJbj": 0,
       "crosswordObj.addedWordArr.value": 0,
       "crosswordObj.addedWordArr.addedWordArr.addedLetter": 0,
     });
