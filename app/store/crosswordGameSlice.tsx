@@ -114,7 +114,7 @@ export const setHighlightedElementAndDirection = createAsyncThunk(
         ].col,
     };
     dispatch(crossworGamedActions.setHighlightedWordObj(highlightedWordObj));
-    dispatch(crossworGamedActions.updateCellAndHaghlightedValue(""));
+    dispatch(crossworGamedActions.updateCellAndHaghlightedValue());
   }
 );
 
@@ -617,7 +617,7 @@ export const crosswordGameSlice = createSlice({
           action.payload;
       }
     },
-    updateCellAndHaghlightedValue(state, action) {
+    updateCellAndHaghlightedValue(state) {
       if (state.highlightedCell) {
         let currentValue: any[] = [];
         state.crosswordGame.crosswordObj[state.highlightedCell?.row][
@@ -625,6 +625,7 @@ export const crosswordGameSlice = createSlice({
         ].addedWordArr
           .filter((el) => el.direction === state.addedWordDirection)[0]
           .addedWordArr.forEach((el) => {
+            console.log(el.addedLetter);
             if (state.crosswordGame.crosswordObj[el.row][el.col]?.addedWordLetter === undefined) {
               currentValue.push(" ");
             }
@@ -643,6 +644,22 @@ export const crosswordGameSlice = createSlice({
           (el) => el.direction === state.addedWordDirection
         )[0].value = currentValue.join("");
       }
+    },
+    changeInput(state, action) {
+      let value = action.payload.value;
+      if (action.payload.value.length === 0) {
+        value = " ";
+      }
+      state.crosswordGame.crosswordObj[action.payload.cell.row][
+        action.payload.cell.col
+      ].addedWordLetter = value;
+      // if (state.highlightedCell?.row !== undefined && state.highlightedCell?.number !== undefined) {
+      //   console.log(
+      //     (state.crosswordGame.crosswordObj[state.highlightedCell?.row][
+      //       state.highlightedCell?.number
+      //     ].addedWordLetter = "o")
+      //   );
+      // }
     },
   },
   extraReducers(builder) {
