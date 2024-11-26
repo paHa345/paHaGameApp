@@ -31,6 +31,7 @@ const CrosswordGameTableMain = () => {
       </div>
     );
   });
+  console.log(user);
 
   return (
     <div className=" py-10">

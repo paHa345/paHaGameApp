@@ -8,6 +8,7 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import Head from "next/head";
 import { TelegramProvider } from "./telegramProvider";
+import Script from "next/script";
 config.autoAddCss = false;
 
 const inter = Inter({ subsets: ["latin"] });
@@ -38,9 +39,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Head>
-        <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
-      </Head>
+      <Script
+        src="https://telegram.org/js/telegram-web-app.js?56"
+        strategy="beforeInteractive"
+        defer
+      />
       <body className={inter.className}>
         <TelegramProvider>
           <MainLayout>
