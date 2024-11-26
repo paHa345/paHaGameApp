@@ -39,11 +39,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Script
-        src="https://telegram.org/js/telegram-web-app.js?56"
-        strategy="beforeInteractive"
-        defer
-      />
+      <Head>
+        <Script
+          src="https://telegram.org/js/telegram-web-app.js?56"
+          strategy="beforeInteractive"
+          defer
+        />
+      </Head>
       <body className={inter.className}>
         <TelegramProvider>
           <MainLayout>
