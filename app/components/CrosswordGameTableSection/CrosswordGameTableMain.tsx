@@ -6,10 +6,15 @@ import CrosswordGameCellMain from "./CrosswordGameCellMain";
 import CrosswordGameQuestionsMain from "./CrosswordGameQuestionsMain";
 import CrosswordGameCellMenuMain from "../CrosswordGameCellMenuSection/CrosswordGameCellMenuMain";
 import { useTelegram } from "@/app/telegramProvider";
+import StartGameModalMain from "./StartGameModalMain";
 
 const CrosswordGameTableMain = () => {
   const crosswordGame = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame
+  );
+
+  const startGame = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.startGameStatus
   );
 
   const { user, webApp } = useTelegram();
@@ -31,33 +36,35 @@ const CrosswordGameTableMain = () => {
       </div>
     );
   });
-  console.log(user);
-
   return (
     <div className=" py-10">
+      {!startGame && <StartGameModalMain></StartGameModalMain>}
+
       {showCellMenu && <CrosswordGameCellMenuMain></CrosswordGameCellMenuMain>}
 
       <div className=" pb-8">
         <br />
-        <br />
-        <br />
+
         {user && (
-          <div>
+          <div className=" text-2xl pb-4">
             <h2>Welcome, {user?.username}!</h2>
             <h3>Your Telegram ID: {user?.id}</h3>
           </div>
         )}
 
+        <br />
+        <br />
         <h1 className=" text-center text-4xl">{crosswordGame.name}</h1>
         <br />
 
         <br />
       </div>
       {crosswordGameTableEl}
-
-      <div>
-        <CrosswordGameQuestionsMain></CrosswordGameQuestionsMain>
-      </div>
+      {startGame && (
+        <div>
+          <CrosswordGameQuestionsMain></CrosswordGameQuestionsMain>
+        </div>
+      )}
     </div>
   );
 };

@@ -96,7 +96,7 @@ const CrosswordGameCellMenuMain = () => {
             data-number={index}
           >
             <input
-              className={`${el.col}_${el.row} pl-2 h-10 w-8 text-2xl`}
+              className={`${el.col}_${el.row} pl-2 h-8 w-6 sm:h-10 sm:w-8 text-2xl`}
               key={`${index}_${el.col}_${el.row}`}
               data-number={index}
               data-col={el.col}

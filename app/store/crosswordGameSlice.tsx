@@ -127,6 +127,7 @@ export enum crosswordGameFetchStatus {
 
 export interface ICrosswordGameSlice {
   crosswordGameState: {
+    startGameStatus: boolean;
     currentWord: string;
     index: number;
     test: number;
@@ -248,6 +249,7 @@ export interface ICrosswordGameSlice {
 
 interface ICrosswordGameState {
   currentWord: string;
+  startGameStatus: boolean;
 
   index: number;
 
@@ -373,6 +375,7 @@ interface ICrosswordGameState {
 export const initCrosswordGameState: ICrosswordGameState = {
   index: 0,
   currentWord: "",
+  startGameStatus: false,
 
   test: 10,
   showChooseCrosswordModal: false,
@@ -659,6 +662,10 @@ export const crosswordGameSlice = createSlice({
       //     ].addedWordLetter = "o")
       //   );
       // }
+    },
+
+    setStartGameStatus(state, action) {
+      state.startGameStatus = action.payload;
     },
   },
   extraReducers(builder) {
