@@ -8,11 +8,13 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const CrosswordGameCellMenuMain = () => {
   const dispatch = useDispatch<AppDispatch>();
+
+  const [activeTab, setActiveTab] = useState(2);
 
   const addedWordDirection = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.addedWordDirection
@@ -21,11 +23,6 @@ const CrosswordGameCellMenuMain = () => {
   const highlightedCell = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.highlightedCell
   );
-  const setAddedWordDirection = function (this: any, e: React.MouseEvent<HTMLDivElement>) {
-    e.preventDefault();
-    dispatch(crossworGamedActions.changeAddedWordDirectionAndSetHighlightedCells(this));
-    dispatch(crossworGamedActions.updateCellAndHaghlightedValue());
-  };
 
   const currentDirection = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.addedWordDirection
@@ -59,26 +56,31 @@ const CrosswordGameCellMenuMain = () => {
 
   const changeCurrentLetterHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const index = e.currentTarget.dataset.number;
+    if (index && currentValue) {
+      if (e.currentTarget.dataset.number !== undefined && valueEl) {
+        const currentCell = highlightedCell?.addedWordArr.filter(
+          (el) => el.direction === addedWordDirection
+        )[0].addedWordArr[Number(index)];
 
-    const currentCell = highlightedCell?.addedWordArr.filter(
-      (el) => el.direction === addedWordDirection
-    )[0].addedWordArr[Number(index)];
+        dispatch(
+          crossworGamedActions.changeInput({
+            cell: currentCell,
+            value: e.currentTarget.value.toLowerCase(),
+          })
+        );
+        dispatch(crossworGamedActions.updateCellAndHaghlightedValue());
+        // valueEl[Number(e.currentTarget.dataset.number) + 1]
+        if (
+          Number(index) + 1 < currentValue?.length &&
+          e.currentTarget.value.toLowerCase().length > 0
+        ) {
+          console.log(document.querySelectorAll("input")[Number(index) + 1].focus());
+        }
 
-    dispatch(crossworGamedActions.changeInput({ cell: currentCell, value: e.currentTarget.value }));
-    dispatch(crossworGamedActions.updateCellAndHaghlightedValue());
-  };
-
-  const clickValueDivElHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (currentValue !== undefined) {
-      const index: any = e.currentTarget.dataset.number;
-      // const newValue = currentValue.split("");
-      // newValue[index] = "null";
-      // console.log(newValue.join(""));
-      // const currentCell = highlightedCell?.addedWordArr.filter(
-      //   (el) => el.direction === addedWordDirection
-      // )[0].addedWordArr[Number(index)];
-      // dispatch(crossworGamedActions.changeInput({ cell: currentCell, value: "g" }));
-      // dispatch(crossworGamedActions.updateCellAndHaghlightedValue());
+        // document.querySelector(
+        //   `${Number(e.currentTarget.dataset.col)}_${Number(e.currentTarget.dataset.row) + 1}`
+        // );
+      }
     }
   };
 
@@ -89,15 +91,16 @@ const CrosswordGameCellMenuMain = () => {
         let value = currentValue[index].trim().length === 0 ? "" : currentValue[index];
         return (
           <div
-            onClick={clickValueDivElHandler}
             className=" flex justify-center items-center border border-neutral-800 border-solid"
             key={`${index}_${el.col}_${el.row}`}
             data-number={index}
           >
             <input
-              className=" pl-2 h-10 w-8 text-2xl"
+              className={`${el.col}_${el.row} pl-2 h-10 w-8 text-2xl`}
               key={`${index}_${el.col}_${el.row}`}
               data-number={index}
+              data-col={el.col}
+              data-row={el.row}
               type="text"
               maxLength={1}
               value={value}
@@ -112,6 +115,12 @@ const CrosswordGameCellMenuMain = () => {
         );
       }
     });
+
+  const setAddedWordDirection = function (this: any, e: React.MouseEvent<HTMLDivElement>) {
+    e.preventDefault();
+    dispatch(crossworGamedActions.changeAddedWordDirectionAndSetHighlightedCells(this));
+    dispatch(crossworGamedActions.updateCellAndHaghlightedValue());
+  };
 
   // .addedWordArr.map((el) => {
   //   console.log(currentCrosswordGame[el.row][el.col].addedWordLetter?.length);
