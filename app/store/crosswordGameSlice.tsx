@@ -625,7 +625,6 @@ export const crosswordGameSlice = createSlice({
         ].addedWordArr
           .filter((el) => el.direction === state.addedWordDirection)[0]
           .addedWordArr.forEach((el) => {
-            console.log(el.addedLetter);
             if (state.crosswordGame.crosswordObj[el.row][el.col]?.addedWordLetter === undefined) {
               currentValue.push(" ");
             }
