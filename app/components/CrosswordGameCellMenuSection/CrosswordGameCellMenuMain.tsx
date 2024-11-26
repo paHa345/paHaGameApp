@@ -178,14 +178,17 @@ const CrosswordGameCellMenuMain = () => {
       : highlightedCell?.questionObj.vertical?.value;
 
   return (
-    <div style={{ top: `100px`, right: `200px` }} className=" flex justify-center items-center  ">
+    <div
+      style={{ top: `150px`, right: `200px` }}
+      className=" mt-10 flex justify-center items-center  "
+    >
       <div className=" w-5/6  rounded-md bg-slate-200 p-2 fixed flex  border-slate-400 border-solid border-2 ">
         <a
-          className=" h-fit bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200"
+          className=" fa-2x h-fit bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200"
           onClick={hideCellMenu}
           href=""
         >
-          <FontAwesomeIcon icon={faXmark} />
+          <FontAwesomeIcon icon={faCheckCircle} />
         </a>
         {/* <a
           className=" h-fit bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200"
@@ -220,12 +223,14 @@ const CrosswordGameCellMenuMain = () => {
               </div>
             )}
           </div>
-          <div className=" max-w-full m-2 rounded border-slate-100 border-solid border-2">
-            <h1>
+          <div className=" m-2 rounded border-slate-100 border-solid border-2">
+            <h1 className=" pb-2">
               <span>Вопрос: </span>
               {currentQuestion}
             </h1>
-            {currentValue !== undefined && <div className=" flex flex-row gap-2">{valueEl}</div>}
+            {currentValue !== undefined && (
+              <div className=" flex flex-wrap flex-row gap-2">{valueEl}</div>
+            )}
             {/* <textarea
               className=" ml-2"
               onChange={changeAddedWordValueHandler}

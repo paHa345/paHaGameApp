@@ -5,11 +5,14 @@ import { useSelector } from "react-redux";
 import CrosswordGameCellMain from "./CrosswordGameCellMain";
 import CrosswordGameQuestionsMain from "./CrosswordGameQuestionsMain";
 import CrosswordGameCellMenuMain from "../CrosswordGameCellMenuSection/CrosswordGameCellMenuMain";
+import { useTelegram } from "@/app/telegramProvider";
 
 const CrosswordGameTableMain = () => {
   const crosswordGame = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame
   );
+
+  const { user, webApp } = useTelegram();
 
   const showCellMenu = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.showCrosswordGameCellMenu
@@ -34,7 +37,20 @@ const CrosswordGameTableMain = () => {
       {showCellMenu && <CrosswordGameCellMenuMain></CrosswordGameCellMenuMain>}
 
       <div className=" pb-8">
+        <br />
+        <br />
+        <br />
+        {user && (
+          <div>
+            <h2>Welcome, {user?.username}!</h2>
+            <h3>Your Telegram ID: {user?.id}</h3>
+          </div>
+        )}
+
         <h1 className=" text-center text-4xl">{crosswordGame.name}</h1>
+        <br />
+
+        <br />
       </div>
       {crosswordGameTableEl}
 

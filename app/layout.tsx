@@ -6,6 +6,8 @@ import ReduxProvider from "./ReduxProvider";
 import MainLayout from "./components/Layout/MainLayout";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import Head from "next/head";
+import { TelegramProvider } from "./telegramProvider";
 config.autoAddCss = false;
 
 const inter = Inter({ subsets: ["latin"] });
@@ -36,10 +38,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Head>
+        <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+      </Head>
       <body className={inter.className}>
-        <MainLayout>
-          <ReduxProvider>{children}</ReduxProvider>
-        </MainLayout>
+        <TelegramProvider>
+          <MainLayout>
+            <ReduxProvider>{children}</ReduxProvider>
+          </MainLayout>
+        </TelegramProvider>
       </body>
     </html>
   );
