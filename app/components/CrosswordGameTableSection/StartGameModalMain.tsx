@@ -31,24 +31,27 @@ const StartGameModalMain = () => {
     //   alert("Вы не авторизованы в Telegram. Авторизуйтесь и попробуйте снова.");
     //   return;
     // }
-    // dispatch(
-    //   createStartAttempt({
-    //     telegramUserName: user?.username,
-    //     telegramID: user?.id,
-    //     isCompleted: false,
-    //     crosswordID: currentCrosswordID,
-    //   })
-    // );
 
     // заглушка временная
-    dispatch(
-      createStartAttempt({
-        telegramUserName: "paHa",
-        telegramID: 777777,
-        isCompleted: false,
-        crosswordID: currentCrosswordID,
-      })
-    );
+    if (!user) {
+      dispatch(
+        createStartAttempt({
+          telegramUserName: "paHa",
+          telegramID: 777777,
+          isCompleted: false,
+          crosswordID: currentCrosswordID,
+        })
+      );
+    } else {
+      dispatch(
+        createStartAttempt({
+          telegramUserName: user?.username,
+          telegramID: user?.id,
+          isCompleted: false,
+          crosswordID: currentCrosswordID,
+        })
+      );
+    }
   };
 
   useEffect(() => {

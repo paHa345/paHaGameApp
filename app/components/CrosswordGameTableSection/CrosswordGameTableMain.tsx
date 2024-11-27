@@ -64,6 +64,7 @@ const CrosswordGameTableMain = () => {
         <br />
 
         <br />
+
         <EndGameButton></EndGameButton>
       </div>
       {crosswordGameTableEl}

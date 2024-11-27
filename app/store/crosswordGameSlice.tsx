@@ -142,9 +142,32 @@ export const createStartAttempt = createAsyncThunk(
       if (!startAttemptReq.ok) {
         throw new Error(startAttempt.message);
       }
-      console.log(startAttempt);
       // dispatch(crossworGamedActions.setAvailableCrosswordGame(data.result));
+      dispatch(crossworGamedActions.setAttemptID(startAttempt.result._id));
       dispatch(crossworGamedActions.setStartGameStatus(true));
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const finishAttempt = createAsyncThunk(
+  "crosswordGameState/finishAttempt",
+  async function (attemptData: any, { rejectWithValue, dispatch }) {
+    try {
+      const finishAttemptReq = await fetch(`/api/crosswordGame/finishAttempt`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(attemptData),
+      });
+      const finishAttempt = await finishAttemptReq.json();
+      if (!finishAttemptReq.ok) {
+        throw new Error(finishAttempt.message);
+      }
+      // dispatch(crossworGamedActions.setAvailableCrosswordGame(data.result));
+      dispatch(crossworGamedActions.setStartGameStatus(false));
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -178,6 +201,7 @@ export interface ICrosswordGameSlice {
 
     fetchAvailableCrosswordGamesStatus: crosswordGameFetchStatus;
     createStartAttemptStatus: crosswordGameFetchStatus;
+    finishAttemptStatus: crosswordGameFetchStatus;
 
     highlightedWordObj: {
       startRow: number;
@@ -303,6 +327,7 @@ interface ICrosswordGameState {
   }[];
   fetchAvailableCrosswordGamesStatus: crosswordGameFetchStatus;
   createStartAttemptStatus: crosswordGameFetchStatus;
+  finishAttemptStatus: crosswordGameFetchStatus;
 
   highlightedWordObj: {
     startRow: number;
@@ -423,6 +448,7 @@ export const initCrosswordGameState: ICrosswordGameState = {
   availableCrosswordGamesArr: [],
   fetchAvailableCrosswordGamesStatus: crosswordGameFetchStatus.Ready,
   createStartAttemptStatus: crosswordGameFetchStatus.Ready,
+  finishAttemptStatus: crosswordGameFetchStatus.Ready,
 
   highlightedWordObj: null,
   highlightedCell: null,
@@ -712,6 +738,9 @@ export const crosswordGameSlice = createSlice({
     setAttemptID(state, action) {
       state.attemptID = action.payload;
     },
+    setFinishAttemptStatusToReady(state) {
+      state.finishAttemptStatus = crosswordGameFetchStatus.Ready;
+    },
   },
   extraReducers(builder) {
     builder.addCase(getAvailableCrosswords.pending, (state) => {
@@ -723,6 +752,9 @@ export const crosswordGameSlice = createSlice({
     builder.addCase(createStartAttempt.pending, (state) => {
       state.createStartAttemptStatus = crosswordGameFetchStatus.Loading;
     });
+    builder.addCase(finishAttempt.pending, (state) => {
+      state.finishAttemptStatus = crosswordGameFetchStatus.Loading;
+    });
     builder.addCase(getAvailableCrosswords.fulfilled, (state) => {
       state.fetchCrosswordsArrStatus = crosswordGameFetchStatus.Resolve;
     });
@@ -732,6 +764,9 @@ export const crosswordGameSlice = createSlice({
     builder.addCase(createStartAttempt.fulfilled, (state) => {
       state.createStartAttemptStatus = crosswordGameFetchStatus.Resolve;
     });
+    builder.addCase(finishAttempt.fulfilled, (state) => {
+      state.finishAttemptStatus = crosswordGameFetchStatus.Resolve;
+    });
     builder.addCase(getAvailableCrosswords.rejected, (state) => {
       state.fetchCrosswordsArrStatus = crosswordGameFetchStatus.Error;
     });
@@ -740,6 +775,9 @@ export const crosswordGameSlice = createSlice({
     });
     builder.addCase(createStartAttempt.rejected, (state) => {
       state.createStartAttemptStatus = crosswordGameFetchStatus.Error;
+    });
+    builder.addCase(finishAttempt.rejected, (state) => {
+      state.finishAttemptStatus = crosswordGameFetchStatus.Error;
     });
   },
 });
