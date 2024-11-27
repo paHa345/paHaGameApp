@@ -8,7 +8,7 @@ import {
 import { useTelegram } from "@/app/telegramProvider";
 import { faClose, faTrophy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import StartGameLoadingCard from "./StartGameLoadingCard";
 
@@ -27,20 +27,37 @@ const StartGameModalMain = () => {
   );
 
   const startGameHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!user) {
-      alert("Вы не авторизованы в Telegram. Авторизуйтесь и попробуйте снова.");
-      return;
-    }
+    // if (!user) {
+    //   alert("Вы не авторизованы в Telegram. Авторизуйтесь и попробуйте снова.");
+    //   return;
+    // }
+    // dispatch(
+    //   createStartAttempt({
+    //     telegramUserName: user?.username,
+    //     telegramID: user?.id,
+    //     isCompleted: false,
+    //     crosswordID: currentCrosswordID,
+    //   })
+    // );
+
+    // заглушка временная
     dispatch(
       createStartAttempt({
-        telegramUserName: user?.username,
-        telegramID: user?.id,
+        telegramUserName: "paHa",
+        telegramID: 777777,
         isCompleted: false,
         crosswordID: currentCrosswordID,
       })
     );
-    // dispatch(crossworGamedActions.setStartGameStatus(true));
   };
+
+  useEffect(() => {
+    if (createStartAttemptStatus === crosswordGameFetchStatus.Error) {
+      setTimeout(() => {
+        dispatch(crossworGamedActions.setCreateStartAttemptStatusToReady());
+      }, 5000);
+    }
+  }, [createStartAttemptStatus]);
 
   return (
     <div
@@ -84,46 +101,51 @@ const StartGameModalMain = () => {
             </div>
           )}
           {createStartAttemptStatus === crosswordGameFetchStatus.Error && (
-            <p>Не удалось загрузить данные. Повторите попытку позднее</p>
+            <div className="px-2 py-2 flex justify-center items-center rounded-lg bg-gradient-to-tr from-secoundaryColor to-red-400 shadow-exerciseCardShadow">
+              <h1 className=" text-center">Не удалось загрузить данные. Повторите попытку позже</h1>
+            </div>
           )}
 
-          <div className=" h-3/5 flex flex-col flex-wrap gap-3 justify-center items-center">
-            <div
-              onClick={startGameHandler}
-              className={` cursor-pointer w-full px-4 hover:scale-105 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow`}
-            >
-              <div className=" flex flex-col">
-                <div className=" flex flex-col gap-2">
-                  <div className=" flex flex-col justify-center items-center">
-                    <div className=" flex justify-center items-center pt-10 h-10 w-10">
-                      <FontAwesomeIcon className="fa-fw fa-3x" icon={faTrophy} />
-                    </div>
-                    <h1 className=" font-light text-4xl text-center grow pl-1 py-2 my-2">
-                      Начать попытку
-                    </h1>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <a href="/game" className=" w-4/6">
+          {(createStartAttemptStatus === crosswordGameFetchStatus.Ready ||
+            createStartAttemptStatus === crosswordGameFetchStatus.Error) && (
+            <div className=" h-3/5 flex flex-col flex-wrap gap-3 justify-center items-center">
               <div
-                className={`px-4  hover:scale-105 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-red-400 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow`}
+                onClick={startGameHandler}
+                className={` cursor-pointer w-full px-4 hover:scale-105 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow`}
               >
                 <div className=" flex flex-col">
                   <div className=" flex flex-col gap-2">
                     <div className=" flex flex-col justify-center items-center">
-                      <div className=" flex justify-center items-center pt-5 h-6 w-6">
-                        <FontAwesomeIcon className="fa-fw fa-2x" icon={faClose} />
+                      <div className=" flex justify-center items-center pt-10 h-10 w-10">
+                        <FontAwesomeIcon className="fa-fw fa-3x" icon={faTrophy} />
                       </div>
-                      <h1 className=" text-2xl text-center grow font-bold pl-1 py-2 my-2 ">
-                        Назад
+                      <h1 className=" font-light text-4xl text-center grow pl-1 py-2 my-2">
+                        Начать попытку
                       </h1>
                     </div>
                   </div>
                 </div>
               </div>
-            </a>
-          </div>
+              <a href="/game" className=" w-4/6">
+                <div
+                  className={`px-4  hover:scale-105 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-red-400 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow`}
+                >
+                  <div className=" flex flex-col">
+                    <div className=" flex flex-col gap-2">
+                      <div className=" flex flex-col justify-center items-center">
+                        <div className=" flex justify-center items-center pt-5 h-6 w-6">
+                          <FontAwesomeIcon className="fa-fw fa-2x" icon={faClose} />
+                        </div>
+                        <h1 className=" text-2xl text-center grow font-bold pl-1 py-2 my-2 ">
+                          Назад
+                        </h1>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+          )}
 
           {/* <AddExercisesSection></AddExercisesSection> */}
           <div className="modal-body"></div>

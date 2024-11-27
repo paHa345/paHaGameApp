@@ -7,6 +7,8 @@ import CrosswordGameQuestionsMain from "./CrosswordGameQuestionsMain";
 import CrosswordGameCellMenuMain from "../CrosswordGameCellMenuSection/CrosswordGameCellMenuMain";
 import { useTelegram } from "@/app/telegramProvider";
 import StartGameModalMain from "./StartGameModalMain";
+import { redirect } from "next/navigation";
+import EndGameButton from "./EndGameButton";
 
 const CrosswordGameTableMain = () => {
   const crosswordGame = useSelector(
@@ -22,6 +24,10 @@ const CrosswordGameTableMain = () => {
   const showCellMenu = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.showCrosswordGameCellMenu
   );
+
+  if (!crosswordGame._id) {
+    redirect("/crosswordGame");
+  }
 
   const crosswordGameTableEl = crosswordGame.crosswordObj.map((el, i: number) => {
     return (
@@ -58,6 +64,7 @@ const CrosswordGameTableMain = () => {
         <br />
 
         <br />
+        <EndGameButton></EndGameButton>
       </div>
       {crosswordGameTableEl}
       {startGame && (

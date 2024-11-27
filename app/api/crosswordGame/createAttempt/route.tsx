@@ -10,6 +10,7 @@ export async function POST(req: NextRequest) {
     }
     await connectMongoDB();
     const body = await req.json();
+    console.log(body);
     const crossword = await Crossword.findById(body.crosswordID);
     if (crossword === null) {
       return NextResponse.json({ message: "Не найдена игра" }, { status: 400 });

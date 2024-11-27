@@ -166,6 +166,7 @@ export interface ICrosswordGameSlice {
     test: number;
     showChooseCrosswordModal: boolean;
     fetchCrosswordsArrStatus: crosswordGameFetchStatus;
+    attemptID?: string;
     availableCrosswordGamesArr: {
       _id: string;
       name: string;
@@ -284,6 +285,7 @@ export interface ICrosswordGameSlice {
 interface ICrosswordGameState {
   currentWord: string;
   startGameStatus: boolean;
+  attemptID?: string;
 
   index: number;
 
@@ -703,6 +705,12 @@ export const crosswordGameSlice = createSlice({
 
     setStartGameStatus(state, action) {
       state.startGameStatus = action.payload;
+    },
+    setCreateStartAttemptStatusToReady(state) {
+      state.createStartAttemptStatus = crosswordGameFetchStatus.Ready;
+    },
+    setAttemptID(state, action) {
+      state.attemptID = action.payload;
     },
   },
   extraReducers(builder) {
