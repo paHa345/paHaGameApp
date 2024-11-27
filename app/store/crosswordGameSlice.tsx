@@ -118,6 +118,39 @@ export const setHighlightedElementAndDirection = createAsyncThunk(
   }
 );
 
+export const createStartAttempt = createAsyncThunk(
+  "crosswordGameState/createStartAttempt",
+  async function (
+    attemptData: {
+      telegramUserName?: string;
+      telegramID: number;
+      isCompleted: boolean;
+      crosswordID: string;
+      completedCorrectly?: boolean;
+    },
+    { rejectWithValue, dispatch }
+  ) {
+    try {
+      const startAttemptReq = await fetch(`/api/crosswordGame/createAttempt`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(attemptData),
+      });
+      const startAttempt = await startAttemptReq.json();
+      if (!startAttemptReq.ok) {
+        throw new Error(startAttempt.message);
+      }
+      console.log(startAttempt);
+      // dispatch(crossworGamedActions.setAvailableCrosswordGame(data.result));
+      dispatch(crossworGamedActions.setStartGameStatus(true));
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export enum crosswordGameFetchStatus {
   Ready = "ready",
   Loading = "loading",
@@ -143,6 +176,7 @@ export interface ICrosswordGameSlice {
     showCrosswordGameCellMenu: boolean;
 
     fetchAvailableCrosswordGamesStatus: crosswordGameFetchStatus;
+    createStartAttemptStatus: crosswordGameFetchStatus;
 
     highlightedWordObj: {
       startRow: number;
@@ -266,6 +300,7 @@ interface ICrosswordGameState {
     changeDate: Date;
   }[];
   fetchAvailableCrosswordGamesStatus: crosswordGameFetchStatus;
+  createStartAttemptStatus: crosswordGameFetchStatus;
 
   highlightedWordObj: {
     startRow: number;
@@ -385,6 +420,8 @@ export const initCrosswordGameState: ICrosswordGameState = {
 
   availableCrosswordGamesArr: [],
   fetchAvailableCrosswordGamesStatus: crosswordGameFetchStatus.Ready,
+  createStartAttemptStatus: crosswordGameFetchStatus.Ready,
+
   highlightedWordObj: null,
   highlightedCell: null,
   crosswordGame: {
@@ -675,17 +712,26 @@ export const crosswordGameSlice = createSlice({
     builder.addCase(setAvailableCrosswordGame.pending, (state) => {
       state.fetchAvailableCrosswordGamesStatus = crosswordGameFetchStatus.Loading;
     });
+    builder.addCase(createStartAttempt.pending, (state) => {
+      state.createStartAttemptStatus = crosswordGameFetchStatus.Loading;
+    });
     builder.addCase(getAvailableCrosswords.fulfilled, (state) => {
       state.fetchCrosswordsArrStatus = crosswordGameFetchStatus.Resolve;
     });
     builder.addCase(setAvailableCrosswordGame.fulfilled, (state) => {
       state.fetchAvailableCrosswordGamesStatus = crosswordGameFetchStatus.Resolve;
     });
+    builder.addCase(createStartAttempt.fulfilled, (state) => {
+      state.createStartAttemptStatus = crosswordGameFetchStatus.Resolve;
+    });
     builder.addCase(getAvailableCrosswords.rejected, (state) => {
       state.fetchCrosswordsArrStatus = crosswordGameFetchStatus.Error;
     });
     builder.addCase(setAvailableCrosswordGame.rejected, (state) => {
       state.fetchAvailableCrosswordGamesStatus = crosswordGameFetchStatus.Error;
+    });
+    builder.addCase(createStartAttempt.rejected, (state) => {
+      state.createStartAttemptStatus = crosswordGameFetchStatus.Error;
     });
   },
 });

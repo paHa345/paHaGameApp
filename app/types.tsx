@@ -280,6 +280,15 @@ export interface ICrosswordSchema {
   }[];
 }
 
+export interface IAttemptCrosswordGameSchema {
+  telegramUserName?: string;
+  telegramID: number;
+  startDate: Date;
+  isCompleted: boolean;
+  crosswordID: string;
+  completedCorrectly?: boolean;
+}
+
 export interface IOneExerciseTypes {
   nameRu: string;
   nameEn: string;

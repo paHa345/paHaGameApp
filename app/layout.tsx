@@ -39,18 +39,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Script
-        src="https://telegram.org/js/telegram-web-app.js?56"
-        strategy="beforeInteractive"
-        defer
-      />
-
       <body className={inter.className}>
         <TelegramProvider>
           <MainLayout>
             <ReduxProvider>{children}</ReduxProvider>
           </MainLayout>
         </TelegramProvider>
+        <Script src="https://telegram.org/js/telegram-web-app.js?56" strategy="beforeInteractive" />
       </body>
     </html>
   );
