@@ -167,7 +167,8 @@ export const finishAttempt = createAsyncThunk(
         throw new Error(finishAttempt.message);
       }
       // dispatch(crossworGamedActions.setAvailableCrosswordGame(data.result));
-      dispatch(crossworGamedActions.setStartGameStatus(false));
+      // dispatch(crossworGamedActions.setStartGameStatus(false));
+      dispatch(crossworGamedActions.clearAttemptData());
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -740,6 +741,9 @@ export const crosswordGameSlice = createSlice({
     },
     setFinishAttemptStatusToReady(state) {
       state.finishAttemptStatus = crosswordGameFetchStatus.Ready;
+    },
+    clearAttemptData(state) {
+      state.attemptID = undefined;
     },
   },
   extraReducers(builder) {
