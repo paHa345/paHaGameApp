@@ -67,16 +67,17 @@ const LoadCrosswordGameModalMain = () => {
       <div className=" modal-wrapper">
         <div className="modal">
           <div className="modal-header">
-            <LoadCrosswordGameNotification></LoadCrosswordGameNotification>
-
-            <a
-              className={` ${loadCrosswordGameStatus === crosswordGameFetchStatus.Loading ? "opacity-0" : ""} bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200`}
-              onClick={hideLoadCrosswordGameModalHandler}
-              href=""
-            >
-              <FontAwesomeIcon className=" fa-2x" icon={faXmark} />
-            </a>
+            {loadCrosswordGameStatus === crosswordGameFetchStatus.Ready && (
+              <a
+                className={` bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200`}
+                onClick={hideLoadCrosswordGameModalHandler}
+                href=""
+              >
+                <FontAwesomeIcon className=" fa-2x" icon={faXmark} />
+              </a>
+            )}
           </div>
+          <LoadCrosswordGameNotification></LoadCrosswordGameNotification>
           {fetchCrosswordsGameStatus === crosswordGameFetchStatus.Resolve &&
             crosswordCardsEl.length === 0 && (
               <div className=" overflow-auto">

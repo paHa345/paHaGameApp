@@ -28,6 +28,9 @@ const AvailableCrosswordGameCard = ({ crosswordData }: ICrosswordCard) => {
   const loadCrosswordGameStatus = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.fetchAvailableCrosswordGamesStatus
   );
+  const crossword = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame
+  );
   const loadCrosswordGameHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     console.log(crosswordData._id);
@@ -36,7 +39,12 @@ const AvailableCrosswordGameCard = ({ crosswordData }: ICrosswordCard) => {
     }
     // dispatch(getCurrentUserCrosswordAndSetInState(crosswordData._id));
     dispatch(setAvailableCrosswordGame(String(crosswordData._id)));
-    redirect("/crosswordGame/game");
+    console.log("crossword load");
+    console.log(crossword);
+
+    setTimeout(() => {
+      redirect("/crosswordGame/game");
+    }, 2000);
   };
   return (
     <article

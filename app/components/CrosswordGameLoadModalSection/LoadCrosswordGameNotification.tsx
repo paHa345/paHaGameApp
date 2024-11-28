@@ -19,10 +19,6 @@ const LoadCrosswordGameNotification = () => {
     (state: ICrosswordGameSlice) => state.crosswordGameState.fetchAvailableCrosswordGamesStatus
   );
 
-  //   const errorMessage = useSelector(
-  //     (state: IAddWorkoutSlice) => state.addWorkoutState.changeCompleteExerciseErrorMessage
-  //   );
-
   useEffect(() => {
     if (
       loadCrosswordGameStatus === crosswordGameFetchStatus.Error ||
@@ -44,25 +40,19 @@ const LoadCrosswordGameNotification = () => {
   return (
     <>
       {loadCrosswordGameStatus === crosswordGameFetchStatus.Error && (
-        <div className=" py-3 my-3 flex flex-col items-center fixed top-20 w-72 opacity-60">
-          <h1 className=" text-center rounded-md   px-3 py-3 bg-rose-500">
-            {`Ошибка. Повторите попытку позднее`}
-          </h1>
-        </div>
+        <h1 className=" text-center rounded-md  opacity-60  px-3 py-3 bg-rose-500">
+          {`Ошибка. Повторите попытку позднее`}
+        </h1>
       )}
       {loadCrosswordGameStatus === crosswordGameFetchStatus.Loading && (
-        <div className=" py-3 my-3 flex flex-col items-center fixed top-20 w-72 opacity-60">
-          <h1 className=" text-center rounded-md   px-3 py-3 bg-sky-500">
-            {`Загрузка кроссворда`}
-          </h1>
-        </div>
+        <h1 className=" text-center rounded-md  opacity-60 px-3 py-3 bg-sky-500">
+          {`Загрузка кроссворда`}
+        </h1>
       )}
       {loadCrosswordGameStatus === crosswordGameFetchStatus.Resolve && (
-        <div className=" py-3 my-3 flex flex-col items-center fixed top-20 w-72 opacity-60">
-          <h1 className=" text-center rounded-md   px-3 py-3 bg-green-500">
-            {`Кроссворд успешно загружен`}
-          </h1>
-        </div>
+        <h1 className=" text-center rounded-md opacity-60  px-3 py-3 bg-green-500">
+          {`Кроссворд успешно загружен. Осуществляем переход ...`}
+        </h1>
       )}
     </>
   );
