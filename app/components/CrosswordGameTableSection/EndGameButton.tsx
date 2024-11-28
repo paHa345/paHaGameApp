@@ -16,9 +16,16 @@ const EndGameButton = () => {
   const { user } = useTelegram();
   const dispatch = useDispatch<AppDispatch>();
   const attemptID = useSelector((state: ICrosswordGameSlice) => state.crosswordGameState.attemptID);
+  const crosswordGameId = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame._id
+  );
 
   const finishAttemptStatus = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.finishAttemptStatus
+  );
+
+  const currentAttemptCrossword = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame.crosswordObj
   );
 
   const finishAttemptHandler = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -29,19 +36,23 @@ const EndGameButton = () => {
         attemptID: attemptID,
         telegramUser: "paHa345",
         telegramID: 7777777,
+        crossword: currentAttemptCrossword,
+        crosswordID: crosswordGameId,
       };
       console.log(attemptData);
       dispatch(finishAttempt(attemptData));
-      redirect("/game");
+      // redirect("/game");
     } else {
       const attemptData = {
         attemptID: attemptID,
         telegramUser: user?.username,
         telegramID: user?.id,
+        crossword: currentAttemptCrossword,
+        crosswordID: crosswordGameId,
       };
 
       dispatch(finishAttempt(attemptData));
-      redirect("/game");
+      // redirect("/game");
     }
     // Dispatch action to finish the current attempt and update the state
     // Example: dispatch(searchExerciseActions.finishAttempt());

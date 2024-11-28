@@ -39,7 +39,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-gradient-to-tr from-slate-50 to-lime-50`}>
         <TelegramProvider>
           <MainLayout>
             <ReduxProvider>{children}</ReduxProvider>

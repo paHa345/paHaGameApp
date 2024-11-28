@@ -40,7 +40,21 @@ export async function PATCH(req: NextRequest, segmentData: any) {
     // body.userId = String(currentUser._id);
     // body.changeDate = Date.now();
     // console.log("Save");
-    console.log(body.questionArr);
+    // console.log(body.questionArr);
+
+    // const answersArr: any = [];
+    // body.crosswordObj.forEach((col: any, x: number) => {
+    //   col.forEach((cell: any, y: number) => {
+    //     if (cell?.addedWordArr.length > 0) {
+    //       answersArr.push({
+    //         row: x,
+    //         col: y,
+    //         addedWordArr: cell.addedWordArr,
+    //       });
+    //     }
+    //   });
+    // });
+    // console.log(answersArr);
 
     const editedCrossword = await Crossword.findByIdAndUpdate(params.crosswordId, {
       name: body.name,
@@ -48,6 +62,7 @@ export async function PATCH(req: NextRequest, segmentData: any) {
       isCompleted: body.isCompleted,
       questionsArr: body.questionsArr,
       crosswordObj: body.crosswordObj,
+      answersArr: body.answersArr,
     });
 
     return NextResponse.json({ message: "Success", result: editedCrossword });

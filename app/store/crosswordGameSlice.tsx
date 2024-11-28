@@ -156,20 +156,52 @@ export const finishAttempt = createAsyncThunk(
   "crosswordGameState/finishAttempt",
   async function (attemptData: any, { rejectWithValue, dispatch }) {
     try {
+      console.log(attemptData);
+
+      const answersArr: {
+        row: number;
+        col: number;
+        addedWordArr: {
+          direction: AddedWordDirection;
+          value: string;
+        }[];
+      }[] = [];
+      attemptData.crossword.forEach((col: any, x: number) => {
+        col.forEach((cell: any, y: number) => {
+          if (cell?.addedWordArr?.length > 0) {
+            answersArr.push({
+              row: x,
+              col: y,
+              addedWordArr: cell.addedWordArr.map((el: any) => {
+                return {
+                  direction: el.direction,
+                  value: el.value,
+                };
+              }),
+            });
+          }
+        });
+      });
+
       const finishAttemptReq = await fetch(`/api/crosswordGame/finishAttempt`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(attemptData),
+        body: JSON.stringify({
+          attemptID: attemptData.attemptID,
+          crosswordID: attemptData.crosswordID,
+          telegramID: attemptData.telegramID,
+          telegramUser: attemptData.telegramUser,
+          answersArr: answersArr,
+        }),
       });
       const finishAttempt = await finishAttemptReq.json();
       if (!finishAttemptReq.ok) {
         throw new Error(finishAttempt.message);
       }
-      // dispatch(crossworGamedActions.setAvailableCrosswordGame(data.result));
-      // dispatch(crossworGamedActions.setStartGameStatus(false));
-      dispatch(crossworGamedActions.clearAttemptData());
+      // нужно включить потом, очистка данных после завершения попытки
+      // dispatch(crossworGamedActions.clearAttemptData());
     } catch (error: any) {
       return rejectWithValue(error.message);
     }

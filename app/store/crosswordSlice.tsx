@@ -87,6 +87,32 @@ export const saveCurrentCrosswordInDB = createAsyncThunk(
   "crosswordState/saveCurrentCrosswordInDB",
   async function (crosswordObj: ICurrentCrossword, { rejectWithValue, dispatch }) {
     try {
+      console.log(crosswordObj.crosswordObj);
+      const answersArr: {
+        row: number;
+        col: number;
+        addedWordArr: {
+          direction: AddedWordDirection;
+          value: string;
+        }[];
+      }[] = [];
+      crosswordObj.crosswordObj.forEach((col, x: number) => {
+        col.forEach((cell, y: number) => {
+          if (cell?.addedWordArr?.length > 0) {
+            answersArr.push({
+              row: x,
+              col: y,
+              addedWordArr: cell.addedWordArr.map((el) => {
+                return {
+                  direction: el.direction,
+                  value: el.value,
+                };
+              }),
+            });
+          }
+        });
+      });
+
       if (crosswordObj.crosswordId.length > 0) {
         const updateCurrentCrosswordReq = await fetch(
           `/api/crossword/editCurrentCrossword/${crosswordObj.crosswordId}`,
@@ -100,6 +126,7 @@ export const saveCurrentCrosswordInDB = createAsyncThunk(
               name: crosswordObj.name,
               questionsArr: crosswordObj.questionsArr,
               isCompleted: crosswordObj.isCompleted,
+              answersArr: answersArr,
             }),
           }
         );
@@ -108,6 +135,7 @@ export const saveCurrentCrosswordInDB = createAsyncThunk(
           throw new Error(data.message);
         }
       } else {
+        console.log("save");
         const saveCurrentCrosswordReq = await fetch(`/api/crossword/addCrossword`, {
           method: "POST",
           headers: {
@@ -118,6 +146,7 @@ export const saveCurrentCrosswordInDB = createAsyncThunk(
             name: crosswordObj.name,
             questionsArr: crosswordObj.questionsArr,
             isCompleted: crosswordObj.isCompleted,
+            answersArr: answersArr,
           }),
         });
 

@@ -233,6 +233,43 @@ export interface IAddToCoachRequstSchema {
   rejectedByCoach?: Boolean;
 }
 
+export interface ICrossword {
+  crosswordObj: {
+    key: string;
+    value: string;
+    number: number;
+    row: number;
+    paragraph: number;
+    paragraphNum?: number;
+    inputStatus: number;
+    inputValue: number;
+    textQuestionStatus: number;
+    questionObj: {
+      horizontal: {
+        value: string;
+        questionNumber: number;
+        cell: { row: number; col: number };
+      } | null;
+      vertical: {
+        value: string;
+        questionNumber: number;
+        cell: { row: number; col: number };
+      } | null;
+    };
+    addedWordCell: number;
+    addedWordLetter?: string | null;
+    addedWordDirectionJbj: {
+      horizontal: Boolean;
+      vertical: Boolean;
+    };
+    addedWordArr: {
+      direction: AddedWordDirection;
+      value?: string;
+      addedWordArr: { row: number; col: number; addedLetter?: string }[];
+    }[];
+  }[][];
+}
+
 export interface ICrosswordSchema {
   name: string;
   userId: String;
@@ -261,15 +298,15 @@ export interface ICrosswordSchema {
       } | null;
     };
     addedWordCell: number;
-    addedWordLetter: string | null;
+    addedWordLetter?: string | null;
     addedWordDirectionJbj: {
       horizontal: Boolean;
       vertical: Boolean;
     };
     addedWordArr: {
       direction: AddedWordDirection;
-      value: string;
-      addedWordArr: { row: number; col: number; addedLetter: string }[];
+      value?: string;
+      addedWordArr: { row: number; col: number; addedLetter?: string }[];
     }[];
   }[][];
   questionsArr: {
@@ -278,6 +315,14 @@ export interface ICrosswordSchema {
     questionNumber: number;
     cell: { row: number; col: number };
   }[];
+  answersArr: {
+    row: number;
+    col: number;
+    addedWordArr: {
+      direction: AddedWordDirection;
+      value: string;
+    }[];
+  };
 }
 
 export interface IAttemptCrosswordGameSchema {

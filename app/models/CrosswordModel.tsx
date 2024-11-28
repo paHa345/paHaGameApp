@@ -64,6 +64,16 @@ const crosswordSchema = new mongoose.Schema<ICrosswordSchema>({
       cell: { row: Number, col: Number },
     },
   ],
+  answersArr: {
+    col: { type: Number, requirted: false },
+    row: { type: Number, requirted: false },
+    addedWordArr: [
+      {
+        direction: { type: Number, requirted: false },
+        value: { type: String, required: false },
+      },
+    ],
+  },
 });
 
 const Crossword =
