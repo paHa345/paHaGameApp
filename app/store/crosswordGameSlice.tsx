@@ -30,7 +30,6 @@ export const setAvailableCrosswordGame = createAsyncThunk(
       console.log(crosswordGame);
       // dispatch(crossworGamedActions.setAvailableCrosswordGame(data.result));
       dispatch(crossworGamedActions.setCrosswordGame(crosswordGame.result));
-      redirect("/crosswordGame/game");
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
