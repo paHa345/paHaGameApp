@@ -38,8 +38,6 @@ export async function PATCH(req: NextRequest) {
     for (let i = 0; i < userAnswers.length; i++) {
       if (userAnswers[i]?.addedWordArr?.length > 0) {
         for (let j = 0; j < userAnswers[i]?.addedWordArr?.length; j++) {
-          // console.log(userAnswers[i]?.addedWordArr[j]);
-          // console.log(crosswordAnswers[i]?.addedWordArr[j]);
           if (
             userAnswers[i]?.addedWordArr[j].direction !==
               crosswordAnswers[i]?.addedWordArr[j].direction ||
@@ -52,9 +50,32 @@ export async function PATCH(req: NextRequest) {
       }
     }
 
-    console.log(isCorrect);
+    const finishDate = new Date();
+    const durationNumberMs = finishDate.valueOf() - currentAttempt.startDate.valueOf();
 
-    return NextResponse.json({ message: "Success", result: "" });
+    function msToTime(duration: number) {
+      var milliseconds = Math.floor((duration % 1000) / 100),
+        seconds = Math.floor((duration / 1000) % 60),
+        minutes = Math.floor((duration / (1000 * 60)) % 60),
+        hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+      hours = hours < 10 ? 0 + hours : hours;
+      minutes = minutes < 10 ? 0 + minutes : minutes;
+      seconds = seconds < 10 ? 0 + seconds : seconds;
+      return `${hours}:${minutes}:${seconds}`;
+    }
+
+    const durationString = msToTime(durationNumberMs);
+
+    const finishAttampt = await AttemptCrosswordGame.findByIdAndUpdate(currentAttempt._id, {
+      isCompleted: true,
+      finishDate: finishDate,
+      completedCorrectly: isCorrect,
+      duration: durationString,
+      crosswordName: crossword.name,
+    });
+
+    const updatedFinishAttampt = await AttemptCrosswordGame.findById(currentAttempt._id);
+    return NextResponse.json({ message: "Success", result: updatedFinishAttampt });
   } catch (error: any) {
     return NextResponse.json({ message: error?.message }, { status: 400 });
   }

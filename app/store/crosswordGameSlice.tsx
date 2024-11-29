@@ -201,7 +201,10 @@ export const finishAttempt = createAsyncThunk(
         throw new Error(finishAttempt.message);
       }
       // нужно включить потом, очистка данных после завершения попытки
-      // dispatch(crossworGamedActions.clearAttemptData());
+      dispatch(crossworGamedActions.clearAttemptData());
+      // добавляем данные о только что законченной попытке
+      console.log(finishAttempt.result);
+      dispatch(crossworGamedActions.setCurrentUserCompletedAttempt(finishAttempt.result));
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -337,6 +340,17 @@ export interface ICrosswordGameSlice {
       value: string;
       addedWordArr: { row: number; col: number; addedLetter: string }[];
     };
+    currentUserCompletedAttempt?: {
+      telegramUserName?: string;
+      telegramID: number;
+      startDate: Date;
+      isCompleted: boolean;
+      crosswordID: string;
+      completedCorrectly?: boolean;
+      finishDate?: Date;
+      duration?: string;
+      crosswordName?: string;
+    };
   };
 }
 
@@ -465,6 +479,17 @@ interface ICrosswordGameState {
     direction: AddedWordDirection;
     value: string;
     addedWordArr: { row: number; col: number; addedLetter: string }[];
+  };
+  currentUserCompletedAttempt?: {
+    telegramUserName?: string;
+    telegramID: number;
+    startDate: Date;
+    isCompleted: boolean;
+    crosswordID: string;
+    completedCorrectly?: boolean;
+    finishDate?: Date;
+    duration?: string;
+    crosswordName?: string;
   };
 }
 
@@ -777,6 +802,14 @@ export const crosswordGameSlice = createSlice({
     },
     clearAttemptData(state) {
       state.attemptID = undefined;
+      state.startGameStatus = false;
+      state.createStartAttemptStatus = crosswordGameFetchStatus.Ready;
+    },
+    setCurrentUserCompletedAttempt(state, action) {
+      state.currentUserCompletedAttempt = action.payload;
+    },
+    clearCurrentUserCompletedAttempt(state) {
+      state.currentUserCompletedAttempt = undefined;
     },
   },
   extraReducers(builder) {

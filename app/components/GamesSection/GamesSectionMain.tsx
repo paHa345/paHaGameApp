@@ -1,9 +1,17 @@
 "use client";
 import { Container } from "postcss";
-import React from "react";
+import React, { useEffect } from "react";
 import GameSectionCard from "./GameSectionCard";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/app/store";
+import { crossworGamedActions } from "@/app/store/crosswordGameSlice";
 
 const GamesSectionMain = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    console.log("clear attempt data");
+    dispatch(crossworGamedActions.clearCurrentUserCompletedAttempt());
+  });
   return (
     <section className=" container mx-auto">
       <div className=" py-5">

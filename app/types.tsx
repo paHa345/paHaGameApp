@@ -332,6 +332,9 @@ export interface IAttemptCrosswordGameSchema {
   isCompleted: boolean;
   crosswordID: string;
   completedCorrectly?: boolean;
+  finishDate?: Date;
+  duration?: string;
+  crosswordName?: string;
 }
 
 export interface IOneExerciseTypes {

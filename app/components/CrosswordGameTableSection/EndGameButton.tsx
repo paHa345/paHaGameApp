@@ -41,7 +41,7 @@ const EndGameButton = () => {
       };
       console.log(attemptData);
       dispatch(finishAttempt(attemptData));
-      // redirect("/game");
+      redirect("/results");
     } else {
       const attemptData = {
         attemptID: attemptID,
@@ -52,7 +52,7 @@ const EndGameButton = () => {
       };
 
       dispatch(finishAttempt(attemptData));
-      // redirect("/game");
+      redirect("/results");
     }
     // Dispatch action to finish the current attempt and update the state
     // Example: dispatch(searchExerciseActions.finishAttempt());

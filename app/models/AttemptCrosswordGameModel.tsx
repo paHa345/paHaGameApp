@@ -8,6 +8,9 @@ const attemptCrosswordGameSchema = new mongoose.Schema<IAttemptCrosswordGameSche
   isCompleted: { type: Boolean, required: true },
   crosswordID: { type: String, required: true },
   completedCorrectly: { type: Boolean, required: false },
+  finishDate: { type: Date, required: false },
+  duration: { type: String, required: false },
+  crosswordName: { type: String, required: false },
 });
 
 const AttemptCrosswordGame =

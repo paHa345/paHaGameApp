@@ -8,12 +8,14 @@ import {
   faDumbbell,
   faUserPlus,
   faPuzzlePiece,
+  faGraduationCap,
 } from "@fortawesome/free-solid-svg-icons";
 import { useSession } from "next-auth/react";
 // import HeaderSerchButton from "./SearchSection/HeaderSerchButton";
 import { useDispatch, useSelector } from "react-redux";
 import ReduxProvider from "../ReduxProvider";
 import { ICrosswordSlice } from "../store/crosswordSlice";
+import { usePathname } from "next/navigation";
 
 // import CountRequestsAddToCoach from "./HeaderSection/CountRequestsAddToCoach";
 
@@ -30,6 +32,9 @@ const Header = () => {
     (state: ICrosswordSlice) => state.crosswordState.crosswordSize
   );
   const session = useSession();
+
+  const path = usePathname();
+
   return (
     <ReduxProvider>
       <header
@@ -80,7 +85,24 @@ const Header = () => {
                 className=" text-2xl text-headerButtonColor hover:text-headerButtonHoverColor transition duration-800 ease-out "
               >
                 {" "}
-                <FontAwesomeIcon className=" fa-2x" icon={faPuzzlePiece} />
+                <FontAwesomeIcon
+                  className={` ${path === "/game" || path === "/crosswordGame" || path === "/crosswordGame/game" ? "text-slate-500" : ""} transition-all hover:text-slate-500 duration-500 fa-2x`}
+                  icon={faPuzzlePiece}
+                />
+                {/* <p className=" text-xs">Game</p> */}
+              </Link>
+            </div>
+            <div className="">
+              {" "}
+              <Link
+                href="/results"
+                className=" text-2xl text-headerButtonColor hover:text-headerButtonHoverColor transition duration-800 ease-out "
+              >
+                {" "}
+                <FontAwesomeIcon
+                  className={` ${path === "/results" ? "text-slate-500" : ""} transition-all hover:text-slate-500 duration-500 fa-2x`}
+                  icon={faGraduationCap}
+                />
                 {/* <p className=" text-xs">Game</p> */}
               </Link>
             </div>
@@ -90,7 +112,10 @@ const Header = () => {
                   href="/my"
                   className=" text-2xl text-headerButtonColor hover:text-headerButtonHoverColor transition duration-800 ease-out "
                 >
-                  <FontAwesomeIcon className=" fa-2x" icon={faIdCard} />
+                  <FontAwesomeIcon
+                    className={` ${path === "/login" || path === "/my" ? "text-slate-500" : ""} transition-all hover:text-slate-500 duration-500 fa-2x`}
+                    icon={faIdCard}
+                  />
                   {/* <p className=" text-xs">User</p> */}
                 </Link>
               </div>
@@ -103,7 +128,10 @@ const Header = () => {
                   href="/login"
                   className=" text-2xl text-headerButtonColor hover:text-headerButtonHoverColor transition duration-800 ease-out "
                 >
-                  <FontAwesomeIcon className=" fa-2x" icon={faUser} />
+                  <FontAwesomeIcon
+                    className={` ${path === "/login" || path === "/my" ? "text-slate-500" : ""} transition-all hover:text-slate-500 duration-500 fa-2x`}
+                    icon={faUser}
+                  />
                   {/* <p className=" text-xs">Login</p> */}
                 </Link>
               </div>
