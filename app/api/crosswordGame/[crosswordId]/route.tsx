@@ -17,7 +17,6 @@ export async function GET(req: NextRequest, segmentData: any) {
   //     );
   //   }
   const params = await segmentData.params;
-  const slug = params.slug;
 
   try {
     await connectMongoDB();

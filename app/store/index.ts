@@ -4,6 +4,7 @@ import { crosswordSlice } from "./crosswordSlice";
 import { authSlice } from "./authSlice";
 import { appStateSlice } from "./appStateSlice";
 import { crosswordGameSlice } from "./crosswordGameSlice";
+import { attemptsSlice } from "./attemptsSlice";
 
 const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ const store = configureStore({
     crosswordGameState: crosswordGameSlice.reducer,
     authState: authSlice.reducer,
     appState: appStateSlice.reducer,
+    attemptsState: attemptsSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

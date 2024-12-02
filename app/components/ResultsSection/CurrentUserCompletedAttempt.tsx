@@ -9,8 +9,6 @@ const CurrentUserCompletedAttempt = () => {
     (state: ICrosswordGameSlice) => state.crosswordGameState.currentUserCompletedAttempt
   );
 
-  console.log(currentUserCompletedAttempt);
-
   return (
     <>
       <div>

@@ -82,7 +82,9 @@ const Login = () => {
   useEffect(() => {
     if (loginUserStatus === "resolve") {
       // router.replace("/my");
-      redirect("/my");
+      setTimeout(() => {
+        redirect("/my");
+      }, 3000);
     }
   }, [loginUserStatus]);
 
