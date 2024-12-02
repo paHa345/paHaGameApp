@@ -83,14 +83,15 @@ const Login = () => {
     if (loginUserStatus === "resolve") {
       // router.replace("/my");
       setTimeout(() => {
+        console.log("redirecting");
         redirect("/my");
       }, 3000);
     }
   }, [loginUserStatus]);
 
-  useEffect(() => {
-    router.prefetch("/my");
-  }, []);
+  // useEffect(() => {
+  //   router.prefetch("/my");
+  // }, []);
 
   return (
     <div>
