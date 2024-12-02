@@ -7,6 +7,7 @@ import CurrentGameAttempts from "./CurrentGameAttempts";
 import { AppDispatch } from "@/app/store";
 import AllGamesList from "./AllGamesList";
 import { attemptsActions, IAttemptsSlice } from "@/app/store/attemptsSlice";
+import { useTelegram } from "@/app/telegramProvider";
 
 const ResultsSectionMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -15,6 +16,7 @@ const ResultsSectionMain = () => {
   );
 
   const test = useSelector((state: IAttemptsSlice) => state.attemptsState.attempts);
+  const { user } = useTelegram();
   console.log(test);
   const handler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

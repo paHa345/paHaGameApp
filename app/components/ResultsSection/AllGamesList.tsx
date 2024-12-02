@@ -20,7 +20,7 @@ const AllGamesList = () => {
 
   console.log(gamesElements);
 
-  console.log(user);
+  console.log(user?.photo_url);
   useEffect(() => {
     if (!user?.id) {
       dispatch(getAllGamesList(777777));
