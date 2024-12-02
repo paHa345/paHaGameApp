@@ -23,25 +23,27 @@ const ResultsSectionMain = () => {
 
   return (
     <>
-      <div>
-        <h1>Результаты</h1>
-      </div>
-      {currentUserCompletedAttempt && (
-        <div>
-          <div>
-            <h1>Моя попытка</h1>
-          </div>
+      <section className={`min-h-[80vh] container mx-auto`}>
+        <div className=" py-5">
+          <h1 className=" text-center text-3xl font-bold">Результаты</h1>
         </div>
-      )}
-      <div>
-        <CurrentUserCompletedAttempt></CurrentUserCompletedAttempt>
-      </div>
-      <div>
-        <AllGamesList></AllGamesList>
-      </div>
-      <div>
-        <CurrentGameAttempts></CurrentGameAttempts>
-      </div>
+        {currentUserCompletedAttempt && (
+          <div>
+            <div>
+              <h1>Моя попытка</h1>
+            </div>
+          </div>
+        )}
+        <div>
+          <CurrentUserCompletedAttempt></CurrentUserCompletedAttempt>
+        </div>
+        <div className=" flex flex-col justify-center items-center">
+          <AllGamesList></AllGamesList>
+        </div>
+        <div className=" flex flex-col justify-center items-center py-3">
+          <CurrentGameAttempts></CurrentGameAttempts>
+        </div>
+      </section>
     </>
   );
 };

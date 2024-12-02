@@ -32,17 +32,9 @@ const Footer = () => {
               </div>
             </Link>
           </div>
-          <div className=" text-lg leading-9">
-            {" "}
-            <p className="">Адрес</p>
-            <ul>
-              <li>г.Новосибирск</li>
-              <li>ул. Вилюйская дом 13</li>
-              <li>9231271059</li>
-            </ul>
-          </div>
+
           <div className=" footerLinksContainer">
-            <Link href="/" className=" footerLinks">
+            {/* <Link href="/" className=" footerLinks">
               Войти в личный кабинет
             </Link>
             <Link href="/" className=" footerLinks">
@@ -50,7 +42,7 @@ const Footer = () => {
             </Link>
             <Link href="/" className=" footerLinks">
               Написать письмо
-            </Link>
+            </Link> */}
           </div>
         </div>
       </footer>
