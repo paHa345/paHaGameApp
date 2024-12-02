@@ -22,8 +22,11 @@ export const loginUser = createAsyncThunk(
         throw new Error(`${result.error}`);
       }
 
+      console.log("Login user");
+
       const currentUser = await fetch(`/api/users/getUserByEmail`);
       if (currentUser.status !== 200) {
+        console.log(currentUser);
         throw new Error("Не удалось войти в систему, повторите попытку позднее");
       }
       const data = await currentUser.json();
