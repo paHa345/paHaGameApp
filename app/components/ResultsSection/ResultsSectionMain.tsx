@@ -4,8 +4,9 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CurrentUserCompletedAttempt from "./CurrentUserCompletedAttempt";
 import CurrentGameAttempts from "./CurrentGameAttempts";
-import { attemptsActions, IAttemptsSlice } from "@/app/store/attemptsSlice";
 import { AppDispatch } from "@/app/store";
+import AllGamesList from "./AllGamesList";
+import { attemptsActions, IAttemptsSlice } from "@/app/store/attemptsSlice";
 
 const ResultsSectionMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -33,9 +34,10 @@ const ResultsSectionMain = () => {
         </div>
       )}
       <div>
-        <button onClick={handler}>Set 10</button>
-        <h1>{test}</h1>
         <CurrentUserCompletedAttempt></CurrentUserCompletedAttempt>
+      </div>
+      <div>
+        <AllGamesList></AllGamesList>
       </div>
       <div>
         <CurrentGameAttempts></CurrentGameAttempts>

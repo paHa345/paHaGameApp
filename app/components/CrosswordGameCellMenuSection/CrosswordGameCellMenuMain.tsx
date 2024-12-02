@@ -96,7 +96,7 @@ const CrosswordGameCellMenuMain = () => {
             data-number={index}
           >
             <input
-              className={`${el.col}_${el.row} pl-2 h-8 w-6 sm:h-10 sm:w-8 text-2xl`}
+              className={`${el.col}_${el.row} pl-2 h-6 w-4 sm:h-10 sm:w-8 text-2xl`}
               key={`${index}_${el.col}_${el.row}`}
               data-number={index}
               data-col={el.col}
@@ -179,10 +179,10 @@ const CrosswordGameCellMenuMain = () => {
 
   return (
     <div
-      style={{ top: `150px`, right: `200px` }}
-      className=" mt-10 flex justify-center items-center  "
+      // style={{ top: `150px`, right: `200px` }}
+      className=" relative z-10 mt-10 flex justify-center items-center  "
     >
-      <div className=" w-5/6  rounded-md bg-slate-200 p-2 fixed flex  border-slate-400 border-solid border-2 ">
+      <div className="w-11/12 sm:w-5/6 lg:w-2/3  rounded-md bg-slate-200 p-2 fixed flex  border-slate-400 border-solid border-2 ">
         <a
           className=" fa-2x h-fit bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200"
           onClick={hideCellMenu}
@@ -197,7 +197,7 @@ const CrosswordGameCellMenuMain = () => {
         >
           <FontAwesomeIcon icon={faCheckCircle} />
         </a> */}
-        <div className="rounded flex flex-col gap-1 justify-center items-center ml-2 border-slate-600 border-solid border-2">
+        <div className="rounded w-full flex flex-col gap-1 justify-center items-center ml-2 border-slate-600 border-solid border-2">
           <div className=" py-2 flex gap-6 flex-row justify-center items-center">
             {highlightedCell?.questionObj.horizontal?.value && (
               <div
@@ -224,12 +224,14 @@ const CrosswordGameCellMenuMain = () => {
             )}
           </div>
           <div className=" m-2 rounded border-slate-100 border-solid border-2">
-            <h1 className=" pb-2">
+            <h1 className=" pb-2 text-center">
               <span>Вопрос: </span>
               {currentQuestion}
             </h1>
             {currentValue !== undefined && (
-              <div className=" flex flex-wrap flex-row gap-2">{valueEl}</div>
+              <div className=" flex justify-center items-center">
+                <div className="flex flex-wrap flex-row gap-2">{valueEl}</div>
+              </div>
             )}
             {/* <textarea
               className=" ml-2"

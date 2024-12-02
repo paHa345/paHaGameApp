@@ -34,7 +34,7 @@ const AddWordMain = () => {
   }, []);
 
   const changeAddedWordValueHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    dispatch(crosswordActions.setAddedWordValue(e.currentTarget.value));
+    dispatch(crosswordActions.setAddedWordValue(e.currentTarget.value.toLowerCase()));
   };
 
   const hideSetNumberModalHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {

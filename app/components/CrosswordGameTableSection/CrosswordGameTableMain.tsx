@@ -46,15 +46,19 @@ const CrosswordGameTableMain = () => {
     <div className=" py-10">
       {!startGame && <StartGameModalMain></StartGameModalMain>}
 
-      {showCellMenu && <CrosswordGameCellMenuMain></CrosswordGameCellMenuMain>}
+      {showCellMenu && (
+        <div className=" z-10">
+          <CrosswordGameCellMenuMain></CrosswordGameCellMenuMain>
+        </div>
+      )}
 
       <div className=" pb-8">
         <br />
 
-        {user && (
+        {user?.username && (
           <div className=" text-2xl pb-4">
-            <h2>Welcome, {user?.username}!</h2>
-            <h3>Your Telegram ID: {user?.id}</h3>
+            <h2>Приветствуем, {user?.username}</h2>
+            {/* <h3>Your Telegram ID: {user?.id}</h3> */}
           </div>
         )}
 

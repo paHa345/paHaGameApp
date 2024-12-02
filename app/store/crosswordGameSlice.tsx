@@ -79,43 +79,47 @@ export const setHighlightedElementAndDirection = createAsyncThunk(
           col: number;
         }[];
       }[];
-    },
+    } | null,
     { rejectWithValue, dispatch }
   ) {
-    await dispatch(crossworGamedActions.setShowCrosswordGameCellMenu(false));
+    if (cell !== null) {
+      await dispatch(crossworGamedActions.setShowCrosswordGameCellMenu(false));
 
-    await dispatch(crossworGamedActions.setHighlightedCell(cell));
-    if (cell.questionObj.horizontal?.value) {
-      await dispatch(crossworGamedActions.changeDirection(AddedWordDirection.Horizontal));
+      await dispatch(crossworGamedActions.setHighlightedCell(cell));
+      if (cell.questionObj.horizontal?.value) {
+        await dispatch(crossworGamedActions.changeDirection(AddedWordDirection.Horizontal));
+      } else {
+        await dispatch(crossworGamedActions.changeDirection(AddedWordDirection.Vertical));
+      }
+      await dispatch(crossworGamedActions.setShowCrosswordGameCellMenu(true));
+
+      //обновляем value у конкретного поля и highlighted, это будет суммавсех букв
+
+      const hihlightedDirection = cell.questionObj?.horizontal
+        ? AddedWordDirection.Horizontal
+        : AddedWordDirection.Vertical;
+
+      const highlightedDirectionCells = cell.addedWordArr.filter(
+        (el) => el.direction === hihlightedDirection
+      );
+
+      const highlightedWordObj = {
+        startRow: highlightedDirectionCells[0].addedWordArr[0].row,
+        endRow:
+          highlightedDirectionCells[0].addedWordArr[
+            highlightedDirectionCells[0].addedWordArr.length - 1
+          ].row,
+        startCol: highlightedDirectionCells[0].addedWordArr[0].col,
+        endCol:
+          highlightedDirectionCells[0].addedWordArr[
+            highlightedDirectionCells[0].addedWordArr.length - 1
+          ].col,
+      };
+      dispatch(crossworGamedActions.setHighlightedWordObj(highlightedWordObj));
+      dispatch(crossworGamedActions.updateCellAndHaghlightedValue());
     } else {
-      await dispatch(crossworGamedActions.changeDirection(AddedWordDirection.Vertical));
+      await dispatch(crossworGamedActions.setHighlightedCell(cell));
     }
-    await dispatch(crossworGamedActions.setShowCrosswordGameCellMenu(true));
-
-    //обновляем value у конкретного поля и highlighted, это будет суммавсех букв
-
-    const hihlightedDirection = cell.questionObj?.horizontal
-      ? AddedWordDirection.Horizontal
-      : AddedWordDirection.Vertical;
-
-    const highlightedDirectionCells = cell.addedWordArr.filter(
-      (el) => el.direction === hihlightedDirection
-    );
-
-    const highlightedWordObj = {
-      startRow: highlightedDirectionCells[0].addedWordArr[0].row,
-      endRow:
-        highlightedDirectionCells[0].addedWordArr[
-          highlightedDirectionCells[0].addedWordArr.length - 1
-        ].row,
-      startCol: highlightedDirectionCells[0].addedWordArr[0].col,
-      endCol:
-        highlightedDirectionCells[0].addedWordArr[
-          highlightedDirectionCells[0].addedWordArr.length - 1
-        ].col,
-    };
-    dispatch(crossworGamedActions.setHighlightedWordObj(highlightedWordObj));
-    dispatch(crossworGamedActions.updateCellAndHaghlightedValue());
   }
 );
 

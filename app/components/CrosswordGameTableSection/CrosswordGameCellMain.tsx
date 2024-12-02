@@ -71,7 +71,6 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
   //   console.log(direction);
 
   const clickCellNumberHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    console.log(cell);
     if (!cell.questionObj) {
       return;
     }
@@ -90,6 +89,7 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
 
   const hasLetter = cell.addedWordCell === Number(1);
   const hasAddedWord = cell.addedWordLetter;
+  const hasNumber = cell?.paragraphNum !== undefined && cell?.paragraphNum !== 0;
   return (
     <div
       onClick={clickCellNumberHandler}
@@ -102,11 +102,28 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
       //   data-textquestionvalue={cell.textQuestionValue}
       data-addedwordcell={cell.addedWordCell}
       key={`${i}:${j}`}
-      className={` ${isHighlightedWord ? "bg-gray-400" : ""} ${!hasLetter ? "bg-headerFooterMainColor" : ""} cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
+      style={{ backgroundColor: `${isHighlightedWord ? "rgb(101 163 13)" : ""}` }}
+      className={`${isHighlightedWord ? "" : ""} ${!hasLetter ? "" : "bg-lime-500"} cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
     >
-      {cell.paragraphNum && <p className=" w-full">{cell.inputValue}</p>}
+      {hasNumber && (
+        <div className="absolute">
+          <p style={{ right: "10px", bottom: "6px" }} className=" relative text-2xl font-extrabold">
+            {cell.inputValue}
+          </p>{" "}
+        </div>
+      )}
+
       {/* {hasLetter && <input className=" h-4 w-4" type="text" maxLength={1} />} */}
-      {hasAddedWord && <p>{cell.addedWordLetter}</p>}
+      {hasAddedWord && (
+        <div className="absolute">
+          <p
+            style={{ right: "-5px", bottom: "0px" }}
+            className=" relative text-slate-50 text-3xl font-extrabold"
+          >
+            {cell.addedWordLetter}
+          </p>
+        </div>
+      )}
 
       {/* {highlightedObj !== null &&
         cell.row >= highlightedObj?.startRow &&

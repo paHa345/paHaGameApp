@@ -1,5 +1,6 @@
 import { connectMongoDB } from "@/app/libs/MongoConnect";
 import AttemptCrosswordGame from "@/app/models/AttemptCrosswordGameModel";
+import Crossword from "@/app/models/CrosswordModel";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest, segmentData: any) {
@@ -19,7 +20,11 @@ export async function GET(req: NextRequest, segmentData: any) {
       );
     }
 
-    return NextResponse.json({ status: "Success", result: "" });
+    const allGames = await Crossword.find({
+      isCompleted: true,
+    }).select("name changeDate");
+
+    return NextResponse.json({ status: "Success", result: allGames });
   } catch (error: any) {
     return NextResponse.json({ message: error?.message, status: "Error" }, { status: 400 });
   }
