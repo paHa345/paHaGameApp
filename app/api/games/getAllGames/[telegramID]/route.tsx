@@ -1,9 +1,8 @@
 import { connectMongoDB } from "@/app/libs/MongoConnect";
 import AttemptCrosswordGame from "@/app/models/AttemptCrosswordGameModel";
-import { NextApiRequest } from "next";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextApiRequest, segmentData: any) {
+export async function GET(req: NextRequest, segmentData: any) {
   const params = await segmentData.params;
   try {
     await connectMongoDB();
