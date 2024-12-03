@@ -43,6 +43,7 @@ const Header = () => {
         }}
         className={`bg-gradient-to-tr from-headerFooterMainColor to-lime-50`}
       >
+        <div className=" min-h-40 sm:min-h-1"></div>
         <Link rel="icon" href="./../favicon.ico"></Link>
         <nav className=" relative flex flex-row items-center justify-center mx-6 gap-5">
           <Link className=" mt-2 mb-2 h-12 mr-12" href="/">
