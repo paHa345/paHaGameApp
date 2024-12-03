@@ -15,6 +15,8 @@ export async function PATCH(req: NextRequest) {
 
     const body = await req.json();
 
+    console.log(body);
+
     if (!body.attemptID || !body.crosswordID) {
       return NextResponse.json({ message: "Отправлены неверные данные" }, { status: 400 });
     }
@@ -73,6 +75,7 @@ export async function PATCH(req: NextRequest) {
       duration: durationString,
       crosswordName: crossword.name,
       userPhoto: body.userPhoto,
+      durationNumberMs: durationNumberMs,
     });
 
     const updatedFinishAttampt = await AttemptCrosswordGame.findById(currentAttempt._id);

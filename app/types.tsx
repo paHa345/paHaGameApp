@@ -336,6 +336,7 @@ export interface IAttemptCrosswordGameSchema {
   duration?: string;
   crosswordName?: string;
   userPhoto?: string;
+  durationNumberMs?: number;
 }
 
 export interface IOneExerciseTypes {

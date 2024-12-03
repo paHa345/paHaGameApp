@@ -68,6 +68,7 @@ export interface IAttemptsSlice {
       telegramID: number;
       telegramUserName?: string;
       _id: string;
+      userPhoto?: string;
     }[];
     getAllGamesErrorMessage?: string;
   };
@@ -89,6 +90,7 @@ interface IAttemptsState {
     telegramID: number;
     telegramUserName?: string;
     _id: string;
+    userPhoto?: string;
   }[];
   getAllGamesErrorMessage?: string;
 }

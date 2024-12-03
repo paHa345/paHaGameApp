@@ -3,6 +3,8 @@ import React from "react";
 import { useSelector } from "react-redux";
 import Attempt from "./Attempt";
 import AttemptLoadCard from "./AttemptLoadCard";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMedal } from "@fortawesome/free-solid-svg-icons";
 
 const CurrentGameAttempts = () => {
   const getGameAllAttemptsStatus = useSelector(
@@ -19,15 +21,27 @@ const CurrentGameAttempts = () => {
 
   return (
     <>
+      <div className=" flex flex-row gap-3 justify-center items-center">
+        <FontAwesomeIcon
+          style={{ color: "#0b4905", backgroundColor: "#9af792" }}
+          className=" py-2 my-2 rounded-lg fa-fw fa-2xl"
+          icon={faMedal}
+        />
+        <h1 className=" text-2xl font-bold underline underline-offset-4">Список лидеров</h1>
+      </div>
       {getGameAllAttemptsStatus === attemptsFetchStatus.Loading && (
-        <div>
+        <div className=" py-5">
           <AttemptLoadCard></AttemptLoadCard>
         </div>
       )}
 
       {gameAllAttemptsEl?.length === 0 &&
-        getGameAllAttemptsStatus !== attemptsFetchStatus.Loading && <h1>Нет попыток</h1>}
-      {getGameAllAttemptsStatus !== attemptsFetchStatus.Loading && <div>{gameAllAttemptsEl}</div>}
+        getGameAllAttemptsStatus !== attemptsFetchStatus.Loading && (
+          <h1 className=" py-5">Нет попыток</h1>
+        )}
+      {getGameAllAttemptsStatus !== attemptsFetchStatus.Loading && (
+        <div className=" w-full sm:w-2/3">{gameAllAttemptsEl}</div>
+      )}
     </>
   );
 };

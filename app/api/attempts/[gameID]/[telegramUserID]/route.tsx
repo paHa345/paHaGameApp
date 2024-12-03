@@ -22,9 +22,9 @@ export async function GET(req: NextRequest, segmentData: any) {
       );
     }
 
-    const allGameAttempts = await AttemptCrosswordGame.find({
-      crosswordID: params.gameID,
-    });
+    const allGameAttempts = await AttemptCrosswordGame.aggregate([
+      { $match: { crosswordID: params.gameID } },
+    ]);
 
     return NextResponse.json({ status: "Success", result: allGameAttempts });
   } catch (error: any) {
