@@ -51,6 +51,7 @@ const EndGameButton = () => {
         telegramID: user?.id,
         crossword: currentAttemptCrossword,
         crosswordID: crosswordGameId,
+        userPhoto: user.photo_url,
       };
 
       dispatch(finishAttempt(attemptData));

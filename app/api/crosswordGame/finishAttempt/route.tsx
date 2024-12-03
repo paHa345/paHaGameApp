@@ -72,6 +72,7 @@ export async function PATCH(req: NextRequest) {
       completedCorrectly: isCorrect,
       duration: durationString,
       crosswordName: crossword.name,
+      userPhoto: body.userPhoto,
     });
 
     const updatedFinishAttampt = await AttemptCrosswordGame.findById(currentAttempt._id);

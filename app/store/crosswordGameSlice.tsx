@@ -198,6 +198,7 @@ export const finishAttempt = createAsyncThunk(
           telegramID: attemptData.telegramID,
           telegramUser: attemptData.telegramUser,
           answersArr: answersArr,
+          userPhoto: attemptData.userPhoto,
         }),
       });
       const finishAttempt = await finishAttemptReq.json();

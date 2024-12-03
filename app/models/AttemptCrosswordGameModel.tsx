@@ -11,6 +11,7 @@ const attemptCrosswordGameSchema = new mongoose.Schema<IAttemptCrosswordGameSche
   finishDate: { type: Date, required: false },
   duration: { type: String, required: false },
   crosswordName: { type: String, required: false },
+  userPhoto: { type: String, required: false },
 });
 
 const AttemptCrosswordGame =
