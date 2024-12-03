@@ -14,6 +14,8 @@ export const getAllGamesList = createAsyncThunk(
       // dispatch(crossworGamedActions.setAvailableCrosswordGamesArr(crosswords.result));
       dispatch(attemptsActions.setGamesList(allGamesList.result));
     } catch (error: any) {
+      dispatch(attemptsActions.setGetAllGamesErrorMessage(error.message));
+
       return rejectWithValue(error.message);
     }
   }
@@ -36,7 +38,6 @@ export const getGameAllAttempts = createAsyncThunk(
       if (!getGameAllAttemptsReq.ok) {
         throw new Error(gameAllAttempts.message);
       }
-      console.log(gameAllAttempts);
       dispatch(attemptsActions.setGameAllAttempts(gameAllAttempts.result));
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -68,6 +69,7 @@ export interface IAttemptsSlice {
       telegramUserName?: string;
       _id: string;
     }[];
+    getAllGamesErrorMessage?: string;
   };
 }
 
@@ -88,6 +90,7 @@ interface IAttemptsState {
     telegramUserName?: string;
     _id: string;
   }[];
+  getAllGamesErrorMessage?: string;
 }
 
 const initAppState: IAttemptsState = {
@@ -108,6 +111,9 @@ export const attemptsSlice = createSlice({
     },
     setGameAllAttempts(state, action) {
       state.gameAllAttempts = action.payload;
+    },
+    setGetAllGamesErrorMessage(state, action) {
+      state.getAllGamesErrorMessage = action.payload;
     },
   },
   extraReducers(builder) {

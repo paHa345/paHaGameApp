@@ -15,8 +15,11 @@ export async function GET(req: NextRequest, segmentData: any) {
     console.log(currentTelegtanUserAttempts);
     if (currentTelegtanUserAttempts.length === 0) {
       return NextResponse.json(
-        { message: "Только для пользователей выполнивших свои попытки" },
-        { status: 400 }
+        {
+          message:
+            "Просмотр результатов возможен только для пользователей, выполнивших свои попытки",
+        },
+        { status: 401 }
       );
     }
 

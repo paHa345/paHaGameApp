@@ -15,13 +15,7 @@ const ResultsSectionMain = () => {
     (state: ICrosswordGameSlice) => state.crosswordGameState.currentUserCompletedAttempt
   );
 
-  const test = useSelector((state: IAttemptsSlice) => state.attemptsState.attempts);
   const { user } = useTelegram();
-  console.log(test);
-  const handler = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    dispatch(attemptsActions.setCurrentCrosswordAttempts(10));
-  };
 
   return (
     <>

@@ -13,6 +13,9 @@ const AllGamesList = () => {
   const fetchGamesListStatus = useSelector(
     (state: IAttemptsSlice) => state.attemptsState.setGamesListFetchStatus
   );
+  const fetchGamesListErrorMessage = useSelector(
+    (state: IAttemptsSlice) => state.attemptsState.getAllGamesErrorMessage
+  );
 
   const gamesElements = gamesList?.map((game) => {
     return <GameListElement gameData={game}></GameListElement>;
@@ -49,6 +52,16 @@ const AllGamesList = () => {
         </div>
       )}
       {/* <div>{gamesElements}</div> */}
+
+      {fetchGamesListStatus === attemptsFetchStatus.Error && (
+        <div>
+          <div>
+            <h1 className=" py-3 text-center text-2xl">
+              Внимание... <span>{fetchGamesListErrorMessage}</span>
+            </h1>
+          </div>
+        </div>
+      )}
     </>
   );
 };
