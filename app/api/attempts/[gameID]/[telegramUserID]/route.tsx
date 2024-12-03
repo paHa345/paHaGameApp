@@ -23,7 +23,8 @@ export async function GET(req: NextRequest, segmentData: any) {
     }
 
     const allGameAttempts = await AttemptCrosswordGame.aggregate([
-      { $match: { crosswordID: params.gameID } },
+      { $match: { crosswordID: params.gameID, isCompleted: true } },
+      { $sort: { durationNumberMs: 1 } },
     ]);
 
     return NextResponse.json({ status: "Success", result: allGameAttempts });

@@ -1,3 +1,4 @@
+import { useTelegram } from "@/app/telegramProvider";
 import { faSquare, faSquareCheck, faSquareXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
@@ -19,9 +20,12 @@ interface IAttemptProps {
   };
 }
 const Attempt = ({ attempt }: IAttemptProps) => {
+  const { user } = useTelegram();
   return (
     <>
-      <div className=" min-w-full py-2 my-4 transition-all rounded-lg ease-in-out delay-50 bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-exerciseCardShadow">
+      <div
+        className={` ${user?.id === attempt.telegramID ? "scale-105 " : ""} min-w-full py-2 my-4 transition-all rounded-lg ease-in-out delay-50 bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-exerciseCardShadow`}
+      >
         <div className="flex flex-col gap-2">
           <div className=" flex flex-row justify-center items-center gap-2">
             {attempt.userPhoto && (

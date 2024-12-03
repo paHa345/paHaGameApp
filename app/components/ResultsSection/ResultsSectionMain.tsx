@@ -6,7 +6,7 @@ import CurrentUserCompletedAttempt from "./CurrentUserCompletedAttempt";
 import CurrentGameAttempts from "./CurrentGameAttempts";
 import { AppDispatch } from "@/app/store";
 import AllGamesList from "./AllGamesList";
-import { attemptsActions, IAttemptsSlice } from "@/app/store/attemptsSlice";
+import { attemptsActions, attemptsFetchStatus, IAttemptsSlice } from "@/app/store/attemptsSlice";
 import { useTelegram } from "@/app/telegramProvider";
 
 const ResultsSectionMain = () => {
@@ -17,6 +17,7 @@ const ResultsSectionMain = () => {
 
   useEffect(() => {
     dispatch(attemptsActions.setGameAllAttempts(undefined));
+    dispatch(attemptsActions.setGetGameAllAttemptsFetchStatus(attemptsFetchStatus.Ready));
   });
 
   const { user } = useTelegram();
@@ -28,15 +29,15 @@ const ResultsSectionMain = () => {
           <h1 className=" text-center text-3xl font-bold">Результаты</h1>
         </div>
         {currentUserCompletedAttempt && (
-          <div>
+          <div className=" flex justify-center items-center flex-col gap-2">
             <div>
-              <h1>Моя попытка</h1>
+              <h1 className=" text-2xl">Попытка завершена</h1>
+            </div>
+            <div className="flex justify-center items-center flex-col gap-2">
+              <CurrentUserCompletedAttempt></CurrentUserCompletedAttempt>
             </div>
           </div>
         )}
-        <div>
-          <CurrentUserCompletedAttempt></CurrentUserCompletedAttempt>
-        </div>
         <div className=" flex flex-col justify-center items-center">
           <AllGamesList></AllGamesList>
         </div>

@@ -117,6 +117,9 @@ export const attemptsSlice = createSlice({
     setGetAllGamesErrorMessage(state, action) {
       state.getAllGamesErrorMessage = action.payload;
     },
+    setGetGameAllAttemptsFetchStatus(state, action) {
+      state.getGameAllAttemptsFetchStatus = action.payload;
+    },
   },
   extraReducers(builder) {
     builder.addCase(getAllGamesList.pending, (state) => {

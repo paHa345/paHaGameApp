@@ -11,21 +11,24 @@ const CurrentUserCompletedAttempt = () => {
 
   return (
     <>
-      <div>
+      <div className="flex justify-center items-center flex-col gap-5">
         {currentUserCompletedAttempt?.completedCorrectly === true && (
-          <div>
-            <h1>
-              Поздравляем, вы справились с кроссвордом:{" "}
-              <span>{currentUserCompletedAttempt?.crosswordName}</span>
+          <div className="flex justify-center items-center flex-col gap-5 ">
+            <h1 className=" text-center text-xl">
+              Поздравляем, вы успешно справились с кроссвордом:{" "}
+              <span className=" font-semibold">{currentUserCompletedAttempt?.crosswordName}</span>
             </h1>
-            <h1>
-              Ваше время:(Час:Мин:Сек) <span>{currentUserCompletedAttempt?.duration}</span>
+            <h1 className=" text-center text-xl">
+              Ваше время:(Час:Мин:Сек){" "}
+              <span className=" underline underline-offset-4">
+                {currentUserCompletedAttempt?.duration}
+              </span>
             </h1>
           </div>
         )}
         {currentUserCompletedAttempt?.completedCorrectly === false && (
           <div>
-            <h1>
+            <h1 className=" text-center">
               Сожалеем, вы не смогли справиться с кроссвордом:{" "}
               <span>{currentUserCompletedAttempt?.crosswordName}</span>
             </h1>
