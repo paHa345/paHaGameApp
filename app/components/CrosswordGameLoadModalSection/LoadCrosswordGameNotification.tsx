@@ -15,6 +15,10 @@ import { useDispatch, useSelector } from "react-redux";
 const LoadCrosswordGameNotification = () => {
   const dispatch = useDispatch<AppDispatch>();
 
+  const errorMessage = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.availableCrosswordGameErrorMessage
+  );
+
   const loadCrosswordGameStatus = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.fetchAvailableCrosswordGamesStatus
   );
@@ -41,7 +45,7 @@ const LoadCrosswordGameNotification = () => {
     <>
       {loadCrosswordGameStatus === crosswordGameFetchStatus.Error && (
         <h1 className=" text-center rounded-md  opacity-60  px-3 py-3 bg-rose-500">
-          {`Ошибка. Повторите попытку позднее`}
+          {`Ошибка. ${errorMessage} Повторите попытку позднее`}
         </h1>
       )}
       {loadCrosswordGameStatus === crosswordGameFetchStatus.Loading && (

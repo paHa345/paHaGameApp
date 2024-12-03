@@ -20,17 +20,31 @@ export const getAvailableCrosswords = createAsyncThunk(
 
 export const setAvailableCrosswordGame = createAsyncThunk(
   "crosswordGameState/setAvailableCrosswordGame",
-  async function (crosswordGameId: string, { rejectWithValue, dispatch }) {
+  async function (
+    crosswordUserData: {
+      telegramUserID: number | undefined;
+      crosswordID: String;
+    },
+    { rejectWithValue, dispatch }
+  ) {
     try {
-      const crosswordGameReq = await fetch(`/api/crosswordGame/${crosswordGameId}`);
+      const crosswordGameReq = await fetch(
+        `/api/crosswordGame/${crosswordUserData.crosswordID}/${crosswordUserData.telegramUserID}`
+      );
       const crosswordGame = await crosswordGameReq.json();
       if (!crosswordGameReq.ok) {
+        console.log(crosswordGameReq);
         throw new Error(crosswordGame.message);
       }
-      console.log(crosswordGame);
+      console.log(crosswordGame.message);
       // dispatch(crossworGamedActions.setAvailableCrosswordGame(data.result));
       dispatch(crossworGamedActions.setCrosswordGame(crosswordGame.result));
+
+      setTimeout(() => {
+        redirect("/crosswordGame/game");
+      }, 2000);
     } catch (error: any) {
+      dispatch(crossworGamedActions.setAvailableCrosswordGameErrorMessage(error.message));
       return rejectWithValue(error.message);
     }
   }
@@ -356,6 +370,7 @@ export interface ICrosswordGameSlice {
       duration?: string;
       crosswordName?: string;
     };
+    availableCrosswordGameErrorMessage?: string;
   };
 }
 
@@ -496,6 +511,7 @@ interface ICrosswordGameState {
     duration?: string;
     crosswordName?: string;
   };
+  availableCrosswordGameErrorMessage?: string;
 }
 
 export const initCrosswordGameState: ICrosswordGameState = {
@@ -815,6 +831,9 @@ export const crosswordGameSlice = createSlice({
     },
     clearCurrentUserCompletedAttempt(state) {
       state.currentUserCompletedAttempt = undefined;
+    },
+    setAvailableCrosswordGameErrorMessage(state, action) {
+      state.availableCrosswordGameErrorMessage = action.payload;
     },
   },
   extraReducers(builder) {

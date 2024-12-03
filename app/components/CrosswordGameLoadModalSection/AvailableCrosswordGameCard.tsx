@@ -12,6 +12,7 @@ import {
   setAvailableCrosswordGame,
 } from "@/app/store/crosswordGameSlice";
 import { redirect } from "next/navigation";
+import { useTelegram } from "@/app/telegramProvider";
 
 interface ICrosswordCard {
   crosswordData: {
@@ -24,6 +25,8 @@ interface ICrosswordCard {
 
 const AvailableCrosswordGameCard = ({ crosswordData }: ICrosswordCard) => {
   const dispatch = useDispatch<AppDispatch>();
+
+  const { user } = useTelegram();
 
   const loadCrosswordGameStatus = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.fetchAvailableCrosswordGamesStatus
@@ -38,14 +41,23 @@ const AvailableCrosswordGameCard = ({ crosswordData }: ICrosswordCard) => {
       return;
     }
     // dispatch(getCurrentUserCrosswordAndSetInState(crosswordData._id));
-    dispatch(setAvailableCrosswordGame(String(crosswordData._id)));
-    console.log("crossword load");
-    console.log(crossword);
-
-    setTimeout(() => {
-      redirect("/crosswordGame/game");
-    }, 2000);
+    if (!user?.id) {
+      dispatch(
+        setAvailableCrosswordGame({
+          telegramUserID: 777777,
+          crosswordID: String(crosswordData._id),
+        })
+      );
+    } else {
+      dispatch(
+        setAvailableCrosswordGame({
+          telegramUserID: user?.id,
+          crosswordID: String(crosswordData._id),
+        })
+      );
+    }
   };
+
   return (
     <article
       onClick={loadCrosswordGameHandler}
