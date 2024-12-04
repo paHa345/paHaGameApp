@@ -76,6 +76,8 @@ export async function PATCH(req: NextRequest) {
       crosswordName: crossword.name,
       userPhoto: body.userPhoto,
       durationNumberMs: durationNumberMs,
+      firstName: body.firstName,
+      lastName: body.lastName,
     });
 
     const updatedFinishAttampt = await AttemptCrosswordGame.findById(currentAttempt._id);
