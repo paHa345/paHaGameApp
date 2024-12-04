@@ -8,14 +8,22 @@
   box-sizing: border-box;
 }
 
+/* @layer base {
+  @font-face {
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(/fonts/Roboto.woff2) format("woff2");
+  }
+} */
+
 main {
   background-color: #f8ffdd00;
 }
 
 html {
-  /* font-size: 62.5%; */
-  font-family: "Gill Sans Extrabold", "serif";
-  font-weight: 500;
+  font-family: "Proxima Nova", system-ui, sans-serif;
 }
 
 @media (max-width: 53em) {

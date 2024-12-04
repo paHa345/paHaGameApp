@@ -23,13 +23,13 @@ const CurrentGameAttempts = () => {
     <>
       {getGameAllAttemptsStatus === attemptsFetchStatus.Resolve &&
         gameAllAttemptsEl?.length !== 0 && (
-          <div className=" flex flex-row gap-3 justify-center items-center">
+          <div className=" my-4 flex flex-row gap-3 justify-center items-center bg-gradient-to-tr  from-secoundaryColor to-crosswordSecoundaryColor rounded-sm px-4 shadow-exerciseCardHowerShadow">
             <FontAwesomeIcon
-              style={{ color: "#0b4905", backgroundColor: "#9af792" }}
+              // style={{ color: "#0b4905", backgroundColor: "#9af792" }}
               className=" py-2 my-2 rounded-lg fa-fw fa-2xl"
               icon={faMedal}
             />
-            <h1 className=" text-2xl font-bold underline underline-offset-4">Список лидеров</h1>
+            <h1 className="text-2xl font-bold ">Список лидеров</h1>
           </div>
         )}
       {getGameAllAttemptsStatus === attemptsFetchStatus.Loading && (

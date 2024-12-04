@@ -17,6 +17,8 @@ interface IAttemptProps {
     telegramUserName?: string;
     _id: string;
     userPhoto?: string;
+    firstName?: string;
+    lastName?: string;
   };
 }
 const Attempt = ({ attempt }: IAttemptProps) => {
@@ -38,13 +40,17 @@ const Attempt = ({ attempt }: IAttemptProps) => {
               />
             )}
             <h1>Имя: </h1>
-            <h1> {` ${attempt.telegramUserName}`}</h1>
+            {attempt.telegramUserName !== undefined ? (
+              <h1> {` ${attempt.telegramUserName}`}</h1>
+            ) : (
+              <h1>{`${attempt.firstName}`}</h1>
+            )}
           </div>
-          <div className=" flex flex-row justify-center items-center  gap-1">
+          {/* <div className=" flex flex-row justify-center items-center  gap-1">
             {" "}
             <h1>Telegram ID: </h1>
             <h1>{` ${attempt.telegramID}`}</h1>
-          </div>
+          </div> */}
 
           <div className=" flex flex-row justify-center items-center  gap-1">
             {" "}

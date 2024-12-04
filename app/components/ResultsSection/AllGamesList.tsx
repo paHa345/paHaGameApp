@@ -18,7 +18,7 @@ const AllGamesList = () => {
   );
 
   const gamesElements = gamesList?.map((game) => {
-    return <GameListElement gameData={game}></GameListElement>;
+    return <GameListElement key={game._id} gameData={game}></GameListElement>;
   });
 
   console.log(gamesElements);

@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPencil, faXmark, faChessBoard } from "@fortawesome/free-solid-svg-icons";
 
 import MyPageNotification from "./MyPageNotification";
+import { crosswordActions } from "@/app/store/crosswordSlice";
 
 const MyPage = () => {
   const { data: session } = useSession();
@@ -33,6 +34,24 @@ const MyPage = () => {
     ) : (
       <h1 className=" text-right text-4xl font-bold py-10"> {`Привет, ${session?.user?.name}`} </h1>
     );
+
+  useEffect(() => {
+    const createdCrossword = localStorage.getItem("createdCrossword");
+    const crosswordName = localStorage.getItem("crosswordName");
+    const crosswordValue = localStorage.getItem("crosswordValue");
+    const crosswordId = localStorage.getItem("crosswordId");
+    if (
+      createdCrossword !== null &&
+      crosswordName !== null &&
+      crosswordValue !== null &&
+      crosswordId !== null
+    ) {
+      dispatch(crosswordActions.setCreatedCrossword(JSON.parse(createdCrossword)));
+      dispatch(crosswordActions.setCrosswordName(JSON.parse(crosswordName)));
+      dispatch(crosswordActions.setCrosswordValue(JSON.parse(crosswordValue)));
+      dispatch(crosswordActions.setCrosswordId(JSON.parse(crosswordId)));
+    }
+  });
 
   return (
     <>

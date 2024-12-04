@@ -27,6 +27,18 @@ const CrosswordGameCellMenuMain = () => {
   const currentDirection = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.addedWordDirection
   );
+
+  const currentCrosswordGame = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame
+  );
+
+  const currentAttemptID = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.attemptID
+  );
+
+  const currentCrosswordID = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame._id
+  );
   //   const currentCrosswordGame = useSelector(
   //     (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame.crosswordObj
   //   );
@@ -77,9 +89,12 @@ const CrosswordGameCellMenuMain = () => {
           console.log(document.querySelectorAll("input")[Number(index) + 1].focus());
         }
 
-        // document.querySelector(
-        //   `${Number(e.currentTarget.dataset.col)}_${Number(e.currentTarget.dataset.row) + 1}`
-        // );
+        //get crossword game
+        //get crossword ID
+
+        window.localStorage.setItem("currentCrosswordGame", JSON.stringify(currentCrosswordGame));
+        window.localStorage.setItem("currentAttemptID", JSON.stringify(currentAttemptID));
+        // window.localStorage.setItem("currentCrosswordID", JSON.stringify(currentCrosswordID));
       }
     }
   };

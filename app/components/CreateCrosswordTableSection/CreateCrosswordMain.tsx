@@ -16,6 +16,8 @@ import LoadCrosswordButton from "./LoadCrosswordButton";
 import LoadCrosswordModalMain from "../CreateCrosswordLoadModalSection/LoadCrosswordModalMain";
 import SaveCrosswordNotification from "./SaveCrosswordNotification";
 import { useTelegram } from "@/app/telegramProvider";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircle, faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 
 const CreateCrosswordMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -86,27 +88,55 @@ const CreateCrosswordMain = () => {
     dispatch(createCrosswordTableArrAndUpdateState(crosswordValue));
   };
 
-  // const sendBotHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //   console.log("first");
-  //   const dataReq = await fetch(
-  //     "https://api.telegram.org/bot7577331969:AAGYO1E1Kz_hDPu8DPhXRMUv1Gx_HdTn7Iw/getMe"
-  //   );
-  //   const data = await dataReq.json();
-  //   console.log(data);
-  // };
+  useEffect(() => {
+    const createdCrossword = localStorage.getItem("createdCrossword");
+    const crosswordName = localStorage.getItem("crosswordName");
+    const crosswordValue = localStorage.getItem("crosswordValue");
+    const crosswordId = localStorage.getItem("crosswordId");
+    console.log(createdCrossword);
+    // dispatch(createCrosswordTableArrAndUpdateState(crosswordValue));
+
+    // dispatch(crosswordActions.setCreatedCrossword(JSON.parse(createdCrossword)));
+
+    // if (
+    //   createdCrossword !== null &&
+    //   crosswordName !== null &&
+    //   crosswordValue !== null &&
+    //   crosswordId !== null
+    // ) {
+    //   dispatch(crosswordActions.setCreatedCrossword(JSON.parse(createdCrossword)));
+    //   dispatch(crosswordActions.setCrosswordName(JSON.parse(crosswordName)));
+    //   dispatch(crosswordActions.setCrosswordValue(JSON.parse(crosswordValue)));
+    //   dispatch(crosswordActions.setCrosswordId(JSON.parse(crosswordId)));
+    // }
+  });
 
   return (
-    <div>
-      <div>
-        <p>Укажите размер кроссворда</p>
-        <input type="number" value={crosswordValue} onChange={changeCrosswordValueHandler} />
-        <button onClick={createCrosswordTableHandler}>Создать поле кроссворда</button>
+    <div className=" py-5 min-h-[70vh]">
+      <div className=" flex flex-col gap-3 justify-center items-center text-center text-2xl">
+        <h1>Укажите размер кроссворда</h1>
+        <div className=" border-2 border-solid rounded-md border-cyan-900 w-20">
+          <input
+            className=" w-full"
+            type="number"
+            value={crosswordValue}
+            onChange={changeCrosswordValueHandler}
+          />
+        </div>
+        <div className=" py-5">
+          <button
+            className=" py-3 px-3 hover:scale-110 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow"
+            onClick={createCrosswordTableHandler}
+          >
+            <FontAwesomeIcon className=" pr-2" icon={faCirclePlus} />
+            Создать поле кроссворда
+          </button>
+        </div>
       </div>
-      <div>
-        <p>
+      <div className=" py-3">
+        <h1 className=" text-center text-xl">
           Размерность кроссворда <span>{cretedCrosswordValue}</span>
-        </p>
+        </h1>
       </div>
       {crosswordIsCreated || crosswordIsLoading ? (
         <div>
@@ -127,7 +157,9 @@ const CreateCrosswordMain = () => {
 
       {crosswordIsCreated && <SaveCurrentCrosswordButton></SaveCurrentCrosswordButton>}
 
-      <LoadCrosswordButton></LoadCrosswordButton>
+      <div className=" flex justify-center items-center">
+        <LoadCrosswordButton></LoadCrosswordButton>
+      </div>
 
       {showLoadCrosswordModal && <LoadCrosswordModalMain></LoadCrosswordModalMain>}
 

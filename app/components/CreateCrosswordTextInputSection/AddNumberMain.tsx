@@ -21,9 +21,14 @@ const AddNumberMain = () => {
     (state: ICrosswordSlice) => state.crosswordState.highlightedField
   );
 
-  const modalType = useSelector((state: ICrosswordSlice) => state.crosswordState.modalType);
-
-  const [currentNumber, setCurrentNumber] = useState(0);
+  const createdCrossword = useSelector(
+    (state: ICrosswordSlice) => state.crosswordState.createdCrossword
+  );
+  const crosswordName = useSelector((state: ICrosswordSlice) => state.crosswordState.crosswordName);
+  const crosswordValue = useSelector(
+    (state: ICrosswordSlice) => state.crosswordState.crosswordValue
+  );
+  const crosswordId = useSelector((state: ICrosswordSlice) => state.crosswordState.crosswordId);
 
   const hideSetNumberModalHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -39,6 +44,12 @@ const AddNumberMain = () => {
     e.preventDefault();
     console.log("hide");
     // dispatch(crosswordActions.addNumberAndText(currentNumber));
+
+    window.localStorage.setItem("createdCrossword", JSON.stringify(createdCrossword));
+    window.localStorage.setItem("crosswordName", JSON.stringify(crosswordName));
+    window.localStorage.setItem("crosswordValue", JSON.stringify(crosswordValue));
+    window.localStorage.setItem("crosswordId", JSON.stringify(crosswordId));
+
     dispatch(crosswordActions.setCellInputToParagraph(""));
     dispatch(crosswordActions.setHighlitedParagraphStatusTrue());
     dispatch(crosswordActions.hideSetElementsMenu());

@@ -74,7 +74,7 @@ const CreateCrosswordContextMenu = () => {
   return (
     <div
       className=" z-20 rounded-lg  bg-slate-700 text-slate-200 shadow-lg border-solid border-2"
-      style={{ position: "absolute", left: `${positionX}px`, top: `${positionY}px` }}
+      style={{ position: "absolute", left: `${positionX}px`, top: `${positionY + 30}px` }}
     >
       <div onClick={hideMenuHandler} className=" mt-2 mr-2 flex justify-end">
         <div className=" cursor-pointer  flex justify-center items-center w-8 h-8 rounded-full p-2 border-2 pb-2 hover:bg-slate-500">

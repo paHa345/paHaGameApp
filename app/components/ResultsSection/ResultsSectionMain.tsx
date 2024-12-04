@@ -26,7 +26,7 @@ const ResultsSectionMain = () => {
     <>
       <section className={`min-h-[80vh] container mx-auto`}>
         <div className=" py-5">
-          <h1 className=" text-center text-3xl font-bold">Результаты</h1>
+          <h1 className="font-roboto text-center text-3xl font-bold">Результаты</h1>
         </div>
         {currentUserCompletedAttempt && (
           <div className=" flex justify-center items-center flex-col gap-2">

@@ -14,18 +14,23 @@ import { useDispatch, useSelector } from "react-redux";
 const LoadCrosswordButton = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const saveCrosswordHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const saveCrosswordHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     console.log("Load");
     dispatch(crosswordActions.showLoadCrosswordModal());
   };
 
   return (
-    <div className=" py-5">
-      <Link onClick={saveCrosswordHandler} className=" buttonStandart" rel="stylesheet" href="/">
-        <FontAwesomeIcon className=" pr-2" icon={faUpload} />
-        Загрузить кроссворд
-      </Link>
+    <div className="py-5">
+      <div
+        onClick={saveCrosswordHandler}
+        className=" cursor-pointer py-3 px-3 hover:scale-110 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow"
+      >
+        <Link rel="stylesheet" href="/">
+          <FontAwesomeIcon className=" pr-2" icon={faUpload} />
+          Загрузить кроссворд
+        </Link>
+      </div>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+const defaultTheme = require("tailwindcss/defaultTheme");
 
 export default {
   content: [
@@ -40,6 +41,7 @@ export default {
         buttonHoverColor: "#394FBF",
         headerFooterMainColor: "#b3ff99",
         headerFooterSecoundaryColor: "#c6ffb3",
+        crosswordSecoundaryColor: "#f9bc9d",
       },
       boxShadow: {
         exerciseCardShadow: "0 10px 15px rgb(0 0 0/5%)",
@@ -49,6 +51,9 @@ export default {
         cardElementStartShadow: "0.2em 0.2em 1em rgba(0, 0, 0, 0.2)",
         cardButtonShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
         notificationShadow: "0px 0px 28px 23px rgba(64, 105, 136, 0.20)",
+      },
+      fontFamily: {
+        sans: ['"Proxima Nova"', ...defaultTheme.fontFamily.sans],
       },
     },
   },

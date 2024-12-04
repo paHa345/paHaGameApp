@@ -40,6 +40,9 @@ const EndGameButton = () => {
         crosswordID: crosswordGameId,
       };
       console.log(attemptData);
+
+      window.localStorage.removeItem("currentCrosswordGame");
+      window.localStorage.removeItem("currentAttemptID");
       dispatch(finishAttempt(attemptData));
       setTimeout(() => {
         redirect("/results");
@@ -57,6 +60,10 @@ const EndGameButton = () => {
       };
 
       dispatch(finishAttempt(attemptData));
+
+      window.localStorage.removeItem("currentCrosswordGame");
+      window.localStorage.removeItem("currentAttemptID");
+
       setTimeout(() => {
         redirect("/results");
       }, 2000);
