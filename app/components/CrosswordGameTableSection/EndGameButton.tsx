@@ -52,6 +52,8 @@ const EndGameButton = () => {
         crossword: currentAttemptCrossword,
         crosswordID: crosswordGameId,
         userPhoto: user.photo_url,
+        firstName: user?.first_name,
+        lastName: user?.last_name,
       };
 
       dispatch(finishAttempt(attemptData));
