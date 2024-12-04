@@ -15,12 +15,15 @@ import SaveCurrentCrosswordButton from "./SaveCurrentCrosswordButton";
 import LoadCrosswordButton from "./LoadCrosswordButton";
 import LoadCrosswordModalMain from "../CreateCrosswordLoadModalSection/LoadCrosswordModalMain";
 import SaveCrosswordNotification from "./SaveCrosswordNotification";
+import { useTelegram } from "@/app/telegramProvider";
 
 const CreateCrosswordMain = () => {
   const dispatch = useDispatch<AppDispatch>();
   const cretedCrosswordValue = useSelector(
     (state: ICrosswordSlice) => state.crosswordState.crosswordValue
   );
+
+  const { user } = useTelegram();
 
   const showContextMenu = useSelector(
     (state: ICrosswordSlice) => state.crosswordState.createContextMenuStatus
@@ -98,6 +101,8 @@ const CreateCrosswordMain = () => {
   return (
     <div>
       <div>
+        <h1>{user?.first_name}</h1>
+        <h1>{user?.last_name}</h1>
         <p>Укажите размер кроссворда</p>
         <input type="number" value={crosswordValue} onChange={changeCrosswordValueHandler} />
         <button onClick={createCrosswordTableHandler}>Создать поле кроссворда</button>
