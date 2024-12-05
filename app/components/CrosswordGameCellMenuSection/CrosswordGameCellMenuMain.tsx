@@ -200,9 +200,9 @@ const CrosswordGameCellMenuMain = () => {
       <div className="w-11/12 sm:w-5/6 lg:w-2/3  rounded-md bg-slate-200 p-2 fixed flex  border-slate-400 border-solid border-2 ">
         <div className=" flex flex-col justify-center items-center">
           <FontAwesomeIcon
-            style={{ color: "red" }}
+            // style={{ color: "red" }}
             onClick={hideCellMenu}
-            className=" cursor-pointer fa-2x  hover:bg-slate-400 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200"
+            className=" cursor-pointer fa-2x hover:text-slate-200  hover:bg-lime-800 rounded-full  hover:border-lime-800 border-solid border-2  border-slate-200"
             icon={faCheckCircle}
           />
           {/* <a

@@ -39,11 +39,6 @@ html {
     font-size: 80%;
   }
 }
-@media (pointer: coarse) {
-  a:hover {
-    all: revert-layer;
-  }
-}
 
 :root {
   --foreground-rgb: 0, 0, 0;

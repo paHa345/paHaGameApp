@@ -87,7 +87,7 @@ const Header = () => {
               >
                 {" "}
                 <FontAwesomeIcon
-                  className={` ${path === "/game" || path === "/crosswordGame" || path === "/crosswordGame/game" ? "text-slate-500" : ""} transition-all hover:text-slate-500 duration-500 fa-2x`}
+                  className={` ${path === "/game" || path === "/crosswordGame" || path === "/crosswordGame/game" ? "text-slate-500 scale-110" : ""} transition-all hover:text-slate-500 hover:scale-110 duration-500 fa-2x`}
                   icon={faPuzzlePiece}
                 />
                 {/* <p className=" text-xs">Game</p> */}
@@ -101,7 +101,7 @@ const Header = () => {
               >
                 {" "}
                 <FontAwesomeIcon
-                  className={` ${path === "/results" ? "text-slate-500" : ""} transition-all hover:text-slate-500 duration-500 fa-2x`}
+                  className={` ${path === "/results" ? "text-slate-500 scale-110" : ""} transition-all hover:scale-110 hover:text-slate-500 duration-500 fa-2x`}
                   icon={faGraduationCap}
                 />
                 {/* <p className=" text-xs">Game</p> */}
@@ -114,7 +114,7 @@ const Header = () => {
                   className=" text-2xl text-headerButtonColor hover:text-headerButtonHoverColor transition duration-800 ease-out "
                 >
                   <FontAwesomeIcon
-                    className={` ${path === "/login" || path === "/my" ? "text-slate-500" : ""} transition-all hover:text-slate-500 duration-500 fa-2x`}
+                    className={` ${path === "/login" || path === "/my" ? "text-slate-500 scale-110" : ""} transition-all hover:scale-110 hover:text-slate-500 duration-500 fa-2x`}
                     icon={faIdCard}
                   />
                   {/* <p className=" text-xs">User</p> */}
@@ -130,7 +130,7 @@ const Header = () => {
                   className=" text-2xl text-headerButtonColor hover:text-headerButtonHoverColor transition duration-800 ease-out "
                 >
                   <FontAwesomeIcon
-                    className={` ${path === "/login" || path === "/my" ? "text-slate-500" : ""} transition-all hover:text-slate-500 duration-500 fa-2x`}
+                    className={` ${path === "/login" || path === "/my" ? "text-slate-500 scale-110" : ""} transition-all hover:scale-110 hover:text-slate-500 duration-500 fa-2x`}
                     icon={faUser}
                   />
                   {/* <p className=" text-xs">Login</p> */}
