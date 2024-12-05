@@ -305,6 +305,44 @@ export interface ICrosswordGameSlice {
       }[];
     } | null;
 
+    selectedCell?: {
+      key: string;
+      value: string;
+      number: number;
+      row: number;
+      paragraph: number;
+      paragraphNum?: number;
+      inputStatus: number;
+      inputValue: number;
+      textQuestionStatus: number;
+      questionObj: {
+        horizontal: {
+          value: string;
+          questionNumber: number;
+          cell: { row: number; col: number };
+        } | null;
+        vertical: {
+          value: string;
+          questionNumber: number;
+          cell: { row: number; col: number };
+        } | null;
+      };
+      addedWordCell: number;
+      addedWordDirectionJbj?: {
+        horizontal: Boolean;
+        vertical: Boolean;
+      };
+      addedWordArr: {
+        direction: AddedWordDirection;
+        value?: string;
+        addedWordArr: {
+          row: number;
+          col: number;
+          addedLetter?: string;
+        }[];
+      }[];
+    };
+
     crosswordGame: {
       _id: string;
       name: string;
@@ -445,6 +483,44 @@ interface ICrosswordGameState {
     }[];
   } | null;
 
+  selectedCell?: {
+    key: string;
+    value: string;
+    number: number;
+    row: number;
+    paragraph: number;
+    paragraphNum?: number;
+    inputStatus: number;
+    inputValue: number;
+    textQuestionStatus: number;
+    questionObj: {
+      horizontal: {
+        value: string;
+        questionNumber: number;
+        cell: { row: number; col: number };
+      } | null;
+      vertical: {
+        value: string;
+        questionNumber: number;
+        cell: { row: number; col: number };
+      } | null;
+    };
+    addedWordCell: number;
+    addedWordDirectionJbj?: {
+      horizontal: Boolean;
+      vertical: Boolean;
+    };
+    addedWordArr: {
+      direction: AddedWordDirection;
+      value?: string;
+      addedWordArr: {
+        row: number;
+        col: number;
+        addedLetter?: string;
+      }[];
+    }[];
+  };
+
   crosswordGame: {
     _id: string;
     name: string;
@@ -569,6 +645,7 @@ export const crosswordGameSlice = createSlice({
       state.crosswordGame.userId = action.payload.userId;
       state.crosswordGame.crosswordObj = action.payload.crosswordObj;
       state.crosswordGame.questionsArr = action.payload.questionsArr;
+      window.localStorage.setItem("currentCrosswordGame", JSON.stringify(state.crosswordGame));
     },
     setFetchAvailableCrosswordGamesStatus(state, action) {
       state.fetchAvailableCrosswordGamesStatus = action.payload;
@@ -818,6 +895,7 @@ export const crosswordGameSlice = createSlice({
       state.createStartAttemptStatus = crosswordGameFetchStatus.Ready;
     },
     setAttemptID(state, action) {
+      window.localStorage.setItem("currentAttemptID", JSON.stringify(action.payload));
       state.attemptID = action.payload;
     },
     setFinishAttemptStatusToReady(state) {
@@ -836,6 +914,9 @@ export const crosswordGameSlice = createSlice({
     },
     setAvailableCrosswordGameErrorMessage(state, action) {
       state.availableCrosswordGameErrorMessage = action.payload;
+    },
+    setSelectedCell(state, action) {
+      state.selectedCell = action.payload;
     },
   },
   extraReducers(builder) {

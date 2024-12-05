@@ -43,6 +43,7 @@ export default {
         headerFooterSecoundaryColor: "#c6ffb3",
         crosswordSecoundaryColor: "#f9bc9d",
         modalMainColor: "#f8feef",
+        crosswordCellSecoundaryColor: "#d9f99d",
       },
       boxShadow: {
         exerciseCardShadow: "0 10px 15px rgb(0 0 0/5%)",

@@ -4,7 +4,7 @@ import {
   ICrosswordGameSlice,
   setHighlightedElementAndDirection,
 } from "@/app/store/crosswordGameSlice";
-import { AddedWordDirection } from "@/app/store/crosswordSlice";
+import { AddedWordDirection, crosswordActions } from "@/app/store/crosswordSlice";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -59,8 +59,8 @@ interface ICellProps {
 const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const highlightedCell = useSelector(
-    (state: ICrosswordGameSlice) => state.crosswordGameState.highlightedCell
+  const selectedCell = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.selectedCell
   );
   const highlightedObj = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.highlightedWordObj
@@ -70,7 +70,12 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
   );
   //   console.log(direction);
 
+  const isSelectedCell =
+    selectedCell?.number === cell.number && selectedCell.row === cell.row ? true : false;
+
   const clickCellNumberHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    dispatch(crossworGamedActions.setSelectedCell(cell));
+    console.log(selectedCell);
     if (!cell.questionObj) {
       return;
     }
@@ -102,8 +107,11 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
       //   data-textquestionvalue={cell.textQuestionValue}
       data-addedwordcell={cell.addedWordCell}
       key={`${i}:${j}`}
-      style={{ backgroundColor: `${isHighlightedWord ? "rgb(101 163 13)" : ""}` }}
-      className={`${isHighlightedWord ? "" : ""} ${!hasLetter ? "" : "bg-lime-500"} cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
+      // style={{ backgroundColor: `${isHighlightedWord ? "rgb(101 163 13)" : ""}` }}
+      style={{
+        backgroundColor: `${isHighlightedWord ? (isSelectedCell ? " #d9f99d" : "rgb(101 163 13)") : ""}`,
+      }}
+      className={`${isHighlightedWord ? "" : ""} ${!hasLetter ? "" : "bg-lime-500"}   cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
     >
       {hasNumber && (
         <div className="absolute">

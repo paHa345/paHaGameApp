@@ -27,6 +27,20 @@ const crosswordSchema = new mongoose.Schema<ICrosswordSchema>({
           horizontal: { type: Boolean, required: false },
           vertical: { type: Boolean, required: false },
         },
+        // baseCell: {
+        //   horizontal?: { row: number; col: number } | null;
+        //   vertical?: { row: number; col: number } | null;
+        // };
+        baseCell: {
+          horizontal: {
+            row: { type: Number, required: false },
+            col: { type: Number, required: false },
+          },
+          vertical: {
+            row: { type: Number, required: false },
+            col: { type: Number, required: false },
+          },
+        },
         addedWordArr: [
           {
             direction: { type: Number, requirted: false },

@@ -26,6 +26,14 @@ const StartGameModalMain = () => {
     (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame._id
   );
 
+  const currentCrosswordGame = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame
+  );
+
+  const currentAttemptID = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.attemptID
+  );
+
   const startGameHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     // if (!user) {
     //   alert("Вы не авторизованы в Telegram. Авторизуйтесь и попробуйте снова.");

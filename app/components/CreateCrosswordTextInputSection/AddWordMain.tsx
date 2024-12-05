@@ -34,6 +34,7 @@ const AddWordMain = () => {
   }, []);
 
   const changeAddedWordValueHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    console.log("change");
     dispatch(crosswordActions.setAddedWordValue(e.currentTarget.value.toLowerCase()));
   };
 

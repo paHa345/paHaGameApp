@@ -303,6 +303,10 @@ export interface ICrosswordSchema {
       horizontal: Boolean;
       vertical: Boolean;
     };
+    baseCell: {
+      horizontal?: { row: number; col: number } | null;
+      vertical?: { row: number; col: number } | null;
+    };
     addedWordArr: {
       direction: AddedWordDirection;
       value?: string;
