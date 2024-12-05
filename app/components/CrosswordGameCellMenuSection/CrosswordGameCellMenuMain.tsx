@@ -182,7 +182,7 @@ const CrosswordGameCellMenuMain = () => {
     dispatch(crossworGamedActions.changeAddedWordValue(e.currentTarget.value));
   };
 
-  const hideCellMenu = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const hideCellMenu = (e: React.MouseEvent<SVGSVGElement>) => {
     e.preventDefault();
     dispatch(crossworGamedActions.setShowCrosswordGameCellMenu(false));
   };
@@ -198,13 +198,20 @@ const CrosswordGameCellMenuMain = () => {
       className=" relative z-10 mt-10 flex justify-center items-center  "
     >
       <div className="w-11/12 sm:w-5/6 lg:w-2/3  rounded-md bg-slate-200 p-2 fixed flex  border-slate-400 border-solid border-2 ">
-        <a
-          className=" fa-2x h-fit bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200"
-          onClick={hideCellMenu}
-          href=""
-        >
-          <FontAwesomeIcon icon={faCheckCircle} />
-        </a>
+        <div className=" flex flex-col justify-center items-center">
+          <FontAwesomeIcon
+            style={{ color: "red" }}
+            onClick={hideCellMenu}
+            className=" cursor-pointer fa-2x  hover:bg-slate-400 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200"
+            icon={faCheckCircle}
+          />
+          {/* <a
+            className=" fa-2x hover:bg-slate-400 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200"
+            onClick={hideCellMenu}
+            href=""
+          >
+          </a> */}
+        </div>
         {/* <a
           className=" h-fit bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200"
           // onClick={addNumberTextAndHideModalHandler}

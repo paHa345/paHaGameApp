@@ -53,7 +53,7 @@ const CreateCrosswordMain = () => {
     (state: ICrosswordSlice) => state.crosswordState.createdCrossword
   );
 
-  const changeCrosswordName = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const changeCrosswordName = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     dispatch(crosswordActions.setCrosswordName(e.currentTarget.value));
   };
 
@@ -93,7 +93,7 @@ const CreateCrosswordMain = () => {
     const crosswordName = localStorage.getItem("crosswordName");
     const crosswordValue = localStorage.getItem("crosswordValue");
     const crosswordId = localStorage.getItem("crosswordId");
-    console.log(createdCrossword);
+
     // dispatch(createCrosswordTableArrAndUpdateState(crosswordValue));
 
     // dispatch(crosswordActions.setCreatedCrossword(JSON.parse(createdCrossword)));
@@ -135,19 +135,25 @@ const CreateCrosswordMain = () => {
       </div>
       <div className=" py-3">
         <h1 className=" text-center text-xl">
-          Размерность кроссворда <span>{cretedCrosswordValue}</span>
+          Размерность кроссворда{" "}
+          <span className=" font-bold text-2xl underline underline-offset-4">
+            {cretedCrosswordValue}
+          </span>
         </h1>
       </div>
       {crosswordIsCreated || crosswordIsLoading ? (
         <div>
-          <p>Название кроссворда</p>
+          <h1 className=" py-3 text-center text-xl">Название кроссворда</h1>
 
-          <input
-            className=" border-solid border-2 border-indigo-600"
-            type="text"
-            value={crosswordName}
-            onChange={changeCrosswordName}
-          />
+          <div className=" flex flex-col justify-center items-center">
+            <textarea
+              className=" py-2 text-center text-2xl border-2 border-solid rounded-md border-cyan-900 "
+              cols={20}
+              rows={3}
+              value={crosswordName}
+              onChange={changeCrosswordName}
+            />
+          </div>
         </div>
       ) : (
         <div></div>

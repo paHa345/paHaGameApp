@@ -24,7 +24,7 @@ const LoadCrosswordButton = () => {
     <div className="py-5">
       <div
         onClick={saveCrosswordHandler}
-        className=" cursor-pointer py-3 px-3 hover:scale-110 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow"
+        className=" text-2xl cursor-pointer py-3 px-3 hover:scale-110 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow"
       >
         <Link rel="stylesheet" href="/">
           <FontAwesomeIcon className=" pr-2" icon={faUpload} />

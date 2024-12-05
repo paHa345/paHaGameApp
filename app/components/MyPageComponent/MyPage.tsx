@@ -29,10 +29,13 @@ const MyPage = () => {
     session?.user.userType === "coach" ? (
       <h1 className=" text-right text-4xl font-bold py-10">
         {" "}
-        {`Привет, тренер ${session?.user?.name}`}{" "}
+        {`Приветствуем, ${session?.user?.name}`}{" "}
       </h1>
     ) : (
-      <h1 className=" text-right text-4xl font-bold py-10"> {`Привет, ${session?.user?.name}`} </h1>
+      <h1 className=" text-right text-4xl font-bold py-10">
+        {" "}
+        {`Приветствуем, ${session?.user?.name}`}{" "}
+      </h1>
     );
 
   useEffect(() => {
@@ -50,6 +53,7 @@ const MyPage = () => {
       dispatch(crosswordActions.setCrosswordName(JSON.parse(crosswordName)));
       dispatch(crosswordActions.setCrosswordValue(JSON.parse(crosswordValue)));
       dispatch(crosswordActions.setCrosswordId(JSON.parse(crosswordId)));
+      dispatch(crosswordActions.crosswordIsLoading(true));
     }
   });
 

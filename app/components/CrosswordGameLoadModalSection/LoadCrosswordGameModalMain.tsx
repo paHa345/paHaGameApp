@@ -90,12 +90,16 @@ const LoadCrosswordGameModalMain = () => {
             </div>
           )}
           {fetchCrosswordsGameStatus === crosswordGameFetchStatus.Loading && (
-            <div className=" flex justify-center items-center h-5/6">
+            <div className=" flex justify-center items-center h-5/6 ">
               <LoadindAvailableCrosswordGameCards></LoadindAvailableCrosswordGameCards>
             </div>
           )}
           {fetchCrosswordsGameStatus === crosswordGameFetchStatus.Error && (
-            <p>Не удалось загрузить список. Повторите попытку позднее</p>
+            <div className=" flex justify-center items-center h-2/3 ">
+              <h1 className=" font-bold  text-center py-5 text-2xl transition-all rounded-lg ease-in-out delay-50 bg-gradient-to-tr from-secoundaryColor to-red-400 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow">
+                Не удалось загрузить список. Повторите попытку позднее
+              </h1>
+            </div>
           )}
 
           {/* <AddExercisesSection></AddExercisesSection> */}
