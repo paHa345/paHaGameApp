@@ -43,6 +43,10 @@ interface ICellProps {
       horizontal: Boolean;
       vertical: Boolean;
     };
+    baseCell: {
+      horizontal?: { row: number; col: number } | null;
+      vertical?: { row: number; col: number } | null;
+    };
     addedWordArr: {
       direction: AddedWordDirection;
       value?: string;
@@ -68,19 +72,62 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
   const direction = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.addedWordDirection
   );
+
+  const crosswordGameObj = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame.crosswordObj
+  );
   //   console.log(direction);
 
   const isSelectedCell =
     selectedCell?.number === cell.number && selectedCell.row === cell.row ? true : false;
 
   const clickCellNumberHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    dispatch(crossworGamedActions.setSelectedCell(cell));
-    console.log(selectedCell);
-    if (!cell.questionObj) {
+    // dispatch(crossworGamedActions.setSelectedAndHighLightedCell(cell));
+
+    e.currentTarget.focus();
+    if (cell.addedWordCell === 0) {
       return;
     }
+    console.log(cell);
+    if (
+      direction === AddedWordDirection.Vertical &&
+      (cell.baseCell.horizontal || cell.baseCell.vertical) &&
+      cell.baseCell.vertical
+    ) {
+      dispatch(
+        setHighlightedElementAndDirection({
+          selectedCell: cell,
+          highlightedCell:
+            crosswordGameObj[cell.baseCell.vertical?.row][cell.baseCell.vertical?.col],
+          direction: AddedWordDirection.Vertical,
+        })
+      );
+      return;
+    }
+    if (cell.baseCell.horizontal) {
+      dispatch(
+        setHighlightedElementAndDirection({
+          selectedCell: cell,
+          highlightedCell:
+            crosswordGameObj[cell.baseCell.horizontal?.row][cell.baseCell.horizontal?.col],
+          direction: AddedWordDirection.Horizontal,
+        })
+      );
+    } else {
+      if (cell.baseCell.vertical && direction === AddedWordDirection.Horizontal) {
+        dispatch(
+          setHighlightedElementAndDirection({
+            selectedCell: cell,
+            highlightedCell:
+              crosswordGameObj[cell.baseCell.vertical?.row][cell.baseCell.vertical?.col],
+            direction: AddedWordDirection.Vertical,
+          })
+        );
+      }
+    }
 
-    dispatch(setHighlightedElementAndDirection(cell));
+    // console.log(selectedCell?.baseCell.horizontal);
+    // console.log(selectedCell?.baseCell.vertical);
   };
 
   const isHighlightedWord =
@@ -95,6 +142,18 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
   const hasLetter = cell.addedWordCell === Number(1);
   const hasAddedWord = cell.addedWordLetter;
   const hasNumber = cell?.paragraphNum !== undefined && cell?.paragraphNum !== 0;
+
+  const changeCurrentLetterHandler = (e: any) => {
+    console.log("first");
+    console.log(cell.addedWordLetter);
+    dispatch(
+      crossworGamedActions.test({ col: cell.number, row: cell.row, value: e.currentTarget.value })
+    );
+    if (cell.addedWordLetter) {
+      // cell.addedWordLetter = "p";
+    }
+  };
+
   return (
     <div
       onClick={clickCellNumberHandler}
@@ -109,9 +168,9 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
       key={`${i}:${j}`}
       // style={{ backgroundColor: `${isHighlightedWord ? "rgb(101 163 13)" : ""}` }}
       style={{
-        backgroundColor: `${isHighlightedWord ? (isSelectedCell ? " #d9f99d" : "rgb(101 163 13)") : ""}`,
+        backgroundColor: `${isHighlightedWord ? (isSelectedCell ? " #1b58de" : "#5e7d33") : ""}`,
       }}
-      className={`${isHighlightedWord ? "" : ""} ${!hasLetter ? "" : "bg-lime-500"}   cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
+      className={`${isHighlightedWord ? "" : ""} ${!hasLetter ? "" : "bg-lime-500"} transition duration-800 ease-out  cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
     >
       {hasNumber && (
         <div className="absolute">
@@ -131,6 +190,14 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
             {cell.addedWordLetter}
           </p>
         </div>
+        //  <input
+        //   style={{ right: "-5px", bottom: "0px" }}
+        //   className=" h-6 w-6 relative text-slate-50 text-3xl font-extrabold"
+        //   type="text"
+        //   maxLength={1}
+        //   value={cell?.addedWordLetter ? cell.addedWordLetter : ""}
+        //   onChange={changeCurrentLetterHandler}
+        // />
       )}
 
       {/* {highlightedObj !== null &&

@@ -53,68 +53,78 @@ export const setAvailableCrosswordGame = createAsyncThunk(
 export const setHighlightedElementAndDirection = createAsyncThunk(
   "crosswordGameState/setHighlightedElementAndDirection",
   async function (
-    cell: {
-      key: string;
-      value: string;
-      number: number;
-      row: number;
-      paragraph: number;
-      paragraphNum?: number;
-      inputStatus: number;
-      inputValue: number;
-      textQuestionStatus: number;
-      questionObj: {
-        horizontal: {
-          value: string;
-          questionNumber: number;
-          cell: {
-            row: number;
-            col: number;
-          };
-        } | null;
-        vertical: {
-          value: string;
-          questionNumber: number;
-          cell: {
-            row: number;
-            col: number;
-          };
-        } | null;
-      };
-      addedWordCell: number;
-      addedWordDirectionJbj?: {
-        horizontal: Boolean;
-        vertical: Boolean;
-      };
-      addedWordArr: {
-        direction: AddedWordDirection;
-        addedWordArr: {
-          row: number;
-          col: number;
-        }[];
-      }[];
-    } | null,
+    // cell: {
+    //   key: string;
+    //   value: string;
+    //   number: number;
+    //   row: number;
+    //   paragraph: number;
+    //   paragraphNum?: number;
+    //   inputStatus: number;
+    //   inputValue: number;
+    //   textQuestionStatus: number;
+    //   questionObj: {
+    //     horizontal: {
+    //       value: string;
+    //       questionNumber: number;
+    //       cell: {
+    //         row: number;
+    //         col: number;
+    //       };
+    //     } | null;
+    //     vertical: {
+    //       value: string;
+    //       questionNumber: number;
+    //       cell: {
+    //         row: number;
+    //         col: number;
+    //       };
+    //     } | null;
+    //   };
+    //   addedWordCell: number;
+    //   addedWordDirectionJbj?: {
+    //     horizontal: Boolean;
+    //     vertical: Boolean;
+    //   };
+    //   addedWordArr: {
+    //     direction: AddedWordDirection;
+    //     addedWordArr: {
+    //       row: number;
+    //       col: number;
+    //     }[];
+    //   }[];
+    // } | null,
+    data: any,
     { rejectWithValue, dispatch }
   ) {
-    if (cell !== null) {
+    if (data.selectedCell !== null) {
       await dispatch(crossworGamedActions.setShowCrosswordGameCellMenu(false));
 
-      await dispatch(crossworGamedActions.setHighlightedCell(cell));
-      if (cell.questionObj.horizontal?.value) {
-        await dispatch(crossworGamedActions.changeDirection(AddedWordDirection.Horizontal));
-      } else {
-        await dispatch(crossworGamedActions.changeDirection(AddedWordDirection.Vertical));
-      }
+      await dispatch(crossworGamedActions.setSelectedAndHighLightedCell(data.selectedCell));
+
+      // console.log(data.highlightedCell);
+      await dispatch(crossworGamedActions.setHighlightedCell(data.highlightedCell));
+
+      //direction
+      await dispatch(crossworGamedActions.changeDirection(data.direction));
+
+      // if (data.highlightedCell.questionObj.horizontal?.value) {
+      //   await dispatch(crossworGamedActions.changeDirection(AddedWordDirection.Horizontal));
+      // } else {
+      //   await dispatch(crossworGamedActions.changeDirection(AddedWordDirection.Vertical));
+      // }
+      //direction
+
       await dispatch(crossworGamedActions.setShowCrosswordGameCellMenu(true));
 
-      //обновляем value у конкретного поля и highlighted, это будет суммавсех букв
+      //обновляем value у конкретного поля и highlighted, это будет сумма всех букв
 
-      const hihlightedDirection = cell.questionObj?.horizontal
-        ? AddedWordDirection.Horizontal
-        : AddedWordDirection.Vertical;
+      // const hihlightedDirection = data.highlightedCell.questionObj?.horizontal
+      //   ? AddedWordDirection.Horizontal
+      //   : AddedWordDirection.Vertical;
 
-      const highlightedDirectionCells = cell.addedWordArr.filter(
-        (el) => el.direction === hihlightedDirection
+      const highlightedDirectionCells = data.highlightedCell.addedWordArr.filter(
+        (el: any) => el.direction === data.direction
       );
 
       const highlightedWordObj = {
@@ -132,7 +142,7 @@ export const setHighlightedElementAndDirection = createAsyncThunk(
       dispatch(crossworGamedActions.setHighlightedWordObj(highlightedWordObj));
       dispatch(crossworGamedActions.updateCellAndHaghlightedValue());
     } else {
-      await dispatch(crossworGamedActions.setHighlightedCell(cell));
+      await dispatch(crossworGamedActions.setHighlightedCell(data.highlightedCell));
     }
   }
 );
@@ -294,6 +304,10 @@ export interface ICrosswordGameSlice {
         horizontal: Boolean;
         vertical: Boolean;
       };
+      baseCell: {
+        horizontal?: { row: number; col: number } | null;
+        vertical?: { row: number; col: number } | null;
+      };
       addedWordArr: {
         direction: AddedWordDirection;
         value?: string;
@@ -331,6 +345,10 @@ export interface ICrosswordGameSlice {
       addedWordDirectionJbj?: {
         horizontal: Boolean;
         vertical: Boolean;
+      };
+      baseCell: {
+        horizontal?: { row: number; col: number } | null;
+        vertical?: { row: number; col: number } | null;
       };
       addedWordArr: {
         direction: AddedWordDirection;
@@ -382,6 +400,10 @@ export interface ICrosswordGameSlice {
         addedWordDirectionJbj?: {
           horizontal: Boolean;
           vertical: Boolean;
+        };
+        baseCell: {
+          horizontal?: { row: number; col: number } | null;
+          vertical?: { row: number; col: number } | null;
         };
         addedWordArr: {
           direction: AddedWordDirection;
@@ -471,6 +493,10 @@ interface ICrosswordGameState {
       horizontal: Boolean;
       vertical: Boolean;
     };
+    baseCell: {
+      horizontal?: { row: number; col: number } | null;
+      vertical?: { row: number; col: number } | null;
+    };
     addedWordArr: {
       direction: AddedWordDirection;
       value?: string;
@@ -509,6 +535,10 @@ interface ICrosswordGameState {
     addedWordDirectionJbj?: {
       horizontal: Boolean;
       vertical: Boolean;
+    };
+    baseCell: {
+      horizontal?: { row: number; col: number } | null;
+      vertical?: { row: number; col: number } | null;
     };
     addedWordArr: {
       direction: AddedWordDirection;
@@ -561,6 +591,10 @@ interface ICrosswordGameState {
       addedWordDirectionJbj?: {
         horizontal: Boolean;
         vertical: Boolean;
+      };
+      baseCell: {
+        horizontal?: { row: number; col: number } | null;
+        vertical?: { row: number; col: number } | null;
       };
       addedWordArr: {
         direction: AddedWordDirection;
@@ -879,13 +913,6 @@ export const crosswordGameSlice = createSlice({
       state.crosswordGame.crosswordObj[action.payload.cell.row][
         action.payload.cell.col
       ].addedWordLetter = value;
-      // if (state.highlightedCell?.row !== undefined && state.highlightedCell?.number !== undefined) {
-      //   console.log(
-      //     (state.crosswordGame.crosswordObj[state.highlightedCell?.row][
-      //       state.highlightedCell?.number
-      //     ].addedWordLetter = "o")
-      //   );
-      // }
     },
 
     setStartGameStatus(state, action) {
@@ -915,8 +942,27 @@ export const crosswordGameSlice = createSlice({
     setAvailableCrosswordGameErrorMessage(state, action) {
       state.availableCrosswordGameErrorMessage = action.payload;
     },
-    setSelectedCell(state, action) {
+    setSelectedAndHighLightedCell(state, action) {
       state.selectedCell = action.payload;
+      // if (state.selectedCell?.baseCell?.horizontal) {
+      //   state.highlightedCell =
+      //     state.crosswordGame.crosswordObj[state.selectedCell?.baseCell.horizontal?.row][
+      //       state.selectedCell?.baseCell.horizontal?.col
+      //     ];
+      //   console.log(state.highlightedCell.key);
+      // } else {
+      //   if (state.selectedCell?.baseCell?.vertical) {
+      //     state.highlightedCell =
+      //       state.crosswordGame.crosswordObj[state.selectedCell?.baseCell.vertical?.row][
+      //         state.selectedCell?.baseCell.vertical?.col
+      //       ];
+      //   }
+      // }
+    },
+    test(state, action) {
+      console.log(action.payload);
+      state.crosswordGame.crosswordObj[action.payload.row][action.payload.col].addedWordLetter =
+        action.payload.value;
     },
   },
   extraReducers(builder) {

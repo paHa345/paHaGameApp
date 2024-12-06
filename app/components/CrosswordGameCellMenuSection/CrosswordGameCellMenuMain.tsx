@@ -120,11 +120,6 @@ const CrosswordGameCellMenuMain = () => {
               maxLength={1}
               value={value}
               onChange={changeCurrentLetterHandler}
-              // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              //   el.addedWordLetter = e.target.value;
-              //   currentValue = el.addedWordLetter;
-              //   dispatch(crossworGamedActions.changeAddedWordValue(currentValue));
-              // }}
             />
           </div>
         );

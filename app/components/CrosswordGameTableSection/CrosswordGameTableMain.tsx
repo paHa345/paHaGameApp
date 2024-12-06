@@ -25,6 +25,20 @@ const CrosswordGameTableMain = () => {
     (state: ICrosswordGameSlice) => state.crosswordGameState.showCrosswordGameCellMenu
   );
 
+  const highlightedCell = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.highlightedCell
+  );
+
+  const selectedCell = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.selectedCell
+  );
+
+  const highlightedWord = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.highlightedWordObj
+  );
+
+  // console.log(highlightedCell?.addedWordArr);
+
   if (!crosswordGame._id) {
     redirect("/crosswordGame");
   }
@@ -61,6 +75,10 @@ const CrosswordGameTableMain = () => {
             {/* <h3>Your Telegram ID: {user?.id}</h3> */}
           </div>
         )}
+
+        {/* <h1>{highlightedCell?.questionObj.horizontal?.value}</h1>
+        <h1>{highlightedCell?.questionObj.vertical?.value}</h1>
+        <h1>{selectedCell?.key}</h1> */}
 
         <br />
         <br />
