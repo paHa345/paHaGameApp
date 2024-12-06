@@ -63,7 +63,7 @@ interface ICellProps {
 const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const ref = React.useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
+  const ref = React.useRef<HTMLParagraphElement>(null) as MutableRefObject<HTMLParagraphElement>;
 
   const selectedCell = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.selectedCell
@@ -180,14 +180,17 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
     >
       {hasNumber && (
         <div className="absolute">
-          <p style={{ right: "10px", bottom: "6px" }} className=" relative text-2xl font-extrabold">
+          <p
+            ref={ref}
+            style={{ right: "10px", bottom: "6px" }}
+            className=" relative text-2xl font-extrabold"
+          >
             {cell.inputValue}
           </p>{" "}
         </div>
       )}
 
       {/* {hasLetter && <input className=" h-4 w-4" type="text" maxLength={1} />} */}
-      <input ref={ref} id="message" name="message" />
       {hasAddedWord && (
         <div className="absolute">
           <p
