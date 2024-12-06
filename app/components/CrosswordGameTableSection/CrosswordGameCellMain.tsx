@@ -5,7 +5,7 @@ import {
   setHighlightedElementAndDirection,
 } from "@/app/store/crosswordGameSlice";
 import { AddedWordDirection, crosswordActions } from "@/app/store/crosswordSlice";
-import React, { useState } from "react";
+import React, { MutableRefObject, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 interface ICellProps {
@@ -63,6 +63,8 @@ interface ICellProps {
 const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
+  const ref = React.useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
+
   const selectedCell = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.selectedCell
   );
@@ -84,7 +86,11 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
   const clickCellNumberHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     // dispatch(crossworGamedActions.setSelectedAndHighLightedCell(cell));
 
-    e.currentTarget.focus();
+    const el = ref.current;
+    if (el) {
+      setTimeout(() => el.focus(), 0);
+    }
+
     if (cell.addedWordCell === 0) {
       return;
     }
@@ -181,6 +187,7 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
       )}
 
       {/* {hasLetter && <input className=" h-4 w-4" type="text" maxLength={1} />} */}
+      <input ref={ref} id="message" name="message" />
       {hasAddedWord && (
         <div className="absolute">
           <p
@@ -190,6 +197,7 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
             {cell.addedWordLetter}
           </p>
         </div>
+
         //  <input
         //   style={{ right: "-5px", bottom: "0px" }}
         //   className=" h-6 w-6 relative text-slate-50 text-3xl font-extrabold"
