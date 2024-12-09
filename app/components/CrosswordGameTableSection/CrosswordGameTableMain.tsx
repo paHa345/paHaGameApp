@@ -1,6 +1,6 @@
 "use client";
 import { ICrosswordGameSlice } from "@/app/store/crosswordGameSlice";
-import React from "react";
+import React, { MutableRefObject, useState } from "react";
 import { useSelector } from "react-redux";
 import CrosswordGameCellMain from "./CrosswordGameCellMain";
 import CrosswordGameQuestionsMain from "./CrosswordGameQuestionsMain";
@@ -9,6 +9,7 @@ import { useTelegram } from "@/app/telegramProvider";
 import StartGameModalMain from "./StartGameModalMain";
 import { redirect } from "next/navigation";
 import EndGameButton from "./EndGameButton";
+import InputLetter from "./InputLetter";
 
 const CrosswordGameTableMain = () => {
   const crosswordGame = useSelector(
@@ -21,9 +22,15 @@ const CrosswordGameTableMain = () => {
 
   const { user, webApp } = useTelegram();
 
+  const [letter, setLetter] = useState("");
+  const setLetterHandler = (e: any) => {
+    setLetter(e.currentTarget.value);
+  };
   const showCellMenu = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.showCrosswordGameCellMenu
   );
+
+  const ref = React.useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
 
   const highlightedCell = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.highlightedCell
@@ -49,7 +56,7 @@ const CrosswordGameTableMain = () => {
         {el.map((cell, j: number) => {
           return (
             <div key={`${i}:${j}`}>
-              <CrosswordGameCellMain cell={cell} i={i} j={j}></CrosswordGameCellMain>
+              <CrosswordGameCellMain ref={ref} cell={cell} i={i} j={j}></CrosswordGameCellMain>
             </div>
           );
         })}
@@ -86,7 +93,17 @@ const CrosswordGameTableMain = () => {
         <br />
 
         <br />
-
+        <div>
+          <input
+            ref={ref}
+            style={{ right: "-5px", bottom: "0px" }}
+            className=" inputBase bg-orange-500 h-6 w-6 text-slate-50 text-3xl font-extrabold"
+            type="text"
+            maxLength={1}
+            value={letter}
+            onChange={setLetterHandler}
+          />
+        </div>
         <EndGameButton></EndGameButton>
       </div>
       {crosswordGameTableEl}

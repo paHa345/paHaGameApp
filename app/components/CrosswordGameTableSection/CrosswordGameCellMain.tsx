@@ -9,6 +9,7 @@ import React, { MutableRefObject, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 interface ICellProps {
+  ref: MutableRefObject<HTMLInputElement>;
   cell: {
     key: string;
     value: string;
@@ -60,10 +61,10 @@ interface ICellProps {
   i: number;
   j: number;
 }
-const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
+const CrosswordGameCellMain = ({ ref, cell, i, j }: ICellProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const ref = React.useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
+  // const ref = React.useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
 
   const selectedCell = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.selectedCell
@@ -195,15 +196,15 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
           >
             {cell.addedWordLetter}
           </p>
-          <input
+          {/* <input
             ref={ref}
             style={{ right: "-5px", bottom: "0px" }}
-            className=" -z-10 absolute opacity-0 h-6 w-6 text-slate-50 text-3xl font-extrabold"
+            className=" absolute h-6 w-6 text-slate-50 text-3xl font-extrabold"
             type="text"
             maxLength={1}
             value={cell?.addedWordLetter ? cell.addedWordLetter : ""}
             onChange={changeCurrentLetterHandler}
-          />
+          /> */}
         </div>
       )}
 
