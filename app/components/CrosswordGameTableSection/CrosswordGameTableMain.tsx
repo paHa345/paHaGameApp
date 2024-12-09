@@ -40,6 +40,13 @@ const CrosswordGameTableMain = () => {
   const selectedCell = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.selectedCell
   );
+  const currentCrosswordGame = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame
+  );
+
+  const currentAttemptID = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.attemptID
+  );
 
   const highlightedWord = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.highlightedWordObj

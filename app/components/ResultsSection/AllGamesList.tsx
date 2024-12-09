@@ -21,9 +21,6 @@ const AllGamesList = () => {
     return <GameListElement key={game._id} gameData={game}></GameListElement>;
   });
 
-  console.log(gamesElements);
-
-  console.log(user?.photo_url);
   useEffect(() => {
     if (!user?.id) {
       dispatch(getAllGamesList(777777));

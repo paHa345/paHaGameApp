@@ -62,69 +62,69 @@ const CrosswordGameCellMenuMain = () => {
   //       .join("")
   //   );
 
-  let currentValue: string[] | undefined = highlightedCell?.addedWordArr
-    .filter((el) => el.direction === addedWordDirection)[0]
-    .value?.split("");
+  // let currentValue: string[] | undefined = highlightedCell?.addedWordArr
+  //   .filter((el) => el.direction === addedWordDirection)[0]
+  //   .value?.split("");
 
-  const changeCurrentLetterHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const index = e.currentTarget.dataset.number;
-    if (index && currentValue) {
-      if (e.currentTarget.dataset.number !== undefined && valueEl) {
-        const currentCell = highlightedCell?.addedWordArr.filter(
-          (el) => el.direction === addedWordDirection
-        )[0].addedWordArr[Number(index)];
+  // const changeCurrentLetterHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const index = e.currentTarget.dataset.number;
+  //   if (index && currentValue) {
+  //     if (e.currentTarget.dataset.number !== undefined && valueEl) {
+  //       const currentCell = highlightedCell?.addedWordArr.filter(
+  //         (el) => el.direction === addedWordDirection
+  //       )[0].addedWordArr[Number(index)];
 
-        dispatch(
-          crossworGamedActions.changeInput({
-            cell: currentCell,
-            value: e.currentTarget.value.toLowerCase(),
-          })
-        );
-        dispatch(crossworGamedActions.updateCellAndHaghlightedValue());
-        // valueEl[Number(e.currentTarget.dataset.number) + 1]
-        if (
-          Number(index) + 1 < currentValue?.length &&
-          e.currentTarget.value.toLowerCase().length > 0
-        ) {
-          console.log(document.querySelectorAll("input")[Number(index) + 1].focus());
-        }
+  //       dispatch(
+  //         crossworGamedActions.changeInput({
+  //           cell: currentCell,
+  //           value: e.currentTarget.value.toLowerCase(),
+  //         })
+  //       );
+  //       dispatch(crossworGamedActions.updateCellAndHaghlightedValue());
+  //       // valueEl[Number(e.currentTarget.dataset.number) + 1]
+  //       if (
+  //         Number(index) + 1 < currentValue?.length &&
+  //         e.currentTarget.value.toLowerCase().length > 0
+  //       ) {
+  //         console.log(document.querySelectorAll("input")[Number(index) + 1].focus());
+  //       }
 
-        //get crossword game
-        //get crossword ID
+  //       //set crossword game
+  //       //set crossword ID
 
-        window.localStorage.setItem("currentCrosswordGame", JSON.stringify(currentCrosswordGame));
-        window.localStorage.setItem("currentAttemptID", JSON.stringify(currentAttemptID));
-        // window.localStorage.setItem("currentCrosswordID", JSON.stringify(currentCrosswordID));
-      }
-    }
-  };
+  //       window.localStorage.setItem("currentCrosswordGame", JSON.stringify(currentCrosswordGame));
+  //       window.localStorage.setItem("currentAttemptID", JSON.stringify(currentAttemptID));
+  //       // window.localStorage.setItem("currentCrosswordID", JSON.stringify(currentCrosswordID));
+  //     }
+  //   }
+  // };
 
-  const valueEl = highlightedCell?.addedWordArr
-    .filter((el) => el.direction === addedWordDirection)[0]
-    .addedWordArr.map((el, index) => {
-      if (currentValue !== undefined) {
-        let value = currentValue[index].trim().length === 0 ? "" : currentValue[index];
-        return (
-          <div
-            className=" flex justify-center items-center border border-neutral-800 border-solid"
-            key={`${index}_${el.col}_${el.row}`}
-            data-number={index}
-          >
-            <input
-              className={`${el.col}_${el.row} pl-2 h-6 w-4 sm:h-10 sm:w-8 text-2xl`}
-              key={`${index}_${el.col}_${el.row}`}
-              data-number={index}
-              data-col={el.col}
-              data-row={el.row}
-              type="text"
-              maxLength={1}
-              value={value}
-              onChange={changeCurrentLetterHandler}
-            />
-          </div>
-        );
-      }
-    });
+  // const valueEl = highlightedCell?.addedWordArr
+  //   .filter((el) => el.direction === addedWordDirection)[0]
+  //   .addedWordArr.map((el, index) => {
+  //     if (currentValue !== undefined) {
+  //       let value = currentValue[index].trim().length === 0 ? "" : currentValue[index];
+  //       return (
+  //         <div
+  //           className=" flex justify-center items-center border border-neutral-800 border-solid"
+  //           key={`${index}_${el.col}_${el.row}`}
+  //           data-number={index}
+  //         >
+  //           <input
+  //             className={`${el.col}_${el.row} pl-2 h-6 w-4 sm:h-10 sm:w-8 text-2xl`}
+  //             key={`${index}_${el.col}_${el.row}`}
+  //             data-number={index}
+  //             data-col={el.col}
+  //             data-row={el.row}
+  //             type="text"
+  //             maxLength={1}
+  //             value={value}
+  //             onChange={changeCurrentLetterHandler}
+  //           />
+  //         </div>
+  //       );
+  //     }
+  //   });
 
   const setAddedWordDirection = function (this: any, e: React.MouseEvent<HTMLDivElement>) {
     e.preventDefault();
@@ -167,11 +167,11 @@ const CrosswordGameCellMenuMain = () => {
   //     highlightedCell?.addedWordArr.filter((el) => el.direction === addedWordDirection)[0].value;
   //   }
 
-  useEffect(() => {
-    currentValue = highlightedCell?.addedWordArr
-      .filter((el) => el.direction === addedWordDirection)[0]
-      .value?.split("");
-  }, [addedWordDirection]);
+  // useEffect(() => {
+  //   currentValue = highlightedCell?.addedWordArr
+  //     .filter((el) => el.direction === addedWordDirection)[0]
+  //     .value?.split("");
+  // }, [addedWordDirection]);
 
   const changeAddedWordValueHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     dispatch(crossworGamedActions.changeAddedWordValue(e.currentTarget.value));
@@ -245,20 +245,11 @@ const CrosswordGameCellMenuMain = () => {
               <span>Вопрос: </span>
               {currentQuestion}
             </h1>
-            {currentValue !== undefined && (
+            {/* {currentValue !== undefined && (
               <div className=" flex justify-center items-center">
                 <div className="flex flex-wrap flex-row gap-2">{valueEl}</div>
               </div>
-            )}
-            {/* <textarea
-              className=" ml-2"
-              onChange={changeAddedWordValueHandler}
-              value={currentValue}
-              placeholder="Ваш ответ"
-              name="answer"
-              cols={20}
-              rows={1}
-            ></textarea> */}
+            )} */}
           </div>
         </div>
       </div>

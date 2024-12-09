@@ -10,10 +10,12 @@ import Head from "next/head";
 import { TelegramProvider } from "./telegramProvider";
 import Script from "next/script";
 config.autoAddCss = false;
-import { Orbitron, Sofia_Sans } from "next/font/google";
+import { Orbitron, Sofia_Sans, Ubuntu, Roboto_Slab } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 const sofia_Sans = Sofia_Sans({ weight: "400", subsets: ["cyrillic"] });
+const ubuntu = Ubuntu({ weight: "400", subsets: ["cyrillic"], style: "normal" });
+const roboto_Slab = Roboto_Slab({ weight: "400", subsets: ["cyrillic"], style: "normal" });
 
 export const metadata: Metadata = {
   title: "paHa Crossword App",
@@ -41,7 +43,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${sofia_Sans.className} bg-gradient-to-tr from-slate-50 to-lime-50`}>
+      <body className={`${roboto_Slab.className} bg-gradient-to-tr from-slate-50 to-lime-50`}>
         <TelegramProvider>
           <MainLayout>
             <ReduxProvider>{children}</ReduxProvider>

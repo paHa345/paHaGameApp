@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { AddedWordDirection } from "./crosswordSlice";
 import { redirect } from "next/navigation";
+import { ICrossword, ICrosswordSchema } from "../types";
 
 export const getAvailableCrosswords = createAsyncThunk(
   "crosswordGameState/getAvailableCrosswords",
@@ -184,7 +185,42 @@ export const finishAttempt = createAsyncThunk(
   "crosswordGameState/finishAttempt",
   async function (attemptData: any, { rejectWithValue, dispatch }) {
     try {
-      console.log(attemptData);
+      console.log(attemptData.crossword);
+
+      const currentCrossword: {
+        key: string;
+        value: string;
+        number: number;
+        row: number;
+        paragraph: number;
+        paragraphNum?: number;
+        inputStatus: number;
+        inputValue: number;
+        textQuestionStatus: number;
+        questionObj: {
+          horizontal: {
+            value: string;
+            questionNumber: number;
+            cell: { row: number; col: number };
+          } | null;
+          vertical: {
+            value: string;
+            questionNumber: number;
+            cell: { row: number; col: number };
+          } | null;
+        };
+        addedWordCell: number;
+        addedWordLetter?: string | null;
+        addedWordDirectionJbj: {
+          horizontal: Boolean;
+          vertical: Boolean;
+        };
+        addedWordArr: {
+          direction: AddedWordDirection;
+          value?: string;
+          addedWordArr: { row: number; col: number; addedLetter?: string }[];
+        }[];
+      }[][] = attemptData.crossword;
 
       const answersArr: {
         row: number;
@@ -194,22 +230,60 @@ export const finishAttempt = createAsyncThunk(
           value: string;
         }[];
       }[] = [];
-      attemptData.crossword.forEach((col: any, x: number) => {
-        col.forEach((cell: any, y: number) => {
-          if (cell?.addedWordArr?.length > 0) {
+
+      currentCrossword.forEach((line, x: number) => {
+        line.forEach((cell) => {
+          if (cell.addedWordArr.length > 0) {
+            const addedWord: {
+              direction: AddedWordDirection;
+              value: string;
+            }[] = [];
+            cell.addedWordArr.forEach((addedWordObj) => {
+              const word: any[] = [];
+              addedWordObj.addedWordArr.forEach((addedWordCellCoord) => {
+                if (
+                  currentCrossword[addedWordCellCoord.row][addedWordCellCoord.col]
+                    .addedWordLetter !== null &&
+                  currentCrossword[addedWordCellCoord.row][addedWordCellCoord.col]
+                    .addedWordLetter !== undefined
+                ) {
+                  word.push(
+                    currentCrossword[addedWordCellCoord.row][addedWordCellCoord.col].addedWordLetter
+                  );
+                }
+              });
+
+              addedWord.push({
+                direction: addedWordObj.direction,
+                value: word.join(""),
+              });
+            });
+
             answersArr.push({
               row: x,
-              col: y,
-              addedWordArr: cell.addedWordArr.map((el: any) => {
-                return {
-                  direction: el.direction,
-                  value: el.value,
-                };
-              }),
+              col: cell.number,
+              addedWordArr: addedWord,
             });
           }
         });
       });
+
+      // attemptData.crossword.forEach((col: any, x: number) => {
+      //   col.forEach((cell: any, y: number) => {
+      //     if (cell?.addedWordArr?.length > 0) {
+      //       answersArr.push({
+      //         row: x,
+      //         col: y,
+      //         addedWordArr: cell.addedWordArr.map((el: any) => {
+      //           return {
+      //             direction: el.direction,
+      //             value: el.value,
+      //           };
+      //         }),
+      //       });
+      //     }
+      //   });
+      // });
 
       const finishAttemptReq = await fetch(`/api/crosswordGame/finishAttempt`, {
         method: "PATCH",
@@ -957,14 +1031,6 @@ export const crosswordGameSlice = createSlice({
       // }
     },
     setSelectedElLetter(state, action) {
-      console.log("Selected");
-      console.log(state.selectedCell?.number);
-      console.log(state.selectedCell?.row);
-
-      console.log("Highlighted");
-      console.log(state.highlightedWordObj?.endCol);
-      console.log(state.highlightedWordObj?.endRow);
-
       if (
         state.selectedCell?.number &&
         state.selectedCell?.row &&
@@ -973,7 +1039,13 @@ export const crosswordGameSlice = createSlice({
       ) {
         state.crosswordGame.crosswordObj[state.selectedCell?.row][
           state.selectedCell?.number
-        ].addedWordLetter = action.payload;
+        ].addedWordLetter = action.payload.toLowerCase();
+
+        //set local storage attempt data
+        // with changed cell letter
+        window.localStorage.setItem("currentCrosswordGame", JSON.stringify(state.crosswordGame));
+        window.localStorage.setItem("currentAttemptID", JSON.stringify(state.attemptID));
+        //
 
         if (state.addedWordDirection === AddedWordDirection.Horizontal) {
           if (state.selectedCell.number >= state.highlightedWordObj?.endCol) {
@@ -997,6 +1069,7 @@ export const crosswordGameSlice = createSlice({
                 state.selectedCell?.number
               ]);
       }
+
       state.baseInput = "";
     },
     changeBaseInput(state, action) {
