@@ -150,17 +150,6 @@ const CrosswordGameCellMain = ({ ref, cell, i, j }: ICellProps) => {
   const hasAddedWord = cell.addedWordLetter;
   const hasNumber = cell?.paragraphNum !== undefined && cell?.paragraphNum !== 0;
 
-  const changeCurrentLetterHandler = (e: any) => {
-    console.log("first");
-    console.log(cell.addedWordLetter);
-    dispatch(
-      crossworGamedActions.test({ col: cell.number, row: cell.row, value: e.currentTarget.value })
-    );
-    if (cell.addedWordLetter) {
-      // cell.addedWordLetter = "p";
-    }
-  };
-
   return (
     <div
       onClick={clickCellNumberHandler}
@@ -175,9 +164,9 @@ const CrosswordGameCellMain = ({ ref, cell, i, j }: ICellProps) => {
       key={`${i}:${j}`}
       // style={{ backgroundColor: `${isHighlightedWord ? "rgb(101 163 13)" : ""}` }}
       style={{
-        backgroundColor: `${isHighlightedWord ? (isSelectedCell ? " #1b58de" : "#5e7d33") : ""}`,
+        backgroundColor: `${isHighlightedWord ? (isSelectedCell ? " #cbc512" : "#5e7d33") : ""}`,
       }}
-      className={`${isHighlightedWord ? "" : ""} ${!hasLetter ? "" : "bg-lime-500"} transition duration-800 ease-out  cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
+      className={`${isHighlightedWord ? "" : ""} ${!hasLetter ? "" : "bg-lime-500"} ${isSelectedCell ? "animate-pulse" : ""} transition duration-800 ease-out  cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
     >
       {hasNumber && (
         <div className="absolute">
@@ -192,7 +181,7 @@ const CrosswordGameCellMain = ({ ref, cell, i, j }: ICellProps) => {
         <div className="absolute">
           <p
             style={{ right: "-5px", bottom: "0px" }}
-            className=" relative text-slate-50 text-3xl font-extrabold"
+            className={`relative ${isSelectedCell ? " text-slate-900" : "text-slate-50"}   text-3xl font-extrabold`}
           >
             {cell.addedWordLetter}
           </p>

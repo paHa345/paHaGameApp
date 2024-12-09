@@ -1,7 +1,7 @@
 "use client";
-import { ICrosswordGameSlice } from "@/app/store/crosswordGameSlice";
+import { crossworGamedActions, ICrosswordGameSlice } from "@/app/store/crosswordGameSlice";
 import React, { MutableRefObject, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CrosswordGameCellMain from "./CrosswordGameCellMain";
 import CrosswordGameQuestionsMain from "./CrosswordGameQuestionsMain";
 import CrosswordGameCellMenuMain from "../CrosswordGameCellMenuSection/CrosswordGameCellMenuMain";
@@ -10,22 +10,23 @@ import StartGameModalMain from "./StartGameModalMain";
 import { redirect } from "next/navigation";
 import EndGameButton from "./EndGameButton";
 import InputLetter from "./InputLetter";
+import { AppDispatch } from "@/app/store";
 
 const CrosswordGameTableMain = () => {
   const crosswordGame = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame
   );
 
+  const dispatch = useDispatch<AppDispatch>();
+
   const startGame = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.startGameStatus
   );
 
+  const baseInput = useSelector((state: ICrosswordGameSlice) => state.crosswordGameState.baseInput);
+
   const { user, webApp } = useTelegram();
 
-  const [letter, setLetter] = useState("");
-  const setLetterHandler = (e: any) => {
-    setLetter(e.currentTarget.value);
-  };
   const showCellMenu = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.showCrosswordGameCellMenu
   );
@@ -44,6 +45,11 @@ const CrosswordGameTableMain = () => {
     (state: ICrosswordGameSlice) => state.crosswordGameState.highlightedWordObj
   );
 
+  const setLetterHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
+
+    dispatch(crossworGamedActions.setSelectedElLetter(e.currentTarget.value));
+  };
   // console.log(highlightedCell?.addedWordArr);
 
   if (!crosswordGame._id) {
@@ -97,10 +103,10 @@ const CrosswordGameTableMain = () => {
           <input
             ref={ref}
             style={{ right: "-5px", bottom: "0px" }}
-            className=" opacity-0 inputBase bg-orange-500 h-6 w-6 text-slate-50 text-3xl font-extrabold"
+            className=" inputBase opacity-0 h-6 w-6 text-slate-50 text-3xl font-extrabold"
             type="text"
             maxLength={1}
-            value={letter}
+            value={baseInput}
             onChange={setLetterHandler}
           />
         </div>

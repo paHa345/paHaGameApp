@@ -254,7 +254,7 @@ export interface ICrosswordGameSlice {
     startGameStatus: boolean;
     currentWord: string;
     index: number;
-    test: number;
+    baseInput: string;
     showChooseCrosswordModal: boolean;
     fetchCrosswordsArrStatus: crosswordGameFetchStatus;
     attemptID?: string;
@@ -443,7 +443,7 @@ interface ICrosswordGameState {
 
   index: number;
 
-  test: number;
+  baseInput: string;
   showChooseCrosswordModal: boolean;
   fetchCrosswordsArrStatus: crosswordGameFetchStatus;
   addedWordDirection: AddedWordDirection;
@@ -631,7 +631,7 @@ export const initCrosswordGameState: ICrosswordGameState = {
   currentWord: "",
   startGameStatus: false,
 
-  test: 10,
+  baseInput: "",
   showChooseCrosswordModal: false,
   fetchCrosswordsArrStatus: crosswordGameFetchStatus.Ready,
   addedWordDirection: AddedWordDirection.Horizontal,
@@ -663,9 +663,6 @@ export const crosswordGameSlice = createSlice({
   name: "crosswordGameState",
   initialState: initCrosswordGameState,
   reducers: {
-    setTest(state, action) {
-      state.test = action.payload;
-    },
     setShowChooseCrosswordModal(state, action) {
       state.showChooseCrosswordModal = action.payload;
     },
@@ -959,10 +956,51 @@ export const crosswordGameSlice = createSlice({
       //   }
       // }
     },
-    test(state, action) {
-      console.log(action.payload);
-      state.crosswordGame.crosswordObj[action.payload.row][action.payload.col].addedWordLetter =
-        action.payload.value;
+    setSelectedElLetter(state, action) {
+      console.log("Selected");
+      console.log(state.selectedCell?.number);
+      console.log(state.selectedCell?.row);
+
+      console.log("Highlighted");
+      console.log(state.highlightedWordObj?.endCol);
+      console.log(state.highlightedWordObj?.endRow);
+
+      if (
+        state.selectedCell?.number &&
+        state.selectedCell?.row &&
+        state.highlightedWordObj?.endCol &&
+        state.highlightedWordObj?.endRow
+      ) {
+        state.crosswordGame.crosswordObj[state.selectedCell?.row][
+          state.selectedCell?.number
+        ].addedWordLetter = action.payload;
+
+        if (state.addedWordDirection === AddedWordDirection.Horizontal) {
+          if (state.selectedCell.number >= state.highlightedWordObj?.endCol) {
+            state.baseInput = "";
+            return;
+          }
+        } else {
+          if (state.selectedCell.row >= state.highlightedWordObj?.endRow) {
+            state.baseInput = "";
+            return;
+          }
+        }
+
+        state.addedWordDirection === AddedWordDirection.Horizontal
+          ? (state.selectedCell =
+              state.crosswordGame.crosswordObj[state.selectedCell?.row][
+                state.selectedCell?.number + 1
+              ])
+          : (state.selectedCell =
+              state.crosswordGame.crosswordObj[state.selectedCell?.row + 1][
+                state.selectedCell?.number
+              ]);
+      }
+      state.baseInput = "";
+    },
+    changeBaseInput(state, action) {
+      state.baseInput = action.payload;
     },
   },
   extraReducers(builder) {
