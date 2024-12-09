@@ -63,7 +63,7 @@ interface ICellProps {
 const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const ref = React.useRef<HTMLParagraphElement>(null) as MutableRefObject<HTMLParagraphElement>;
+  const ref = React.useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
 
   const selectedCell = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.selectedCell
@@ -180,11 +180,7 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
     >
       {hasNumber && (
         <div className="absolute">
-          <p
-            ref={ref}
-            style={{ right: "10px", bottom: "6px" }}
-            className=" relative text-2xl font-extrabold"
-          >
+          <p style={{ right: "10px", bottom: "6px" }} className=" relative text-2xl font-extrabold">
             {cell.inputValue}
           </p>{" "}
         </div>
@@ -199,16 +195,16 @@ const CrosswordGameCellMain = ({ cell, i, j }: ICellProps) => {
           >
             {cell.addedWordLetter}
           </p>
+          <input
+            ref={ref}
+            style={{ right: "-5px", bottom: "0px" }}
+            className=" -z-10 absolute opacity-0 h-6 w-6 text-slate-50 text-3xl font-extrabold"
+            type="text"
+            maxLength={1}
+            value={cell?.addedWordLetter ? cell.addedWordLetter : ""}
+            onChange={changeCurrentLetterHandler}
+          />
         </div>
-
-        //  <input
-        //   style={{ right: "-5px", bottom: "0px" }}
-        //   className=" h-6 w-6 relative text-slate-50 text-3xl font-extrabold"
-        //   type="text"
-        //   maxLength={1}
-        //   value={cell?.addedWordLetter ? cell.addedWordLetter : ""}
-        //   onChange={changeCurrentLetterHandler}
-        // />
       )}
 
       {/* {highlightedObj !== null &&
