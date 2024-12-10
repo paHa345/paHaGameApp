@@ -110,7 +110,7 @@ const CrosswordGameTableMain = () => {
           <input
             ref={ref}
             style={{ right: "-5px", bottom: "0px" }}
-            className=" inputBase fixed opacity-0 h-0 w-0  text-slate-50 text-3xl font-extrabold"
+            className=" inputBase left-0 fixed opacity-0 h-6 w-6  text-slate-50 text-3xl font-extrabold"
             type="text"
             maxLength={1}
             value={baseInput}

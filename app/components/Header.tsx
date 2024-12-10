@@ -45,7 +45,7 @@ const Header = () => {
       >
         {/* <div className=" min-h-20"></div> */}
         <Link rel="icon" href="./../favicon.ico"></Link>
-        <nav className=" border-t-2 border-solid border-lime-100 sm:border-0  rounded-t-3xl sm:rounded-none py-3 sm:py-1 sm:pt-20 ml-0 bg-gradient-to-tr from-headerFooterMainColor to-lime-50 w-full sticky bottom-0 sm:relative flex flex-row items-center justify-center mx-6 gap-5">
+        <nav className=" pl-10 sm:pl-0 border-t-2 border-solid border-lime-100 sm:border-0  rounded-t-3xl sm:rounded-none py-3 sm:py-1 pt-20 ml-0 bg-gradient-to-tr from-headerFooterMainColor to-lime-50 w-full sticky bottom-0 sm:relative flex flex-row items-center justify-start sm:justify-center mx-6 gap-5">
           <Link className=" hidden sm:block mt-2 mb-2 h-12 mr-12" href="/">
             <div className=" hidden sm:block h-12 w-24 ">
               <Image
@@ -62,7 +62,7 @@ const Header = () => {
             {/* <HeaderSerchButton></HeaderSerchButton> */}
           </Suspense>
           <div></div>
-          <div className="pr-0 flex justify-between md:pr-10 md:justify-end gap-10 sm:gap-10 basis-1/2">
+          <div className="pr-0 flex justify-start md:pr-10 md:justify-end gap-10 sm:gap-10 basis-1/2">
             {/* {session.data?.user.userType === "coach" && (
               <div className=" relative">
                 <div className="absolute top-0 right-0">
