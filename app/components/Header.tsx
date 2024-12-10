@@ -45,7 +45,7 @@ const Header = () => {
       >
         {/* <div className=" min-h-20"></div> */}
         <Link rel="icon" href="./../favicon.ico"></Link>
-        <nav className=" border-t-2 border-solid border-headerFooterMainColor sm:border-0  rounded-t-3xl sm:rounded-none py-3 sm:py-1 sm:pt-20 ml-0 bg-gradient-to-tr from-headerFooterMainColor to-lime-50 w-full fixed bottom-0 sm:relative flex flex-row items-center justify-center mx-6 gap-5">
+        <nav className=" border-t-2 border-solid border-lime-100 sm:border-0  rounded-t-3xl sm:rounded-none py-3 sm:py-1 sm:pt-20 ml-0 bg-gradient-to-tr from-headerFooterMainColor to-lime-50 w-full sticky bottom-0 sm:relative flex flex-row items-center justify-center mx-6 gap-5">
           <Link className=" hidden sm:block mt-2 mb-2 h-12 mr-12" href="/">
             <div className=" hidden sm:block h-12 w-24 ">
               <Image
@@ -83,7 +83,7 @@ const Header = () => {
               {" "}
               <Link
                 href="/game"
-                className=" text-2xl text-headerButtonColor hover:text-headerButtonHoverColor transition duration-800 ease-out "
+                className="  hover:text-slate-500 text-2xl text-headerButtonColor transition duration-800 ease-out "
               >
                 {" "}
                 <FontAwesomeIcon
@@ -119,7 +119,7 @@ const Header = () => {
               <div>
                 <Link
                   href="/my"
-                  className=" text-2xl text-headerButtonColor hover:text-headerButtonHoverColor transition duration-800 ease-out "
+                  className="  hover:text-slate-500 text-2xl text-headerButtonColor transition duration-800 ease-out "
                 >
                   <FontAwesomeIcon
                     className={` ${path === "/login" || path === "/my" ? "text-slate-500 scale-125" : ""} transition-all hover:scale-110 hover:text-slate-500 duration-500 fa-2x`}
@@ -139,13 +139,17 @@ const Header = () => {
                 {" "}
                 <Link
                   href="/login"
-                  className=" text-2xl text-headerButtonColor hover:text-headerButtonHoverColor transition duration-800 ease-out "
+                  className="  hover:text-slate-500 text-2xl text-headerButtonColor transition duration-800 ease-out "
                 >
                   <FontAwesomeIcon
-                    className={` ${path === "/login" || path === "/my" ? "text-slate-500 scale-110" : ""} transition-all hover:scale-110 hover:text-slate-500 duration-500 fa-2x`}
+                    className={` ${path === "/login" || path === "/my" ? "text-slate-500 scale-125" : ""} transition-all hover:scale-110 hover:text-slate-500 duration-500 fa-2x`}
                     icon={faUser}
                   />
-                  {/* <p className=" text-xs">Login</p> */}
+                  <p
+                    className={`  ${path === "/login" || path === "/my" ? "hidden" : ""} text-center text-sm font-semibold`}
+                  >
+                    ЛК
+                  </p>{" "}
                 </Link>
               </div>
             )}
