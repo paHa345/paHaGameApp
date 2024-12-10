@@ -40,6 +40,8 @@ export const setAvailableCrosswordGame = createAsyncThunk(
       console.log(crosswordGame.message);
       // dispatch(crossworGamedActions.setAvailableCrosswordGame(data.result));
       dispatch(crossworGamedActions.setCrosswordGame(crosswordGame.result));
+      console.log(crosswordGame.result.crosswordObj.length);
+      dispatch(crossworGamedActions.setCrosswordSize(crosswordGame.result.crosswordObj.length));
 
       setTimeout(() => {
         redirect("/crosswordGame/game");
@@ -325,6 +327,8 @@ export enum crosswordGameFetchStatus {
 
 export interface ICrosswordGameSlice {
   crosswordGameState: {
+    crosswordSize: number;
+
     startGameStatus: boolean;
     currentWord: string;
     index: number;
@@ -511,6 +515,8 @@ export interface ICrosswordGameSlice {
 }
 
 interface ICrosswordGameState {
+  crosswordSize: number;
+
   currentWord: string;
   startGameStatus: boolean;
   attemptID?: string;
@@ -701,6 +707,8 @@ interface ICrosswordGameState {
 }
 
 export const initCrosswordGameState: ICrosswordGameState = {
+  crosswordSize: 10,
+
   index: 0,
   currentWord: "",
   startGameStatus: false,
@@ -739,6 +747,9 @@ export const crosswordGameSlice = createSlice({
   reducers: {
     setShowChooseCrosswordModal(state, action) {
       state.showChooseCrosswordModal = action.payload;
+    },
+    setCrosswordSize(state, action) {
+      state.crosswordSize = action.payload;
     },
     setAvailableCrosswordGamesArr(state, action) {
       state.availableCrosswordGamesArr = action.payload;

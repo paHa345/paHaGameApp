@@ -189,10 +189,10 @@ const CrosswordGameCellMenuMain = () => {
 
   return (
     <div
-      // style={{ top: `150px`, right: `200px` }}
+      style={{ top: `50px` }}
       className=" relative z-10 mt-10 flex justify-center items-center  "
     >
-      <div className="w-11/12 sm:w-5/6 lg:w-2/3  rounded-md bg-slate-200 p-2 fixed flex  border-slate-400 border-solid border-2 ">
+      <div className="w-11/12 sm:w-5/6 lg:w-2/3  rounded-md  bg-lime-50 p-1 fixed flex  border-slate-400 border-solid border-2 ">
         <div className=" flex flex-col justify-center items-center">
           <FontAwesomeIcon
             // style={{ color: "red" }}
@@ -214,8 +214,8 @@ const CrosswordGameCellMenuMain = () => {
         >
           <FontAwesomeIcon icon={faCheckCircle} />
         </a> */}
-        <div className="rounded w-full flex flex-col gap-1 justify-center items-center ml-2 border-slate-600 border-solid border-2">
-          <div className=" py-2 flex gap-6 flex-row justify-center items-center">
+        <div className="rounded w-full flex flex-col justify-center items-center ml-2">
+          <div className=" flex gap-6 flex-row justify-center items-center">
             {highlightedCell?.questionObj.horizontal?.value && (
               <div
                 onClick={setAddedWordDirection.bind(AddedWordDirection.Horizontal)}
@@ -240,8 +240,8 @@ const CrosswordGameCellMenuMain = () => {
               </div>
             )}
           </div>
-          <div className=" m-2 rounded border-slate-100 border-solid border-2">
-            <h1 className=" pb-2 text-center">
+          <div className=" rounded bg-lime-200 border-slate-100 border-solid border-2">
+            <h1 className=" pb-2 text-center text-base">
               <span>Вопрос: </span>
               {currentQuestion}
             </h1>

@@ -417,7 +417,7 @@ export const initCrosswordState: ICrosswordState = {
   saveCurrentCrosswordInDBStatus: crosswordFetchStatus.Ready,
 
   currentUserCrosswordsArr: [],
-  crosswordSize: 0,
+  crosswordSize: 10,
   createdCrossword: [],
   createContextMenuStatus: false,
   createContextMenuXPosition: 0,

@@ -39,15 +39,15 @@ const Header = () => {
     <ReduxProvider>
       <header
         style={{
-          minWidth: `${currentCrosswordSize > 10 ? `${currentCrosswordSize * 45}px` : `${5 * 45}px`}`,
+          minWidth: `${currentCrosswordSize >= 10 ? `${currentCrosswordSize * 45}px` : `${5 * 45}px`}`,
         }}
-        className={`bg-gradient-to-tr from-headerFooterMainColor to-lime-50`}
+        // className={`bg-gradient-to-br from-headerFooterMainColor to-lime-50`}
       >
-        <div className=" min-h-24"></div>
+        {/* <div className=" min-h-20"></div> */}
         <Link rel="icon" href="./../favicon.ico"></Link>
-        <nav className=" relative flex flex-row items-center justify-center mx-6 gap-5">
-          <Link className=" mt-2 mb-2 h-12 mr-12" href="/">
-            <div className=" h-12 w-24 ">
+        <nav className=" border-t-2 border-solid border-headerFooterMainColor sm:border-0  rounded-t-3xl sm:rounded-none py-3 sm:py-1 sm:pt-20 ml-0 bg-gradient-to-tr from-headerFooterMainColor to-lime-50 w-full fixed bottom-0 sm:relative flex flex-row items-center justify-center mx-6 gap-5">
+          <Link className=" hidden sm:block mt-2 mb-2 h-12 mr-12" href="/">
+            <div className=" hidden sm:block h-12 w-24 ">
               <Image
                 className=" w-full h-full"
                 src="/logo.jpg"
@@ -62,7 +62,7 @@ const Header = () => {
             {/* <HeaderSerchButton></HeaderSerchButton> */}
           </Suspense>
           <div></div>
-          <div className="pr-0 flex justify-start md:pr-10 md:justify-end gap-3 sm:gap-10 basis-1/2">
+          <div className="pr-0 flex justify-between md:pr-10 md:justify-end gap-10 sm:gap-10 basis-1/2">
             {/* {session.data?.user.userType === "coach" && (
               <div className=" relative">
                 <div className="absolute top-0 right-0">
@@ -79,7 +79,7 @@ const Header = () => {
                 </Link>
               </div>
             )} */}
-            <div className="">
+            <div className=" flex justify-center items-center flex-col">
               {" "}
               <Link
                 href="/game"
@@ -87,24 +87,32 @@ const Header = () => {
               >
                 {" "}
                 <FontAwesomeIcon
-                  className={` ${path === "/game" || path === "/crosswordGame" || path === "/crosswordGame/game" ? "text-slate-500 scale-110" : ""} transition-all hover:text-slate-500 hover:scale-110 duration-500 fa-2x`}
+                  className={` ${path === "/game" || path === "/crosswordGame" || path === "/crosswordGame/game" ? "text-slate-500 scale-125" : ""} transition-all hover:text-slate-500 hover:scale-110 duration-500 fa-2x`}
                   icon={faPuzzlePiece}
                 />
-                {/* <p className=" text-xs">Game</p> */}
+                <p
+                  className={` ${path === "/game" || path === "/crosswordGame" || path === "/crosswordGame/game" ? " hidden" : ""} text-center text-sm font-semibold`}
+                >
+                  Игры
+                </p>
               </Link>
             </div>
             <div className="">
               {" "}
               <Link
                 href="/results"
-                className=" text-2xl text-headerButtonColor hover:text-headerButtonHoverColor transition duration-800 ease-out "
+                className=" hover:text-slate-500 text-2xl text-headerButtonColor transition duration-800 ease-out "
               >
                 {" "}
                 <FontAwesomeIcon
-                  className={` ${path === "/results" ? "text-slate-500 scale-110" : ""} transition-all hover:scale-110 hover:text-slate-500 duration-500 fa-2x`}
+                  className={` ${path === "/results" ? "text-slate-500 scale-125" : ""} transition-all hover:scale-110 hover:text-slate-500 duration-500 fa-2x`}
                   icon={faGraduationCap}
                 />
-                {/* <p className=" text-xs">Game</p> */}
+                <p
+                  className={`  ${path === "/results" ? "hidden" : ""} text-center text-sm font-semibold`}
+                >
+                  Лидеры
+                </p>
               </Link>
             </div>
             {session.data && (
@@ -114,10 +122,14 @@ const Header = () => {
                   className=" text-2xl text-headerButtonColor hover:text-headerButtonHoverColor transition duration-800 ease-out "
                 >
                   <FontAwesomeIcon
-                    className={` ${path === "/login" || path === "/my" ? "text-slate-500 scale-110" : ""} transition-all hover:scale-110 hover:text-slate-500 duration-500 fa-2x`}
+                    className={` ${path === "/login" || path === "/my" ? "text-slate-500 scale-125" : ""} transition-all hover:scale-110 hover:text-slate-500 duration-500 fa-2x`}
                     icon={faIdCard}
                   />
-                  {/* <p className=" text-xs">User</p> */}
+                  <p
+                    className={`  ${path === "/login" || path === "/my" ? "hidden" : ""} text-center text-sm font-semibold`}
+                  >
+                    ЛК
+                  </p>{" "}
                 </Link>
               </div>
             )}

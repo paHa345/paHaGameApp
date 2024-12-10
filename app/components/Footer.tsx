@@ -13,9 +13,9 @@ const Footer = () => {
     <ReduxProvider>
       <footer
         style={{
-          minWidth: `${currentCrosswordSize > 10 ? `${currentCrosswordSize * 45}px` : `${5 * 45}px`}`,
+          minWidth: `${currentCrosswordSize >= 10 ? `${currentCrosswordSize * 45}px` : `${5 * 45}px`}`,
         }}
-        className={` bg-gradient-to-tl from-lime-50 to-headerFooterSecoundaryColor min-w-[${currentCrosswordSize * 45}px]`}
+        className={` hidden sm:block bg-gradient-to-tl from-lime-50 to-headerFooterSecoundaryColor `}
       >
         <div className=" footerMainContainer">
           <div className=" flex justify-center items-center">

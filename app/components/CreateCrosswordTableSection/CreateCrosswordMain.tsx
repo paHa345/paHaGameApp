@@ -93,22 +93,6 @@ const CreateCrosswordMain = () => {
     const crosswordName = localStorage.getItem("crosswordName");
     const crosswordValue = localStorage.getItem("crosswordValue");
     const crosswordId = localStorage.getItem("crosswordId");
-
-    // dispatch(createCrosswordTableArrAndUpdateState(crosswordValue));
-
-    // dispatch(crosswordActions.setCreatedCrossword(JSON.parse(createdCrossword)));
-
-    // if (
-    //   createdCrossword !== null &&
-    //   crosswordName !== null &&
-    //   crosswordValue !== null &&
-    //   crosswordId !== null
-    // ) {
-    //   dispatch(crosswordActions.setCreatedCrossword(JSON.parse(createdCrossword)));
-    //   dispatch(crosswordActions.setCrosswordName(JSON.parse(crosswordName)));
-    //   dispatch(crosswordActions.setCrosswordValue(JSON.parse(crosswordValue)));
-    //   dispatch(crosswordActions.setCrosswordId(JSON.parse(crosswordId)));
-    // }
   });
 
   return (
@@ -166,7 +150,6 @@ const CreateCrosswordMain = () => {
       <div className=" flex justify-center items-center">
         <LoadCrosswordButton></LoadCrosswordButton>
       </div>
-
       {showLoadCrosswordModal && <LoadCrosswordModalMain></LoadCrosswordModalMain>}
 
       {/* {setNumberModalStatus && <CreateCrosswordButtonsMenuMain></CreateCrosswordButtonsMenuMain>} */}
