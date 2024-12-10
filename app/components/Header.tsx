@@ -39,7 +39,7 @@ const Header = () => {
     <ReduxProvider>
       <header
         style={{
-          minWidth: `${currentCrosswordSize >= 10 ? `${currentCrosswordSize * 45}px` : `${5 * 45}px`}`,
+          minWidth: `${currentCrosswordSize >= 10 ? `${currentCrosswordSize * 35}px` : `${5 * 45}px`}`,
         }}
         // className={`bg-gradient-to-br from-headerFooterMainColor to-lime-50`}
       >
