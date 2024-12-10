@@ -189,7 +189,7 @@ const CrosswordGameCellMenuMain = () => {
 
   return (
     <div
-      style={{ top: `-80px` }}
+      style={{ left: "10px", top: `-80px` }}
       className=" relative z-10 mt-10 flex justify-center items-center  "
     >
       <div className="w-11/12 sm:w-5/6 lg:w-2/3  rounded-md  bg-lime-50 p-1 fixed flex  border-slate-400 border-solid border-2 ">
