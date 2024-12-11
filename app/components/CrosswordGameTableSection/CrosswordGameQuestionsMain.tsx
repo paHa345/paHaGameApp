@@ -33,12 +33,12 @@ const CrosswordGameQuestionsMain = () => {
                 }) => question.direction === AddedWordDirection.Horizontal
               )
               .map((el, index) => {
-                return <CrosswordGameQuestion question={el}></CrosswordGameQuestion>;
+                return <CrosswordGameQuestion key={el.value} question={el}></CrosswordGameQuestion>;
               })
           : questions
               .filter((question) => question.direction === AddedWordDirection.Vertical)
               .map((el, index) => {
-                return <CrosswordGameQuestion question={el}></CrosswordGameQuestion>;
+                return <CrosswordGameQuestion key={el.value} question={el}></CrosswordGameQuestion>;
               })}
       </div>
     </div>

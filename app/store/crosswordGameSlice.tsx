@@ -728,6 +728,35 @@ export const crosswordGameSlice = createSlice({
       if (state.highlightedCell !== null) {
         const hihlightedDirection = state.addedWordDirection;
 
+        console.log(state.selectedCell?.baseCell.horizontal);
+        console.log(state.selectedCell?.baseCell.vertical);
+
+        if (
+          state.selectedCell?.baseCell.horizontal !== null &&
+          hihlightedDirection === AddedWordDirection.Horizontal &&
+          state.selectedCell?.baseCell.horizontal?.row
+        ) {
+          console.log(state.selectedCell?.baseCell.horizontal?.row);
+          console.log(state.selectedCell?.baseCell.horizontal?.col);
+          state.highlightedCell =
+            state.crosswordGame.crosswordObj[state.selectedCell?.baseCell.horizontal?.row][
+              state.selectedCell?.baseCell.horizontal?.col
+            ];
+        }
+
+        if (
+          state.selectedCell?.baseCell.vertical !== null &&
+          hihlightedDirection === AddedWordDirection.Vertical &&
+          state.selectedCell?.baseCell.vertical?.row
+        ) {
+          console.log(state.selectedCell?.baseCell.vertical?.row);
+          console.log(state.selectedCell?.baseCell.vertical?.col);
+          state.highlightedCell =
+            state.crosswordGame.crosswordObj[state.selectedCell?.baseCell.vertical?.row][
+              state.selectedCell?.baseCell.vertical?.col
+            ];
+        }
+
         const highlightedDirectionCells = state.highlightedCell.addedWordArr.filter(
           (el) => el.direction === hihlightedDirection
         );
