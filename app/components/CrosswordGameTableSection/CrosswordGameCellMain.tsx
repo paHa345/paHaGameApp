@@ -103,9 +103,14 @@ const CrosswordGameCellMain = ({ ref, cell, i, j }: ICellProps) => {
     ) {
       dispatch(
         setHighlightedElementAndDirection({
-          selectedCell: cell,
-          highlightedCell:
-            crosswordGameObj[cell.baseCell.vertical?.row][cell.baseCell.vertical?.col],
+          selectedCell: {
+            col: cell.number,
+            row: cell.row,
+          },
+          highlightedCell: {
+            col: cell.baseCell.vertical?.col,
+            row: cell.baseCell.vertical?.row,
+          },
           direction: AddedWordDirection.Vertical,
         })
       );
@@ -114,9 +119,14 @@ const CrosswordGameCellMain = ({ ref, cell, i, j }: ICellProps) => {
     if (cell.baseCell.horizontal) {
       dispatch(
         setHighlightedElementAndDirection({
-          selectedCell: cell,
-          highlightedCell:
-            crosswordGameObj[cell.baseCell.horizontal?.row][cell.baseCell.horizontal?.col],
+          selectedCell: {
+            col: cell.number,
+            row: cell.row,
+          },
+          highlightedCell: {
+            col: cell.baseCell.horizontal?.col,
+            row: cell.baseCell.horizontal?.row,
+          },
           direction: AddedWordDirection.Horizontal,
         })
       );
@@ -124,9 +134,14 @@ const CrosswordGameCellMain = ({ ref, cell, i, j }: ICellProps) => {
       if (cell.baseCell.vertical && direction === AddedWordDirection.Horizontal) {
         dispatch(
           setHighlightedElementAndDirection({
-            selectedCell: cell,
-            highlightedCell:
-              crosswordGameObj[cell.baseCell.vertical?.row][cell.baseCell.vertical?.col],
+            selectedCell: {
+              col: cell.number,
+              row: cell.row,
+            },
+            highlightedCell: {
+              col: cell.baseCell.vertical?.col,
+              row: cell.baseCell.vertical?.row,
+            },
             direction: AddedWordDirection.Vertical,
           })
         );

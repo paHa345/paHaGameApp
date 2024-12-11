@@ -2,6 +2,7 @@ import { ICrosswordGameSlice } from "@/app/store/crosswordGameSlice";
 import { AddedWordDirection } from "@/app/store/crosswordSlice";
 import React from "react";
 import { useSelector } from "react-redux";
+import CrosswordGameQuestion from "./CrosswordGameQuestion";
 
 const CrosswordGameQuestionsMain = () => {
   const questions = useSelector(
@@ -20,28 +21,24 @@ const CrosswordGameQuestionsMain = () => {
       <div>
         {el.directionEn === "horizontal"
           ? questions
-              .filter((question) => question.direction === AddedWordDirection.Horizontal)
+              .filter(
+                (question: {
+                  direction: AddedWordDirection;
+                  value: string;
+                  questionNumber: number;
+                  cell: {
+                    row: number;
+                    col: number;
+                  };
+                }) => question.direction === AddedWordDirection.Horizontal
+              )
               .map((el, index) => {
-                return (
-                  <div className=" pb-3" key={`${el.value}_${index}`}>
-                    <div className=" flex flex-row gap-4 text-xl">
-                      <h1> {el.questionNumber}</h1>
-                      <h1>{el.value}</h1>
-                    </div>
-                  </div>
-                );
+                return <CrosswordGameQuestion question={el}></CrosswordGameQuestion>;
               })
           : questions
               .filter((question) => question.direction === AddedWordDirection.Vertical)
               .map((el, index) => {
-                return (
-                  <div key={`${el.value}_${index}`}>
-                    <div className=" flex flex-row gap-4 text-xl">
-                      <h1> {el.questionNumber}</h1>
-                      <h1>{el.value}</h1>
-                    </div>
-                  </div>
-                );
+                return <CrosswordGameQuestion question={el}></CrosswordGameQuestion>;
               })}
       </div>
     </div>
