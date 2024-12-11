@@ -146,6 +146,13 @@ const CrosswordGameCellMain = ({ ref, cell, i, j }: ICellProps) => {
       }
     }
 
+    const element = document
+      .querySelector(`[data-fieldid='${cell.row}:${cell.number}']`)
+      ?.getClientRects()[0].y;
+    if (element !== null && element) {
+      scrollTo(0, window.scrollY + element - 250);
+    }
+
     // console.log(selectedCell?.baseCell.horizontal);
     // console.log(selectedCell?.baseCell.vertical);
   };
