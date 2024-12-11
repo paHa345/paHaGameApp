@@ -20,16 +20,24 @@ interface IQiestionProp {
 }
 const CrosswordGameQuestion = ({ question }: IQiestionProp) => {
   const dispatch = useDispatch<AppDispatch>();
-  const crosswordGameObj = useSelector(
-    (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame.crosswordObj
+
+  const highlightedCell = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.highlightedCell
   );
+
+  const direction = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.addedWordDirection
+  );
+
   const clickQuestionHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     const element = document
       .querySelector(`[data-fieldid='${question.cell.row}:${question.cell.col}']`)
       ?.getClientRects()[0].y;
     if (element !== null && element) {
-      scrollTo(0, window.scrollY + element - 250);
+      setTimeout(() => {
+        scrollTo({ left: 0, top: window.scrollY + element - 250, behavior: "smooth" });
+      }, 500);
     }
 
     dispatch(
@@ -52,10 +60,14 @@ const CrosswordGameQuestion = ({ question }: IQiestionProp) => {
       inputEl.focus();
     }
   };
+  const isHighlighted =
+    highlightedCell?.row === question.cell.row &&
+    highlightedCell.number === question.cell.col &&
+    question.direction === direction;
   return (
     <div
       onClick={clickQuestionHandler}
-      className=" pb-3"
+      className={` ${isHighlighted ? "bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-exerciseCardShadow rounded-md px-1 py-1" : ""} cursor-pointer pb-3`}
       key={`${question.value}_${question.cell.col}_${question.cell.row}_${question.direction}`}
     >
       <div className=" flex flex-row gap-4 text-xl">

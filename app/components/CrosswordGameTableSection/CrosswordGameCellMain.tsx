@@ -150,7 +150,7 @@ const CrosswordGameCellMain = ({ ref, cell, i, j }: ICellProps) => {
       .querySelector(`[data-fieldid='${cell.row}:${cell.number}']`)
       ?.getClientRects()[0].y;
     if (element !== null && element) {
-      scrollTo(0, window.scrollY + element - 250);
+      scrollTo({ left: 0, top: window.scrollY + element - 250, behavior: "smooth" });
     }
 
     // console.log(selectedCell?.baseCell.horizontal);
@@ -190,7 +190,7 @@ const CrosswordGameCellMain = ({ ref, cell, i, j }: ICellProps) => {
     >
       {hasNumber && (
         <div className="absolute">
-          <p style={{ right: "10px", bottom: "6px" }} className=" relative text-2xl font-extrabold">
+          <p style={{ right: "10px", bottom: "8px" }} className=" relative text-xl font-extrabold">
             {cell.inputValue}
           </p>{" "}
         </div>
@@ -200,8 +200,8 @@ const CrosswordGameCellMain = ({ ref, cell, i, j }: ICellProps) => {
       {hasAddedWord && (
         <div className="absolute">
           <p
-            style={{ right: "-5px", bottom: "0px" }}
-            className={`relative ${isSelectedCell ? " text-slate-900" : "text-slate-50"}   text-3xl font-extrabold`}
+            style={{ right: "0px", bottom: "3px" }}
+            className={`relative ${isSelectedCell ? " text-slate-900" : "text-slate-50"}   text-2xl font-extrabold`}
           >
             {cell.addedWordLetter}
           </p>

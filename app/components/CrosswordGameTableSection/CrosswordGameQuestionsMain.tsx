@@ -48,6 +48,9 @@ const CrosswordGameQuestionsMain = () => {
       {questions.length > 0 && (
         <div>
           <h1 className=" text-2xl text-center">Вопросы</h1>
+          <h1 className=" text-center">
+            ( Нажмите на вопрос, чтобы показать соответствующее слово )
+          </h1>
 
           {questionsEl}
         </div>

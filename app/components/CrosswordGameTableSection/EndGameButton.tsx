@@ -105,8 +105,9 @@ const EndGameButton = () => {
         </div>
       )}
       {finishAttemptStatus === crosswordGameFetchStatus.Ready && (
-        <div onClick={finishAttemptHandler} className=" flex justify-center items-center">
+        <div className=" flex justify-center items-center">
           <div
+            onClick={finishAttemptHandler}
             className={` cursor-pointer w-2/4 px-4 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow`}
           >
             <div className=" flex flex-col">
