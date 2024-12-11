@@ -64,8 +64,6 @@ interface ICellProps {
 const CrosswordGameCellMain = ({ ref, cell, i, j }: ICellProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  // const ref = React.useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
-
   const selectedCell = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.selectedCell
   );

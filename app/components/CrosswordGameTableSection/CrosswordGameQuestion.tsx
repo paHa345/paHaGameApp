@@ -45,6 +45,12 @@ const CrosswordGameQuestion = ({ question }: IQiestionProp) => {
         direction: question.direction,
       })
     );
+
+    const inputEl: HTMLInputElement | null = document.querySelector(".inputBase");
+
+    if (inputEl !== null) {
+      inputEl.focus();
+    }
   };
   return (
     <div

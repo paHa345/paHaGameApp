@@ -132,6 +132,11 @@ const CrosswordGameCellMenuMain = () => {
     e.preventDefault();
     dispatch(crossworGamedActions.changeAddedWordDirectionAndSetHighlightedCells(this));
     dispatch(crossworGamedActions.updateCellAndHaghlightedValue());
+    const inputEl: HTMLInputElement | null = document.querySelector(".inputBase");
+
+    if (inputEl !== null) {
+      inputEl.focus();
+    }
   };
 
   // .addedWordArr.map((el) => {
