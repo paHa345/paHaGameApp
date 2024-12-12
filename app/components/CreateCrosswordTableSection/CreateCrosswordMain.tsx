@@ -21,6 +21,10 @@ import { faCircle, faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { retrieveLaunchParams } from "@telegram-apps/sdk";
 import { initData } from "@telegram-apps/sdk";
 
+export function isTelegramWebApp() {
+  // @ts-ignore
+  return typeof TelegramWebviewProxy !== "undefined";
+}
 const CreateCrosswordMain = () => {
   // const { initDataRaw, initData } = retrieveLaunchParams();
 
@@ -31,6 +35,16 @@ const CreateCrosswordMain = () => {
 
   const params = new URLSearchParams(hash);
   console.log(params.get("tgWebAppVersion")); // "6.2"
+  console.log(params);
+
+  let message = "";
+  if (isTelegramWebApp()) {
+    message = "User is using Telegram Web App or in-app browser.";
+    console.log("User is using Telegram Web App or in-app browser.");
+  } else {
+    message = "User is using a regular browser.";
+    console.log("User is using a regular browser.");
+  }
 
   const dispatch = useDispatch<AppDispatch>();
   const cretedCrosswordValue = useSelector(
@@ -109,7 +123,7 @@ const CreateCrosswordMain = () => {
 
   return (
     <div className=" py-5 min-h-[70vh]">
-      <h1>{params.get("tgWebAppVersion")}</h1>
+      <h1>{message}</h1>
       {/* <h1>{initData?.user?.username}</h1>
       <h1>{initData?.user?.firstName}</h1>
       <h1>{initData?.user?.photoUrl}</h1> */}
