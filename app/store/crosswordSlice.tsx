@@ -585,6 +585,17 @@ export const crosswordSlice = createSlice({
       state.questionValue = action.payload;
     },
     setCellTextQuestionValue(state, action) {
+      if (action.payload.trim().length === 0) {
+        state.addedWord.direction === AddedWordDirection.Horizontal
+          ? (state.createdCrossword[state.highlightedField.row][
+              state.highlightedField.number
+            ].questionObj.horizontal = null)
+          : (state.createdCrossword[state.highlightedField.row][
+              state.highlightedField.number
+            ].questionObj.vertical = null);
+        return;
+      }
+
       const currentQuestionObj =
         state.addedWord.direction === AddedWordDirection.Horizontal
           ? {
@@ -623,7 +634,28 @@ export const crosswordSlice = createSlice({
         };
       }
     },
-    addQuestionToState(state) {
+    addQuestionToState(state, action) {
+      if (action.payload.trim().length === 0) {
+        const questionIndex = state.questionsArr.findIndex(
+          (question) =>
+            question.cell.row === state.highlightedField.row &&
+            question.cell.col === state.highlightedField.number &&
+            question.direction === state.addedWord.direction
+        );
+        console.log(state.questionsArr[questionIndex].value);
+
+        state.questionsArr.splice(questionIndex, 1);
+        console.log(state.questionsArr.length);
+        state.addedWord.direction === AddedWordDirection.Horizontal
+          ? (state.createdCrossword[state.highlightedField.row][
+              state.highlightedField.number
+            ].questionObj.horizontal = null)
+          : (state.createdCrossword[state.highlightedField.row][
+              state.highlightedField.number
+            ].questionObj.vertical = null);
+        return;
+      }
+
       const currentElIndex = state.questionsArr.findIndex(
         (el) =>
           el.cell.col === state.highlightedField.number &&
@@ -1135,6 +1167,25 @@ export const crosswordSlice = createSlice({
     },
     setCrosswordSize(state, action) {
       state.crosswordSize = action.payload;
+    },
+    clearQuestion(state) {
+      const questionIndex = state.questionsArr.findIndex(
+        (question) =>
+          question.cell.row === state.highlightedField.row &&
+          question.cell.col === state.highlightedField.number &&
+          question.direction === state.addedWord.direction
+      );
+      console.log(state.questionsArr[questionIndex].value);
+
+      state.questionsArr.splice(questionIndex, 1);
+      console.log(state.questionsArr.length);
+      state.addedWord.direction === AddedWordDirection.Horizontal
+        ? (state.createdCrossword[state.highlightedField.row][
+            state.highlightedField.number
+          ].questionObj.horizontal = null)
+        : (state.createdCrossword[state.highlightedField.row][
+            state.highlightedField.number
+          ].questionObj.vertical = null);
     },
   },
   extraReducers: (builder) => {

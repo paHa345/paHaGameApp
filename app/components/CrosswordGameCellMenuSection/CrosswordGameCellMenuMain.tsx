@@ -250,8 +250,8 @@ const CrosswordGameCellMenuMain = () => {
             )}
           </div>
           <div className=" px-2 rounded bg-lime-200 border-slate-100 border-solid border-2">
-            <h1 className=" pb-2 text-center text-base">
-              <span>Вопрос: </span>
+            <h1 className=" pb-2 text-center text-xl">
+              {/* <span className=" text-base">Вопрос: </span> */}
               {currentQuestion}
             </h1>
             {/* {currentValue !== undefined && (

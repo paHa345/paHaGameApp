@@ -37,8 +37,16 @@ const AddQuestionMain = () => {
 
   const addNumberTextAndHideModalHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+
+    // console.log(textQuestionValue);
+    // if (textQuestionValue.trim().length === 0) {
+    //   console.log("first");
+    //   // clear cell.questionObj.horizontal or vertical = null
+    //   dispatch(crosswordActions.clearQuestion());
+    // }
+
     dispatch(crosswordActions.setCellTextQuestionValue(textQuestionValue));
-    dispatch(crosswordActions.addQuestionToState());
+    dispatch(crosswordActions.addQuestionToState(textQuestionValue));
     dispatch(crosswordActions.setQuestionValue(""));
     dispatch(crosswordActions.hideSetElementsMenu());
   };
