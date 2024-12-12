@@ -186,7 +186,7 @@ const CrosswordGameCellMain = ({ ref, cell, i, j }: ICellProps) => {
       style={{
         backgroundColor: `${isHighlightedWord ? (isSelectedCell ? " #cbc512" : "#5e7d33") : ""}`,
       }}
-      className={`${isHighlightedWord ? "" : ""} ${!hasLetter ? "" : "bg-lime-500"} ${isSelectedCell ? "animate-pulse" : ""} transition duration-800 ease-out  cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-indigo-600`}
+      className={`${isHighlightedWord ? "" : ""} ${!hasLetter ? " bg-slate-100" : "bg-lime-500"} ${isSelectedCell ? "animate-pulse" : ""} transition duration-800 ease-out  cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-slate-600`}
     >
       {hasNumber && (
         <div className="absolute">

@@ -1,8 +1,9 @@
 import { AppDispatch } from "@/app/store";
-import { attemptsActions, getGameAllAttempts } from "@/app/store/attemptsSlice";
+import { attemptsActions, getGameAllAttempts, IAttemptsSlice } from "@/app/store/attemptsSlice";
+import { ICrosswordGameSlice } from "@/app/store/crosswordGameSlice";
 import { useTelegram } from "@/app/telegramProvider";
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 interface IGameDataProps {
   gameData: {
@@ -10,15 +11,16 @@ interface IGameDataProps {
     name: string;
     changeDate: Date;
   };
+  isSelected: boolean;
 }
 
-const GameListElement = ({ gameData }: IGameDataProps) => {
+const GameListElement = ({ gameData, isSelected }: IGameDataProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useTelegram();
+
   const loadGameAttemptsHandler = (e: React.MouseEvent<HTMLElement>) => {
     // Add your code here to load game attempts
     // Example: dispatch(loadGameAttempts(gameData.id));
-    console.log(gameData);
     if (!user?.id) {
       dispatch(
         getGameAllAttempts({
@@ -35,12 +37,13 @@ const GameListElement = ({ gameData }: IGameDataProps) => {
       );
     }
   };
+
   return (
     <article
       onClick={loadGameAttemptsHandler}
       // ${loadCrosswordGameStatus === crosswordGameFetchStatus.Ready ? "cursor-pointer" : ""}
       className={` cursor-pointer
-    px-4 mx-4  hover:scale-105 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow`}
+    px-4 mx-4 ${isSelected ? " scale-125" : ""} hover:scale-105 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow`}
     >
       <div className=" flex flex-col">
         <div className=" flex flex-col gap-2">

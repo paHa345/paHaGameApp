@@ -1,12 +1,18 @@
-import { attemptsFetchStatus, IAttemptsSlice } from "@/app/store/attemptsSlice";
+import { attemptsFetchStatus, getGameAllAttempts, IAttemptsSlice } from "@/app/store/attemptsSlice";
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Attempt from "./Attempt";
 import AttemptLoadCard from "./AttemptLoadCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMedal } from "@fortawesome/free-solid-svg-icons";
+import { ICrosswordGameSlice } from "@/app/store/crosswordGameSlice";
+import { useTelegram } from "@/app/telegramProvider";
+import { AppDispatch } from "@/app/store";
 
 const CurrentGameAttempts = () => {
+  const { user } = useTelegram();
+  const dispatch = useDispatch<AppDispatch>();
+
   const getGameAllAttemptsStatus = useSelector(
     (state: IAttemptsSlice) => state.attemptsState.getGameAllAttemptsFetchStatus
   );

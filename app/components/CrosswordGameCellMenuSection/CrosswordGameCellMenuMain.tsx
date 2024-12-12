@@ -224,11 +224,11 @@ const CrosswordGameCellMenuMain = () => {
           <FontAwesomeIcon icon={faCheckCircle} />
         </a> */}
         <div className="rounded w-full flex flex-col justify-center items-center ml-2">
-          <div className=" flex gap-6 flex-row justify-center items-center">
+          <div className=" pb-1 flex gap-6 flex-row justify-center items-center">
             {selectedCell?.baseCell.horizontal !== null && (
               <div
                 onClick={setAddedWordDirection.bind(AddedWordDirection.Horizontal)}
-                className={`h-12 w-12 flex justify-center items-center bg ${addedWordDirection === AddedWordDirection.Horizontal ? "bg-slate-400" : ""} hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200`}
+                className={` transition-all ease-in duration-200 delay-50  cursor-pointer h-12 w-12 flex justify-center items-center bg ${addedWordDirection === AddedWordDirection.Horizontal ? "bg-slate-400 scale-110" : ""} hover:bg-slate-400 shadow-lg bg-slate-200 px-2 py-1 rounded-full  `}
               >
                 <a href="">
                   <FontAwesomeIcon icon={faRulerHorizontal} />
@@ -238,7 +238,7 @@ const CrosswordGameCellMenuMain = () => {
             {selectedCell?.baseCell.vertical !== null && (
               <div
                 onClick={setAddedWordDirection.bind(AddedWordDirection.Vertical)}
-                className={`h-12 w-12 flex justify-center items-center bg ${addedWordDirection === AddedWordDirection.Vertical ? "bg-slate-400" : ""} hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200`}
+                className={` transition-all ease-in duration-200 delay-50   cursor-pointer h-12 w-12 flex justify-center items-center bg ${addedWordDirection === AddedWordDirection.Vertical ? "bg-slate-400 scale-110 " : ""} hover:bg-slate-400 shadow-lg  bg-slate-200 px-2 py-1 rounded-full `}
               >
                 <a
                   // className=" h-fit bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200"

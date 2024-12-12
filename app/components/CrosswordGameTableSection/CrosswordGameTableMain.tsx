@@ -53,11 +53,23 @@ const CrosswordGameTableMain = () => {
   );
 
   const setLetterHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
-
-    dispatch(crossworGamedActions.setSelectedElLetter(e.currentTarget.value));
+    // dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
+    // dispatch(crossworGamedActions.setSelectedElLetter(e.currentTarget.value));
   };
   // console.log(highlightedCell?.addedWordArr);
+
+  const inputKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // e.preventDefault();
+    if (e.key.length > 1 && e.key !== "Backspace") {
+      return;
+    }
+    if (e.key === "Backspace") {
+      console.log("Back");
+    }
+    dispatch(crossworGamedActions.changeBaseInput(e.key));
+
+    dispatch(crossworGamedActions.setSelectedElLetter(e.key));
+  };
 
   if (!crosswordGame._id) {
     redirect("/crosswordGame");
@@ -115,6 +127,7 @@ const CrosswordGameTableMain = () => {
             maxLength={1}
             value={baseInput}
             onChange={setLetterHandler}
+            onKeyDown={inputKeyDownHandler}
           />
         </div>
         <EndGameButton></EndGameButton>

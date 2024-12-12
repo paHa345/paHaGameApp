@@ -1044,48 +1044,113 @@ export const crosswordGameSlice = createSlice({
       // }
     },
     setSelectedElLetter(state, action) {
+      const isBack = action.payload === "Backspace";
       if (
         state.selectedCell?.number &&
         state.selectedCell?.row &&
         state.highlightedWordObj?.endCol &&
         state.highlightedWordObj?.endRow
       ) {
-        state.crosswordGame.crosswordObj[state.selectedCell?.row][
-          state.selectedCell?.number
-        ].addedWordLetter = action.payload.toLowerCase();
+        const cellLetterIsEmpty =
+          state.crosswordGame.crosswordObj[state.selectedCell?.row][state.selectedCell?.number]
+            .addedWordLetter;
 
-        //set local storage attempt data
+        // если жмём на клавишу Backspace
+        // удаляем символ из текущей клетки
+        if (action.payload === "Backspace") {
+          state.crosswordGame.crosswordObj[state.selectedCell?.row][
+            state.selectedCell?.number
+          ].addedWordLetter = null;
+        } else {
+          state.crosswordGame.crosswordObj[state.selectedCell?.row][
+            state.selectedCell?.number
+          ].addedWordLetter = action.payload.toLowerCase();
+        }
+
+        //set local storage attempt dat
         // with changed cell letter
         window.localStorage.setItem("currentCrosswordGame", JSON.stringify(state.crosswordGame));
         window.localStorage.setItem("currentAttemptID", JSON.stringify(state.attemptID));
         //
 
         if (state.addedWordDirection === AddedWordDirection.Horizontal) {
-          if (state.selectedCell.number >= state.highlightedWordObj?.endCol) {
+          if (state.selectedCell.number === state.highlightedWordObj?.startCol && isBack) {
+            state.baseInput = "";
+            return;
+          }
+          if (state.selectedCell.number >= state.highlightedWordObj?.endCol && !isBack) {
             state.baseInput = "";
             return;
           }
         } else {
-          if (state.selectedCell.row >= state.highlightedWordObj?.endRow) {
+          if (state.selectedCell.row === state.highlightedWordObj?.startRow && isBack) {
+            state.baseInput = "";
+            return;
+          }
+          if (state.selectedCell.row >= state.highlightedWordObj?.endRow && !isBack) {
             state.baseInput = "";
             return;
           }
         }
 
-        state.addedWordDirection === AddedWordDirection.Horizontal
-          ? (state.selectedCell =
-              state.crosswordGame.crosswordObj[state.selectedCell?.row][
-                state.selectedCell?.number + 1
-              ])
-          : (state.selectedCell =
-              state.crosswordGame.crosswordObj[state.selectedCell?.row + 1][
-                state.selectedCell?.number
-              ]);
+        if (!isBack) {
+          state.addedWordDirection === AddedWordDirection.Horizontal
+            ? (state.selectedCell =
+                state.crosswordGame.crosswordObj[state.selectedCell?.row][
+                  state.selectedCell?.number + 1
+                ])
+            : (state.selectedCell =
+                state.crosswordGame.crosswordObj[state.selectedCell?.row + 1][
+                  state.selectedCell?.number
+                ]);
+        }
+
+        if (isBack && cellLetterIsEmpty === null) {
+          state.addedWordDirection === AddedWordDirection.Horizontal
+            ? (state.selectedCell =
+                state.crosswordGame.crosswordObj[state.selectedCell?.row][
+                  state.selectedCell?.number - 1
+                ])
+            : (state.selectedCell =
+                state.crosswordGame.crosswordObj[state.selectedCell?.row - 1][
+                  state.selectedCell?.number
+                ]);
+
+          state.crosswordGame.crosswordObj[state.selectedCell?.row][
+            state.selectedCell?.number
+          ].addedWordLetter = null;
+        }
+
+        // if (isBack && cellLetterIsEmpty === null) {
+        //   state.addedWordDirection === AddedWordDirection.Horizontal
+        //     ? (state.selectedCell =
+        //         state.crosswordGame.crosswordObj[state.selectedCell?.row][
+        //           state.selectedCell?.number - 1
+        //         ])
+        //     : (state.selectedCell =
+        //         state.crosswordGame.crosswordObj[state.selectedCell?.row - 1][
+        //           state.selectedCell?.number
+        //         ]);
+        // } else {
+        //   state.addedWordDirection === AddedWordDirection.Horizontal
+        //     ? (state.selectedCell =
+        //         state.crosswordGame.crosswordObj[state.selectedCell?.row][
+        //           state.selectedCell?.number + 1
+        //         ])
+        //     : (state.selectedCell =
+        //         state.crosswordGame.crosswordObj[state.selectedCell?.row + 1][
+        //           state.selectedCell?.number
+        //         ]);
+        // }
       }
 
       state.baseInput = "";
     },
     changeBaseInput(state, action) {
+      if (action.payload === "Backspace") {
+        state.baseInput = "";
+        return;
+      }
       state.baseInput = action.payload;
     },
   },

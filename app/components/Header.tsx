@@ -91,7 +91,7 @@ const Header = () => {
                   icon={faPuzzlePiece}
                 />
                 <p
-                  className={` ${path === "/game" || path === "/crosswordGame" || path === "/crosswordGame/game" ? " hidden" : ""} text-center text-sm font-semibold`}
+                  className={` ${path === "/game" || path === "/crosswordGame" || path === "/crosswordGame/game" ? " opacity-0" : ""} text-center text-sm font-semibold`}
                 >
                   Игры
                 </p>

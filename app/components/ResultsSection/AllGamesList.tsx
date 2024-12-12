@@ -1,10 +1,16 @@
 import { AppDispatch } from "@/app/store";
-import { attemptsFetchStatus, getAllGamesList, IAttemptsSlice } from "@/app/store/attemptsSlice";
+import {
+  attemptsFetchStatus,
+  getAllGamesList,
+  getGameAllAttempts,
+  IAttemptsSlice,
+} from "@/app/store/attemptsSlice";
 import { useTelegram } from "@/app/telegramProvider";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import GameListElement from "./GameListElement";
 import LoadGameListElement from "./LoadGameListElement";
+import { ICrosswordGameSlice } from "@/app/store/crosswordGameSlice";
 
 const AllGamesList = () => {
   const { user } = useTelegram();
@@ -17,9 +23,24 @@ const AllGamesList = () => {
     (state: IAttemptsSlice) => state.attemptsState.getAllGamesErrorMessage
   );
 
+  const gameAllAttemptsData = useSelector(
+    (state: IAttemptsSlice) => state.attemptsState?.gameAllAttempts
+  );
+
+  const selectedGameListID =
+    gameAllAttemptsData && gameAllAttemptsData.length > 0
+      ? gameAllAttemptsData[0].crosswordID
+      : undefined;
+
   const gamesElements = gamesList?.map((game) => {
-    return <GameListElement key={game._id} gameData={game}></GameListElement>;
+    const isSelected = game._id === selectedGameListID;
+    return (
+      <GameListElement isSelected={isSelected} key={game._id} gameData={game}></GameListElement>
+    );
   });
+  const currentUserCompletedAttempt = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.currentUserCompletedAttempt
+  );
 
   useEffect(() => {
     if (!user?.id) {
@@ -28,6 +49,26 @@ const AllGamesList = () => {
       dispatch(getAllGamesList(user?.id));
     }
   }, []);
+
+  useEffect(() => {
+    if (currentUserCompletedAttempt) {
+      if (!user?.id) {
+        dispatch(
+          getGameAllAttempts({
+            gameID: currentUserCompletedAttempt.crosswordID,
+            telegramUserID: 777777,
+          })
+        );
+      } else {
+        dispatch(
+          getGameAllAttempts({
+            gameID: currentUserCompletedAttempt.crosswordID,
+            telegramUserID: user?.id,
+          })
+        );
+      }
+    }
+  }, [currentUserCompletedAttempt]);
 
   return (
     <>
