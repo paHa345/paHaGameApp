@@ -19,11 +19,19 @@ import { useTelegram } from "@/app/telegramProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle, faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { retrieveLaunchParams } from "@telegram-apps/sdk";
+import { initData } from "@telegram-apps/sdk";
 
 const CreateCrosswordMain = () => {
-  const { initDataRaw, initData } = retrieveLaunchParams();
+  // const { initDataRaw, initData } = retrieveLaunchParams();
 
-  console.log(initData?.user?.username);
+  // console.log(initData?.user?.username);
+
+  const hash = window.location.hash.slice(1);
+  console.log(hash); // tgWebAppData=...&tgWebAppVersion=6.2&...
+
+  const params = new URLSearchParams(hash);
+  console.log(params.get("tgWebAppVersion")); // "6.2"
+
   const dispatch = useDispatch<AppDispatch>();
   const cretedCrosswordValue = useSelector(
     (state: ICrosswordSlice) => state.crosswordState.crosswordValue
@@ -101,9 +109,10 @@ const CreateCrosswordMain = () => {
 
   return (
     <div className=" py-5 min-h-[70vh]">
-      <h1>{initData?.user?.username}</h1>
+      <h1>{params.get("tgWebAppVersion")}</h1>
+      {/* <h1>{initData?.user?.username}</h1>
       <h1>{initData?.user?.firstName}</h1>
-      <h1>{initData?.user?.photoUrl}</h1>
+      <h1>{initData?.user?.photoUrl}</h1> */}
       <div className=" flex flex-col gap-3 justify-center items-center text-center text-2xl">
         <h1>Укажите размер кроссворда</h1>
         <div className=" border-2 border-solid rounded-md border-cyan-900 w-20">
