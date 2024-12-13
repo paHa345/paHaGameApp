@@ -201,12 +201,12 @@ const CrosswordGameCellMenuMain = () => {
       style={{ left: "0px", top: `-80px` }}
       className=" relative z-10 mt-10 flex justify-center items-center  "
     >
-      <div className="w-11/12 sm:w-5/6 lg:w-2/3  shadow-crosswordGameCellMenuShadow rounded-md  bg-lime-50 p-1 fixed flex  ">
-        <div className=" flex flex-col justify-center items-center">
+      <div className="w-11/12 sm:w-5/6 lg:w-2/3  shadow-crosswordGameCellMenuShadow rounded-md  bg-gradient-to-tr from-secoundaryColor to-lime-100 p-1 fixed flex  ">
+        <div className=" transition-all ease-in duration-200 delay-50  mt-5 h-6 cursor-pointer rounded-2xl fa-2x hover:scale-110 hover:shadow-crosswordGameCellMenuButtonActive  flex flex-col justify-center items-center">
           <FontAwesomeIcon
             // style={{ color: "red" }}
             onClick={hideCellMenu}
-            className=" cursor-pointer fa-2x hover:text-slate-200  hover:bg-lime-800 rounded-full  hover:border-lime-800 border-solid border-2  border-slate-200"
+            className=" "
             icon={faCheckCircle}
           />
           {/* <a
@@ -224,11 +224,11 @@ const CrosswordGameCellMenuMain = () => {
           <FontAwesomeIcon icon={faCheckCircle} />
         </a> */}
         <div className="rounded w-full flex flex-col justify-center items-center ml-2">
-          <div className=" pb-1 flex gap-6 flex-row justify-center items-center">
+          <div className=" w-2/4 pb-2 flex gap-6 flex-row justify-around items-center">
             {selectedCell?.baseCell.horizontal !== null && (
               <div
                 onClick={setAddedWordDirection.bind(AddedWordDirection.Horizontal)}
-                className={` transition-all ease-in duration-200 delay-50  cursor-pointer h-12 w-12 flex justify-center items-center bg ${addedWordDirection === AddedWordDirection.Horizontal ? "bg-slate-400 scale-110" : ""} hover:bg-slate-400 shadow-lg bg-slate-200 px-2 py-1 rounded-full  `}
+                className={` transition-all ease-in duration-200 delay-50  cursor-pointer h-12 w-12 flex justify-center items-center ${addedWordDirection === AddedWordDirection.Horizontal ? "  shadow-crosswordGameCellMenuButtonActive scale-110" : "shadow-crosswordGameCellMenuButton "} hover:shadow-crosswordGameCellMenuButtonActive hover:scale-110 bg-slate-200 px-2 py-1 rounded-full  `}
               >
                 <a href="">
                   <FontAwesomeIcon icon={faRulerHorizontal} />
@@ -238,7 +238,7 @@ const CrosswordGameCellMenuMain = () => {
             {selectedCell?.baseCell.vertical !== null && (
               <div
                 onClick={setAddedWordDirection.bind(AddedWordDirection.Vertical)}
-                className={` transition-all ease-in duration-200 delay-50   cursor-pointer h-12 w-12 flex justify-center items-center bg ${addedWordDirection === AddedWordDirection.Vertical ? "bg-slate-400 scale-110 " : ""} hover:bg-slate-400 shadow-lg  bg-slate-200 px-2 py-1 rounded-full `}
+                className={` transition-all ease-in duration-200 delay-50   cursor-pointer h-12 w-12 flex justify-center items-center ${addedWordDirection === AddedWordDirection.Vertical ? " shadow-crosswordGameCellMenuButtonActive  scale-110 " : "shadow-crosswordGameCellMenuButton "} hover:shadow-crosswordGameCellMenuButtonActive hover:scale-110  bg-slate-200 px-2 py-1 rounded-full `}
               >
                 <a
                   // className=" h-fit bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200"
@@ -249,7 +249,7 @@ const CrosswordGameCellMenuMain = () => {
               </div>
             )}
           </div>
-          <div className=" px-2 rounded bg-lime-200 border-slate-100 border-solid border-2">
+          <div className=" bg-gradient-to-tl from-secoundaryColor to-lime-200 px-2 rounded shadow-cardButtonShadow">
             <h1 className=" pb-2 text-center text-xl">
               {/* <span className=" text-base">Вопрос: </span> */}
               {currentQuestion}

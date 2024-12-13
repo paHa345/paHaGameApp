@@ -55,6 +55,9 @@ export default {
         notificationShadow: "0px 0px 28px 23px rgba(64, 105, 136, 0.20)",
         crosswordGameCellMenuShadow:
           "rgba(0, 0, 0, 0.25) 0px 20px 50px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px",
+
+        crosswordGameCellMenuButtonActive: "rgba(0, 0, 0, 0.35) 10px 5px 15px",
+        crosswordGameCellMenuButton: " rgba(0, 0, 0, 0.35) 0px 2px 8px 0px",
       },
       fontFamily: {
         sans: ['"Proxima Nova"', ...defaultTheme.fontFamily.sans],
