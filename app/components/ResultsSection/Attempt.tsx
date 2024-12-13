@@ -43,7 +43,7 @@ const Attempt = ({ attempt }: IAttemptProps) => {
             {attempt.telegramUserName !== undefined ? (
               <h1> {` ${attempt.telegramUserName}`}</h1>
             ) : (
-              <h1>{`${attempt.firstName}`}</h1>
+              <h1>{`${attempt.firstName} ${attempt.lastName}`}</h1>
             )}
           </div>
           {/* <div className=" flex flex-row justify-center items-center  gap-1">

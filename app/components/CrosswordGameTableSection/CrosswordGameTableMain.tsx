@@ -33,25 +33,6 @@ const CrosswordGameTableMain = () => {
 
   const ref = React.useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
 
-  const highlightedCell = useSelector(
-    (state: ICrosswordGameSlice) => state.crosswordGameState.highlightedCell
-  );
-
-  const selectedCell = useSelector(
-    (state: ICrosswordGameSlice) => state.crosswordGameState.selectedCell
-  );
-  const currentCrosswordGame = useSelector(
-    (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame
-  );
-
-  const currentAttemptID = useSelector(
-    (state: ICrosswordGameSlice) => state.crosswordGameState.attemptID
-  );
-
-  const highlightedWord = useSelector(
-    (state: ICrosswordGameSlice) => state.crosswordGameState.highlightedWordObj
-  );
-
   const setLetterHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     // dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
     // dispatch(crossworGamedActions.setSelectedElLetter(e.currentTarget.value));
@@ -124,7 +105,7 @@ const CrosswordGameTableMain = () => {
           <input
             ref={ref}
             style={{ right: "-5px", bottom: "0px" }}
-            className=" inputBase left-0 top-1/2 fixed opacity-0 h-6 w-6  text-slate-50 text-3xl font-extrabold"
+            className=" inputBase left-0 top-1/2 fixed opacity-0 h-0 w-0  text-slate-50 text-3xl font-extrabold"
             type="text"
             maxLength={1}
             value={baseInput}

@@ -19,6 +19,32 @@ export const getAvailableCrosswords = createAsyncThunk(
   }
 );
 
+export const getUserCurrentAttempt = createAsyncThunk(
+  "crosswordGameState/getUserCurrentAttempt",
+  async function (
+    attemptData: {
+      telegramUserID: number | undefined;
+      attemptID: String | undefined;
+    },
+    { rejectWithValue, dispatch }
+  ) {
+    try {
+      const getUserCurrentAttemptReq = await fetch(
+        `/api/attempts/getUserCurrentAttempt/${attemptData.attemptID}/${attemptData.telegramUserID}`
+      );
+      const attempt = await getUserCurrentAttemptReq.json();
+      if (!getUserCurrentAttemptReq.ok) {
+        localStorage.removeItem("currentCrosswordGame");
+        localStorage.removeItem("currentAttemptID");
+        throw new Error(attempt.message);
+      }
+      // dispatch(crossworGamedActions.setAvailableCrosswordGamesArr(crosswords.result));
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const setAvailableCrosswordGame = createAsyncThunk(
   "crosswordGameState/setAvailableCrosswordGame",
   async function (
@@ -222,23 +248,6 @@ export const finishAttempt = createAsyncThunk(
           }
         });
       });
-
-      // attemptData.crossword.forEach((col: any, x: number) => {
-      //   col.forEach((cell: any, y: number) => {
-      //     if (cell?.addedWordArr?.length > 0) {
-      //       answersArr.push({
-      //         row: x,
-      //         col: y,
-      //         addedWordArr: cell.addedWordArr.map((el: any) => {
-      //           return {
-      //             direction: el.direction,
-      //             value: el.value,
-      //           };
-      //         }),
-      //       });
-      //     }
-      //   });
-      // });
 
       const finishAttemptReq = await fetch(`/api/crosswordGame/finishAttempt`, {
         method: "PATCH",

@@ -2,19 +2,36 @@
 import React, { useEffect } from "react";
 import ChooseCrosswordButton from "./ChooseCrosswordButton";
 import { useDispatch, useSelector } from "react-redux";
-import { crossworGamedActions, ICrosswordGameSlice } from "@/app/store/crosswordGameSlice";
+import {
+  crossworGamedActions,
+  getUserCurrentAttempt,
+  ICrosswordGameSlice,
+} from "@/app/store/crosswordGameSlice";
 import LoadCrosswordGameModalMain from "../CrosswordGameLoadModalSection/LoadCrosswordGameModalMain";
 import { AppDispatch } from "@/app/store";
 import { redirect } from "next/navigation";
+import { useTelegram } from "@/app/telegramProvider";
 const CrosswordGameSection = () => {
   const dispatch = useDispatch<AppDispatch>();
   const showCrosswordGameChooseModal = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.showChooseCrosswordModal
   );
 
+  const { user } = useTelegram();
+
+  console.log(user?.id);
+
   useEffect(() => {
     const currentCrossword = localStorage.getItem("currentCrosswordGame");
     const currentAttemptID = localStorage.getItem("currentAttemptID");
+    console.log(currentAttemptID?.slice(1, -1));
+
+    dispatch(
+      getUserCurrentAttempt({
+        telegramUserID: user?.id,
+        attemptID: currentAttemptID?.slice(1, -1),
+      })
+    );
 
     if (currentCrossword !== null && currentAttemptID !== null) {
       dispatch(crossworGamedActions.setAttemptID(JSON.parse(currentAttemptID)));
