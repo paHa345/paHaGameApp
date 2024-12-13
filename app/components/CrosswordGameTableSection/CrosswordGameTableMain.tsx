@@ -55,24 +55,22 @@ const CrosswordGameTableMain = () => {
   const setLetterHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     // dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
     // dispatch(crossworGamedActions.setSelectedElLetter(e.currentTarget.value));
+    console.log(e.currentTarget.value);
+    dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
+
+    dispatch(crossworGamedActions.setSelectedElLetter(e.currentTarget.value));
   };
   // console.log(highlightedCell?.addedWordArr);
 
-  const [first, setfirst] = useState(0);
-
   const inputKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // e.preventDefault();
-    console.log(e.which);
-    setfirst(e.which);
     if (e.key.length > 1 && e.key !== "Backspace") {
       return;
     }
     if (e.key === "Backspace") {
-      console.log("Back");
-    }
-    dispatch(crossworGamedActions.changeBaseInput(e.key));
+      dispatch(crossworGamedActions.changeBaseInput(e.key));
 
-    dispatch(crossworGamedActions.setSelectedElLetter(e.key));
+      dispatch(crossworGamedActions.setSelectedElLetter(e.key));
+    }
   };
 
   if (!crosswordGame._id) {
@@ -111,8 +109,6 @@ const CrosswordGameTableMain = () => {
             {/* <h3>Your Telegram ID: {user?.id}</h3> */}
           </div>
         )}
-
-        <h1>{first}</h1>
 
         {/* <h1>{highlightedCell?.questionObj.horizontal?.value}</h1>
         <h1>{highlightedCell?.questionObj.vertical?.value}</h1>
