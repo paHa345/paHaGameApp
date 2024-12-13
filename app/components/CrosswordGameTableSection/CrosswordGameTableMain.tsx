@@ -58,11 +58,12 @@ const CrosswordGameTableMain = () => {
   };
   // console.log(highlightedCell?.addedWordArr);
 
-  const [first, setfirst] = useState("");
+  const [first, setfirst] = useState(0);
 
   const inputKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // e.preventDefault();
-    setfirst(e.key);
+    console.log(e.which);
+    setfirst(e.which);
     if (e.key.length > 1 && e.key !== "Backspace") {
       return;
     }
