@@ -58,8 +58,11 @@ const CrosswordGameTableMain = () => {
   };
   // console.log(highlightedCell?.addedWordArr);
 
+  const [first, setfirst] = useState("");
+
   const inputKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // e.preventDefault();
+    setfirst(e.key);
     if (e.key.length > 1 && e.key !== "Backspace") {
       return;
     }
@@ -107,6 +110,8 @@ const CrosswordGameTableMain = () => {
             {/* <h3>Your Telegram ID: {user?.id}</h3> */}
           </div>
         )}
+
+        <h1>{first}</h1>
 
         {/* <h1>{highlightedCell?.questionObj.horizontal?.value}</h1>
         <h1>{highlightedCell?.questionObj.vertical?.value}</h1>
