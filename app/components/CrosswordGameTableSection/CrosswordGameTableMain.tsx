@@ -11,6 +11,7 @@ import { redirect } from "next/navigation";
 import EndGameButton from "./EndGameButton";
 import InputLetter from "./InputLetter";
 import { AppDispatch } from "@/app/store";
+import { ICrossword } from "@/app/types";
 
 const CrosswordGameTableMain = () => {
   const crosswordGame = useSelector(
@@ -24,6 +25,11 @@ const CrosswordGameTableMain = () => {
   );
 
   const baseInput = useSelector((state: ICrosswordGameSlice) => state.crosswordGameState.baseInput);
+  console.log(baseInput);
+
+  const phoneLetters = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.phoneLetters
+  );
 
   const { user, webApp } = useTelegram();
 
@@ -37,11 +43,10 @@ const CrosswordGameTableMain = () => {
     // dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
     // dispatch(crossworGamedActions.setSelectedElLetter(e.currentTarget.value));
     console.log(e.currentTarget.value);
-    dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
 
+    dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
     dispatch(crossworGamedActions.setSelectedElLetter(e.currentTarget.value));
   };
-  // console.log(highlightedCell?.addedWordArr);
 
   const inputKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key.length > 1 && e.key !== "Backspace") {
@@ -49,7 +54,6 @@ const CrosswordGameTableMain = () => {
     }
     if (e.key === "Backspace") {
       dispatch(crossworGamedActions.changeBaseInput(e.key));
-
       dispatch(crossworGamedActions.setSelectedElLetter(e.key));
     }
   };
@@ -84,6 +88,7 @@ const CrosswordGameTableMain = () => {
       <div className=" pb-8">
         <br />
 
+        <h1>{phoneLetters}</h1>
         {user?.username && (
           <div className=" text-2xl pb-4">
             <h2>Приветствуем, {user?.username}</h2>

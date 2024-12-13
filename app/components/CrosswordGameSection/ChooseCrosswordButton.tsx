@@ -24,7 +24,7 @@ const ChooseCrosswordButton = () => {
   return (
     <article
       onClick={chooseCrosswordButtonHandler}
-      className=" cursor-pointer hover:scale-110 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow"
+      className=" cursor-pointer hover:scale-110 transition-all rounded-lg ease-in duration-300  hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow"
     >
       <div className=" flex justify-center items-center flex-col px-5 py-5 ">
         <div className=" h-20 w-20">

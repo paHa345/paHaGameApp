@@ -290,6 +290,7 @@ export enum crosswordGameFetchStatus {
 export interface ICrosswordGameSlice {
   crosswordGameState: {
     crosswordSize: number;
+    phoneLetters: string;
 
     startGameStatus: boolean;
     currentWord: string;
@@ -478,6 +479,7 @@ export interface ICrosswordGameSlice {
 
 interface ICrosswordGameState {
   crosswordSize: number;
+  phoneLetters: string;
 
   currentWord: string;
   startGameStatus: boolean;
@@ -670,6 +672,7 @@ interface ICrosswordGameState {
 
 export const initCrosswordGameState: ICrosswordGameState = {
   crosswordSize: 10,
+  phoneLetters: "",
 
   index: 0,
   currentWord: "",
@@ -1054,6 +1057,7 @@ export const crosswordGameSlice = createSlice({
     },
     setSelectedElLetter(state, action) {
       const isBack = action.payload === "Backspace";
+      state.phoneLetters = action.payload;
       if (
         state.selectedCell?.number &&
         state.selectedCell?.row &&
