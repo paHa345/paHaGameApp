@@ -24,16 +24,14 @@ const CrosswordGameSection = () => {
   useEffect(() => {
     const currentCrossword = localStorage.getItem("currentCrosswordGame");
     const currentAttemptID = localStorage.getItem("currentAttemptID");
-    console.log(currentAttemptID?.slice(1, -1));
-
-    dispatch(
-      getUserCurrentAttempt({
-        telegramUserID: user?.id,
-        attemptID: currentAttemptID?.slice(1, -1),
-      })
-    );
 
     if (currentCrossword !== null && currentAttemptID !== null) {
+      dispatch(
+        getUserCurrentAttempt({
+          telegramUserID: user?.id,
+          attemptID: currentAttemptID?.slice(1, -1),
+        })
+      );
       dispatch(crossworGamedActions.setAttemptID(JSON.parse(currentAttemptID)));
       dispatch(crossworGamedActions.setCrosswordGame(JSON.parse(currentCrossword)));
 

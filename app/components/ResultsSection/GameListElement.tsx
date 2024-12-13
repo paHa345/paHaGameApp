@@ -43,7 +43,7 @@ const GameListElement = ({ gameData, isSelected }: IGameDataProps) => {
       onClick={loadGameAttemptsHandler}
       // ${loadCrosswordGameStatus === crosswordGameFetchStatus.Ready ? "cursor-pointer" : ""}
       className={` cursor-pointer
-    px-4 mx-4 ${isSelected ? " scale-125" : ""} hover:scale-105 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow`}
+    px-4 mx-4 ${isSelected ? " scale-110 shadow-crosswordGameCellMenuButtonActive" : "shadow-exerciseCardHowerShadow"} hover:scale-110 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-200 hover:shadow-crosswordGameCellMenuButtonActive`}
     >
       <div className=" flex flex-col">
         <div className=" flex flex-col gap-2">

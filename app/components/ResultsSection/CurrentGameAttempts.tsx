@@ -29,7 +29,7 @@ const CurrentGameAttempts = () => {
     <>
       {getGameAllAttemptsStatus === attemptsFetchStatus.Resolve &&
         gameAllAttemptsEl?.length !== 0 && (
-          <div className=" my-4 flex flex-row gap-3 justify-center items-center bg-gradient-to-tr  from-secoundaryColor to-crosswordSecoundaryColor rounded-sm px-4 shadow-exerciseCardHowerShadow">
+          <div className=" w-full my-4 flex flex-row gap-3 justify-center items-center bg-gradient-to-tr  from-secoundaryColor to-crosswordSecoundaryColor rounded-sm px-4 shadow-exerciseCardHowerShadow">
             <FontAwesomeIcon
               // style={{ color: "#0b4905", backgroundColor: "#9af792" }}
               className=" py-2 my-2 rounded-lg fa-fw fa-2xl"
