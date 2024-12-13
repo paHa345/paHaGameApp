@@ -1055,6 +1055,9 @@ export const crosswordGameSlice = createSlice({
       //   }
       // }
     },
+    setPhoneLetter(state, action) {
+      state.phoneLetters = action.payload;
+    },
     setSelectedElLetter(state, action) {
       const isBack = action.payload === "Backspace";
       state.phoneLetters = action.payload;

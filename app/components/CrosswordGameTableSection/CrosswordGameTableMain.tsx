@@ -49,12 +49,13 @@ const CrosswordGameTableMain = () => {
   };
 
   const inputKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key.length > 1 && e.key !== "Backspace") {
-      return;
-    }
+    dispatch(crossworGamedActions.setPhoneLetter(e.key));
     if (e.key === "Backspace") {
       dispatch(crossworGamedActions.changeBaseInput(e.key));
       dispatch(crossworGamedActions.setSelectedElLetter(e.key));
+    }
+    if (e.key.length > 1 && e.key !== "Backspace") {
+      return;
     }
   };
 
