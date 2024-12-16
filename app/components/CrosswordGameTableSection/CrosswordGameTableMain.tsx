@@ -56,6 +56,13 @@ const CrosswordGameTableMain = () => {
       dispatch(crossworGamedActions.changeBaseInput(e.key));
       dispatch(crossworGamedActions.setSelectedElLetter(e.key));
     }
+
+    const element = document.querySelector(".inputBase") as Element;
+    console.log(element);
+    const event = new KeyboardEvent("keydown", { key: "Enter" });
+
+    element.dispatchEvent(event);
+
     if (e.key.length > 1 && e.key !== "Backspace") {
       return;
     }
