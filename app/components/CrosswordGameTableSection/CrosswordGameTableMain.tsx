@@ -39,38 +39,28 @@ const CrosswordGameTableMain = () => {
   const ref = React.useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
   const refSecound = React.useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
 
-  // const setLetterHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   // dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
-  //   // dispatch(crossworGamedActions.setSelectedElLetter(e.currentTarget.value));
-  //   console.log(e.currentTarget.value);
+  const setLetterHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
+    // dispatch(crossworGamedActions.setSelectedElLetter(e.currentTarget.value));
+    console.log(e.currentTarget.value);
 
-  //   dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
-  //   dispatch(crossworGamedActions.setSelectedElLetter(e.currentTarget.value));
-  // };
+    dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
+    dispatch(crossworGamedActions.setSelectedElLetter(e.currentTarget.value));
+
+    const elSecound = refSecound.current;
+    const elFirst = ref.current;
+
+    setTimeout(() => {
+      elSecound.focus();
+      elFirst.focus();
+    }, 0);
+  };
 
   const inputKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(e.code);
-    dispatch(crossworGamedActions.setPhoneLetter(e.key));
-    dispatch(crossworGamedActions.changeBaseInput(e.key));
-    dispatch(crossworGamedActions.setSelectedElLetter(e.key));
     if (e.key === "Backspace") {
       dispatch(crossworGamedActions.changeBaseInput(e.key));
       dispatch(crossworGamedActions.setSelectedElLetter(e.key));
     }
-
-    const element = document.querySelector(".inputBase") as any;
-    console.log(element);
-    const event = new KeyboardEvent("keydown", { key: "Enter" });
-
-    element.dispatchEvent(event);
-    element.value = "";
-    element.dispatchEvent(new Event("input", { bubbles: true }));
-
-    dispatch(crossworGamedActions.changeBaseInput(""));
-
-    const elSecound = refSecound.current;
-
-    setTimeout(() => elSecound.focus(), 0);
 
     if (e.key.length > 1 && e.key !== "Backspace") {
       return;
