@@ -43,6 +43,9 @@ const CrosswordGameTableMain = () => {
     // dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
     // dispatch(crossworGamedActions.setSelectedElLetter(e.currentTarget.value));
     console.log(e.currentTarget.value);
+    if (e.currentTarget.value.length > 1) {
+      return;
+    }
 
     dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
     dispatch(crossworGamedActions.setSelectedElLetter(e.currentTarget.value));
