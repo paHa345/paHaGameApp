@@ -15,14 +15,26 @@ export async function POST(req: NextRequest) {
     if (crossword === null) {
       return NextResponse.json({ message: "Не найдена игра" }, { status: 400 });
     }
-    const attempt = await AttemptCrosswordGame.find({
+    const completedAttempt = await AttemptCrosswordGame.find({
       crosswordID: body.crosswordID,
       telegramID: body.telegramID,
+      isCompleted: true,
     });
-    console.log(attempt);
-    if (attempt.length !== 0) {
+    console.log(completedAttempt);
+    if (completedAttempt.length !== 0) {
       return NextResponse.json({ message: "Вы уже пытались сыграть в эту игру" }, { status: 400 });
     }
+
+    const uncompletedAttempt = await AttemptCrosswordGame.find({
+      crosswordID: body.crosswordID,
+      telegramID: body.telegramID,
+      isCompleted: false,
+    });
+
+    if (uncompletedAttempt.length !== 0) {
+      return NextResponse.json({ message: "Success", result: uncompletedAttempt });
+    }
+
     const startDate = new Date();
 
     const newAttampt = await AttemptCrosswordGame.create({ ...body, startDate: startDate });

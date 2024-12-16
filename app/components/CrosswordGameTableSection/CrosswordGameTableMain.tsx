@@ -12,10 +12,20 @@ import EndGameButton from "./EndGameButton";
 import InputLetter from "./InputLetter";
 import { AppDispatch } from "@/app/store";
 import { ICrossword } from "@/app/types";
+import EndGameModalMain from "./EndGameModalMain";
+import EndGameModal from "./EndGameModal";
 
 const CrosswordGameTableMain = () => {
   const crosswordGame = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame
+  );
+
+  const showEndGameModal = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.showEndGameModal
+  );
+
+  const isEndAttempt = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.endAttempt
   );
 
   const dispatch = useDispatch<AppDispatch>();
@@ -95,7 +105,7 @@ const CrosswordGameTableMain = () => {
   });
   return (
     <div className=" py-10">
-      {!startGame && <StartGameModalMain></StartGameModalMain>}
+      {!startGame && !isEndAttempt && <StartGameModalMain></StartGameModalMain>}
 
       {showCellMenu && (
         <div className=" z-10">
@@ -103,10 +113,11 @@ const CrosswordGameTableMain = () => {
         </div>
       )}
 
+      {isEndAttempt && <EndGameModal></EndGameModal>}
+
       <div className=" pb-8">
         <br />
 
-        <h1>{phoneLetters}</h1>
         {user?.username && (
           <div className=" text-2xl pb-4">
             <h2>Приветствуем, {user?.username}</h2>
@@ -142,11 +153,12 @@ const CrosswordGameTableMain = () => {
             type="text"
             maxLength={1}
             value={baseInput}
-            // onChange={setLetterHandler}
+            onChange={setLetterHandler}
             onKeyUp={inputKeyDownHandler}
           />
         </div>
         <EndGameButton></EndGameButton>
+        {showEndGameModal && <EndGameModalMain></EndGameModalMain>}
       </div>
       {crosswordGameTableEl}
       {startGame && (

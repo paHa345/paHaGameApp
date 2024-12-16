@@ -153,8 +153,22 @@ export const createStartAttempt = createAsyncThunk(
       if (!startAttemptReq.ok) {
         throw new Error(startAttempt.message);
       }
+
       // dispatch(crossworGamedActions.setAvailableCrosswordGame(data.result));
-      dispatch(crossworGamedActions.setAttemptID(startAttempt.result._id));
+      if (startAttempt.result.length === 1) {
+        dispatch(crossworGamedActions.setAttemptID(startAttempt.result[0]._id));
+        window.localStorage.setItem("currentAttemptID", JSON.stringify(startAttempt.result[0]._id));
+      } else {
+        dispatch(crossworGamedActions.setAttemptID(startAttempt.result._id));
+        window.localStorage.setItem("currentAttemptID", JSON.stringify(startAttempt.result._id));
+      }
+
+      // if (startAttempt.result.isArray) {
+      //   window.localStorage.setItem("currentAttemptID", JSON.stringify(startAttempt.result[0]._id));
+      // } else {
+      //   window.localStorage.setItem("currentAttemptID", JSON.stringify(startAttempt.result._id));
+      // }
+
       dispatch(crossworGamedActions.setStartGameStatus(true));
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -269,12 +283,23 @@ export const finishAttempt = createAsyncThunk(
       if (!finishAttemptReq.ok) {
         throw new Error(finishAttempt.message);
       }
+
+      window.localStorage.removeItem("currentCrosswordGame");
+      window.localStorage.removeItem("currentAttemptID");
+
       // нужно включить потом, очистка данных после завершения попытки
-      dispatch(crossworGamedActions.clearAttemptData());
       // добавляем данные о только что законченной попытке
-      console.log(finishAttempt.result);
       dispatch(crossworGamedActions.setCurrentUserCompletedAttempt(finishAttempt.result));
+      dispatch(crossworGamedActions.clearAttemptData());
+      dispatch(crossworGamedActions.setShowEndGameModal(false));
+      dispatch(crossworGamedActions.setEndAttempt(true));
+
+      setTimeout(() => {
+        redirect("/results");
+      }, 2000);
     } catch (error: any) {
+      // dispatch(crossworGamedActions.setShowEndGameModal(false));
+
       return rejectWithValue(error.message);
     }
   }
@@ -291,6 +316,8 @@ export interface ICrosswordGameSlice {
   crosswordGameState: {
     crosswordSize: number;
     phoneLetters: string;
+    showEndGameModal: boolean;
+    endAttempt: boolean;
 
     startGameStatus: boolean;
     currentWord: string;
@@ -480,6 +507,8 @@ export interface ICrosswordGameSlice {
 interface ICrosswordGameState {
   crosswordSize: number;
   phoneLetters: string;
+  showEndGameModal: boolean;
+  endAttempt: boolean;
 
   currentWord: string;
   startGameStatus: boolean;
@@ -673,6 +702,8 @@ interface ICrosswordGameState {
 export const initCrosswordGameState: ICrosswordGameState = {
   crosswordSize: 10,
   phoneLetters: "",
+  showEndGameModal: false,
+  endAttempt: false,
 
   index: 0,
   currentWord: "",
@@ -1018,8 +1049,8 @@ export const crosswordGameSlice = createSlice({
       state.createStartAttemptStatus = crosswordGameFetchStatus.Ready;
     },
     setAttemptID(state, action) {
-      window.localStorage.setItem("currentAttemptID", JSON.stringify(action.payload));
       state.attemptID = action.payload;
+      // window.localStorage.setItem("currentAttemptID", JSON.stringify("Attempt"));
     },
     setFinishAttemptStatusToReady(state) {
       state.finishAttemptStatus = crosswordGameFetchStatus.Ready;
@@ -1028,6 +1059,9 @@ export const crosswordGameSlice = createSlice({
       state.attemptID = undefined;
       state.startGameStatus = false;
       state.createStartAttemptStatus = crosswordGameFetchStatus.Ready;
+      state.selectedCell = undefined;
+      state.highlightedCell = null;
+      state.highlightedWordObj = null;
     },
     setCurrentUserCompletedAttempt(state, action) {
       state.currentUserCompletedAttempt = action.payload;
@@ -1168,6 +1202,12 @@ export const crosswordGameSlice = createSlice({
         return;
       }
       state.baseInput = action.payload;
+    },
+    setShowEndGameModal(state, action) {
+      state.showEndGameModal = action.payload;
+    },
+    setEndAttempt(state, action) {
+      state.endAttempt = action.payload;
     },
   },
   extraReducers(builder) {

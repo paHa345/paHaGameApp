@@ -30,6 +30,7 @@ export async function GET(req: NextRequest, segmentData: any) {
     const currentUserCrosswordAttempt = await AttemptCrosswordGame.find({
       crosswordID: params.crosswordId,
       telegramID: params.telegramUserID,
+      isCompleted: true,
     });
 
     if (currentUserCrosswordAttempt.length > 0) {

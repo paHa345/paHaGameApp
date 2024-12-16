@@ -16,14 +16,16 @@ const CrosswordGameSection = () => {
   const showCrosswordGameChooseModal = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.showChooseCrosswordModal
   );
+  const isEndAttempt = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.endAttempt
+  );
 
   const { user } = useTelegram();
-
-  console.log(user?.id);
 
   useEffect(() => {
     const currentCrossword = localStorage.getItem("currentCrosswordGame");
     const currentAttemptID = localStorage.getItem("currentAttemptID");
+    dispatch(crossworGamedActions.setShowEndGameModal(false));
 
     if (currentCrossword !== null && currentAttemptID !== null) {
       dispatch(

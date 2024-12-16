@@ -1,5 +1,5 @@
 "use client";
-import { ICrosswordGameSlice } from "@/app/store/crosswordGameSlice";
+import { crossworGamedActions, ICrosswordGameSlice } from "@/app/store/crosswordGameSlice";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CurrentUserCompletedAttempt from "./CurrentUserCompletedAttempt";
@@ -18,6 +18,7 @@ const ResultsSectionMain = () => {
   useEffect(() => {
     dispatch(attemptsActions.setGameAllAttempts(undefined));
     dispatch(attemptsActions.setGetGameAllAttemptsFetchStatus(attemptsFetchStatus.Ready));
+    dispatch(crossworGamedActions.setEndAttempt(false));
   });
 
   const { user } = useTelegram();

@@ -30,61 +30,23 @@ const EndGameButton = () => {
 
   const finishAttemptHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    console.log("Finish attempt");
-    if (!user) {
-      const attemptData = {
-        attemptID: attemptID,
-        telegramUser: "paHa345",
-        telegramID: 7777777,
-        crossword: currentAttemptCrossword,
-        crosswordID: crosswordGameId,
-      };
-      console.log(attemptData);
 
-      window.localStorage.removeItem("currentCrosswordGame");
-      window.localStorage.removeItem("currentAttemptID");
-      dispatch(finishAttempt(attemptData));
-      setTimeout(() => {
-        redirect("/results");
-      }, 2000);
-    } else {
-      const attemptData = {
-        attemptID: attemptID,
-        telegramUser: user?.username,
-        telegramID: user?.id,
-        crossword: currentAttemptCrossword,
-        crosswordID: crosswordGameId,
-        userPhoto: user.photo_url,
-        firstName: user?.first_name,
-        lastName: user?.last_name,
-      };
-
-      dispatch(finishAttempt(attemptData));
-
-      window.localStorage.removeItem("currentCrosswordGame");
-      window.localStorage.removeItem("currentAttemptID");
-
-      setTimeout(() => {
-        redirect("/results");
-      }, 2000);
-    }
-    // Dispatch action to finish the current attempt and update the state
-    // Example: dispatch(searchExerciseActions.finishAttempt());
+    dispatch(crossworGamedActions.setShowEndGameModal(true));
   };
 
-  useEffect(() => {
-    if (
-      finishAttemptStatus === crosswordGameFetchStatus.Resolve ||
-      finishAttemptStatus === crosswordGameFetchStatus.Error
-    ) {
-      setTimeout(() => {
-        dispatch(crossworGamedActions.setFinishAttemptStatusToReady());
-      }, 5000);
-    }
-  }, [finishAttemptStatus]);
+  // useEffect(() => {
+  //   if (
+  //     finishAttemptStatus === crosswordGameFetchStatus.Resolve ||
+  //     finishAttemptStatus === crosswordGameFetchStatus.Error
+  //   ) {
+  //     setTimeout(() => {
+  //       dispatch(crossworGamedActions.setFinishAttemptStatusToReady());
+  //     }, 5000);
+  //   }
+  // }, [finishAttemptStatus]);
   return (
     <>
-      {finishAttemptStatus === crosswordGameFetchStatus.Loading && (
+      {/* {finishAttemptStatus === crosswordGameFetchStatus.Loading && (
         <div className=" flex justify-center items-center">
           <div
             className={` w-2/4 px-4 transition-all rounded-lg ease-in-out delay-50 bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-exerciseCardShadow`}
@@ -103,28 +65,27 @@ const EndGameButton = () => {
             </div>
           </div>
         </div>
-      )}
-      {finishAttemptStatus === crosswordGameFetchStatus.Ready && (
-        <div className=" flex justify-center items-center">
-          <div
-            onClick={finishAttemptHandler}
-            className={` cursor-pointer w-2/4 px-4 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow`}
-          >
-            <div className=" flex flex-col">
-              <div className=" flex flex-col gap-2">
-                <div className=" flex flex-row justify-center items-center">
-                  <div className=" flex justify-center items-center">
-                    <FontAwesomeIcon className="fa-fw fa-2x" icon={faFlagCheckered} />
-                  </div>
-                  <h1 className=" font-light text-2xl text-center grow pl-1 py-2 my-2">
-                    Закончить попытку
-                  </h1>
+      )} */}
+
+      <div className=" flex justify-center items-center">
+        <div
+          onClick={finishAttemptHandler}
+          className={` cursor-pointer w-2/4 px-4 transition-all rounded-lg ease-in-out delay-50 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow`}
+        >
+          <div className=" flex flex-col">
+            <div className=" flex flex-col gap-2">
+              <div className=" flex flex-row justify-center items-center">
+                <div className=" flex justify-center items-center">
+                  <FontAwesomeIcon className="fa-fw fa-2x" icon={faFlagCheckered} />
                 </div>
+                <h1 className=" font-light text-2xl text-center grow pl-1 py-2 my-2">
+                  Закончить попытку
+                </h1>
               </div>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 };

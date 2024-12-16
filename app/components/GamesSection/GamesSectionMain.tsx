@@ -11,6 +11,7 @@ const GamesSectionMain = () => {
   useEffect(() => {
     console.log("clear attempt data");
     dispatch(crossworGamedActions.clearCurrentUserCompletedAttempt());
+    dispatch(crossworGamedActions.setEndAttempt(false));
   });
   return (
     <section className=" container mx-auto">

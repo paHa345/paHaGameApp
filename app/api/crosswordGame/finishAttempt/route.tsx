@@ -15,8 +15,6 @@ export async function PATCH(req: NextRequest) {
 
     const body = await req.json();
 
-    console.log(body);
-
     if (!body.attemptID || !body.crosswordID) {
       return NextResponse.json({ message: "Отправлены неверные данные" }, { status: 400 });
     }
@@ -59,7 +57,7 @@ export async function PATCH(req: NextRequest) {
       var milliseconds = Math.floor((duration % 1000) / 100),
         seconds = Math.floor((duration / 1000) % 60),
         minutes = Math.floor((duration / (1000 * 60)) % 60),
-        hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+        hours = Math.floor(duration / (1000 * 60 * 60));
       hours = hours < 10 ? 0 + hours : hours;
       minutes = minutes < 10 ? 0 + minutes : minutes;
       seconds = seconds < 10 ? 0 + seconds : seconds;
