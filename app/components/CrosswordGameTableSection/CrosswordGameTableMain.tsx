@@ -129,7 +129,7 @@ const CrosswordGameTableMain = () => {
             type="text"
             maxLength={1}
             value={baseInput}
-            // onChange={setLetterHandler}
+            onChange={setLetterHandler}
             onKeyUp={inputKeyDownHandler}
           />
           <input
