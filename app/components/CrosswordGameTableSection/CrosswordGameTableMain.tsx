@@ -48,10 +48,10 @@ const CrosswordGameTableMain = () => {
   // };
 
   const inputKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(e.key);
+    console.log(e.code);
     dispatch(crossworGamedActions.setPhoneLetter(e.key));
-    // dispatch(crossworGamedActions.changeBaseInput(e.key));
-    // dispatch(crossworGamedActions.setSelectedElLetter(e.key));
+    dispatch(crossworGamedActions.changeBaseInput(e.key));
+    dispatch(crossworGamedActions.setSelectedElLetter(e.key));
     if (e.key === "Backspace") {
       dispatch(crossworGamedActions.changeBaseInput(e.key));
       dispatch(crossworGamedActions.setSelectedElLetter(e.key));
