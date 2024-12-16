@@ -25,7 +25,6 @@ const CrosswordGameTableMain = () => {
   );
 
   const baseInput = useSelector((state: ICrosswordGameSlice) => state.crosswordGameState.baseInput);
-  console.log(baseInput);
 
   const phoneLetters = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.phoneLetters
@@ -49,7 +48,10 @@ const CrosswordGameTableMain = () => {
   // };
 
   const inputKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    dispatch(crossworGamedActions.setPhoneLetter(e.charCode));
+    console.log(e.key);
+    dispatch(crossworGamedActions.setPhoneLetter(e.key));
+    // dispatch(crossworGamedActions.changeBaseInput(e.key));
+    // dispatch(crossworGamedActions.setSelectedElLetter(e.key));
     if (e.key === "Backspace") {
       dispatch(crossworGamedActions.changeBaseInput(e.key));
       dispatch(crossworGamedActions.setSelectedElLetter(e.key));
