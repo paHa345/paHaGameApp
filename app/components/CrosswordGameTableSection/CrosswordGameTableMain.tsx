@@ -39,14 +39,14 @@ const CrosswordGameTableMain = () => {
 
   const ref = React.useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
 
-  const setLetterHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
-    // dispatch(crossworGamedActions.setSelectedElLetter(e.currentTarget.value));
-    console.log(e.currentTarget.value);
+  // const setLetterHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   // dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
+  //   // dispatch(crossworGamedActions.setSelectedElLetter(e.currentTarget.value));
+  //   console.log(e.currentTarget.value);
 
-    dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
-    dispatch(crossworGamedActions.setSelectedElLetter(e.currentTarget.value));
-  };
+  //   dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
+  //   dispatch(crossworGamedActions.setSelectedElLetter(e.currentTarget.value));
+  // };
 
   const inputKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
     dispatch(crossworGamedActions.setPhoneLetter(e.charCode));
@@ -115,7 +115,7 @@ const CrosswordGameTableMain = () => {
             type="text"
             maxLength={1}
             value={baseInput}
-            onChange={setLetterHandler}
+            // onChange={setLetterHandler}
             onKeyUp={inputKeyDownHandler}
           />
         </div>
