@@ -37,6 +37,7 @@ const CrosswordGameTableMain = () => {
   );
 
   const ref = React.useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
+  const refSecound = React.useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
 
   // const setLetterHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   // dispatch(crossworGamedActions.changeBaseInput(e.currentTarget.value));
@@ -67,6 +68,10 @@ const CrosswordGameTableMain = () => {
 
     dispatch(crossworGamedActions.changeBaseInput(""));
 
+    const elSecound = refSecound.current;
+
+    setTimeout(() => elSecound.focus(), 0);
+
     if (e.key.length > 1 && e.key !== "Backspace") {
       return;
     }
@@ -82,7 +87,13 @@ const CrosswordGameTableMain = () => {
         {el.map((cell, j: number) => {
           return (
             <div key={`${i}:${j}`}>
-              <CrosswordGameCellMain ref={ref} cell={cell} i={i} j={j}></CrosswordGameCellMain>
+              <CrosswordGameCellMain
+                refSecound={refSecound}
+                ref={ref}
+                cell={cell}
+                i={i}
+                j={j}
+              ></CrosswordGameCellMain>
             </div>
           );
         })}
@@ -125,6 +136,16 @@ const CrosswordGameTableMain = () => {
             ref={ref}
             style={{ right: "-5px", bottom: "0px" }}
             className=" inputBase left-0 top-1/2 fixed opacity-0 h-0 w-0  text-slate-50 text-3xl font-extrabold"
+            type="text"
+            maxLength={1}
+            value={baseInput}
+            // onChange={setLetterHandler}
+            onKeyUp={inputKeyDownHandler}
+          />
+          <input
+            ref={refSecound}
+            style={{ right: "-5px", bottom: "0px" }}
+            className=" inputBaseSecound left-0 top-1/2 fixed opacity-0 h-0 w-0  text-slate-50 text-3xl font-extrabold"
             type="text"
             maxLength={1}
             value={baseInput}

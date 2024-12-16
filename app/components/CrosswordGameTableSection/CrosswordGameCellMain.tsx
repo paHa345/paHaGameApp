@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 interface ICellProps {
   ref: MutableRefObject<HTMLInputElement>;
+  refSecound: MutableRefObject<HTMLInputElement>;
   cell: {
     key: string;
     value: string;
@@ -61,7 +62,7 @@ interface ICellProps {
   i: number;
   j: number;
 }
-const CrosswordGameCellMain = ({ ref, cell, i, j }: ICellProps) => {
+const CrosswordGameCellMain = ({ refSecound, ref, cell, i, j }: ICellProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const selectedCell = useSelector(
