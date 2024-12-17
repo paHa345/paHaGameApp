@@ -1,6 +1,7 @@
 import { connectMongoDB } from "@/app/libs/MongoConnect";
 import AttemptCrosswordGame from "@/app/models/AttemptCrosswordGameModel";
 import Crossword from "@/app/models/CrosswordModel";
+import { AddedWordDirection } from "@/app/store/crosswordSlice";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(req: NextRequest) {
@@ -30,7 +31,16 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ message: "Неверный ID кроссворда" }, { status: 400 });
     }
 
-    const userAnswers = body.answersArr;
+    const userAnswers: {
+      row: number;
+      col: number;
+      addedWordArr: {
+        direction: AddedWordDirection;
+        value: string;
+        isCorrect?: boolean;
+        question: string | undefined;
+      }[];
+    }[] = body.answersArr;
 
     const crosswordAnswers: any = JSON.parse(JSON.stringify(crossword.answersArr));
 
@@ -43,12 +53,18 @@ export async function PATCH(req: NextRequest) {
               crosswordAnswers[i]?.addedWordArr[j].direction ||
             userAnswers[i]?.addedWordArr[j].value !== crosswordAnswers[i]?.addedWordArr[j].value
           ) {
+            userAnswers[i].addedWordArr[j].isCorrect = false;
+
             isCorrect = false;
-            break;
+            // break;
+          } else {
+            userAnswers[i].addedWordArr[j].isCorrect = true;
           }
         }
       }
     }
+
+    console.log(userAnswers);
 
     const finishDate = new Date();
     const durationNumberMs = finishDate.valueOf() - currentAttempt.startDate.valueOf();
@@ -76,6 +92,7 @@ export async function PATCH(req: NextRequest) {
       durationNumberMs: durationNumberMs,
       firstName: body.firstName,
       lastName: body.lastName,
+      userAnswers: userAnswers,
     });
 
     const updatedFinishAttampt = await AttemptCrosswordGame.findById(currentAttempt._id);

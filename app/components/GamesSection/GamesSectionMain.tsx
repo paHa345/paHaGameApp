@@ -20,10 +20,10 @@ const GamesSectionMain = () => {
       </div>
       <div className=" px-4  grid lg:grid-cols-3 sm:grid-cols-2 gap-6 justify-center items-center py-5">
         <GameSectionCard></GameSectionCard>
+        {/* <GameSectionCard></GameSectionCard>
         <GameSectionCard></GameSectionCard>
         <GameSectionCard></GameSectionCard>
-        <GameSectionCard></GameSectionCard>
-        <GameSectionCard></GameSectionCard>
+        <GameSectionCard></GameSectionCard> */}
       </div>
     </section>
   );

@@ -343,6 +343,16 @@ export interface IAttemptCrosswordGameSchema {
   durationNumberMs?: number;
   firstName?: string;
   lastName?: string;
+  userAnswers?: {
+    row: number;
+    col: number;
+    addedWordArr: {
+      direction: AddedWordDirection;
+      value: string;
+      isCorrect?: boolean;
+      question: string | undefined;
+    }[];
+  }[];
 }
 
 export interface IOneExerciseTypes {

@@ -223,6 +223,7 @@ export const finishAttempt = createAsyncThunk(
         addedWordArr: {
           direction: AddedWordDirection;
           value: string;
+          question: string | undefined;
         }[];
       }[] = [];
 
@@ -232,6 +233,7 @@ export const finishAttempt = createAsyncThunk(
             const addedWord: {
               direction: AddedWordDirection;
               value: string;
+              question: string | undefined;
             }[] = [];
             cell.addedWordArr.forEach((addedWordObj) => {
               const word: any[] = [];
@@ -249,6 +251,10 @@ export const finishAttempt = createAsyncThunk(
               });
 
               addedWord.push({
+                question:
+                  addedWordObj.direction === AddedWordDirection.Horizontal
+                    ? cell.questionObj.horizontal?.value
+                    : cell.questionObj.vertical?.value,
                 direction: addedWordObj.direction,
                 value: word.join(""),
               });
@@ -318,6 +324,7 @@ export interface ICrosswordGameSlice {
     phoneLetters: string;
     showEndGameModal: boolean;
     endAttempt: boolean;
+    showHideCurrentUserAttemptAnswers: boolean;
 
     startGameStatus: boolean;
     currentWord: string;
@@ -499,6 +506,22 @@ export interface ICrosswordGameSlice {
       finishDate?: Date;
       duration?: string;
       crosswordName?: string;
+      userPhoto?: string;
+      durationNumberMs?: number;
+      firstName?: string;
+      lastName?: string;
+      userAnswers?: {
+        row: number;
+        col: number;
+        addedWordArr: {
+          direction: AddedWordDirection;
+          value: string;
+          isCorrect?: boolean;
+          question: string | undefined;
+
+          _id: string;
+        }[];
+      }[];
     };
     availableCrosswordGameErrorMessage?: string;
   };
@@ -509,6 +532,7 @@ interface ICrosswordGameState {
   phoneLetters: string;
   showEndGameModal: boolean;
   endAttempt: boolean;
+  showHideCurrentUserAttemptAnswers: boolean;
 
   currentWord: string;
   startGameStatus: boolean;
@@ -695,6 +719,22 @@ interface ICrosswordGameState {
     finishDate?: Date;
     duration?: string;
     crosswordName?: string;
+    userPhoto?: string;
+    durationNumberMs?: number;
+    firstName?: string;
+    lastName?: string;
+    userAnswers?: {
+      row: number;
+      col: number;
+      addedWordArr: {
+        direction: AddedWordDirection;
+        value: string;
+        isCorrect?: boolean;
+        question: string | undefined;
+
+        _id: string;
+      }[];
+    }[];
   };
   availableCrosswordGameErrorMessage?: string;
 }
@@ -704,6 +744,7 @@ export const initCrosswordGameState: ICrosswordGameState = {
   phoneLetters: "",
   showEndGameModal: false,
   endAttempt: false,
+  showHideCurrentUserAttemptAnswers: false,
 
   index: 0,
   currentWord: "",
@@ -1208,6 +1249,9 @@ export const crosswordGameSlice = createSlice({
     },
     setEndAttempt(state, action) {
       state.endAttempt = action.payload;
+    },
+    setShowHideCurrentUserAttemptAnswers(state) {
+      state.showHideCurrentUserAttemptAnswers = !state.showHideCurrentUserAttemptAnswers;
     },
   },
   extraReducers(builder) {

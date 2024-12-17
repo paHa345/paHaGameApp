@@ -15,6 +15,20 @@ const attemptCrosswordGameSchema = new mongoose.Schema<IAttemptCrosswordGameSche
   durationNumberMs: { type: Number, required: false },
   firstName: { type: String, required: false },
   lastName: { type: String, required: false },
+  userAnswers: [
+    {
+      row: { type: Number, required: false },
+      col: { type: Number, required: false },
+      addedWordArr: [
+        {
+          direction: { type: Number, required: false },
+          value: { type: String, required: false },
+          isCorrect: { type: Boolean, required: false },
+          question: { type: String, required: false },
+        },
+      ],
+    },
+  ],
 });
 
 const AttemptCrosswordGame =

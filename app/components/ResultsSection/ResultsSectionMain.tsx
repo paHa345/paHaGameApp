@@ -1,6 +1,6 @@
 "use client";
 import { crossworGamedActions, ICrosswordGameSlice } from "@/app/store/crosswordGameSlice";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CurrentUserCompletedAttempt from "./CurrentUserCompletedAttempt";
 import CurrentGameAttempts from "./CurrentGameAttempts";
@@ -8,6 +8,9 @@ import { AppDispatch } from "@/app/store";
 import AllGamesList from "./AllGamesList";
 import { attemptsActions, attemptsFetchStatus, IAttemptsSlice } from "@/app/store/attemptsSlice";
 import { useTelegram } from "@/app/telegramProvider";
+import { CSSTransition } from "react-transition-group";
+import { Transition } from "react-transition-group";
+import ReactDOM from "react-dom";
 
 const ResultsSectionMain = () => {
   const dispatch = useDispatch<AppDispatch>();
