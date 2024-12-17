@@ -18,7 +18,6 @@ const CurrentUserCompletedAttempt = () => {
     (state: ICrosswordGameSlice) => state.crosswordGameState.showHideCurrentUserAttemptAnswers
   );
 
-  const [inProp, setInProp] = useState(false);
   const nodeRef = useRef(null);
 
   const answersEl = currentUserCompletedAttempt?.userAnswers?.map((answers) => {
@@ -110,14 +109,11 @@ const CurrentUserCompletedAttempt = () => {
             unmountOnExit
             classNames="my-node"
           >
-            {/* <div ref={nodeRef}>{"I'll receive my-node-* classes"}</div> */}
-            <div className=" max-h-48 overflow-y-scroll " ref={nodeRef}>
+            <div className=" max-h-44  overflow-y-scroll " ref={nodeRef}>
               {answersEl}
             </div>
           </CSSTransition>
         </div>
-
-        {/* {showHideAttemptAnswers && <div>{answersEl}</div>} */}
       </div>
     </>
   );
