@@ -72,8 +72,6 @@ const EndGameModalMain = () => {
   };
 
   useEffect(() => {
-    dispatch(crossworGamedActions.setFinishAttemptStatusToReady());
-
     if (
       finishAttemptStatus === crosswordGameFetchStatus.Resolve ||
       finishAttemptStatus === crosswordGameFetchStatus.Error
@@ -86,6 +84,10 @@ const EndGameModalMain = () => {
         dispatch(crossworGamedActions.setFinishAttemptStatusToReady());
       };
     }
+    if (finishAttemptStatus === crosswordGameFetchStatus.Loading) {
+      return;
+    }
+    dispatch(crossworGamedActions.setFinishAttemptStatusToReady());
   }, [finishAttemptStatus]);
 
   return (
