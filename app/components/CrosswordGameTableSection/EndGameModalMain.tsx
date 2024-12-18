@@ -72,6 +72,8 @@ const EndGameModalMain = () => {
   };
 
   useEffect(() => {
+    dispatch(crossworGamedActions.setFinishAttemptStatusToReady());
+
     if (
       finishAttemptStatus === crosswordGameFetchStatus.Resolve ||
       finishAttemptStatus === crosswordGameFetchStatus.Error
