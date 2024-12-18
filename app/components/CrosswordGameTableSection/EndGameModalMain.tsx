@@ -64,9 +64,8 @@ const EndGameModalMain = () => {
       //     redirect("/results");
       //   }, 2000);
     }
-    setTimeout(() => {
-      router.push("/results");
-    }, 1000);
+    // setTimeout(() => {}, 1000);
+    router.push("/results");
 
     // Dispatch action to finish the current attempt and update the state
     // Example: dispatch(searchExerciseActions.finishAttempt());
