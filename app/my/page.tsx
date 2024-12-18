@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import TransitionTemplate from "@/app/components/TransitionTemplate";
 
 const My = async () => {
   const session = await getServerSession(authOptions);
@@ -30,7 +31,9 @@ const My = async () => {
           </>
         }
       >
-        <MyPage></MyPage>
+        <TransitionTemplate>
+          <MyPage></MyPage>
+        </TransitionTemplate>
       </Suspense>
     </>
   );

@@ -1,4 +1,5 @@
 import CrosswordGameTableMain from "@/app/components/CrosswordGameTableSection/CrosswordGameTableMain";
+import TransitionTemplate from "@/app/components/TransitionTemplate";
 import { ICrosswordGameSlice } from "@/app/store/crosswordGameSlice";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,7 +23,9 @@ const page = () => {
           </>
         }
       >
-        <CrosswordGameTableMain></CrosswordGameTableMain>
+        <TransitionTemplate>
+          <CrosswordGameTableMain></CrosswordGameTableMain>
+        </TransitionTemplate>
       </Suspense>
     </>
   );

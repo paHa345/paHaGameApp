@@ -5,6 +5,10 @@ import Footer from "../Footer";
 import SessionProviderComponent from "../SessionProviderSection/SessionProvider";
 import ReduxProvider from "@/app/ReduxProvider";
 import { retrieveLaunchParams } from "@telegram-apps/sdk";
+import Transition from "../Transition";
+import { usePathname, useRouter } from "next/navigation";
+import { ViewTransitions } from "next-view-transitions";
+import TransitionTemplate from "../TransitionTemplate";
 
 export function isTelegramWebApp() {
   // @ts-ignore
@@ -26,10 +30,9 @@ const MainLayout = (props: any) => {
         <ReduxProvider>
           <Header></Header>
         </ReduxProvider>
-
         <main
           className=" w-11/12
-        mx-auto"
+          mx-auto"
         >
           {props.children}
         </main>

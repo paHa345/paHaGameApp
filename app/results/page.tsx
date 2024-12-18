@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import ResultsSectionMain from "../components/ResultsSection/ResultsSectionMain";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import TransitionTemplate from "@/app/components/TransitionTemplate";
 
 const page = () => {
   return (
@@ -21,7 +22,9 @@ const page = () => {
           </>
         }
       >
-        <ResultsSectionMain></ResultsSectionMain>
+        <TransitionTemplate>
+          <ResultsSectionMain></ResultsSectionMain>
+        </TransitionTemplate>
       </Suspense>{" "}
     </>
   );

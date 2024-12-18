@@ -11,6 +11,7 @@ import { TelegramProvider } from "./telegramProvider";
 import Script from "next/script";
 config.autoAddCss = false;
 import { Orbitron, Sofia_Sans, Ubuntu, Roboto_Slab } from "next/font/google";
+import TransitionTemplate from "./components/TransitionTemplate";
 
 const inter = Inter({ subsets: ["latin"] });
 const sofia_Sans = Sofia_Sans({ weight: "400", subsets: ["cyrillic"] });

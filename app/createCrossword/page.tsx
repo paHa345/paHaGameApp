@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/utils/authOptions";
 import { redirect } from "next/navigation";
 import CreateCrosswordMain from "../components/CreateCrosswordTableSection/CreateCrosswordMain";
+import TransitionTemplate from "../components/TransitionTemplate";
 
 const page = async () => {
   const session = await getServerSession(authOptions);
@@ -12,7 +13,11 @@ const page = async () => {
   if (!session) {
     redirect("/");
   }
-  return <CreateCrosswordMain></CreateCrosswordMain>;
+  return (
+    <TransitionTemplate>
+      <CreateCrosswordMain></CreateCrosswordMain>
+    </TransitionTemplate>
+  );
 };
 
 export default page;
