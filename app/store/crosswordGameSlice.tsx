@@ -1108,6 +1108,7 @@ export const crosswordGameSlice = createSlice({
       state.showHideCurrentUserAttemptAnswers = false;
       state.showEndGameModal = false;
       state.endAttempt = false;
+      state.startGameStatus = false;
     },
     setCurrentUserCompletedAttempt(state, action) {
       state.currentUserCompletedAttempt = action.payload;
