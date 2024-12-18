@@ -1,6 +1,6 @@
 "use client";
 import { crossworGamedActions, ICrosswordGameSlice } from "@/app/store/crosswordGameSlice";
-import React, { MutableRefObject, useState } from "react";
+import React, { MutableRefObject, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CrosswordGameCellMain from "./CrosswordGameCellMain";
 import CrosswordGameQuestionsMain from "./CrosswordGameQuestionsMain";
@@ -35,10 +35,6 @@ const CrosswordGameTableMain = () => {
   );
 
   const baseInput = useSelector((state: ICrosswordGameSlice) => state.crosswordGameState.baseInput);
-
-  const phoneLetters = useSelector(
-    (state: ICrosswordGameSlice) => state.crosswordGameState.phoneLetters
-  );
 
   const { user, webApp } = useTelegram();
 
@@ -103,6 +99,11 @@ const CrosswordGameTableMain = () => {
       </div>
     );
   });
+
+  useEffect(() => {
+    dispatch(crossworGamedActions.setFinishAttemptStatusToReady());
+  }, []);
+
   return (
     <div className=" py-10">
       {!startGame && !isEndAttempt && <StartGameModalMain></StartGameModalMain>}

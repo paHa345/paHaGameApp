@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { redirect } from "next/navigation";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { isTelegramWebApp } from "../Layout/MainLayout";
 
 const EndGameModalMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -72,6 +73,13 @@ const EndGameModalMain = () => {
   };
 
   useEffect(() => {
+    // console.log(isTelegramWebApp());
+    // if (isTelegramWebApp()) {
+    //   document.body.style.overflow = "hidden";
+    // } else {
+    //   document.body.style.overflow = "auto";
+    // }
+
     if (
       finishAttemptStatus === crosswordGameFetchStatus.Resolve ||
       finishAttemptStatus === crosswordGameFetchStatus.Error

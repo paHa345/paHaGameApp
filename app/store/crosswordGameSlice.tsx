@@ -1104,6 +1104,7 @@ export const crosswordGameSlice = createSlice({
       state.highlightedCell = null;
       state.highlightedWordObj = null;
       state.finishAttemptStatus = crosswordGameFetchStatus.Ready;
+      state.showCrosswordGameCellMenu = false;
     },
     setCurrentUserCompletedAttempt(state, action) {
       state.currentUserCompletedAttempt = action.payload;
