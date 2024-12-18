@@ -12,9 +12,11 @@ import { redirect } from "next/navigation";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { isTelegramWebApp } from "../Layout/MainLayout";
+import { useRouter } from "next/navigation";
 
 const EndGameModalMain = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
 
   const { user } = useTelegram();
   const attemptID = useSelector((state: ICrosswordGameSlice) => state.crosswordGameState.attemptID);
@@ -62,6 +64,9 @@ const EndGameModalMain = () => {
       //     redirect("/results");
       //   }, 2000);
     }
+    setTimeout(() => {
+      router.push("/results");
+    }, 1000);
 
     // Dispatch action to finish the current attempt and update the state
     // Example: dispatch(searchExerciseActions.finishAttempt());

@@ -297,12 +297,12 @@ export const finishAttempt = createAsyncThunk(
       // добавляем данные о только что законченной попытке
       dispatch(crossworGamedActions.setCurrentUserCompletedAttempt(finishAttempt.result));
       dispatch(crossworGamedActions.clearAttemptData());
-      dispatch(crossworGamedActions.setShowEndGameModal(false));
-      dispatch(crossworGamedActions.setEndAttempt(true));
+      // dispatch(crossworGamedActions.setShowEndGameModal(false));
+      // dispatch(crossworGamedActions.setEndAttempt(true));
 
-      setTimeout(() => {
-        redirect("/results");
-      }, 2000);
+      // setTimeout(() => {
+      //   redirect("/results");
+      // }, 2000);
     } catch (error: any) {
       // dispatch(crossworGamedActions.setShowEndGameModal(false));
 
@@ -1105,6 +1105,9 @@ export const crosswordGameSlice = createSlice({
       state.highlightedWordObj = null;
       state.finishAttemptStatus = crosswordGameFetchStatus.Ready;
       state.showCrosswordGameCellMenu = false;
+      state.showHideCurrentUserAttemptAnswers = false;
+      state.showEndGameModal = false;
+      state.endAttempt = false;
     },
     setCurrentUserCompletedAttempt(state, action) {
       state.currentUserCompletedAttempt = action.payload;
