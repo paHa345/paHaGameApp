@@ -24,7 +24,6 @@ export async function GET(req: NextRequest, segmentData: any) {
     }
 
     const value = await Crossword.find({ isCompleted: true }).countDocuments();
-    console.log(value);
 
     const page = parseInt(req.nextUrl.searchParams?.get("page") || "1", 10);
     const limit = parseInt(req.nextUrl.searchParams?.get("limit") || "2", 10);

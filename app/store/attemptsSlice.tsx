@@ -66,6 +66,7 @@ export interface IAttemptsSlice {
     gamesListCurrentPage: number;
     isLastGamesListPage: boolean;
     showHideGamesList: boolean;
+    gamesListTransitionClasses: string;
     gamesList?: { _id: string; name: string; changeDate: Date }[];
     setGamesListFetchStatus: attemptsFetchStatus;
     getGameAllAttemptsFetchStatus: attemptsFetchStatus;
@@ -93,6 +94,7 @@ interface IAttemptsState {
   gamesListCurrentPage: number;
   isLastGamesListPage: boolean;
   showHideGamesList: boolean;
+  gamesListTransitionClasses: string;
 
   gamesList?: { _id: string; name: string; changeDate: Date }[];
   setGamesListFetchStatus: attemptsFetchStatus;
@@ -118,6 +120,7 @@ const initAppState: IAttemptsState = {
   gamesListCurrentPage: 1,
   isLastGamesListPage: false,
   showHideGamesList: true,
+  gamesListTransitionClasses: "games-list-left",
 
   setGamesListFetchStatus: attemptsFetchStatus.Ready,
   getGameAllAttemptsFetchStatus: attemptsFetchStatus.Ready,
@@ -150,6 +153,9 @@ export const attemptsSlice = createSlice({
     },
     setShowHideGamesList(state, action) {
       state.showHideGamesList = action.payload;
+    },
+    setGamesListTransitionClasses(state, action) {
+      state.gamesListTransitionClasses = action.payload;
     },
   },
   extraReducers(builder) {

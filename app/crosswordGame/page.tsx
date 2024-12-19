@@ -8,9 +8,9 @@ import TransitionTemplate from "../components/TransitionTemplate";
 
 const page = () => {
   return (
-    <TransitionTemplate>
-      <CrosswordGameSectionMain></CrosswordGameSectionMain>
-    </TransitionTemplate>
+    // <TransitionTemplate>
+    <CrosswordGameSectionMain></CrosswordGameSectionMain>
+    // </TransitionTemplate>
   );
 };
 

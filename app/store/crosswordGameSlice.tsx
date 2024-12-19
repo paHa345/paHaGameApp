@@ -5,14 +5,21 @@ import { ICrossword, ICrosswordSchema } from "../types";
 
 export const getAvailableCrosswords = createAsyncThunk(
   "crosswordGameState/getAvailableCrosswords",
-  async function (_, { rejectWithValue, dispatch }) {
+  async function (getCrosswordsData: { page?: number }, { rejectWithValue, dispatch }) {
     try {
-      const getCurrentUserCrosswordsReq = await fetch("/api/crosswordGame/getAllCrosswords");
+      const getCurrentUserCrosswordsReq = await fetch(
+        `/api/crosswordGame/getAllCrosswords?page=${getCrosswordsData?.page ? getCrosswordsData?.page : 1}`
+      );
       const crosswords = await getCurrentUserCrosswordsReq.json();
       if (!getCurrentUserCrosswordsReq.ok) {
         throw new Error(crosswords.message);
       }
-      dispatch(crossworGamedActions.setAvailableCrosswordGamesArr(crosswords.result));
+
+      console.log(crosswords.result.isLastPage);
+      dispatch(crossworGamedActions.setAvailableCrosswordGamesArr(crosswords.result.crosswords));
+      dispatch(crossworGamedActions.setCrosswordsListCurrentPage(getCrosswordsData.page));
+      dispatch(crossworGamedActions.setIsLastCrosswordsListPage(crosswords.result.isLastPage));
+      dispatch(crossworGamedActions.setShowHideCrosswordsList(true));
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -326,6 +333,11 @@ export interface ICrosswordGameSlice {
     endAttempt: boolean;
     showHideCurrentUserAttemptAnswers: boolean;
 
+    crosswordsListCurrentPage: number;
+    isLastCrosswordsListPage: boolean;
+    showHideCrosswordsList: boolean;
+    crosswordsListTransitionClasses: string;
+
     startGameStatus: boolean;
     currentWord: string;
     index: number;
@@ -533,6 +545,11 @@ interface ICrosswordGameState {
   showEndGameModal: boolean;
   endAttempt: boolean;
   showHideCurrentUserAttemptAnswers: boolean;
+
+  crosswordsListCurrentPage: number;
+  isLastCrosswordsListPage: boolean;
+  showHideCrosswordsList: boolean;
+  crosswordsListTransitionClasses: string;
 
   currentWord: string;
   startGameStatus: boolean;
@@ -745,6 +762,11 @@ export const initCrosswordGameState: ICrosswordGameState = {
   showEndGameModal: false,
   endAttempt: false,
   showHideCurrentUserAttemptAnswers: false,
+
+  crosswordsListCurrentPage: 1,
+  isLastCrosswordsListPage: false,
+  showHideCrosswordsList: true,
+  crosswordsListTransitionClasses: "games-list-left",
 
   index: 0,
   currentWord: "",
@@ -1258,6 +1280,19 @@ export const crosswordGameSlice = createSlice({
     },
     setShowHideCurrentUserAttemptAnswers(state) {
       state.showHideCurrentUserAttemptAnswers = !state.showHideCurrentUserAttemptAnswers;
+    },
+
+    setCrosswordsListCurrentPage(state, action) {
+      state.crosswordsListCurrentPage = action.payload;
+    },
+    setIsLastCrosswordsListPage(state, action) {
+      state.isLastCrosswordsListPage = action.payload;
+    },
+    setShowHideCrosswordsList(state, action) {
+      state.showHideCrosswordsList = action.payload;
+    },
+    setCrosswordsListTransitionClasses(state, action) {
+      state.crosswordsListTransitionClasses = action.payload;
     },
   },
   extraReducers(builder) {
