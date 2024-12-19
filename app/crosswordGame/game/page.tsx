@@ -23,9 +23,9 @@ const page = () => {
           </>
         }
       >
-        <TransitionTemplate>
-          <CrosswordGameTableMain></CrosswordGameTableMain>
-        </TransitionTemplate>
+        {/* <TransitionTemplate> */}
+        <CrosswordGameTableMain></CrosswordGameTableMain>
+        {/* </TransitionTemplate> */}
       </Suspense>
     </>
   );

@@ -3,16 +3,25 @@ import { crosswordGameFetchStatus } from "./crosswordGameSlice";
 
 export const getAllGamesList = createAsyncThunk(
   "attemptsState/getAllGamesList",
-  async function (telegramID: number, { rejectWithValue, dispatch }) {
+  async function (
+    getGamesFata: { telegramID: number; page?: number },
+    { rejectWithValue, dispatch }
+  ) {
     try {
-      const getAllGamesListReq = await fetch(`/api/games/getAllGames/${telegramID}`);
+      dispatch(attemptsActions.setShowHideGamesList(false));
+      const getAllGamesListReq = await fetch(
+        `/api/games/getAllGames/${getGamesFata.telegramID}?page=${getGamesFata?.page ? getGamesFata?.page : 1}`
+      );
       const allGamesList = await getAllGamesListReq.json();
       if (!getAllGamesListReq.ok) {
         throw new Error(allGamesList.message);
       }
       console.log(allGamesList);
       // dispatch(crossworGamedActions.setAvailableCrosswordGamesArr(crosswords.result));
-      dispatch(attemptsActions.setGamesList(allGamesList.result));
+      dispatch(attemptsActions.setGamesList(allGamesList.result.games));
+      dispatch(attemptsActions.setGamesListCurrentPage(getGamesFata?.page));
+      dispatch(attemptsActions.setIsLastGamesListPage(allGamesList.result.isLastPage));
+      dispatch(attemptsActions.setShowHideGamesList(true));
     } catch (error: any) {
       dispatch(attemptsActions.setGetAllGamesErrorMessage(error.message));
 
@@ -54,6 +63,9 @@ export enum attemptsFetchStatus {
 export interface IAttemptsSlice {
   attemptsState: {
     attempts: number;
+    gamesListCurrentPage: number;
+    isLastGamesListPage: boolean;
+    showHideGamesList: boolean;
     gamesList?: { _id: string; name: string; changeDate: Date }[];
     setGamesListFetchStatus: attemptsFetchStatus;
     getGameAllAttemptsFetchStatus: attemptsFetchStatus;
@@ -78,6 +90,10 @@ export interface IAttemptsSlice {
 
 interface IAttemptsState {
   attempts: number;
+  gamesListCurrentPage: number;
+  isLastGamesListPage: boolean;
+  showHideGamesList: boolean;
+
   gamesList?: { _id: string; name: string; changeDate: Date }[];
   setGamesListFetchStatus: attemptsFetchStatus;
   getGameAllAttemptsFetchStatus: attemptsFetchStatus;
@@ -99,6 +115,10 @@ interface IAttemptsState {
 
 const initAppState: IAttemptsState = {
   attempts: 0,
+  gamesListCurrentPage: 1,
+  isLastGamesListPage: false,
+  showHideGamesList: true,
+
   setGamesListFetchStatus: attemptsFetchStatus.Ready,
   getGameAllAttemptsFetchStatus: attemptsFetchStatus.Ready,
 };
@@ -121,6 +141,15 @@ export const attemptsSlice = createSlice({
     },
     setGetGameAllAttemptsFetchStatus(state, action) {
       state.getGameAllAttemptsFetchStatus = action.payload;
+    },
+    setGamesListCurrentPage(state, action) {
+      state.gamesListCurrentPage = action.payload;
+    },
+    setIsLastGamesListPage(state, action) {
+      state.isLastGamesListPage = action.payload;
+    },
+    setShowHideGamesList(state, action) {
+      state.showHideGamesList = action.payload;
     },
   },
   extraReducers(builder) {

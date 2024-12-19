@@ -143,12 +143,12 @@ textarea {
 .my-node-enter {
   opacity: 0;
   scale: 0.8;
-  transform: translateX(-100%);
+  /* transform: translateX(-100%); */
 }
 .my-node-enter-active {
   opacity: 1;
   scale: 1;
-  transform: translateX(0);
+  /* transform: translateX(0); */
 
   transition: all 400ms ease-in-out;
 }
@@ -159,5 +159,57 @@ textarea {
 .my-node-exit-active {
   opacity: 0;
   scale: 0.8;
+  transition: all 400ms ease-in-out;
+}
+
+.games-list-right-enter {
+  opacity: 0;
+  /* scale: 0.8; */
+  transform: translateX(-50%);
+  z-index: -100;
+}
+.games-list-right-enter-active {
+  opacity: 1;
+  /* scale: 1; */
+  transform: translateX(0);
+  z-index: 0;
+
+  transition: all 400ms ease-in-out;
+}
+.games-list-right-exit {
+  opacity: 1;
+  /* scale: 1; */
+  transform: translateX(0);
+  z-index: 0;
+}
+.games-list-right-exit-active {
+  opacity: 0;
+  /* scale: 0.8; */
+  transform: translateX(50%);
+  z-index: -100;
+  transition: all 400ms ease-in-out;
+}
+
+.games-list-left-enter {
+  opacity: 0;
+  /* scale: 0.8; */
+  transform: translateX(50%);
+}
+.games-list-left-enter-active {
+  opacity: 1;
+  /* scale: 1; */
+  transform: translateX(0);
+
+  transition: all 400ms ease-in-out;
+}
+.games-list-left-exit {
+  opacity: 1;
+  /* scale: 1; */
+  transform: translateX(0);
+}
+.games-list-left-exit-active {
+  opacity: 0;
+  /* scale: 0.8; */
+  transform: translateX(-50%);
   transition: all 400ms ease-in-out;
 }

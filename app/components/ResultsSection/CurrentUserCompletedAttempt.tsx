@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AppDispatch } from "@/app/store";
 import { Transition } from "react-transition-group";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import TransitionTemplate from "../TransitionTemplate";
 
 const CurrentUserCompletedAttempt = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -72,7 +73,9 @@ const CurrentUserCompletedAttempt = () => {
           <div>
             <h1 className=" text-center">
               Сожалеем, вы не смогли справиться с кроссвордом:{" "}
-              <span>{currentUserCompletedAttempt?.crosswordName}</span>
+              <span className=" text-2xl font-semibold">
+                {currentUserCompletedAttempt?.crosswordName}
+              </span>
             </h1>
             {/* <h1>
               Ваше время:(Час:Мин:Сек) <span>{currentUserCompletedAttempt?.duration}</span>
@@ -113,6 +116,9 @@ const CurrentUserCompletedAttempt = () => {
               {answersEl}
             </div>
           </CSSTransition>
+          {/* <TransitionTemplate>
+            <div>{showHideAttemptAnswers && answersEl}</div>
+          </TransitionTemplate> */}
         </div>
       </div>
     </>

@@ -13,7 +13,7 @@ const GameSectionCard = () => {
           </div>
 
           <div>
-            <h1 className=" text-3xl lg:text-2xl text-center font-bold pb-2">Crossword Game</h1>
+            <h1 className=" text-3xl lg:text-2xl text-center font-bold pb-2">Кроссворды</h1>
           </div>
           <div>
             <h1 className=" text-lg lg:text-sm">
