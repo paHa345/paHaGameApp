@@ -24,6 +24,7 @@ export const getAllGamesList = createAsyncThunk(
       dispatch(attemptsActions.setShowHideGamesList(true));
     } catch (error: any) {
       dispatch(attemptsActions.setGetAllGamesErrorMessage(error.message));
+      dispatch(attemptsActions.setShowHideGamesList(true));
 
       return rejectWithValue(error.message);
     }

@@ -23,6 +23,8 @@ export const getAvailableCrosswords = createAsyncThunk(
       dispatch(crossworGamedActions.setIsLastCrosswordsListPage(crosswords.result.isLastPage));
       dispatch(crossworGamedActions.setShowHideCrosswordsList(true));
     } catch (error: any) {
+      dispatch(crossworGamedActions.setShowHideCrosswordsList(true));
+
       return rejectWithValue(error.message);
     }
   }
