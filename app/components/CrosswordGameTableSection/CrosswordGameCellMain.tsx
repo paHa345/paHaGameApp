@@ -153,9 +153,6 @@ const CrosswordGameCellMain = ({ refSecound, ref, cell, i, j }: ICellProps) => {
     if (element !== null && element) {
       scrollTo({ left: 0, top: window.scrollY + element - 250, behavior: "smooth" });
     }
-
-    // console.log(selectedCell?.baseCell.horizontal);
-    // console.log(selectedCell?.baseCell.vertical);
   };
 
   const isHighlightedWord =
@@ -190,7 +187,7 @@ const CrosswordGameCellMain = ({ refSecound, ref, cell, i, j }: ICellProps) => {
       className={`${isHighlightedWord ? "" : ""} ${!hasLetter ? " bg-slate-100" : "bg-lime-500"} ${isSelectedCell ? "animate-pulse" : ""} transition duration-800 ease-out  cursor-zoom-in   flex gap-1 items-center justify-center h-10 w-10 border-solid border-2 border-slate-600`}
     >
       {hasNumber && (
-        <div className="absolute">
+        <div className=" relative">
           <p style={{ right: "10px", bottom: "8px" }} className=" relative text-xl font-extrabold">
             {cell.inputValue}
           </p>{" "}
