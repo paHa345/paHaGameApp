@@ -43,21 +43,23 @@ const LoadCrosswordGameNotification = () => {
 
   return (
     <>
-      {loadCrosswordGameStatus === crosswordGameFetchStatus.Error && (
-        <h1 className=" text-center rounded-md  opacity-60  px-3 py-3 bg-rose-500">
-          {`Ошибка. ${errorMessage} Повторите попытку позднее`}
-        </h1>
-      )}
-      {loadCrosswordGameStatus === crosswordGameFetchStatus.Loading && (
-        <h1 className=" text-center rounded-md  opacity-60 px-3 py-3 bg-sky-500">
-          {`Загрузка кроссворда`}
-        </h1>
-      )}
-      {loadCrosswordGameStatus === crosswordGameFetchStatus.Resolve && (
-        <h1 className=" text-center rounded-md opacity-60  px-3 py-3 bg-green-500">
-          {`Кроссворд успешно загружен. Осуществляем переход ...`}
-        </h1>
-      )}
+      <div className=" absolute w-3/4">
+        {loadCrosswordGameStatus === crosswordGameFetchStatus.Error && (
+          <h1 className=" text-center rounded-md  opacity-60  px-3 py-3 bg-rose-500">
+            {`Ошибка. ${errorMessage} Повторите попытку позднее`}
+          </h1>
+        )}
+        {loadCrosswordGameStatus === crosswordGameFetchStatus.Loading && (
+          <h1 className=" text-center rounded-md  opacity-60 px-3 py-3 bg-sky-500">
+            {`Загрузка кроссворда`}
+          </h1>
+        )}
+        {loadCrosswordGameStatus === crosswordGameFetchStatus.Resolve && (
+          <h1 className=" text-center rounded-md opacity-60  px-3 py-3 bg-green-500">
+            {`Кроссворд успешно загружен. Осуществляем переход ...`}
+          </h1>
+        )}
+      </div>
     </>
   );
 };

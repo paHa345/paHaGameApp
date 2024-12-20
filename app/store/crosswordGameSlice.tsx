@@ -7,6 +7,8 @@ export const getAvailableCrosswords = createAsyncThunk(
   "crosswordGameState/getAvailableCrosswords",
   async function (getCrosswordsData: { page?: number }, { rejectWithValue, dispatch }) {
     try {
+      dispatch(crossworGamedActions.setShowHideCrosswordsList(false));
+
       const getCurrentUserCrosswordsReq = await fetch(
         `/api/crosswordGame/getAllCrosswords?page=${getCrosswordsData?.page ? getCrosswordsData?.page : 1}`
       );
