@@ -75,9 +75,8 @@ export const setAvailableCrosswordGame = createAsyncThunk(
         throw new Error(crosswordGame.message);
       }
       console.log(crosswordGame.message);
-      // dispatch(crossworGamedActions.setAvailableCrosswordGame(data.result));
       dispatch(crossworGamedActions.setCrosswordGame(crosswordGame.result));
-      console.log(crosswordGame.result.crosswordObj.length);
+      // console.log(crosswordGame.result.crosswordObj.length);
       dispatch(crossworGamedActions.setCrosswordSize(crosswordGame.result.crosswordObj.length));
 
       setTimeout(() => {
@@ -331,6 +330,7 @@ export enum crosswordGameFetchStatus {
 
 export interface ICrosswordGameSlice {
   crosswordGameState: {
+    browserType: string;
     crosswordSize: number;
     phoneLetters: string;
     showEndGameModal: boolean;
@@ -454,6 +454,7 @@ export interface ICrosswordGameSlice {
 
     crosswordGame: {
       _id: string;
+      crosswordLength: number;
       name: string;
       userId: string;
       isCompleted: boolean;
@@ -544,6 +545,8 @@ export interface ICrosswordGameSlice {
 }
 
 interface ICrosswordGameState {
+  browserType: string;
+
   crosswordSize: number;
   phoneLetters: string;
   showEndGameModal: boolean;
@@ -674,6 +677,7 @@ interface ICrosswordGameState {
     name: string;
     userId: string;
     isCompleted: boolean;
+    crosswordLength: number;
 
     questionsArr: {
       direction: AddedWordDirection;
@@ -761,6 +765,8 @@ interface ICrosswordGameState {
 }
 
 export const initCrosswordGameState: ICrosswordGameState = {
+  browserType: "",
+
   crosswordSize: 10,
   phoneLetters: "",
   showEndGameModal: false,
@@ -790,6 +796,7 @@ export const initCrosswordGameState: ICrosswordGameState = {
   highlightedWordObj: null,
   highlightedCell: null,
   crosswordGame: {
+    crosswordLength: 10,
     _id: "",
     name: "",
     userId: "",
@@ -824,6 +831,8 @@ export const crosswordGameSlice = createSlice({
       state.crosswordGame.userId = action.payload.userId;
       state.crosswordGame.crosswordObj = action.payload.crosswordObj;
       state.crosswordGame.questionsArr = action.payload.questionsArr;
+      state.crosswordGame.crosswordLength = action.payload.crosswordObj.length;
+
       window.localStorage.setItem("currentCrosswordGame", JSON.stringify(state.crosswordGame));
     },
     setFetchAvailableCrosswordGamesStatus(state, action) {
@@ -1297,6 +1306,9 @@ export const crosswordGameSlice = createSlice({
     },
     setCrosswordsListTransitionClasses(state, action) {
       state.crosswordsListTransitionClasses = action.payload;
+    },
+    setBrowserType(state, action) {
+      state.browserType = action.payload;
     },
   },
   extraReducers(builder) {

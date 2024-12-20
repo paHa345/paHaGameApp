@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
@@ -17,6 +17,10 @@ import ReduxProvider from "../ReduxProvider";
 import { ICrosswordSlice } from "../store/crosswordSlice";
 import { usePathname } from "next/navigation";
 import TransitionTemplate from "./TransitionTemplate";
+import { AppDispatch } from "../store";
+import { isTelegramWebApp } from "./Layout/MainLayout";
+import { retrieveLaunchParams } from "@telegram-apps/sdk";
+import { crossworGamedActions, ICrosswordGameSlice } from "../store/crosswordGameSlice";
 
 // import CountRequestsAddToCoach from "./HeaderSection/CountRequestsAddToCoach";
 
@@ -36,12 +40,30 @@ const Header = () => {
 
   const path = usePathname();
 
+  const currentCrosswordLength = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame.crosswordLength
+  );
+
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    if (isTelegramWebApp()) {
+      console.log("User is using Telegram Web App or in-app browser.");
+      const { initDataRaw, initData } = retrieveLaunchParams();
+      console.log(initData?.user?.firstName);
+      dispatch(crossworGamedActions.setBrowserType("telegram"));
+    } else {
+      console.log("User is using a regular browser.");
+      dispatch(crossworGamedActions.setBrowserType("desktop"));
+    }
+  });
+
   return (
     <ReduxProvider>
       <TransitionTemplate>
         <header
           style={{
-            minWidth: `${currentCrosswordSize >= 10 ? `${currentCrosswordSize * 35}px` : `${5 * 45}px`}`,
+            minWidth: "350px",
+            // minWidth: `${currentCrosswordLength <= 10 ? `${currentCrosswordSize * 35}px` : `${currentCrosswordLength * 45}px`}`,
           }}
           // className={`bg-gradient-to-br from-headerFooterMainColor to-lime-50`}
         >

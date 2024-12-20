@@ -9,21 +9,15 @@ import Transition from "../Transition";
 import { usePathname, useRouter } from "next/navigation";
 import { ViewTransitions } from "next-view-transitions";
 import TransitionTemplate from "../TransitionTemplate";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/app/store";
+import { crossworGamedActions } from "@/app/store/crosswordGameSlice";
 
 export function isTelegramWebApp() {
   // @ts-ignore
   return typeof TelegramWebviewProxy !== "undefined";
 }
 const MainLayout = (props: any) => {
-  useEffect(() => {
-    if (isTelegramWebApp()) {
-      console.log("User is using Telegram Web App or in-app browser.");
-      const { initDataRaw, initData } = retrieveLaunchParams();
-      console.log(initData?.user?.firstName);
-    } else {
-      console.log("User is using a regular browser.");
-    }
-  });
   return (
     <>
       <SessionProviderComponent>

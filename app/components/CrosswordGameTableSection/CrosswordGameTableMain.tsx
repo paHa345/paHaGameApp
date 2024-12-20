@@ -161,7 +161,7 @@ const CrosswordGameTableMain = () => {
         <EndGameButton></EndGameButton>
         {showEndGameModal && <EndGameModalMain></EndGameModalMain>}
       </div>
-      {crosswordGameTableEl}
+      <div className=" min-w-full overflow-y-scroll">{crosswordGameTableEl}</div>
       {startGame && (
         <div className=" pb-20">
           <CrosswordGameQuestionsMain></CrosswordGameQuestionsMain>

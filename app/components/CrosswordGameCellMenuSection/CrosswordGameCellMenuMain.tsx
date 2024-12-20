@@ -30,6 +30,14 @@ const CrosswordGameCellMenuMain = () => {
     (state: ICrosswordGameSlice) => state.crosswordGameState.addedWordDirection
   );
 
+  const isMobileBrowser = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.browserType
+  );
+
+  const currentCrosswordLength = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame.crosswordLength
+  );
+
   const setAddedWordDirection = function (this: any, e: React.MouseEvent<HTMLDivElement>) {
     e.preventDefault();
     dispatch(crossworGamedActions.changeAddedWordDirectionAndSetHighlightedCells(this));
@@ -54,9 +62,9 @@ const CrosswordGameCellMenuMain = () => {
   return (
     <div
       style={{ left: "0px", top: `-80px` }}
-      className=" relative z-10 mt-10 flex justify-center items-center  "
+      className=" relative  z-10 mt-10 flex justify-center items-center  "
     >
-      <div className="w-9/12 sm:w-5/6 lg:w-2/3  shadow-crosswordGameCellMenuShadow rounded-md  bg-gradient-to-tr from-secoundaryColor to-lime-100 p-1 fixed flex  ">
+      <div className="w-11/12 sm:w-5/6 lg:w-2/3  shadow-crosswordGameCellMenuShadow rounded-md  bg-gradient-to-tr from-secoundaryColor to-lime-100 p-1 fixed flex  ">
         <div className=" transition-all ease-in duration-200 delay-50  mt-5 h-6 cursor-pointer rounded-2xl fa-2x hover:scale-110 hover:shadow-crosswordGameCellMenuButtonActive  flex flex-col justify-center items-center">
           <FontAwesomeIcon
             // style={{ color: "red" }}
