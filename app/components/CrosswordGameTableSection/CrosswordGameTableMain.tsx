@@ -23,6 +23,9 @@ const CrosswordGameTableMain = () => {
   const showEndGameModal = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.showEndGameModal
   );
+  const selectedCell = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.selectedCell
+  );
 
   const isEndAttempt = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.endAttempt
@@ -66,13 +69,29 @@ const CrosswordGameTableMain = () => {
   };
 
   const inputKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key.length > 1 && e.key !== "Backspace") {
+      return;
+    }
     if (e.key === "Backspace") {
       dispatch(crossworGamedActions.changeBaseInput(e.key));
       dispatch(crossworGamedActions.setSelectedElLetter(e.key));
     }
 
-    if (e.key.length > 1 && e.key !== "Backspace") {
-      return;
+    const elementY = document
+      .querySelector(`[data-fieldid='${selectedCell?.row}:${selectedCell?.number}']`)
+      ?.getClientRects()[0].y;
+
+    const elementX = document
+      .querySelector(`[data-fieldid='${selectedCell?.row}:${selectedCell?.number}']`)
+      ?.getClientRects()[0].x;
+
+    const crosswordTable = document.querySelector(".crosswordTableMain");
+    if (elementY !== null && elementY && elementX) {
+      scrollTo({ left: 0, top: window.scrollY + elementY - 250, behavior: "smooth" });
+      crosswordTable?.scrollTo({
+        left: elementX - 160 + crosswordTable?.scrollLeft,
+        behavior: "smooth",
+      });
     }
   };
 
