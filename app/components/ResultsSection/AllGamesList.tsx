@@ -95,28 +95,22 @@ const AllGamesList = () => {
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
-  const [swipeNotification, setSwipeNotification] = useState("Start");
   const minSwipeDistance = 50;
 
   const touchStartHandler = (e: React.TouchEvent<HTMLDivElement>) => {
-    console.log("start");
     setTouchEnd(0); // otherwise the swipe is fired even with usual touch events
     setTouchStart(e.targetTouches[0].clientX);
   };
   const touchMoveHandler = (e: React.TouchEvent<HTMLDivElement>) => {
-    console.log("Move");
     setTouchEnd(e.targetTouches[0].clientX);
   };
   const touchEndHandler = (e: React.TouchEvent<HTMLDivElement>) => {
-    console.log("End");
     if (!touchStart || !touchEnd) return;
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > minSwipeDistance;
     const isRightSwipe = distance < -minSwipeDistance;
     if (isLeftSwipe || isRightSwipe) {
-      setSwipeNotification(`swipe, ${isLeftSwipe ? "left" : "right"}`);
-
-      if (isRightSwipe && !isGamesListLastPage) {
+      if (isLeftSwipe && !isGamesListLastPage) {
         dispatch(attemptsActions.setGamesListTransitionClasses("games-list-left"));
         if (!user?.id) {
           dispatch(getAllGamesList({ telegramID: 777777, page: gamesListCurrentPage + 1 }));
@@ -124,7 +118,7 @@ const AllGamesList = () => {
           dispatch(getAllGamesList({ telegramID: user?.id, page: gamesListCurrentPage + 1 }));
         }
       }
-      if (isLeftSwipe && gamesListCurrentPage > 1) {
+      if (isRightSwipe && gamesListCurrentPage > 1) {
         dispatch(attemptsActions.setGamesListTransitionClasses("games-list-right"));
         if (!user?.id) {
           dispatch(getAllGamesList({ telegramID: 777777, page: gamesListCurrentPage - 1 }));
@@ -156,7 +150,6 @@ const AllGamesList = () => {
               onTouchMove={touchMoveHandler}
               onTouchEnd={touchEndHandler}
             >
-              <h1>{swipeNotification}</h1>
               <CSSTransition
                 nodeRef={nodeRef}
                 in={showHideGamesList}
