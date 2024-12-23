@@ -40,6 +40,23 @@ const CrosswordGameQuestion = ({ question }: IQiestionProp) => {
       }, 500);
     }
 
+    const elementY = document
+      .querySelector(`[data-fieldid='${question.cell.row}:${question.cell.col}']`)
+      ?.getClientRects()[0].y;
+
+    const elementX = document
+      .querySelector(`[data-fieldid='${question.cell.row}:${question.cell.col}']`)
+      ?.getClientRects()[0].x;
+
+    const crosswordTable = document.querySelector(".crosswordTableMain");
+    if (elementY !== null && elementY && elementX) {
+      scrollTo({ left: 0, top: window.scrollY + elementY - 250, behavior: "smooth" });
+      crosswordTable?.scrollTo({
+        left: elementX - 160 + crosswordTable?.scrollLeft,
+        behavior: "smooth",
+      });
+    }
+
     dispatch(
       setHighlightedElementAndDirection({
         selectedCell: {
