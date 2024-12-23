@@ -80,6 +80,7 @@ const LoadCrosswordGameModalMain = () => {
 
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
+  const [toucLength, setToucLength] = useState(0);
 
   const minSwipeDistance = 25;
 
@@ -89,6 +90,7 @@ const LoadCrosswordGameModalMain = () => {
   };
   const touchMoveHandler = (e: React.TouchEvent<HTMLDivElement>) => {
     setTouchEnd(e.targetTouches[0].clientX);
+    setToucLength(touchEnd - touchStart);
   };
   const touchEndHandler = (e: React.TouchEvent<HTMLDivElement>) => {
     if (!touchStart || !touchEnd) return;
@@ -138,7 +140,7 @@ const LoadCrosswordGameModalMain = () => {
                 <h1 className=" text-center">Нет доступных кроссвордов</h1>
               </div>
             )}
-
+          <h1>{toucLength}</h1>
           <div className=" w-full rounded-lg my-3">
             <div className=" w-full flex flex-col justify-center items-center">
               <div className="   w-full  flex  justify-around items-center"></div>
