@@ -190,7 +190,7 @@ const CrosswordGameCellMain = ({ refSecound, ref, cell, i, j }: ICellProps) => {
         <div className=" relative">
           <div className=" relative">
             <p
-              style={{ right: "10px", bottom: "8px" }}
+              style={{ right: "2px", bottom: "10px" }}
               className=" relative text-xl font-extrabold"
             >
               {cell.inputValue}
@@ -201,10 +201,10 @@ const CrosswordGameCellMain = ({ refSecound, ref, cell, i, j }: ICellProps) => {
 
       {/* {hasLetter && <input className=" h-4 w-4" type="text" maxLength={1} />} */}
       {hasAddedWord && (
-        <div className="absolute">
+        <div className=" relative">
           <p
             style={{ right: "0px", bottom: "3px" }}
-            className={`relative ${isSelectedCell ? " text-slate-900" : "text-slate-50"}   text-2xl font-extrabold`}
+            className={` ${isSelectedCell ? " text-slate-900" : "text-slate-50"}   text-2xl font-extrabold`}
           >
             {cell.addedWordLetter}
           </p>

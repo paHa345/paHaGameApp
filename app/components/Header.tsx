@@ -61,10 +61,12 @@ const Header = () => {
     <ReduxProvider>
       <TransitionTemplate>
         <header
-          style={{
-            minWidth: "350px",
-            // minWidth: `${currentCrosswordLength <= 10 ? `${currentCrosswordSize * 35}px` : `${currentCrosswordLength * 45}px`}`,
-          }}
+          style={
+            {
+              // minWidth: "350px",
+              // minWidth: `${currentCrosswordLength <= 10 ? `${currentCrosswordSize * 35}px` : `${currentCrosswordLength * 45}px`}`,
+            }
+          }
           // className={`bg-gradient-to-br from-headerFooterMainColor to-lime-50`}
         >
           {/* <div className=" min-h-20"></div> */}
