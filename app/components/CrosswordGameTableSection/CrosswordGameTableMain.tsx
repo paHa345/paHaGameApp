@@ -62,6 +62,23 @@ const CrosswordGameTableMain = () => {
     const elSecound = refSecound.current;
     const elFirst = ref.current;
 
+    const elementY = document
+      .querySelector(`[data-fieldid='${selectedCell?.row}:${selectedCell?.number}']`)
+      ?.getClientRects()[0].y;
+
+    const elementX = document
+      .querySelector(`[data-fieldid='${selectedCell?.row}:${selectedCell?.number}']`)
+      ?.getClientRects()[0].x;
+
+    const crosswordTable = document.querySelector(".crosswordTableMain");
+    if (elementY !== null && elementY && elementX) {
+      scrollTo({ left: 0, top: window.scrollY + elementY - 250, behavior: "smooth" });
+      crosswordTable?.scrollTo({
+        left: elementX - 160 + crosswordTable?.scrollLeft,
+        behavior: "smooth",
+      });
+    }
+
     setTimeout(() => {
       elSecound.focus();
       elFirst.focus();
