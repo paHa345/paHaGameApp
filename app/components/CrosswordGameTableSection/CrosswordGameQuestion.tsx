@@ -67,7 +67,7 @@ const CrosswordGameQuestion = ({ question }: IQiestionProp) => {
   return (
     <div
       onClick={clickQuestionHandler}
-      className={` ${isHighlighted ? "bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-exerciseCardShadow rounded-md px-1 py-1" : ""} cursor-pointer pb-3`}
+      className={` ${isHighlighted ? "bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-crosswordGameCellMenuButton rounded-md px-1 py-1" : ""} cursor-pointer pb-3`}
       key={`${question.value}_${question.cell.col}_${question.cell.row}_${question.direction}`}
     >
       <div className=" flex flex-row gap-4 text-xl">

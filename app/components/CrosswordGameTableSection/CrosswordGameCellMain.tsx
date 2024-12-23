@@ -75,11 +75,6 @@ const CrosswordGameCellMain = ({ refSecound, ref, cell, i, j }: ICellProps) => {
     (state: ICrosswordGameSlice) => state.crosswordGameState.addedWordDirection
   );
 
-  const crosswordGameObj = useSelector(
-    (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame.crosswordObj
-  );
-  //   console.log(direction);
-
   const isSelectedCell =
     selectedCell?.number === cell.number && selectedCell.row === cell.row ? true : false;
 
@@ -94,7 +89,7 @@ const CrosswordGameCellMain = ({ refSecound, ref, cell, i, j }: ICellProps) => {
     if (cell.addedWordCell === 0) {
       return;
     }
-    console.log(cell);
+    // console.log(cell);
     if (
       direction === AddedWordDirection.Vertical &&
       (cell.baseCell.horizontal || cell.baseCell.vertical) &&
@@ -147,11 +142,21 @@ const CrosswordGameCellMain = ({ refSecound, ref, cell, i, j }: ICellProps) => {
       }
     }
 
-    const element = document
+    const elementY = document
       .querySelector(`[data-fieldid='${cell.row}:${cell.number}']`)
       ?.getClientRects()[0].y;
-    if (element !== null && element) {
-      scrollTo({ left: 0, top: window.scrollY + element - 250, behavior: "smooth" });
+
+    const elementX = document
+      .querySelector(`[data-fieldid='${cell.row}:${cell.number}']`)
+      ?.getClientRects()[0].x;
+
+    const crosswordTable = document.querySelector(".crosswordTableMain");
+    if (elementY !== null && elementY && elementX) {
+      scrollTo({ left: 0, top: window.scrollY + elementY - 250, behavior: "smooth" });
+      crosswordTable?.scrollTo({
+        left: elementX - 160 + crosswordTable?.scrollLeft,
+        behavior: "smooth",
+      });
     }
   };
 
