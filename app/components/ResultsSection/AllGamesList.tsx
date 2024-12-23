@@ -84,6 +84,14 @@ const AllGamesList = () => {
     }
   }, [currentUserCompletedAttempt]);
 
+  const gamesListCurrentPage = useSelector(
+    (state: IAttemptsSlice) => state.attemptsState.gamesListCurrentPage
+  );
+
+  const isGamesListLastPage = useSelector(
+    (state: IAttemptsSlice) => state.attemptsState.isLastGamesListPage
+  );
+
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
@@ -107,6 +115,23 @@ const AllGamesList = () => {
     const isRightSwipe = distance < -minSwipeDistance;
     if (isLeftSwipe || isRightSwipe) {
       setSwipeNotification(`swipe, ${isLeftSwipe ? "left" : "right"}`);
+
+      if (isRightSwipe && !isGamesListLastPage) {
+        dispatch(attemptsActions.setGamesListTransitionClasses("games-list-left"));
+        if (!user?.id) {
+          dispatch(getAllGamesList({ telegramID: 777777, page: gamesListCurrentPage + 1 }));
+        } else {
+          dispatch(getAllGamesList({ telegramID: user?.id, page: gamesListCurrentPage + 1 }));
+        }
+      }
+      if (isLeftSwipe && gamesListCurrentPage > 1) {
+        dispatch(attemptsActions.setGamesListTransitionClasses("games-list-right"));
+        if (!user?.id) {
+          dispatch(getAllGamesList({ telegramID: 777777, page: gamesListCurrentPage - 1 }));
+        } else {
+          dispatch(getAllGamesList({ telegramID: user?.id, page: gamesListCurrentPage - 1 }));
+        }
+      }
     }
   };
 
