@@ -31,14 +31,14 @@ const CrosswordGameQuestion = ({ question }: IQiestionProp) => {
 
   const clickQuestionHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const element = document
-      .querySelector(`[data-fieldid='${question.cell.row}:${question.cell.col}']`)
-      ?.getClientRects()[0].y;
-    if (element !== null && element) {
-      setTimeout(() => {
-        scrollTo({ left: 0, top: window.scrollY + element - 250, behavior: "smooth" });
-      }, 500);
-    }
+    // const element = document
+    //   .querySelector(`[data-fieldid='${question.cell.row}:${question.cell.col}']`)
+    //   ?.getClientRects()[0].y;
+    // if (element !== null && element) {
+    //   setTimeout(() => {
+    //     scrollTo({ left: 0, top: window.scrollY + element - 250, behavior: "smooth" });
+    //   }, 500);
+    // }
 
     const elementY = document
       .querySelector(`[data-fieldid='${question.cell.row}:${question.cell.col}']`)
@@ -50,11 +50,13 @@ const CrosswordGameQuestion = ({ question }: IQiestionProp) => {
 
     const crosswordTable = document.querySelector(".crosswordTableMain");
     if (elementY !== null && elementY && elementX) {
-      scrollTo({ left: 0, top: window.scrollY + elementY - 250, behavior: "smooth" });
-      crosswordTable?.scrollTo({
-        left: elementX - 160 + crosswordTable?.scrollLeft,
-        behavior: "smooth",
-      });
+      setTimeout(() => {
+        scrollTo({ left: 0, top: window.scrollY + elementY - 250, behavior: "smooth" });
+        crosswordTable?.scrollTo({
+          left: elementX - 160 + crosswordTable?.scrollLeft,
+          behavior: "smooth",
+        });
+      }, 500);
     }
 
     dispatch(
