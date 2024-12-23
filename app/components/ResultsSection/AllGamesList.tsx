@@ -84,6 +84,32 @@ const AllGamesList = () => {
     }
   }, [currentUserCompletedAttempt]);
 
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+
+  const [swipeNotification, setSwipeNotification] = useState("Start");
+  const minSwipeDistance = 50;
+
+  const touchStartHandler = (e: React.TouchEvent<HTMLDivElement>) => {
+    console.log("start");
+    setTouchEnd(0); // otherwise the swipe is fired even with usual touch events
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+  const touchMoveHandler = (e: React.TouchEvent<HTMLDivElement>) => {
+    console.log("Move");
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+  const touchEndHandler = (e: React.TouchEvent<HTMLDivElement>) => {
+    console.log("End");
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe || isRightSwipe) {
+      setSwipeNotification(`swipe, ${isLeftSwipe ? "left" : "right"}`);
+    }
+  };
+
   return (
     <>
       {/* {fetchGamesListStatus === attemptsFetchStatus.Resolve && ( */}
@@ -99,33 +125,41 @@ const AllGamesList = () => {
           </div>
 
           <div className=" overflow-hidden py-4 px-6 w-full min-h-56">
-            <CSSTransition
-              nodeRef={nodeRef}
-              in={showHideGamesList}
-              timeout={400}
-              unmountOnExit
-              classNames={gamesListTransitionClasses}
+            <div
+              className=" swipeContainer"
+              onTouchStart={touchStartHandler}
+              onTouchMove={touchMoveHandler}
+              onTouchEnd={touchEndHandler}
             >
-              <div ref={nodeRef}>
-                {fetchGamesListStatus === attemptsFetchStatus.Resolve ||
-                fetchGamesListStatus === attemptsFetchStatus.Loading ? (
-                  <div className="justify-center grid items-centergrid gap-4 grid-cols-1 sm:grid-cols-3">
-                    {gamesElements}
-                  </div>
-                ) : (
-                  <div></div>
-                )}
-                {fetchGamesListStatus === attemptsFetchStatus.Error && (
-                  <div>
-                    <div className=" flex justify-center items-center h-full ">
-                      <h1 className=" px-2  font-bold  transition-all rounded-lg ease-in-out delay-50 bg-gradient-to-tr from-secoundaryColor to-red-200 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow py-10 text-center text-2xl">
-                        Внимание... <span>{fetchGamesListErrorMessage}</span>
-                      </h1>
+              <h1>{swipeNotification}</h1>
+              <CSSTransition
+                nodeRef={nodeRef}
+                in={showHideGamesList}
+                timeout={400}
+                unmountOnExit
+                classNames={gamesListTransitionClasses}
+              >
+                <div ref={nodeRef}>
+                  {fetchGamesListStatus === attemptsFetchStatus.Resolve ||
+                  fetchGamesListStatus === attemptsFetchStatus.Loading ? (
+                    <div className="justify-center grid items-centergrid gap-4 grid-cols-1 sm:grid-cols-3">
+                      {gamesElements}
                     </div>
-                  </div>
-                )}
-              </div>
-            </CSSTransition>
+                  ) : (
+                    <div></div>
+                  )}
+                  {fetchGamesListStatus === attemptsFetchStatus.Error && (
+                    <div>
+                      <div className=" flex justify-center items-center h-full ">
+                        <h1 className=" px-2  font-bold  transition-all rounded-lg ease-in-out delay-50 bg-gradient-to-tr from-secoundaryColor to-red-200 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow py-10 text-center text-xl">
+                          Внимание... <span>{fetchGamesListErrorMessage}</span>
+                        </h1>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </CSSTransition>
+            </div>
           </div>
         </div>
         <GamesListPaginationMain></GamesListPaginationMain>
