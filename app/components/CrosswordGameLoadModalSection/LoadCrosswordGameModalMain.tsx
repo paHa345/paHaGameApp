@@ -148,7 +148,7 @@ const LoadCrosswordGameModalMain = () => {
 
               <div className=" overflow-hidden py-2 px-6 w-full h-4/5 min-h-80">
                 <div
-                  style={{ transform: `translateX(${toucLength}px)` }}
+                  style={{ transform: `translateX(${toucLength > 0 ? "10" : "-10"}px)` }}
                   className={` swipeContainer `}
                   onTouchStart={touchStartHandler}
                   onTouchMove={touchMoveHandler}
