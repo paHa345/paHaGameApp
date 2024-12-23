@@ -23,8 +23,6 @@ const AvailableCrosswordPaginationMain = () => {
     (state: ICrosswordGameSlice) => state.crosswordGameState.isLastCrosswordsListPage
   );
 
-  console.log(iscrosswordsListLastPage);
-
   const showPrevNextPageCrosswordsHandler = function (
     this: {
       transition: string;
@@ -35,22 +33,10 @@ const AvailableCrosswordPaginationMain = () => {
     if (this.transition === "next" && !iscrosswordsListLastPage) {
       dispatch(crossworGamedActions.setCrosswordsListTransitionClasses("games-list-left"));
       dispatch(getAvailableCrosswords({ page: crosswordsListCurrentPage + 1 }));
-
-      //   if (!user?.id) {
-      //     dispatch(getAllGamesList({ telegramID: 777777, page: crosswordsListCurrentPage + 1 }));
-      //   } else {
-      //     dispatch(getAllGamesList({ telegramID: user?.id, page: crosswordsListCurrentPage + 1 }));
-      //   }
     }
     if (this.transition === "prev" && crosswordsListCurrentPage > 1) {
       dispatch(crossworGamedActions.setCrosswordsListTransitionClasses("games-list-right"));
       dispatch(getAvailableCrosswords({ page: crosswordsListCurrentPage - 1 }));
-
-      //   if (!user?.id) {
-      //     dispatch(getAllGamesList({ telegramID: 777777, page: crosswordsListCurrentPage - 1 }));
-      //   } else {
-      //     dispatch(getAllGamesList({ telegramID: user?.id, page: crosswordsListCurrentPage - 1 }));
-      //   }
     }
   };
 

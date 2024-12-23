@@ -94,6 +94,7 @@ const LoadCrosswordGameModalMain = () => {
   };
   const touchEndHandler = (e: React.TouchEvent<HTMLDivElement>) => {
     if (!touchStart || !touchEnd) return;
+    setToucLength(0);
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > minSwipeDistance;
     const isRightSwipe = distance < -minSwipeDistance;
@@ -147,7 +148,8 @@ const LoadCrosswordGameModalMain = () => {
 
               <div className=" overflow-hidden py-2 px-6 w-full h-4/5 min-h-80">
                 <div
-                  className=" swipeContainer "
+                  style={{ transform: `translateX(${toucLength}px)` }}
+                  className={` swipeContainer `}
                   onTouchStart={touchStartHandler}
                   onTouchMove={touchMoveHandler}
                   onTouchEnd={touchEndHandler}
