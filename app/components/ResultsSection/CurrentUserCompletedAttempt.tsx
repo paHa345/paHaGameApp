@@ -50,16 +50,16 @@ const CurrentUserCompletedAttempt = () => {
     dispatch(crossworGamedActions.setShowHideCurrentUserAttemptAnswers());
   };
 
-  console.log(currentUserCompletedAttempt?.userAnswers);
-
   return (
     <>
       <div className="flex justify-center items-center flex-col gap-5">
         {currentUserCompletedAttempt?.completedCorrectly === true && (
           <div className="flex justify-center items-center flex-col gap-5 ">
             <h1 className=" text-center text-xl">
-              Поздравляем, вы успешно справились с кроссвордом:{" "}
-              <span className=" font-semibold">{currentUserCompletedAttempt?.crosswordName}</span>
+              Поздравляем, вы успешно справились с кроссвордом: <br />
+              <span className="  bg-green-200 rounded-md  py-1 px-2 font-semibold">
+                {currentUserCompletedAttempt?.crosswordName}
+              </span>
             </h1>
             <h1 className=" text-center text-xl">
               Ваше время:(Час:Мин:Сек){" "}
@@ -72,8 +72,8 @@ const CurrentUserCompletedAttempt = () => {
         {currentUserCompletedAttempt?.completedCorrectly === false && (
           <div>
             <h1 className=" text-center">
-              Сожалеем, вы не смогли справиться с кроссвордом:{" "}
-              <span className=" text-2xl font-semibold">
+              Сожалеем, вы не смогли справиться с кроссвордом: <br />
+              <span className={` bg-red-200 rounded-md  py-1 px-2 text-2xl font-semibold`}>
                 {currentUserCompletedAttempt?.crosswordName}
               </span>
             </h1>

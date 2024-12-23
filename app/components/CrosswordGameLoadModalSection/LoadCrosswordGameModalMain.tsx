@@ -8,7 +8,7 @@ import {
 } from "@/app/store/crosswordSlice";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import LoadindAvailableCrosswordGameCards from "./LoadindAvailableCrosswordGameCards";
 import LoadCrosswordGameNotification from "./LoadCrosswordGameNotification";
@@ -68,10 +68,44 @@ const LoadCrosswordGameModalMain = () => {
 
   useEffect(() => {
     dispatch(getAvailableCrosswords({ page: 1 }));
-    // return () => {
-    //   dispatch(crosswordActions.resetCurrentUserCrosswordsArr());
-    // };
   }, []);
+
+  const crosswordsListCurrentPage = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordsListCurrentPage
+  );
+
+  const iscrosswordsListLastPage = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.isLastCrosswordsListPage
+  );
+
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+
+  const minSwipeDistance = 25;
+
+  const touchStartHandler = (e: React.TouchEvent<HTMLDivElement>) => {
+    setTouchEnd(0);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+  const touchMoveHandler = (e: React.TouchEvent<HTMLDivElement>) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+  const touchEndHandler = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe || isRightSwipe) {
+      if (isLeftSwipe && !iscrosswordsListLastPage) {
+        dispatch(crossworGamedActions.setCrosswordsListTransitionClasses("games-list-left"));
+        dispatch(getAvailableCrosswords({ page: crosswordsListCurrentPage + 1 }));
+      }
+      if (isRightSwipe && crosswordsListCurrentPage > 1) {
+        dispatch(crossworGamedActions.setCrosswordsListTransitionClasses("games-list-right"));
+        dispatch(getAvailableCrosswords({ page: crosswordsListCurrentPage - 1 }));
+      }
+    }
+  };
 
   return (
     <div className="modal-overlay">
@@ -110,32 +144,39 @@ const LoadCrosswordGameModalMain = () => {
               <div className="   w-full  flex  justify-around items-center"></div>
 
               <div className=" overflow-hidden py-2 px-6 w-full h-4/5 min-h-80">
-                <CSSTransition
-                  nodeRef={nodeRef}
-                  in={showCrosswordsList}
-                  timeout={400}
-                  unmountOnExit
-                  classNames={crosswordsListTransitionClasses}
+                <div
+                  className=" swipeContainer "
+                  onTouchStart={touchStartHandler}
+                  onTouchMove={touchMoveHandler}
+                  onTouchEnd={touchEndHandler}
                 >
-                  <div ref={nodeRef}>
-                    {fetchCrosswordsGameStatus === crosswordGameFetchStatus.Resolve ||
-                    fetchCrosswordsGameStatus === crosswordGameFetchStatus.Loading ? (
-                      <div className=" pt-4 sm:grid lg:grid-cols-3 sm:grid-cols-2 gap-6 justify-center items-center overflow-auto h-full">
-                        {crosswordCardsEl}
-                      </div>
-                    ) : (
-                      <div></div>
-                    )}
+                  <CSSTransition
+                    nodeRef={nodeRef}
+                    in={showCrosswordsList}
+                    timeout={400}
+                    unmountOnExit
+                    classNames={crosswordsListTransitionClasses}
+                  >
+                    <div ref={nodeRef}>
+                      {fetchCrosswordsGameStatus === crosswordGameFetchStatus.Resolve ||
+                      fetchCrosswordsGameStatus === crosswordGameFetchStatus.Loading ? (
+                        <div className=" pt-4 sm:grid lg:grid-cols-3 sm:grid-cols-2 gap-6 justify-center items-center overflow-auto h-full">
+                          {crosswordCardsEl}
+                        </div>
+                      ) : (
+                        <div></div>
+                      )}
 
-                    {fetchCrosswordsGameStatus === crosswordGameFetchStatus.Error && (
-                      <div className=" flex justify-center items-center h-2/3 ">
-                        <h1 className=" font-bold  text-center py-5 text-2xl transition-all rounded-lg ease-in-out delay-50 bg-gradient-to-tr from-secoundaryColor to-red-400 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow">
-                          Не удалось загрузить список. Повторите попытку позднее
-                        </h1>
-                      </div>
-                    )}
-                  </div>
-                </CSSTransition>
+                      {fetchCrosswordsGameStatus === crosswordGameFetchStatus.Error && (
+                        <div className=" flex justify-center items-center h-2/3 ">
+                          <h1 className=" font-bold  text-center py-5 text-2xl transition-all rounded-lg ease-in-out delay-50 bg-gradient-to-tr from-secoundaryColor to-red-400 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow">
+                            Не удалось загрузить список. Повторите попытку позднее
+                          </h1>
+                        </div>
+                      )}
+                    </div>
+                  </CSSTransition>
+                </div>
               </div>
             </div>
             <AvailableCrosswordPaginationMain></AvailableCrosswordPaginationMain>

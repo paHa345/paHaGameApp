@@ -33,7 +33,7 @@ const ResultsSectionMain = () => {
           <h1 className="font-roboto text-center text-3xl font-bold">Результаты</h1>
         </div>
         {currentUserCompletedAttempt && (
-          <div className=" flex justify-center items-center flex-col gap-2">
+          <div className=" w-full shadow-crosswordGameCellMenuButtonActive rounded-lg py-5 my-3 flex justify-center items-center flex-col gap-2">
             <div>
               <h1 className=" text-2xl">Попытка завершена</h1>
             </div>

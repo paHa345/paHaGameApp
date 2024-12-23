@@ -95,10 +95,10 @@ const AllGamesList = () => {
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
-  const minSwipeDistance = 50;
+  const minSwipeDistance = 25;
 
   const touchStartHandler = (e: React.TouchEvent<HTMLDivElement>) => {
-    setTouchEnd(0); // otherwise the swipe is fired even with usual touch events
+    setTouchEnd(0);
     setTouchStart(e.targetTouches[0].clientX);
   };
   const touchMoveHandler = (e: React.TouchEvent<HTMLDivElement>) => {
