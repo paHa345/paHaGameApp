@@ -157,7 +157,7 @@ const LoadCrosswordGameModalMain = () => {
                 onTouchEnd={touchEndHandler}
               >
                 <div
-                  className={`overflow-hidden overflow-y-scroll py-2 px-6 w-full  ${isDesktop === "desktop" ? " h-80 min-h-80" : " h-4/5 min-h-[400]px"}`}
+                  className={`overflow-hidden overflow-y-scroll py-2 px-6 w-full  ${isDesktop === "desktop" ? " h-80 min-h-80" : " h-4/5"}`}
                 >
                   <CSSTransition
                     nodeRef={nodeRef}
