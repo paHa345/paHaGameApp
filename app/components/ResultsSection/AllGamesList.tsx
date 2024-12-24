@@ -148,9 +148,9 @@ const AllGamesList = () => {
           </div>
           <div
             style={{
-              transform: `translateX(${toucLength > 0 ? "10" : `${toucLength < 0 ? "-10" : "0"}`}%)`,
+              transform: `translateX(${toucLength > 0 ? "5" : `${toucLength < 0 ? "-5" : "0"}`}%)`,
             }}
-            className=" w-full swipeContainer"
+            className=" w-full swipeContainer transition-all duration-500  ease-in-out"
             onTouchStart={touchStartHandler}
             onTouchMove={touchMoveHandler}
             onTouchEnd={touchEndHandler}
