@@ -148,16 +148,16 @@ const LoadCrosswordGameModalMain = () => {
               <div className="   w-full  flex  justify-around items-center"></div>
 
               <div
-                className={`overflow-hidden overflow-y-scroll py-2 px-6 w-full  ${isDesktop === "desktop" ? " h-80 min-h-80" : " h-4/5 min-h-96"}`}
+                style={{
+                  transform: `translateX(${toucLength > 0 ? "10" : `${toucLength < 0 ? "-10" : "0"}`}%)`,
+                }}
+                className={` w-full swipeContainer transition-all duration-500  ease-in-out`}
+                onTouchStart={touchStartHandler}
+                onTouchMove={touchMoveHandler}
+                onTouchEnd={touchEndHandler}
               >
                 <div
-                  style={{
-                    transform: `translateX(${toucLength > 0 ? "10" : `${toucLength < 0 ? "-10" : "0"}`}%)`,
-                  }}
-                  className={` swipeContainer transition-all duration-500  ease-in-out`}
-                  onTouchStart={touchStartHandler}
-                  onTouchMove={touchMoveHandler}
-                  onTouchEnd={touchEndHandler}
+                  className={`overflow-hidden overflow-y-scroll py-2 px-6 w-full  ${isDesktop === "desktop" ? " h-80 min-h-80" : " h-96 min-h-96"}`}
                 >
                   <CSSTransition
                     nodeRef={nodeRef}
