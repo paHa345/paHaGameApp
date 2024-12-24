@@ -46,6 +46,10 @@ const LoadCrosswordGameModalMain = () => {
     (state: ICrosswordGameSlice) => state.crosswordGameState.fetchAvailableCrosswordGamesStatus
   );
 
+  const isDesktop = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.browserType
+  );
+
   const crosswordCardsEl = availableCrosswordGamesArr.map((el, index) => {
     return (
       <div key={`${el._id}`} className=" pb-3">
@@ -57,8 +61,6 @@ const LoadCrosswordGameModalMain = () => {
   const showCrosswordsList = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.showHideCrosswordsList
   );
-
-  console.log(showCrosswordsList);
 
   const nodeRef = useRef(null);
 
@@ -145,7 +147,9 @@ const LoadCrosswordGameModalMain = () => {
             <div className=" w-full flex flex-col justify-center items-center">
               <div className="   w-full  flex  justify-around items-center"></div>
 
-              <div className=" overflow-hidden overflow-y-scroll py-2 px-6 w-full min-h-80 h-3/5">
+              <div
+                className={`overflow-hidden overflow-y-scroll py-2 px-6 w-full  ${isDesktop === "desktop" ? " h-80 min-h-80" : " h-96 min-h-96"}`}
+              >
                 <div
                   style={{
                     transform: `translateX(${toucLength > 0 ? "10" : `${toucLength < 0 ? "-10" : "0"}`}%)`,
