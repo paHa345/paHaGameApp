@@ -22,12 +22,29 @@ export async function GET(req: NextRequest, segmentData: any) {
       );
     }
 
+    const value = await AttemptCrosswordGame.find({
+      crosswordID: params.gameID,
+      isCompleted: true,
+    }).countDocuments();
+
+    const page = parseInt(req.nextUrl.searchParams?.get("page") || "1", 10);
+    const limit = parseInt(req.nextUrl.searchParams?.get("limit") || "3", 10);
+    const skip = (page - 1) * limit;
+
+    const isLastPage = value <= skip + limit;
+
+    console.log(isLastPage);
     const allGameAttempts = await AttemptCrosswordGame.aggregate([
       { $match: { crosswordID: params.gameID, isCompleted: true } },
-      { $sort: { durationNumberMs: 1 } },
+      { $sort: { completedCorrectly: -1, durationNumberMs: 1 } },
+      { $skip: skip },
+      { $limit: limit },
     ]);
 
-    return NextResponse.json({ status: "Success", result: allGameAttempts });
+    return NextResponse.json({
+      status: "Success",
+      result: { allGameAttempts: allGameAttempts, isLastPage: isLastPage },
+    });
   } catch (error: any) {
     return NextResponse.json({ message: error?.message, status: "Error" }, { status: 400 });
   }

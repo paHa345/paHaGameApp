@@ -62,6 +62,7 @@ const AllGamesList = () => {
     } else {
       dispatch(getAllGamesList({ telegramID: user?.id, page: 1 }));
     }
+    dispatch(attemptsActions.setCurrentGameID(undefined));
   }, []);
 
   useEffect(() => {

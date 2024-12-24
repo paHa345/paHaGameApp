@@ -26,6 +26,7 @@ const GameListElement = ({ gameData, isSelected }: IGameDataProps) => {
         getGameAllAttempts({
           gameID: gameData._id,
           telegramUserID: 777777,
+          page: 1,
         })
       );
     } else {
@@ -33,6 +34,7 @@ const GameListElement = ({ gameData, isSelected }: IGameDataProps) => {
         getGameAllAttempts({
           gameID: gameData._id,
           telegramUserID: user?.id,
+          page: 1,
         })
       );
     }

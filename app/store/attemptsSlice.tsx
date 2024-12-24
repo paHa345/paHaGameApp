@@ -16,7 +16,7 @@ export const getAllGamesList = createAsyncThunk(
       if (!getAllGamesListReq.ok) {
         throw new Error(allGamesList.message);
       }
-      console.log(allGamesList);
+      // console.log(allGamesList);
       // dispatch(crossworGamedActions.setAvailableCrosswordGamesArr(crosswords.result));
       dispatch(attemptsActions.setGamesList(allGamesList.result.games));
       dispatch(attemptsActions.setGamesListCurrentPage(getGamesFata?.page));
@@ -37,19 +37,28 @@ export const getGameAllAttempts = createAsyncThunk(
     gameUserData: {
       gameID: string;
       telegramUserID: number | undefined;
+      page?: number;
     },
     { rejectWithValue, dispatch }
   ) {
     try {
+      dispatch(attemptsActions.setShowHideAttemptsList(false));
+
       const getGameAllAttemptsReq = await fetch(
-        `/api/attempts/${[gameUserData.gameID]}/${[gameUserData.telegramUserID]}`
+        `/api/attempts/${[gameUserData.gameID]}/${[gameUserData.telegramUserID]}?page=${gameUserData?.page ? gameUserData?.page : 1}`
       );
       const gameAllAttempts = await getGameAllAttemptsReq.json();
       if (!getGameAllAttemptsReq.ok) {
         throw new Error(gameAllAttempts.message);
       }
-      dispatch(attemptsActions.setGameAllAttempts(gameAllAttempts.result));
+      dispatch(attemptsActions.setCurrentGameID(gameUserData.gameID));
+      dispatch(attemptsActions.setGameAllAttempts(gameAllAttempts.result.allGameAttempts));
+      dispatch(attemptsActions.setAttemptsListCurrentPage(gameUserData?.page));
+      dispatch(attemptsActions.setIsLastAttemptsListPage(gameAllAttempts.result.isLastPage));
+      dispatch(attemptsActions.setShowHideAttemptsList(true));
     } catch (error: any) {
+      dispatch(attemptsActions.setShowHideAttemptsList(true));
+
       return rejectWithValue(error.message);
     }
   }
@@ -68,9 +77,18 @@ export interface IAttemptsSlice {
     isLastGamesListPage: boolean;
     showHideGamesList: boolean;
     gamesListTransitionClasses: string;
+
+    // transition animation
+    attemptsListCurrentPage: number;
+    isLastAttemptsListPage: boolean;
+    showHideAttemptsList: boolean;
+    attemptsListTransitionClasses: string;
+    //
+
     gamesList?: { _id: string; name: string; changeDate: Date }[];
     setGamesListFetchStatus: attemptsFetchStatus;
     getGameAllAttemptsFetchStatus: attemptsFetchStatus;
+    currentGameID?: string;
     gameAllAttempts?: {
       completedCorrectly: boolean;
       crosswordID: string;
@@ -97,6 +115,14 @@ interface IAttemptsState {
   showHideGamesList: boolean;
   gamesListTransitionClasses: string;
 
+  // transition animation
+  attemptsListCurrentPage: number;
+  isLastAttemptsListPage: boolean;
+  showHideAttemptsList: boolean;
+  attemptsListTransitionClasses: string;
+  //
+  currentGameID?: string;
+
   gamesList?: { _id: string; name: string; changeDate: Date }[];
   setGamesListFetchStatus: attemptsFetchStatus;
   getGameAllAttemptsFetchStatus: attemptsFetchStatus;
@@ -122,6 +148,13 @@ const initAppState: IAttemptsState = {
   isLastGamesListPage: false,
   showHideGamesList: true,
   gamesListTransitionClasses: "games-list-left",
+
+  // transition animation
+  attemptsListCurrentPage: 1,
+  isLastAttemptsListPage: false,
+  showHideAttemptsList: true,
+  attemptsListTransitionClasses: "games-list-left",
+  //
 
   setGamesListFetchStatus: attemptsFetchStatus.Ready,
   getGameAllAttemptsFetchStatus: attemptsFetchStatus.Ready,
@@ -157,6 +190,22 @@ export const attemptsSlice = createSlice({
     },
     setGamesListTransitionClasses(state, action) {
       state.gamesListTransitionClasses = action.payload;
+    },
+    setCurrentGameID(state, action) {
+      state.currentGameID = action.payload;
+    },
+
+    setAttemptsListCurrentPage(state, action) {
+      state.attemptsListCurrentPage = action.payload;
+    },
+    setIsLastAttemptsListPage(state, action) {
+      state.isLastAttemptsListPage = action.payload;
+    },
+    setShowHideAttemptsList(state, action) {
+      state.showHideAttemptsList = action.payload;
+    },
+    setAttemptsListTransitionClasses(state, action) {
+      state.attemptsListTransitionClasses = action.payload;
     },
   },
   extraReducers(builder) {

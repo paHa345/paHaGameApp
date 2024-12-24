@@ -58,6 +58,8 @@ export default {
 
         crosswordGameCellMenuButtonActive: "rgba(0, 0, 0, 0.35) 10px 5px 15px",
         crosswordGameCellMenuButton: " rgba(0, 0, 0, 0.35) 0px 2px 8px 0px",
+        innerLandShadow:
+          "    rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset",
       },
       fontFamily: {
         sans: ['"Proxima Nova"', ...defaultTheme.fontFamily.sans],
