@@ -115,8 +115,8 @@ const LoadCrosswordGameModalMain = () => {
   return (
     <div className="modal-overlay">
       <div className=" modal-wrapper">
-        <div className="modal">
-          <div className="modal-header flex justify-start items-center ">
+        <div className="modal flex flex-col justify-center items-center">
+          <div className="modal-header flex justify-start items-center w-full ">
             <div className=" w-full flex justify-around items-center">
               <LoadCrosswordGameNotification></LoadCrosswordGameNotification>
 
@@ -143,7 +143,7 @@ const LoadCrosswordGameModalMain = () => {
                 <h1 className=" text-center">Нет доступных кроссвордов</h1>
               </div>
             )}
-          <div className=" w-full rounded-lg my-3">
+          <div className=" w-full rounded-lg my-3 flex flex-col justify-center items-center">
             <div className=" w-full flex flex-col justify-center items-center">
               <div className="   w-full  flex  justify-around items-center"></div>
 
@@ -157,7 +157,7 @@ const LoadCrosswordGameModalMain = () => {
                 onTouchEnd={touchEndHandler}
               >
                 <div
-                  className={`overflow-hidden overflow-y-scroll py-2 px-6 w-full  ${isDesktop === "desktop" ? " h-80 min-h-80" : " h-96 min-h-96"}`}
+                  className={`overflow-hidden overflow-y-scroll py-2 px-6 w-full  ${isDesktop === "desktop" ? " h-80 min-h-80" : " h-4/5 min-h-full"}`}
                 >
                   <CSSTransition
                     nodeRef={nodeRef}
