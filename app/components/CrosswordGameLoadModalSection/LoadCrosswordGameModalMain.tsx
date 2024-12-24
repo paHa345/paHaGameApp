@@ -52,7 +52,7 @@ const LoadCrosswordGameModalMain = () => {
 
   const crosswordCardsEl = availableCrosswordGamesArr.map((el, index) => {
     return (
-      <div key={`${el._id}`} className=" pb-3">
+      <div key={`${el._id}`} className=" pb-5">
         <AvailableCrosswordGameCard crosswordData={el}></AvailableCrosswordGameCard>
       </div>
     );
@@ -148,7 +148,7 @@ const LoadCrosswordGameModalMain = () => {
               <div className="   w-full  flex  justify-around items-center"></div>
 
               <div
-                className={`overflow-hidden overflow-y-scroll py-2 px-6 w-full  ${isDesktop === "desktop" ? " h-80 min-h-80" : " h-96 min-h-96"}`}
+                className={`overflow-hidden overflow-y-scroll py-2 px-6 w-full  ${isDesktop === "desktop" ? " h-80 min-h-80" : " h-4/5 min-h-96"}`}
               >
                 <div
                   style={{
