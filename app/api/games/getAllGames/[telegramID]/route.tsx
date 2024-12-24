@@ -26,7 +26,7 @@ export async function GET(req: NextRequest, segmentData: any) {
     const value = await Crossword.find({ isCompleted: true }).countDocuments();
 
     const page = parseInt(req.nextUrl.searchParams?.get("page") || "1", 10);
-    const limit = parseInt(req.nextUrl.searchParams?.get("limit") || "2", 10);
+    const limit = parseInt(req.nextUrl.searchParams?.get("limit") || "3", 10);
     const skip = (page - 1) * limit;
 
     const isLastPage = value <= skip + limit;

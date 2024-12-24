@@ -94,6 +94,7 @@ const AllGamesList = () => {
 
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
+  const [toucLength, setToucLength] = useState(0);
 
   const minSwipeDistance = 25;
 
@@ -103,9 +104,12 @@ const AllGamesList = () => {
   };
   const touchMoveHandler = (e: React.TouchEvent<HTMLDivElement>) => {
     setTouchEnd(e.targetTouches[0].clientX);
+    setToucLength(touchEnd - touchStart);
   };
   const touchEndHandler = (e: React.TouchEvent<HTMLDivElement>) => {
     if (!touchStart || !touchEnd) return;
+    setToucLength(0);
+
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > minSwipeDistance;
     const isRightSwipe = distance < -minSwipeDistance;
@@ -142,14 +146,16 @@ const AllGamesList = () => {
               <LoadGameListElement></LoadGameListElement>
             </div>
           </div>
-
-          <div className=" overflow-hidden py-4 px-6 w-full min-h-56">
-            <div
-              className=" swipeContainer"
-              onTouchStart={touchStartHandler}
-              onTouchMove={touchMoveHandler}
-              onTouchEnd={touchEndHandler}
-            >
+          <div
+            style={{
+              transform: `translateX(${toucLength > 0 ? "10" : `${toucLength < 0 ? "-10" : "0"}`}%)`,
+            }}
+            className=" w-full swipeContainer"
+            onTouchStart={touchStartHandler}
+            onTouchMove={touchMoveHandler}
+            onTouchEnd={touchEndHandler}
+          >
+            <div className=" overflow-hidden py-4 px-6 w-full min-h-56">
               <CSSTransition
                 nodeRef={nodeRef}
                 in={showHideGamesList}
