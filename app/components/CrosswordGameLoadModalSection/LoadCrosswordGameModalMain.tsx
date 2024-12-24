@@ -145,7 +145,7 @@ const LoadCrosswordGameModalMain = () => {
             <div className=" w-full flex flex-col justify-center items-center">
               <div className="   w-full  flex  justify-around items-center"></div>
 
-              <div className=" overflow-hidden py-2 px-6 w-full h-4/5 min-h-80">
+              <div className=" overflow-hidden overflow-y-scroll py-2 px-6 w-full min-h-80 h-80">
                 <div
                   style={{
                     transform: `translateX(${toucLength > 0 ? "10" : `${toucLength < 0 ? "-10" : "0"}`}%)`,
