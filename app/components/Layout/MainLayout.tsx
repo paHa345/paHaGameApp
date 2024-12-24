@@ -25,7 +25,7 @@ const MainLayout = (props: any) => {
           <Header></Header>
         </ReduxProvider>
         <main
-          className=" w-11/12
+          className=" min-h-[80vh] w-11/12
           mx-auto"
         >
           {props.children}

@@ -9,7 +9,7 @@ import { crossworGamedActions } from "@/app/store/crosswordGameSlice";
 const GamesSectionMain = () => {
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
-    console.log("clear attempt data");
+    // console.log("clear attempt data");
     dispatch(crossworGamedActions.clearCurrentUserCompletedAttempt());
     dispatch(crossworGamedActions.setEndAttempt(false));
   });
