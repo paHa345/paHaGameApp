@@ -194,7 +194,7 @@ const Header = () => {
                 </p>
               </Link>
             </div>
-            {/* {(telegramUser?.id === 363304587 || telegramUser?.id === 777777) && ( */}
+            {(telegramUser?.id === 363304587 || telegramUser?.id === 777777) && (
             <div>
               {session.data && (
                 <div>
@@ -235,7 +235,7 @@ const Header = () => {
                 </div>
               )}
             </div>
-            {/* )} */}
+             )}
           </div>
         </nav>
       </header>
