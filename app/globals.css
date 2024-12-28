@@ -1,0 +1,241 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* @layer base {
+  @font-face {
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(/fonts/Roboto.woff2) format("woff2");
+  }
+} */
+
+main {
+  background-color: #f8ffdd00;
+}
+
+html {
+  /* font-family: "Proxima Nova", system-ui, sans-serif; */
+}
+
+@media (max-width: 53em) {
+  html {
+    /* font-size: 10px; */
+    font-size: 90%;
+  }
+}
+
+@media (max-width: 26em) {
+  html {
+    /* font-size: 10px; */
+    font-size: 80%;
+  }
+}
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  /* background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb)); */
+}
+
+input {
+  all: unset;
+}
+
+textarea {
+  all: unset;
+}
+
+.buttonStandart {
+  @apply shadow-exerciseCardHowerShadow text-slate-50 font-bold min-w-max py-2 px-6 rounded bg-buttonColor hover:bg-buttonHoverColor;
+}
+.buttonStandartDesabled {
+  @apply text-buttonColor font-bold shadow-exerciseCardHowerShadow min-w-max py-2 px-6 rounded bg-buttonColor hover:bg-buttonHoverColor hover:text-buttonHoverColor;
+}
+
+.buttonStudent {
+  @apply text-slate-50 font-bold shadow-exerciseCardHowerShadow min-w-max py-2 px-6 rounded bg-zinc-500 hover:bg-zinc-600;
+}
+
+.buttonStudentCurrent {
+  @apply text-slate-50 font-bold shadow-exerciseCardHowerShadow min-w-max py-2 px-6 rounded bg-zinc-600;
+}
+
+.delete-buttonStandart {
+  @apply text-slate-50 font-bold shadow-exerciseCardHowerShadow min-w-max py-2 px-6 rounded bg-red-600 hover:bg-red-500;
+}
+
+.footerMainContainer {
+  @apply grid gap-4 grid-cols-1 py-8 px-10 text-center align-middle sm:grid-cols-3 sm:px-10;
+}
+
+.footerLinksContainer {
+  @apply flex flex-col text-center gap-6 text-lg sm:text-left;
+}
+.footerLinks {
+  @apply hover:underline hover:text-slate-800;
+}
+
+/* modal classes */
+
+.small-modal-wrapper {
+  @apply w-5/6 h-1/3 sm:w-2/5;
+}
+
+.delete-modal-wrapper {
+  @apply w-5/6 h-2/5;
+}
+
+.modal-wrapper {
+  @apply w-5/6 h-5/6;
+}
+.modal-overlay {
+  @apply z-20 top-0 fixed left-0 w-full h-full flex items-center justify-center bg-slate-400 bg-opacity-80;
+}
+
+.modal {
+  @apply bg-modalMainColor h-full w-full rounded-xl px-4 py-4;
+}
+
+.modal-header {
+  @apply py-3 flex justify-end px-5;
+}
+
+.small-modal-header {
+  @apply py-3 flex justify-center px-5;
+}
+
+.delete-modal-header {
+  @apply py-7 flex justify-center px-5 text-xl;
+}
+
+.modal-body {
+  @apply flex justify-end text-lg;
+}
+
+/*  */
+
+.my-node-enter {
+  opacity: 0;
+  scale: 0.8;
+  /* transform: translateX(-100%); */
+}
+.my-node-enter-active {
+  opacity: 1;
+  scale: 1;
+  /* transform: translateX(0); */
+
+  transition: all 400ms ease-in-out;
+}
+.my-node-exit {
+  opacity: 1;
+  scale: 1;
+}
+.my-node-exit-active {
+  opacity: 0;
+  scale: 0.8;
+  transition: all 400ms ease-in-out;
+}
+
+.games-list-right-enter {
+  opacity: 0;
+  /* scale: 0.8; */
+  transform: translateX(-50%);
+  z-index: -100;
+}
+.games-list-right-enter-active {
+  opacity: 1;
+  /* scale: 1; */
+  transform: translateX(0);
+  z-index: 0;
+
+  transition: all 400ms ease-in-out;
+}
+.games-list-right-exit {
+  opacity: 1;
+  /* scale: 1; */
+  transform: translateX(0);
+  z-index: 0;
+}
+.games-list-right-exit-active {
+  opacity: 0;
+  /* scale: 0.8; */
+  transform: translateX(50%);
+  z-index: -100;
+  transition: all 400ms ease-in-out;
+}
+
+.games-list-left-enter {
+  opacity: 0;
+  /* scale: 0.8; */
+  transform: translateX(50%);
+}
+.games-list-left-enter-active {
+  opacity: 1;
+  /* scale: 1; */
+  transform: translateX(0);
+
+  transition: all 400ms ease-in-out;
+}
+.games-list-left-exit {
+  opacity: 1;
+  /* scale: 1; */
+  transform: translateX(0);
+}
+.games-list-left-exit-active {
+  opacity: 0;
+  /* scale: 0.8; */
+  transform: translateX(-50%);
+  transition: all 400ms ease-in-out;
+}
+
+/*  */
+.modal-node-enter {
+  /* opacity: 0; */
+  scale: 0;
+  /* transform: translateX(-100%); */
+}
+.modal-node-enter-active {
+  /* opacity: 1; */
+  scale: 1;
+  /* transform: translateX(0); */
+
+  transition: all 400ms ease-in-out;
+}
+.modal-node-exit {
+  /* opacity: 1; */
+  scale: 1;
+}
+.modal-node-exit-active {
+  /* opacity: 0; */
+  scale: 0;
+
+  transition: all 400ms ease-in-out;
+}
+/*  */
