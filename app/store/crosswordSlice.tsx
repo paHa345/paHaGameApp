@@ -191,7 +191,10 @@ export const getCurrentUserCrosswordAndSetInState = createAsyncThunk(
         throw new Error(crosswords.message);
       }
       dispatch(crosswordActions.setCurrentUserLoadedCrosswordsInState(crosswords.result));
+
       dispatch(crosswordActions.setCrosswordSize(Number(crosswords.result.crosswordObj.length)));
+
+      dispatch(crosswordActions.setCrosswordValue(Number(crosswords.result.crosswordObj.length)));
 
       dispatch(crosswordActions.hideLoadCrosswordModal());
     } catch (error: any) {
@@ -728,42 +731,53 @@ export const crosswordSlice = createSlice({
     },
 
     setAddedWordValue(state, action) {
+      
       let lengthAddedWord = action.payload.split("").length;
       const count =
-        state.addedWord.direction === AddedWordDirection.Horizontal
-          ? Number(state.highlightedField.number) + action.payload.split("").length
-          : Number(state.highlightedField.row) + action.payload.split("").length;
+      state.addedWord.direction === AddedWordDirection.Horizontal
+      ? Number(state.highlightedField.number) + action.payload.split("").length
+      : Number(state.highlightedField.row) + action.payload.split("").length;
       if (count > state.crosswordValue) {
         state.addedWord.value = action.payload
-          .split("")
-          .slice(0, lengthAddedWord - 1)
-          .join("");
+        .split("")
+        .slice(0, lengthAddedWord - 1)
+        .join("");
         lengthAddedWord = lengthAddedWord - 1;
       } else {
         state.addedWord.value = action.payload;
       }
-
+      
       const currentAddWordCellLetter =
-        state.addedWord.direction === AddedWordDirection.Vertical
-          ? state.createdCrossword[state.highlightedField.row + lengthAddedWord - 1][
-              state.highlightedField.number
-            ]?.addedWordLetter
-          : state.createdCrossword[state.highlightedField.row][
-              state.highlightedField.number + lengthAddedWord - 1
-            ]?.addedWordLetter;
+      state.addedWord.direction === AddedWordDirection.Vertical
+      ? state.createdCrossword[state.highlightedField.row + lengthAddedWord - 1][
+        state.highlightedField.number
+      ]?.addedWordLetter
+      : state.createdCrossword[state.highlightedField.row][
+        state.highlightedField.number + lengthAddedWord - 1
+      ]?.addedWordLetter;
+      
 
+      
       if (
         currentAddWordCellLetter !== undefined &&
-        currentAddWordCellLetter !== null &&
-        currentAddWordCellLetter.toLowerCase() !== state.addedWord.value.slice(-1).toLowerCase()
+        currentAddWordCellLetter !== null 
+        &&
+        currentAddWordCellLetter?.toLowerCase() !== state.addedWord.value.slice(-1).toLowerCase()
       ) {
         state.addedWord.value = state.addedWord.value.slice(0, -1);
         return;
       }
-
+      
+      console.log(state.crosswordValue)
       //тут очищаем клетки и state.addedWord.addedWordArr
       //   перед каждой перерисовкой
+      console.log(state.addedWord.addedWordArr.length)
+      console.log("Test000");
+
       for (let i = 0; i < state.addedWord.addedWordArr.length; i++) {
+
+        console.log("Test999");
+
         //
         //очищаем baseCell
         //
@@ -862,6 +876,8 @@ export const crosswordSlice = createSlice({
         // которую мы добавляем
 
         // установили напрвление
+
+
 
         if (state.addedWord.direction === AddedWordDirection.Horizontal) {
           if (
