@@ -158,7 +158,7 @@ const StartGameModalMain = () => {
 
               {!telegramUser?.username && (
                 <div className=" font-mono text-2xl pb-4">
-                  <h2>Приветствуем, anonimous!</h2>
+                  <h2>Приветствуем!</h2>
                   {/* <h3>Ваш Telegram ID: ???????</h3> */}
                 </div>
               )}
