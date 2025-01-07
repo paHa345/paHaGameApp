@@ -5,6 +5,7 @@ import { authSlice } from "./authSlice";
 import { appStateSlice } from "./appStateSlice";
 import { crosswordGameSlice } from "./crosswordGameSlice";
 import { attemptsSlice } from "./attemptsSlice";
+import { guessThatSongSlice } from "./guessThatSongSlice";
 
 const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ const store = configureStore({
     authState: authSlice.reducer,
     appState: appStateSlice.reducer,
     attemptsState: attemptsSlice.reducer,
+    guessThatSongState: guessThatSongSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

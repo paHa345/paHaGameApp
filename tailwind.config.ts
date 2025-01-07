@@ -26,7 +26,8 @@ export default {
 
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "gradient-conic":
+          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors: {
         mainColor: "#F0C808",
@@ -44,6 +45,7 @@ export default {
         crosswordSecoundaryColor: "#f9bc9d",
         modalMainColor: "#f8feef",
         crosswordCellSecoundaryColor: "#d9f99d",
+        gameCardCrosswordColor: "#d9f99d",
       },
       boxShadow: {
         exerciseCardShadow: "0 10px 15px rgb(0 0 0/5%)",
@@ -62,6 +64,8 @@ export default {
           "    rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset",
         smallShadow:
           "rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset",
+        audioControlsButtonShadow: "rgba(0, 0, 0, 0.35) 10px 5px 15px",
+        audioControlsButtonHoverShadow: "rgba(0, 0, 0, 0.35) 15px 5px 12px",
       },
       fontFamily: {
         sans: ['"Proxima Nova"', ...defaultTheme.fontFamily.sans],

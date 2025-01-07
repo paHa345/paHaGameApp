@@ -18,10 +18,28 @@ const GamesSectionMain = () => {
       <div className=" py-5">
         <h1 className=" text-center text-3xl font-bold">Список Игр</h1>
       </div>
-      <div className=" px-4  grid lg:grid-cols-3 sm:grid-cols-2 gap-6 justify-center items-center py-5">
-        <GameSectionCard></GameSectionCard>
+      <div className=" px-4  grid lg:grid-cols-3 sm:grid-cols-2 gap-9 justify-center items-center py-5">
+        <GameSectionCard
+          gameData={{
+            title: "Кроссворды",
+            link: "crosswordGame",
+            image: "crossword",
+            description: "Попробуй разгадать кроссворд быстрее других игроков?",
+            backgroundColor: "lime",
+          }}
+        ></GameSectionCard>
+        <GameSectionCard
+          gameData={{
+            title: "Угадай мелодии",
+            link: "guessThatSongGame",
+            description: "Получиться разгадать все мелодии за указанное время?",
+            image: "headphones",
+
+            backgroundColor: "cyan",
+          }}
+        ></GameSectionCard>
+
         {/* <GameSectionCard></GameSectionCard>
-        <GameSectionCard></GameSectionCard>
         <GameSectionCard></GameSectionCard>
         <GameSectionCard></GameSectionCard> */}
       </div>

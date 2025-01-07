@@ -11,7 +11,12 @@ import { IWorkout } from "@/app/types";
 import { AppDispatch } from "@/app/store";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faPencil, faXmark, faChessBoard } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrash,
+  faPencil,
+  faXmark,
+  faChessBoard,
+} from "@fortawesome/free-solid-svg-icons";
 
 import MyPageNotification from "./MyPageNotification";
 import { crosswordActions } from "@/app/store/crosswordSlice";
@@ -49,7 +54,9 @@ const MyPage = () => {
       crosswordValue !== null &&
       crosswordId !== null
     ) {
-      dispatch(crosswordActions.setCreatedCrossword(JSON.parse(createdCrossword)));
+      dispatch(
+        crosswordActions.setCreatedCrossword(JSON.parse(createdCrossword))
+      );
       dispatch(crosswordActions.setCrosswordName(JSON.parse(crosswordName)));
       dispatch(crosswordActions.setCrosswordValue(JSON.parse(crosswordValue)));
       dispatch(crosswordActions.setCrosswordId(JSON.parse(crosswordId)));
@@ -71,17 +78,37 @@ const MyPage = () => {
         </div>
         <div>
           {" "}
-          <button className=" my-5" onClick={() => signOut({ callbackUrl: "/login" })}>
+          <button
+            className=" my-5"
+            onClick={() => signOut({ callbackUrl: "/login" })}
+          >
             Выйти
           </button>
         </div>
 
         <div className=" py-5">
-          <Link className=" buttonStandart" rel="stylesheet" href="/createCrossword">
+          <Link
+            className=" buttonStandart"
+            rel="stylesheet"
+            href="/createCrossword"
+          >
             <span>
               <FontAwesomeIcon className=" pr-3 fa-fw" icon={faChessBoard} />
             </span>
             Создание кроссворда
+          </Link>
+        </div>
+
+        <div className=" py-5">
+          <Link
+            className=" buttonStandart"
+            rel="stylesheet"
+            href="/createGuessThatSong"
+          >
+            <span>
+              <FontAwesomeIcon className=" pr-3 fa-fw" icon={faChessBoard} />
+            </span>
+            Создание игры 'Угадай мелодию'
           </Link>
         </div>
       </section>
