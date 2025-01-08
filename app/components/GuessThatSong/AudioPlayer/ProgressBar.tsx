@@ -24,10 +24,7 @@ const ProgressBar = ({
       audioRef.current?.currentTime
     );
     // console.log(progressBarRef.current?.value / 100);
-    console.log(songCurrentTime);
     dispatch(guessThatSongActions.setPlayingSongCurrentTime(10));
-
-    songCurrentTime = "10";
   };
 
   const playingSongCurrentTime = useSelector(

@@ -93,7 +93,7 @@ const AudioPlayerControls = ({
 
   const repeat = useCallback(() => {
     // console.log(audioRef.current?.currentTime);
-    console.log(progressBarRef.current?.value);
+    // console.log(progressBarRef.current?.value);
 
     if (audioRef.current?.currentTime) {
       dispatch(
