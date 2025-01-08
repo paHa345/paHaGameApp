@@ -19,7 +19,6 @@ const AudioPlayerMain = () => {
   return (
     <div>
       <figure>
-        <h1 className=" text-3xl text-center">Угадай мелодию</h1>
         <DisplayTrack audioRef={audioRef}></DisplayTrack>
         <ProgressBar
           progressBarRef={progressBarRef}

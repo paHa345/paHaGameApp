@@ -3,7 +3,6 @@ import {
   guessThatSongActions,
   IGuessThatSongSlice,
 } from "@/app/store/guessThatSongSlice";
-import { div } from "framer-motion/client";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -19,18 +18,27 @@ const ProgressBar = ({
 }: IProgressBarProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleProgressChange = () => {
-    let songCurrentTime: string | undefined = String(
-      audioRef.current?.currentTime
-    );
-    // console.log(progressBarRef.current?.value / 100);
-    dispatch(guessThatSongActions.setPlayingSongCurrentTime(10));
-  };
-
   const playingSongCurrentTime = useSelector(
     (state: IGuessThatSongSlice) =>
       state.guessThatSongState.playingSongCurrentTime
   );
+
+  const handleProgressChange = () => {
+    let songCurrentTime: string | undefined = String(
+      audioRef.current?.currentTime
+    );
+    // dispatch(guessThatSongActions.setPlayingSongCurrentTime(100));
+    if (
+      audioRef.current?.currentTime &&
+      progressBarRef.current?.value &&
+      playingSongCurrentTime
+    ) {
+      console.log(Number(progressBarRef.current.value) / 100);
+
+      console.log(audioRef.current.currentTime);
+      audioRef.current.currentTime = Number(progressBarRef.current.value) / 100;
+    }
+  };
 
   const duration = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentSongDuration
@@ -70,7 +78,11 @@ const ProgressBar = ({
             ref={progressBarRef}
             type="range"
             defaultValue="0"
-            value={playingSongCurrentTime}
+            value={
+              audioRef.current?.currentTime
+                ? audioRef.current.currentTime * 100
+                : 0
+            }
             min="0"
             max={duration ? duration * 100 : 0}
             onChange={handleProgressChange}
