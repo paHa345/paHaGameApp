@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@ffmpeg/core": "^0.12.8",
-    "@ffmpeg/ffmpeg": "^0.12.13",
+    "@ffmpeg/ffmpeg": "^0.12.6",
     "@ffmpeg/types": "^0.12.3",
     "@ffmpeg/util": "^0.12.1",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
