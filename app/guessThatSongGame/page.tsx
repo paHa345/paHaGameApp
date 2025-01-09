@@ -4,6 +4,7 @@ import GameSeactionMain from "../components/GuessThatSong/GameSection/GameSeacti
 const page = () => {
   return (
     <div>
+      <div>GG</div>
       <GameSeactionMain></GameSeactionMain>
     </div>
   );
