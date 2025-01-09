@@ -1,7 +1,8 @@
 import React from "react";
-import CreateGuessThatSongMainSection from "../components/CreateGuessThatSong/MainSection/CreateGuessThatSongMainSection";
+import GuessThatSongCreateGameMain from "../components/GuessThatSongCreateGameSection/CreateGuessThatSongMainSection";
+
 const page = () => {
-  return <CreateGuessThatSongMainSection></CreateGuessThatSongMainSection>;
+  return <GuessThatSongCreateGameMain></GuessThatSongCreateGameMain>;
 };
 
 export default page;

@@ -6,10 +6,8 @@ import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import Ffmpeg from "fluent-ffmpeg";
 
-const CreateGuessThatSongMainSection = () => {
-  const [addedExerciseImage, setAddedExerciseImage] = useState<
-    string | undefined
-  >(undefined);
+const CutSongSectionMain = () => {
+  const [addedExerciseImage, setAddedExerciseImage] = useState<string | undefined>(undefined);
 
   const [blob, setBlob] = useState<PutBlobResult | null>(null);
   const [songURL, setSongURL] = useState<string | null>(null);
@@ -47,13 +45,10 @@ const CreateGuessThatSongMainSection = () => {
 
     // /api/upload?filename=${file.name}
 
-    const response = await fetch(
-      `/api/guessThatSong/uploadSong?filename=${file.name}`,
-      {
-        method: "POST",
-        body: file,
-      }
-    );
+    const response = await fetch(`/api/guessThatSong/uploadSong?filename=${file.name}`, {
+      method: "POST",
+      body: file,
+    });
 
     const newBlob = (await response.json()) as PutBlobResult;
 
@@ -87,13 +82,9 @@ const CreateGuessThatSongMainSection = () => {
   };
 
   const inputSongFileRef = useRef<HTMLInputElement>(null);
-  const [currentSongFile, setCurrentSongFile] = useState<string | undefined>(
-    undefined
-  );
+  const [currentSongFile, setCurrentSongFile] = useState<string | undefined>(undefined);
 
-  const changeSongFileHandler = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const changeSongFileHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.files);
 
     if (!inputSongFileRef.current?.files) {
@@ -130,13 +121,10 @@ const CreateGuessThatSongMainSection = () => {
     const formData = new FormData();
     formData.append("video", file);
 
-    const response = await fetch(
-      `/api/guessThatSong/cutSongFile?filename=${file.name}`,
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
+    const response = await fetch(`/api/guessThatSong/cutSongFile?filename=${file.name}`, {
+      method: "POST",
+      body: formData,
+    });
   };
 
   const [loaded, setLoaded] = useState(false);
@@ -156,10 +144,7 @@ const CreateGuessThatSongMainSection = () => {
     // domain can be used directly.
     await ffmpeg.load({
       coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
-      wasmURL: await toBlobURL(
-        `${baseURL}/ffmpeg-core.wasm`,
-        "application/wasm"
-      ),
+      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
     });
     setLoaded(true);
     setIsLoading(false);
@@ -193,21 +178,13 @@ const CreateGuessThatSongMainSection = () => {
     ]);
     const data = (await ffmpeg.readFile("output.mp3")) as any;
     if (videoRef.current)
-      videoRef.current.src = URL.createObjectURL(
-        new Blob([data.buffer], { type: "audio" })
-      );
+      videoRef.current.src = URL.createObjectURL(new Blob([data.buffer], { type: "audio" }));
   };
 
   return (
     <div>
       <h1 className=" text-center text-3xl py-8">Угадай мелодию</h1>
-      <input
-        name="file"
-        onChange={changeImageHandler}
-        ref={inputFileRef}
-        type="file"
-        required
-      />
+      <input name="file" onChange={changeImageHandler} ref={inputFileRef} type="file" required />
       {addedExerciseImage && (
         <div className=" sm:w-2/5 w-4/5 justify-self-center pt-5 pb-5">
           <img
@@ -226,10 +203,7 @@ const CreateGuessThatSongMainSection = () => {
       <br />
       <br />
       <div>
-        <div
-          onClick={cutSongFileHandler}
-          className=" my-5 w-fit cursor-pointer buttonStandart "
-        >
+        <div onClick={cutSongFileHandler} className=" my-5 w-fit cursor-pointer buttonStandart ">
           <h1 className=" text-2xl py-2 ">Обрезать песню</h1>
         </div>
         <input
@@ -270,4 +244,4 @@ const CreateGuessThatSongMainSection = () => {
   );
 };
 
-export default CreateGuessThatSongMainSection;
+export default CutSongSectionMain;
