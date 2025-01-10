@@ -6,6 +6,10 @@ export interface IGTSCreateGameSlice {
     createdGameName: string;
     gameIsBeingCreated: boolean;
     currentAddedSong?: number;
+    currentQuestion?: {
+      answersArr?: [{ text: string }];
+      correctAnswerIndex?: number;
+    };
   };
 }
 
@@ -14,6 +18,10 @@ interface IGTSCreateGameState {
   createdGameName: string;
   gameIsBeingCreated: boolean;
   currentAddedSong?: number;
+  currentQuestion?: {
+    answersArr?: [{ text: string }];
+    correctAnswerIndex?: number;
+  };
 }
 
 export const initGuessThatSongState: IGTSCreateGameState = {
@@ -37,6 +45,27 @@ export const GTSCreateGameSlice = createSlice({
     },
     setCurrentAddedSong(state, action) {
       state.currentAddedSong = action.payload;
+    },
+    setEmptyCurrentQuestion(state) {
+      state.currentQuestion = {};
+    },
+    setAnswersArr(state, action) {
+      if (state.currentQuestion) {
+        state.currentQuestion.answersArr = action.payload;
+      } else {
+        state.currentQuestion = {};
+        state.currentQuestion.answersArr = action.payload;
+      }
+    },
+    setCurrentQuestionAnswer(state, action) {
+      if (state.currentQuestion?.answersArr) {
+        state.currentQuestion.answersArr[action.payload.index].text = action.payload.text;
+      }
+    },
+    setCorrectAnswerIndex(state, action) {
+      if (state.currentQuestion) {
+        state.currentQuestion.correctAnswerIndex = action.payload;
+      }
     },
   },
   extraReducers(builder) {},

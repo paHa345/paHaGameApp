@@ -30,6 +30,7 @@ const GuessThatSongCreateGameMain = () => {
   };
   const createGTSGameHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     dispatch(GTSCreateGameActions.setGameIsBeingCreated(true));
+    dispatch(GTSCreateGameActions.setEmptyCurrentQuestion());
     dispatch(GTSCreateGameActions.setCurrentAddedSong(1));
   };
 
