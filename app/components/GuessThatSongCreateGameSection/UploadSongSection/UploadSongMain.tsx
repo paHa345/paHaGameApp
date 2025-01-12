@@ -34,31 +34,38 @@ const UploadSongMain = () => {
   };
 
   const uploadSong = async () => {
-    if (!inputFileRef.current?.files) {
-      throw new Error("No file selected");
-    }
-
-    const file = inputFileRef.current.files[0];
-
-    // /api/upload?filename=${file.name}
-
-    const response = await fetch(
-      `/api/guessThatSong/uploadSong?filename=${file.name}`,
-      {
-        method: "POST",
-        body: file,
+    try {
+      if (inputFileRef.current?.files?.length === 0) {
+        throw new Error("No file selected");
       }
-    );
+      if (!inputFileRef.current?.files) {
+        throw new Error("No file selected");
+      }
 
-    const newBlob = (await response.json()) as PutBlobResult;
+      const file = inputFileRef.current.files[0];
 
-    console.log(newBlob.url);
-    setBlob(() => {
-      return newBlob;
-    });
-    setSongURL(() => {
-      return newBlob.url;
-    });
+      // /api/upload?filename=${file.name}
+
+      const response = await fetch(
+        `/api/guessThatSong/uploadSong?filename=${file.name}`,
+        {
+          method: "POST",
+          body: file,
+        }
+      );
+
+      const newBlob = (await response.json()) as PutBlobResult;
+
+      console.log(newBlob.url);
+      setBlob(() => {
+        return newBlob;
+      });
+      setSongURL(() => {
+        return newBlob.url;
+      });
+    } catch (error: any) {
+      console.log(error.message);
+    }
   };
 
   return (
@@ -82,7 +89,14 @@ const UploadSongMain = () => {
           ></audio>
         </div>
       )}
-      <button onClick={uploadSong}>Load Song</button>
+      <div className=" flex justify-center items-center">
+        <div
+          // className=" flex justify-center items-center"
+          className={` cursor-pointer py-3 px-3 mx-6 transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:scale-110 hover:bg-gradient-to-tl hover:shadow-exerciseCardHowerShadow  `}
+        >
+          <div onClick={uploadSong}>Загрузить песню</div>
+        </div>
+      </div>
       <br />
       <br />
       <div></div>
