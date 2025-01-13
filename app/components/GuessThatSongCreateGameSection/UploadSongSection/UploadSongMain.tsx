@@ -1,10 +1,13 @@
+import { AppDispatch } from "@/app/store";
+import { GTSCreateGameActions } from "@/app/store/GTSCreateGameSlice";
 import { PutBlobResult } from "@vercel/blob";
 import React, { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const UploadSongMain = () => {
-  const [addedSongURL, setAddedSongURL] = useState<string | undefined>(
-    undefined
-  );
+  const [addedSongURL, setAddedSongURL] = useState<string | undefined>(undefined);
+
+  const dispatch = useDispatch<AppDispatch>();
 
   const [blob, setBlob] = useState<PutBlobResult | null>(null);
   const [songURL, setSongURL] = useState<string | null>(null);
@@ -46,13 +49,10 @@ const UploadSongMain = () => {
 
       // /api/upload?filename=${file.name}
 
-      const response = await fetch(
-        `/api/guessThatSong/uploadSong?filename=${file.name}`,
-        {
-          method: "POST",
-          body: file,
-        }
-      );
+      const response = await fetch(`/api/guessThatSong/uploadSong?filename=${file.name}`, {
+        method: "POST",
+        body: file,
+      });
 
       const newBlob = (await response.json()) as PutBlobResult;
 
@@ -63,6 +63,7 @@ const UploadSongMain = () => {
       setSongURL(() => {
         return newBlob.url;
       });
+      dispatch(GTSCreateGameActions.setSongURL(newBlob.url));
     } catch (error: any) {
       console.log(error.message);
     }
@@ -71,13 +72,7 @@ const UploadSongMain = () => {
   return (
     <div>
       <h1 className=" text-center text-3xl py-8">Угадай мелодию</h1>
-      <input
-        name="file"
-        onChange={changeImageHandler}
-        ref={inputFileRef}
-        type="file"
-        required
-      />
+      <input name="file" onChange={changeImageHandler} ref={inputFileRef} type="file" required />
       {addedSongURL && (
         <div className=" sm:w-2/5 w-4/5 justify-self-center pt-5 pb-5">
           <audio

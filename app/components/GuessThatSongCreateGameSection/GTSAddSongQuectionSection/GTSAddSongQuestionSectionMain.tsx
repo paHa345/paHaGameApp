@@ -1,8 +1,5 @@
 import { AppDispatch } from "@/app/store";
-import {
-  GTSCreateGameActions,
-  IGTSCreateGameSlice,
-} from "@/app/store/GTSCreateGameSlice";
+import { GTSCreateGameActions, IGTSCreateGameSlice } from "@/app/store/GTSCreateGameSlice";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import GTSAnswer from "./GTSAnswer";
@@ -14,10 +11,7 @@ import UploadSongMain from "../UploadSongSection/UploadSongMain";
 const GTSAddSongQuestionSectionMain = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [questionNumber, setQuestionNumber] = useState(0);
-  const setQuestionNumberHandler = function (
-    this: number,
-    e: React.MouseEvent<HTMLDivElement>
-  ) {
+  const setQuestionNumberHandler = function (this: number, e: React.MouseEvent<HTMLDivElement>) {
     e.preventDefault();
     setQuestionNumber(this);
     // dispatch(GTSCreateGameActions.setAnswersArr([...Array(this)]));
@@ -38,6 +32,12 @@ const GTSAddSongQuestionSectionMain = () => {
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.currentQuestion
   );
 
+  const createdGame = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.createdGTSGame
+  );
+
+  console.log(createdGame);
+
   const answersEls = currentQuestion?.answersArr ? (
     currentQuestion.answersArr.map((answer, index) => {
       return (
@@ -50,6 +50,18 @@ const GTSAddSongQuestionSectionMain = () => {
   ) : (
     <div></div>
   );
+  const addGTSQuestionHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    console.log(currentQuestion);
+    dispatch(GTSCreateGameActions.addQuestionInGame(currentQuestion));
+    //обнуляем введённые данные вопроса
+
+    {
+      currentAddedSong
+        ? dispatch(GTSCreateGameActions.setCurrentAddedSong(currentAddedSong + 1))
+        : alert("Не удалось обновить номер вопроса");
+    }
+  };
   return (
     <div>
       <h1 className=" text-center text-2xl">
@@ -62,9 +74,7 @@ const GTSAddSongQuestionSectionMain = () => {
         <h1 className=" text-center text-2xl">Варианты ответов</h1>
         <div>
           <div className=" my-3 py-2 shadow-smallShadow">
-            <h1 className=" text-center text-2xl">
-              Количество вариантов ответов
-            </h1>
+            <h1 className=" text-center text-2xl">Количество вариантов ответов</h1>
 
             <div className=" py-3 flex justify-center items-center">
               <div
@@ -82,20 +92,30 @@ const GTSAddSongQuestionSectionMain = () => {
             </div>
           </div>
 
-          <div className=" grid gap-2 justify-center items-center sm:grid-cols-2">
-            {answersEls}
-          </div>
+          <div className=" grid gap-2 justify-center items-center sm:grid-cols-2">{answersEls}</div>
           <div>
             <div className=" py-5 flex justify-center items-center">
-              <div
-                // disabled
-                // disabled={gameValue <= 0 || createdGameName.length === 0}
-                className={`py-3 px-3 mx-6 transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:scale-110 hover:bg-gradient-to-tl hover:shadow-exerciseCardHowerShadow  `}
-                // onClick={createGTSGameHandler}
-              >
-                <FontAwesomeIcon className=" pr-2" icon={faCirclePlus} />
-                Добавить вопрос
-              </div>
+              {currentQuestion?.songURL &&
+              currentQuestion.answersArr &&
+              currentQuestion.correctAnswerIndex !== undefined &&
+              currentQuestion?.correctAnswerIndex >= 0 ? (
+                <div
+                  // disabled
+                  // disabled={gameValue <= 0 || createdGameName.length === 0}
+                  className={` cursor-pointer py-3 px-3 mx-6 transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:scale-110 hover:bg-gradient-to-tl hover:shadow-exerciseCardHowerShadow  `}
+                  onClick={addGTSQuestionHandler}
+                >
+                  <FontAwesomeIcon className=" pr-2" icon={faCirclePlus} />
+                  Добавить вопрос
+                </div>
+              ) : (
+                <div
+                  onClick={addGTSQuestionHandler}
+                  className={` py-3 px-3 mx-6 transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow`}
+                >
+                  <h1>Загрузите песню, заполните ответы, выберете правильный ответ</h1>
+                </div>
+              )}
             </div>
           </div>
         </div>

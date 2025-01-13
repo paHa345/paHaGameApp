@@ -32,6 +32,7 @@ const GuessThatSongCreateGameMain = () => {
     dispatch(GTSCreateGameActions.setGameIsBeingCreated(true));
     dispatch(GTSCreateGameActions.setEmptyCurrentQuestion());
     dispatch(GTSCreateGameActions.setCurrentAddedSong(1));
+    dispatch(GTSCreateGameActions.initCreatedGTSGame());
   };
 
   return (

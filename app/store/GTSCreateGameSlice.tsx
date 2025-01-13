@@ -9,7 +9,13 @@ export interface IGTSCreateGameSlice {
     currentQuestion?: {
       answersArr?: { text: string }[];
       correctAnswerIndex?: number;
+      songURL?: string;
     };
+    createdGTSGame?: {
+      answersArr?: { text: string }[];
+      correctAnswerIndex?: number;
+      songURL?: string;
+    }[];
   };
 }
 
@@ -21,7 +27,13 @@ interface IGTSCreateGameState {
   currentQuestion?: {
     answersArr?: { text: string }[];
     correctAnswerIndex?: number;
+    songURL?: string;
   };
+  createdGTSGame?: {
+    answersArr?: { text: string }[];
+    correctAnswerIndex?: number;
+    songURL?: string;
+  }[];
 }
 
 export const initGuessThatSongState: IGTSCreateGameState = {
@@ -68,8 +80,7 @@ export const GTSCreateGameSlice = createSlice({
           }
         };
         console.log("sdf");
-        const different =
-          action.payload - state.currentQuestion?.answersArr.length;
+        const different = action.payload - state.currentQuestion?.answersArr.length;
         addOrDeleteNumberAnswers(different);
         return;
       }
@@ -91,8 +102,7 @@ export const GTSCreateGameSlice = createSlice({
         state.currentQuestion?.answersArr &&
         state.currentQuestion?.answersArr[action.payload.index]
       ) {
-        state.currentQuestion.answersArr[action.payload.index].text =
-          action.payload.text;
+        state.currentQuestion.answersArr[action.payload.index].text = action.payload.text;
       }
 
       if (
@@ -106,6 +116,21 @@ export const GTSCreateGameSlice = createSlice({
       if (state.currentQuestion) {
         state.currentQuestion.correctAnswerIndex = action.payload;
       }
+    },
+    setSongURL(state, action) {
+      if (state.currentQuestion) {
+        state.currentQuestion.songURL = action.payload;
+      }
+    },
+    initCreatedGTSGame(state) {
+      state.createdGTSGame = [];
+    },
+    addQuestionInGame(state, action) {
+      state.createdGTSGame?.push(action.payload);
+    },
+    resetCurrentQuestionData(state) {
+      state.currentQuestion = {};
+      state.currentQuestion.answersArr = [];
     },
   },
   extraReducers(builder) {},
