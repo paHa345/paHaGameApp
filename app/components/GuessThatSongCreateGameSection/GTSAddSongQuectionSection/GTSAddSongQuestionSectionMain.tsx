@@ -25,6 +25,10 @@ const GTSAddSongQuestionSectionMain = () => {
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.createdGameName
   );
 
+  const gameIsBeingCreated = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.gameIsBeingCreated
+  );
+
   const currentAddedSong = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.currentAddedSong
   );
@@ -52,20 +56,38 @@ const GTSAddSongQuestionSectionMain = () => {
   );
   const addGTSQuestionHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    console.log(currentQuestion);
-    dispatch(GTSCreateGameActions.addQuestionInGame(currentQuestion));
+
     //обнуляем введённые данные вопроса
 
-    {
-      currentAddedSong
-        ? dispatch(GTSCreateGameActions.setCurrentAddedSong(currentAddedSong + 1))
-        : alert("Не удалось обновить номер вопроса");
+    dispatch(GTSCreateGameActions.resetCurrentQuestionData());
+
+    if (currentAddedSong && currentAddedSong > gameValue) {
+      return;
+    }
+
+    dispatch(GTSCreateGameActions.addQuestionInGame(currentQuestion));
+    if (currentAddedSong && currentAddedSong >= gameValue) {
+      console.log("Не удалось обновить номер вопроса");
+      dispatch(GTSCreateGameActions.setCurrentAddedSong(currentAddedSong + 1));
+
+      return;
+    } else {
+      if (currentAddedSong) {
+        dispatch(GTSCreateGameActions.setCurrentAddedSong(currentAddedSong + 1));
+      }
+    }
+
+    console.log(currentAddedSong);
+    console.log(gameValue);
+    if (currentAddedSong && currentAddedSong > gameValue) {
+      console.log("asdasd");
+      dispatch(GTSCreateGameActions.setGameIsBeingCreated(false));
     }
   };
   return (
     <div>
       <h1 className=" text-center text-2xl">
-        Песня <span>{currentAddedSong}</span> из <span>{gameValue}</span>
+        Вопрос <span>{currentAddedSong}</span> из <span>{gameValue}</span>
       </h1>
       <div>
         <UploadSongMain></UploadSongMain>
@@ -95,27 +117,29 @@ const GTSAddSongQuestionSectionMain = () => {
           <div className=" grid gap-2 justify-center items-center sm:grid-cols-2">{answersEls}</div>
           <div>
             <div className=" py-5 flex justify-center items-center">
-              {currentQuestion?.songURL &&
-              currentQuestion.answersArr &&
-              currentQuestion.correctAnswerIndex !== undefined &&
-              currentQuestion?.correctAnswerIndex >= 0 ? (
-                <div
-                  // disabled
-                  // disabled={gameValue <= 0 || createdGameName.length === 0}
-                  className={` cursor-pointer py-3 px-3 mx-6 transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:scale-110 hover:bg-gradient-to-tl hover:shadow-exerciseCardHowerShadow  `}
-                  onClick={addGTSQuestionHandler}
-                >
-                  <FontAwesomeIcon className=" pr-2" icon={faCirclePlus} />
-                  Добавить вопрос
-                </div>
-              ) : (
-                <div
-                  onClick={addGTSQuestionHandler}
-                  className={` py-3 px-3 mx-6 transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow`}
-                >
-                  <h1>Загрузите песню, заполните ответы, выберете правильный ответ</h1>
-                </div>
-              )}
+              {
+                // currentQuestion?.songURL &&
+                currentQuestion?.answersArr &&
+                currentQuestion.correctAnswerIndex !== undefined &&
+                currentQuestion?.correctAnswerIndex >= 0 ? (
+                  <div
+                    // disabled
+                    // disabled={gameValue <= 0 || createdGameName.length === 0}
+                    className={` cursor-pointer py-3 px-3 mx-6 transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:scale-110 hover:bg-gradient-to-tl hover:shadow-exerciseCardHowerShadow  `}
+                    onClick={addGTSQuestionHandler}
+                  >
+                    <FontAwesomeIcon className=" pr-2" icon={faCirclePlus} />
+                    Добавить вопрос
+                  </div>
+                ) : (
+                  <div
+                    // onClick={addGTSQuestionHandler}
+                    className={` py-3 px-3 mx-6 transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow`}
+                  >
+                    <h1>Загрузите песню, заполните ответы, выберете правильный ответ</h1>
+                  </div>
+                )
+              }
             </div>
           </div>
         </div>

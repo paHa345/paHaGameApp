@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import GTSAddSongQuestionSectionMain from "./GTSAddSongQuectionSection/GTSAddSongQuestionSectionMain";
+import QuestionsButtons from "./QuestionsButtons/QuestionsButtons";
 
 const GuessThatSongCreateGameMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,6 +19,9 @@ const GuessThatSongCreateGameMain = () => {
   );
   const gameIsBeingCreated = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.gameIsBeingCreated
+  );
+  const currentGameAdded = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.createdGTSGame
   );
 
   const changeGameValue = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,6 +38,10 @@ const GuessThatSongCreateGameMain = () => {
     dispatch(GTSCreateGameActions.setCurrentAddedSong(1));
     dispatch(GTSCreateGameActions.initCreatedGTSGame());
   };
+
+  const addedQuestionsButtonsEl = currentGameAdded?.map((question, index) => {
+    return <QuestionsButtons key={`${question.songURL}_${index}`} />;
+  });
 
   return (
     <div className=" pt-8 py-5 min-h-[70vh]">
@@ -66,6 +74,11 @@ const GuessThatSongCreateGameMain = () => {
             Создать игру
           </button>
         </div>
+      </div>
+      <div>
+        <h1 className=" text-center text-2xl">Вопросы</h1>
+        {currentGameAdded && addedQuestionsButtonsEl}
+        <div></div>
       </div>
 
       {gameIsBeingCreated && <GTSAddSongQuestionSectionMain></GTSAddSongQuestionSectionMain>}
