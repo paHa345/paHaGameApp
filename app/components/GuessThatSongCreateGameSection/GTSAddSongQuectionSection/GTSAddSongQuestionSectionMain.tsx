@@ -69,6 +69,7 @@ const GTSAddSongQuestionSectionMain = () => {
     if (currentAddedSong && currentAddedSong >= gameValue) {
       console.log("Не удалось обновить номер вопроса");
       dispatch(GTSCreateGameActions.setCurrentAddedSong(currentAddedSong + 1));
+      dispatch(GTSCreateGameActions.setGameIsBeingCreated(false));
 
       return;
     } else {
@@ -77,16 +78,16 @@ const GTSAddSongQuestionSectionMain = () => {
       }
     }
 
-    console.log(currentAddedSong);
-    console.log(gameValue);
-    if (currentAddedSong && currentAddedSong > gameValue) {
-      console.log("asdasd");
-      dispatch(GTSCreateGameActions.setGameIsBeingCreated(false));
-    }
+    // console.log(currentAddedSong);
+    // console.log(gameValue);
+    // if (currentAddedSong && currentAddedSong > gameValue) {
+    //   console.log("asdasd");
+    //   dispatch(GTSCreateGameActions.setGameIsBeingCreated(false));
+    // }
   };
   return (
     <div>
-      <h1 className=" text-center text-2xl">
+      <h1 className=" text-center text-2xl pt-3">
         Вопрос <span>{currentAddedSong}</span> из <span>{gameValue}</span>
       </h1>
       <div>

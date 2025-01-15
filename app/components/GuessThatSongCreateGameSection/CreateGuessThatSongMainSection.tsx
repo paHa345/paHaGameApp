@@ -40,7 +40,7 @@ const GuessThatSongCreateGameMain = () => {
   };
 
   const addedQuestionsButtonsEl = currentGameAdded?.map((question, index) => {
-    return <QuestionsButtons key={`${question.songURL}_${index}`} />;
+    return <QuestionsButtons questionNumber={index} key={`${question.songURL}_${index}`} />;
   });
 
   return (
@@ -76,7 +76,7 @@ const GuessThatSongCreateGameMain = () => {
         </div>
       </div>
       <div>
-        <h1 className=" text-center text-2xl">Вопросы</h1>
+        <h1 className=" text-center text-2xl py-3">Вопросы</h1>
         {currentGameAdded && addedQuestionsButtonsEl}
         <div></div>
       </div>
