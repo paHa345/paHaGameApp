@@ -1,11 +1,21 @@
 import { AppDispatch } from "@/app/store";
-import { GTSCreateGameActions } from "@/app/store/GTSCreateGameSlice";
+import { GTSCreateGameActions, IGTSCreateGameSlice } from "@/app/store/GTSCreateGameSlice";
 import { PutBlobResult } from "@vercel/blob";
 import React, { useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const UploadSongMain = () => {
   const [addedSongURL, setAddedSongURL] = useState<string | undefined>(undefined);
+
+  const updateQuestionStatus = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.gameIsBeingUpdated
+  );
+  const updatedQuestionNumber = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.updatedQuestionNumber
+  );
+  const currentAddedGame = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.createdGTSGame
+  );
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -72,6 +82,12 @@ const UploadSongMain = () => {
   return (
     <div>
       {/* <h1 className=" text-center text-3xl py-8">Угадай мелодию</h1> */}
+      {updateQuestionStatus && (
+        <div>
+          {" "}
+          <h1>Редактирование песни</h1>
+        </div>
+      )}
       <input name="file" onChange={changeImageHandler} ref={inputFileRef} type="file" required />
       {addedSongURL && (
         <div className=" sm:w-2/5 w-4/5 justify-self-center pt-5 pb-5">
