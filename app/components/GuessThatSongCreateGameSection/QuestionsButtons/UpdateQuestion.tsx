@@ -2,12 +2,15 @@ import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import UploadSongMain from "../UploadSongSection/UploadSongMain";
-import { useSelector } from "react-redux";
-import { IGTSCreateGameSlice } from "@/app/store/GTSCreateGameSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { GTSCreateGameActions, IGTSCreateGameSlice } from "@/app/store/GTSCreateGameSlice";
 import GTSAnswer from "../GTSAddSongQuectionSection/GTSAnswer";
 import UpdatedQuestionAnswer from "./UpdatedQuestionAnswer";
+import { AppDispatch } from "@/app/store";
+import UpdatedQuestionSong from "./UpdatedQuestionSong";
 
 const UpdateQuestion = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const [questionNumber, setQuestionNumber] = useState(0);
 
   const updatedQuestionNumber = useSelector(
@@ -17,6 +20,31 @@ const UpdateQuestion = () => {
   const currentAddedGame = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.createdGTSGame
   );
+
+  const currentUpdatedQuestion = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.updatedQuestionNumber
+  );
+
+  const updateQuestionNumberHandler = function (this: number, e: React.MouseEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setQuestionNumber(this);
+    // dispatch(GTSCreateGameActions.setAnswersArr([...Array(this)]));
+    // console.log(currentUpdatedQuestion);
+    if (currentUpdatedQuestion !== undefined) {
+      dispatch(
+        GTSCreateGameActions.updateAnswersArr({
+          updatedQuestion: currentUpdatedQuestion,
+          setAnswerNumber: this,
+        })
+      );
+    }
+    dispatch(
+      GTSCreateGameActions.updateCorrectAnswerNumber({
+        updatedAnswer: updatedQuestionNumber,
+        correctAnswerIndex: 0,
+      })
+    );
+  };
 
   const updatedAnswersEls =
     currentAddedGame !== undefined &&
@@ -34,11 +62,20 @@ const UpdateQuestion = () => {
       <div>rrr</div>
     );
 
+  const stopUpdateQuestionHandler = () => {
+    dispatch(GTSCreateGameActions.setGameIsBeingUpdated(false));
+    dispatch(GTSCreateGameActions.setUpdatedQuestionNumber(undefined));
+  };
+
   return (
-    <div>
+    <div className=" flex justify-center items-center flex-col w-11/12">
+      <h1 className=" text-2xl text-center py-3"> Редактирование вопроса</h1>
       <div>
         <UploadSongMain></UploadSongMain>
       </div>
+
+      <UpdatedQuestionSong></UpdatedQuestionSong>
+
       <div>
         <h1 className=" text-center text-2xl">Варианты ответов</h1>
         <div>
@@ -47,13 +84,13 @@ const UpdateQuestion = () => {
 
             <div className=" py-3 flex justify-center items-center">
               <div
-                // onClick={setQuestionNumberHandler.bind(4)}
+                onClick={updateQuestionNumberHandler.bind(4)}
                 className={` my-2 ${questionNumber === 4 ? "scale-110 shadow-crosswordGameCellMenuShadow border-2 border-solid border-lime-400" : ""}  border-2 border-solid  cursor-pointer py-3 px-3 mx-6 transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:scale-110 hover:bg-gradient-to-tl hover:shadow-exerciseCardHowerShadow  `}
               >
                 <h1>4</h1>
               </div>
               <div
-                // onClick={setQuestionNumberHandler.bind(6)}
+                onClick={updateQuestionNumberHandler.bind(6)}
                 className={` my-2 ${questionNumber === 6 ? "scale-110 shadow-crosswordGameCellMenuShadow border-2 border-solid border-lime-400" : ""}  border-2 border-solid   cursor-pointer py-3 px-3 mx-6 transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:scale-110 hover:bg-gradient-to-tl hover:shadow-exerciseCardHowerShadow  `}
               >
                 <h1>6</h1>
@@ -69,11 +106,11 @@ const UpdateQuestion = () => {
               <div
                 // disabled
                 // disabled={gameValue <= 0 || createdGameName.length === 0}
-                className={` cursor-pointer py-3 px-3 mx-6 transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:scale-110 hover:bg-gradient-to-tl hover:shadow-exerciseCardHowerShadow  `}
-                // onClick={updateGTSQuestionHandler}
+                className={` text-center cursor-pointer py-3 px-3 mx-6 transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:scale-110 hover:bg-gradient-to-tl hover:shadow-exerciseCardHowerShadow  `}
+                onClick={stopUpdateQuestionHandler}
               >
                 <FontAwesomeIcon className=" pr-2" icon={faPencil} />
-                Обновить вопрос
+                Закончить редактирование вопроса
               </div>
             </div>
           </div>

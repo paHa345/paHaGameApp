@@ -71,7 +71,7 @@ const UploadSongMain = () => {
 
   return (
     <div>
-      <h1 className=" text-center text-3xl py-8">Угадай мелодию</h1>
+      {/* <h1 className=" text-center text-3xl py-8">Угадай мелодию</h1> */}
       <input name="file" onChange={changeImageHandler} ref={inputFileRef} type="file" required />
       {addedSongURL && (
         <div className=" sm:w-2/5 w-4/5 justify-self-center pt-5 pb-5">
@@ -87,7 +87,7 @@ const UploadSongMain = () => {
       <div className=" flex justify-center items-center">
         <div
           // className=" flex justify-center items-center"
-          className={` cursor-pointer py-3 px-3 mx-6 transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:scale-110 hover:bg-gradient-to-tl hover:shadow-exerciseCardHowerShadow  `}
+          className={` cursor-pointer py-3 my-3 px-3 mx-6 transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:scale-110 hover:bg-gradient-to-tl hover:shadow-exerciseCardHowerShadow  `}
         >
           <div onClick={uploadSong}>Загрузить песню</div>
         </div>

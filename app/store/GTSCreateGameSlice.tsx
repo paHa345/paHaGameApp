@@ -14,10 +14,10 @@ export interface IGTSCreateGameSlice {
       correctAnswerIndex?: number;
       songURL?: string;
     };
-    createdGTSGame?: {
-      answersArr?: { text: string }[];
-      correctAnswerIndex?: number;
-      songURL?: string;
+    createdGTSGame: {
+      answersArr: { text: string }[];
+      correctAnswerIndex: number;
+      songURL: string;
     }[];
   };
 }
@@ -35,10 +35,10 @@ interface IGTSCreateGameState {
     correctAnswerIndex?: number;
     songURL?: string;
   };
-  createdGTSGame?: {
-    answersArr?: { text: string }[];
-    correctAnswerIndex?: number;
-    songURL?: string;
+  createdGTSGame: {
+    answersArr: { text: string }[];
+    correctAnswerIndex: number;
+    songURL: string;
   }[];
 }
 
@@ -51,6 +51,13 @@ export const initGuessThatSongState: IGTSCreateGameState = {
   //   answersArr: [{ text: "" }],
   //   correctAnswerIndex: -1,
   // },
+  createdGTSGame: [
+    // {
+    //   answersArr: [{ text: "string" }],
+    //   correctAnswerIndex: 0,
+    //   songURL: "string",
+    // },
+  ],
 };
 
 export const GTSCreateGameSlice = createSlice({
@@ -86,7 +93,6 @@ export const GTSCreateGameSlice = createSlice({
             }
           }
         };
-        console.log("sdf");
         const different = action.payload - state.currentQuestion?.answersArr.length;
         addOrDeleteNumberAnswers(different);
         return;
@@ -144,6 +150,62 @@ export const GTSCreateGameSlice = createSlice({
     },
     setUpdatedQuestionNumber(state, action) {
       state.updatedQuestionNumber = action.payload;
+    },
+    updateAnswerText(
+      state,
+      action: {
+        payload: {
+          updatedAnswer: number;
+          index: number;
+          text: string;
+        };
+        type: string;
+      }
+    ) {
+      if (
+        state.createdGTSGame !== undefined &&
+        state.createdGTSGame[action.payload.updatedAnswer] !== undefined &&
+        action.payload.updatedAnswer !== undefined &&
+        action.payload.updatedAnswer <= state.createdGTSGame.length &&
+        state.createdGTSGame[action.payload.updatedAnswer].answersArr !== undefined &&
+        state.createdGTSGame[action.payload.updatedAnswer].answersArr[action.payload.index] !==
+          undefined
+      ) {
+        state.createdGTSGame[action.payload.updatedAnswer].answersArr[action.payload.index].text =
+          action.payload.text;
+      }
+    },
+    updateCorrectAnswerNumber(state, action) {
+      state.createdGTSGame[action.payload.updatedAnswer].correctAnswerIndex =
+        action.payload.correctAnswerIndex;
+    },
+    updateAnswersArr(
+      state,
+      action: {
+        payload: {
+          updatedQuestion: number;
+          setAnswerNumber: number;
+        };
+        type: string;
+      }
+    ) {
+      console.log(action);
+      const addOrDeleteNumberAnswers = (number: number) => {
+        if (number > 0 && state.createdGTSGame[action.payload.updatedQuestion].answersArr) {
+          for (let i = 0; i < number; i++) {
+            state.createdGTSGame[action.payload.updatedQuestion].answersArr.push({ text: "" });
+          }
+        }
+        if (number < 0 && state.createdGTSGame[action.payload.updatedQuestion].answersArr) {
+          for (let i = 0; i > number; i--) {
+            state.createdGTSGame[action.payload.updatedQuestion].answersArr.pop();
+          }
+        }
+      };
+      const different =
+        action.payload.setAnswerNumber -
+        state.createdGTSGame[action.payload.updatedQuestion].answersArr.length;
+      addOrDeleteNumberAnswers(different);
     },
   },
   extraReducers(builder) {},

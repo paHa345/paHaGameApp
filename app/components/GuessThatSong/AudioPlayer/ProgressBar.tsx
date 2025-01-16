@@ -1,8 +1,5 @@
 import { AppDispatch } from "@/app/store";
-import {
-  guessThatSongActions,
-  IGuessThatSongSlice,
-} from "@/app/store/guessThatSongSlice";
+import { guessThatSongActions, IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -11,28 +8,17 @@ interface IProgressBarProps {
   audioRef: React.RefObject<HTMLAudioElement>;
   timeProgress: number;
 }
-const ProgressBar = ({
-  progressBarRef,
-  audioRef,
-  timeProgress,
-}: IProgressBarProps) => {
+const ProgressBar = ({ progressBarRef, audioRef, timeProgress }: IProgressBarProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const playingSongCurrentTime = useSelector(
-    (state: IGuessThatSongSlice) =>
-      state.guessThatSongState.playingSongCurrentTime
+    (state: IGuessThatSongSlice) => state.guessThatSongState.playingSongCurrentTime
   );
 
   const handleProgressChange = () => {
-    let songCurrentTime: string | undefined = String(
-      audioRef.current?.currentTime
-    );
+    let songCurrentTime: string | undefined = String(audioRef.current?.currentTime);
     // dispatch(guessThatSongActions.setPlayingSongCurrentTime(100));
-    if (
-      audioRef.current?.currentTime &&
-      progressBarRef.current?.value &&
-      playingSongCurrentTime
-    ) {
+    if (audioRef.current?.currentTime && progressBarRef.current?.value && playingSongCurrentTime) {
       console.log(Number(progressBarRef.current.value) / 100);
 
       console.log(audioRef.current.currentTime);
@@ -63,9 +49,7 @@ const ProgressBar = ({
         </h1> */}
         <div>
           {" "}
-          <span className="time current">
-            {formatTime(playingSongCurrentTime)}
-          </span>
+          <span className="time current">{formatTime(playingSongCurrentTime)}</span>
         </div>
         <div
           style={{
@@ -77,12 +61,8 @@ const ProgressBar = ({
             className=" w-full song-slider"
             ref={progressBarRef}
             type="range"
-            defaultValue="0"
-            value={
-              audioRef.current?.currentTime
-                ? audioRef.current.currentTime * 100
-                : 0
-            }
+            // defaultValue="0"
+            value={audioRef.current?.currentTime ? audioRef.current.currentTime * 100 : 0}
             min="0"
             max={duration ? duration * 100 : 0}
             onChange={handleProgressChange}

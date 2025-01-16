@@ -19,33 +19,41 @@ const QuestionsButtons = ({ questionNumber }: IQuestionsButtonsProps) => {
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.updatedQuestionNumber
   );
 
+  const updateQuestionStatus = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.gameIsBeingUpdated
+  );
+
+  console.log(updateQuestionStatus);
+
   const updateQuestionHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     dispatch(GTSCreateGameActions.setGameIsBeingUpdated(true));
     dispatch(GTSCreateGameActions.setUpdatedQuestionNumber(questionNumber));
   };
   return (
-    <div className="  py-3 shadow-smallShadow rounded-md">
+    <div className=" my-3 py-3 shadow-smallShadow rounded-md">
       <div className=" flex justify-center items-center flex-col">
         <div>
           <h1 className=" text-2xl">
             Вопрос <span>{questionNumber + 1}</span>{" "}
           </h1>
         </div>
-        <div className=" flex justify-center items-center gap-4 flex-col sm:flex-row py-2">
-          <div
-            onClick={updateQuestionHandler}
-            className=" py-3 flex justify-center items-center gap-2 cursor-pointer w-full px-4 hover:scale-105 duration-200 rounded-lg ease-in hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow
+        {updatedQuestionNumber !== questionNumber && !updateQuestionStatus && (
+          <div className=" flex justify-center items-center gap-4 flex-col sm:flex-row py-2">
+            <div
+              onClick={updateQuestionHandler}
+              className=" py-3 flex justify-center items-center gap-2 cursor-pointer w-full px-4 hover:scale-105 duration-200 rounded-lg ease-in hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-200 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow
 "
-          >
-            <FontAwesomeIcon className=" pr-2" icon={faPencil} />
-            <h1>Редактировать</h1>
+            >
+              <FontAwesomeIcon className=" pr-2" icon={faPencil} />
+              <h1>Редактировать</h1>
+            </div>
+            <div className=" py-3 flex justify-center items-center gap-2 cursor-pointer  px-4  hover:scale-105 duration-200 rounded-lg ease-in hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-red-400 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadowflex">
+              <FontAwesomeIcon className=" pr-2" icon={faTrash} />
+              <h1>Удалить</h1>
+            </div>
           </div>
-          <div className=" py-3 flex justify-center items-center gap-2 cursor-pointer  px-4  hover:scale-105 duration-200 rounded-lg ease-in hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-red-400 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadowflex">
-            <FontAwesomeIcon className=" pr-2" icon={faTrash} />
-            <h1>Удалить</h1>
-          </div>
-        </div>
+        )}
         {questionISBeingUpdated && updatedQuestionNumber === questionNumber && (
           //   <UpdateQuestionMain></UpdateQuestionMain>
           <UpdateQuestion></UpdateQuestion>

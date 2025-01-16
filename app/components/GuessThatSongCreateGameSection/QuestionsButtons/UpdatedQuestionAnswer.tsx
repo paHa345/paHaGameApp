@@ -11,21 +11,7 @@ interface IGTSAnswerProps {
 }
 const UpdatedQuestionAnswer = ({ index }: IGTSAnswerProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const [answer, setAnswer] = useState("");
 
-  const changeAnswerHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAnswer(e.currentTarget.value);
-    dispatch(
-      GTSCreateGameActions.setCurrentQuestionAnswer({
-        index: index,
-        text: e.currentTarget.value,
-      })
-    );
-    console.log(currentQuestion);
-  };
-  const currentCorrectAnswer = useSelector(
-    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.currentQuestion?.correctAnswerIndex
-  );
   const currentQuestion = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.currentQuestion
   );
@@ -37,23 +23,35 @@ const UpdatedQuestionAnswer = ({ index }: IGTSAnswerProps) => {
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.updatedQuestionNumber
   );
 
-  if (
-    currentGTSGame !== undefined &&
-    currentUpdatedQuestion !== undefined &&
-    currentGTSGame[currentUpdatedQuestion].answersArr !== undefined
-  ) {
-    console.log(currentGTSGame[currentUpdatedQuestion].answersArr[index]);
-  }
-
-  const setAnswerIsCorrect = (e: React.MouseEvent<HTMLDivElement>) => {
+  const updateAnswerHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    console.log(index);
-    dispatch(GTSCreateGameActions.setCorrectAnswerIndex(index));
+    console.log(e.currentTarget.value);
+    if (currentUpdatedQuestion !== undefined) {
+      dispatch(
+        GTSCreateGameActions.updateAnswerText({
+          updatedAnswer: currentUpdatedQuestion,
+          text: e.currentTarget.value,
+          index: index,
+        })
+      );
+    }
   };
+
+  const updateAnswerIsCorrectHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    dispatch(
+      GTSCreateGameActions.updateCorrectAnswerNumber({
+        updatedAnswer: currentUpdatedQuestion,
+        correctAnswerIndex: index,
+      })
+    );
+  };
+
   return (
     <div className=" py-3 flex justify-center items-center">
-      <div onClick={setAnswerIsCorrect} className=" cursor-pointer hover:scale-110">
-        {currentCorrectAnswer === index ? (
+      <div onClick={updateAnswerIsCorrectHandler} className=" cursor-pointer hover:scale-110">
+        {currentUpdatedQuestion !== undefined &&
+        currentGTSGame[currentUpdatedQuestion].correctAnswerIndex === index ? (
           <FontAwesomeIcon className=" pr-2" icon={faCircleCheck} />
         ) : (
           <FontAwesomeIcon className=" pr-2" icon={faCheck} />
@@ -61,7 +59,12 @@ const UpdatedQuestionAnswer = ({ index }: IGTSAnswerProps) => {
       </div>
 
       <div
-        className={` ${currentCorrectAnswer === index ? " bg-lime-200" : ""} px-3 border-2 border-solid rounded-md border-cyan-900`}
+        className={` ${
+          currentUpdatedQuestion !== undefined &&
+          currentGTSGame[currentUpdatedQuestion].correctAnswerIndex === index
+            ? " bg-lime-200"
+            : ""
+        } px-3 border-2 border-solid rounded-md border-cyan-900`}
       >
         {currentQuestion?.answersArr && (
           <input
@@ -77,7 +80,7 @@ const UpdatedQuestionAnswer = ({ index }: IGTSAnswerProps) => {
                 ? currentGTSGame[currentUpdatedQuestion].answersArr[index].text
                 : ""
             }
-            onChange={changeAnswerHandler}
+            onChange={updateAnswerHandler}
           />
         )}
       </div>
