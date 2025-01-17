@@ -195,47 +195,47 @@ const Header = () => {
               </Link>
             </div>
             {(telegramUser?.id === 363304587 || telegramUser?.id === 777777) && (
-            <div>
-              {session.data && (
-                <div>
-                  <Link
-                    href="/my"
-                    className="  hover:text-slate-500 text-2xl text-headerButtonColor transition duration-800 ease-out "
-                  >
-                    <FontAwesomeIcon
-                      className={` ${path === "/login" || path === "/my" ? "text-slate-500 scale-125" : ""} transition-all hover:scale-110 hover:text-slate-500 duration-500 fa-2x`}
-                      icon={faIdCard}
-                    />
-                    <p
-                      className={`  ${path === "/login" || path === "/my" ? "hidden" : ""} text-center text-sm font-semibold`}
+              <div>
+                {session.data && (
+                  <div>
+                    <Link
+                      href="/my"
+                      className="  hover:text-slate-500 text-2xl text-headerButtonColor transition duration-800 ease-out "
                     >
-                      ЛК
-                    </p>{" "}
-                  </Link>
-                </div>
-              )}
+                      <FontAwesomeIcon
+                        className={` ${path === "/login" || path === "/my" ? "text-slate-500 scale-125" : ""} transition-all hover:scale-110 hover:text-slate-500 duration-500 fa-2x`}
+                        icon={faIdCard}
+                      />
+                      <p
+                        className={`  ${path === "/login" || path === "/my" ? "hidden" : ""} text-center text-sm font-semibold`}
+                      >
+                        ЛК
+                      </p>{" "}
+                    </Link>
+                  </div>
+                )}
 
-              {!session.data && (
-                <div>
-                  {" "}
-                  <Link
-                    href="/login"
-                    className="  hover:text-slate-500 text-2xl text-headerButtonColor transition duration-800 ease-out "
-                  >
-                    <FontAwesomeIcon
-                      className={` ${path === "/login" || path === "/my" ? "text-slate-500 scale-125" : ""} transition-all hover:scale-110 hover:text-slate-500 duration-500 fa-2x`}
-                      icon={faUser}
-                    />
-                    <p
-                      className={`  ${path === "/login" || path === "/my" ? "hidden" : ""} text-center text-sm font-semibold`}
+                {!session.data && (
+                  <div>
+                    {" "}
+                    <Link
+                      href="/login"
+                      className="  hover:text-slate-500 text-2xl text-headerButtonColor transition duration-800 ease-out "
                     >
-                      ЛК
-                    </p>{" "}
-                  </Link>
-                </div>
-              )}
-            </div>
-             )}
+                      <FontAwesomeIcon
+                        className={` ${path === "/login" || path === "/my" ? "text-slate-500 scale-125" : ""} transition-all hover:scale-110 hover:text-slate-500 duration-500 fa-2x`}
+                        icon={faUser}
+                      />
+                      <p
+                        className={`  ${path === "/login" || path === "/my" ? "hidden" : ""} text-center text-sm font-semibold`}
+                      >
+                        ЛК
+                      </p>{" "}
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </nav>
       </header>
