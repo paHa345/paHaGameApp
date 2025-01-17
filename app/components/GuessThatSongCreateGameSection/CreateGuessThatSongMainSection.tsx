@@ -8,6 +8,7 @@ import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import GTSAddSongQuestionSectionMain from "./GTSAddSongQuectionSection/GTSAddSongQuestionSectionMain";
 import QuestionsButtons from "./QuestionsButtons/QuestionsButtons";
+import DeleteGTSQuestionModalMain from "./DeleteQuestionSection/DeleteQuestionModalMain";
 
 const GuessThatSongCreateGameMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -22,6 +23,10 @@ const GuessThatSongCreateGameMain = () => {
   );
   const currentGameAdded = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.createdGTSGame
+  );
+
+  const deleteQuestionStatus = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.deleteQuestionStatus
   );
 
   const changeGameValue = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,7 +45,12 @@ const GuessThatSongCreateGameMain = () => {
   };
 
   const addedQuestionsButtonsEl = currentGameAdded?.map((question, index) => {
-    return <QuestionsButtons questionNumber={index} key={`${question.songURL}_${index}`} />;
+    return (
+      <QuestionsButtons
+        questionNumber={index}
+        key={`${question.songURL}_${index}_${question.answersArr[0]}_${question.answersArr[1]}_${question.answersArr[2]}`}
+      />
+    );
   });
 
   return (
@@ -80,6 +90,8 @@ const GuessThatSongCreateGameMain = () => {
         {currentGameAdded && addedQuestionsButtonsEl}
         <div></div>
       </div>
+
+      {deleteQuestionStatus && <DeleteGTSQuestionModalMain></DeleteGTSQuestionModalMain>}
 
       {gameIsBeingCreated && <GTSAddSongQuestionSectionMain></GTSAddSongQuestionSectionMain>}
     </div>

@@ -70,11 +70,19 @@ const UpdateQuestion = () => {
   return (
     <div className=" flex justify-center items-center flex-col w-11/12">
       <h1 className=" text-2xl text-center py-3"> Редактирование вопроса</h1>
-      <div>
-        <UploadSongMain></UploadSongMain>
-      </div>
+      <div className="my-3 py-2 px-2 flex justify-center items-center flex-col shadow-smallShadow w-full">
+        <div>
+          <div className=" py-3">
+            {" "}
+            <h1 className=" text-center text-2xl">Редактирование песни</h1>
+          </div>
+        </div>
+        <div>
+          <UploadSongMain></UploadSongMain>
+        </div>
 
-      <UpdatedQuestionSong></UpdatedQuestionSong>
+        <UpdatedQuestionSong></UpdatedQuestionSong>
+      </div>
 
       <div>
         <h1 className=" text-center text-2xl">Варианты ответов</h1>

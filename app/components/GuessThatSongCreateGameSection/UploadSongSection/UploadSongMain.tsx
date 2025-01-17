@@ -73,7 +73,20 @@ const UploadSongMain = () => {
       setSongURL(() => {
         return newBlob.url;
       });
-      dispatch(GTSCreateGameActions.setSongURL(newBlob.url));
+
+      console.log(updateQuestionStatus);
+
+      if (updateQuestionStatus) {
+        console.log("updated");
+        dispatch(
+          GTSCreateGameActions.updateQuestionSongURL({
+            updatedQuestion: updatedQuestionNumber,
+            songURL: newBlob.url,
+          })
+        );
+      } else {
+        dispatch(GTSCreateGameActions.setSongURL(newBlob.url));
+      }
     } catch (error: any) {
       console.log(error.message);
     }
@@ -82,12 +95,7 @@ const UploadSongMain = () => {
   return (
     <div>
       {/* <h1 className=" text-center text-3xl py-8">Угадай мелодию</h1> */}
-      {updateQuestionStatus && (
-        <div>
-          {" "}
-          <h1>Редактирование песни</h1>
-        </div>
-      )}
+
       <input name="file" onChange={changeImageHandler} ref={inputFileRef} type="file" required />
       {addedSongURL && (
         <div className=" sm:w-2/5 w-4/5 justify-self-center pt-5 pb-5">

@@ -23,12 +23,14 @@ const QuestionsButtons = ({ questionNumber }: IQuestionsButtonsProps) => {
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.gameIsBeingUpdated
   );
 
-  console.log(updateQuestionStatus);
-
   const updateQuestionHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     dispatch(GTSCreateGameActions.setGameIsBeingUpdated(true));
     dispatch(GTSCreateGameActions.setUpdatedQuestionNumber(questionNumber));
+  };
+  const showDeleteQuestionModalHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    dispatch(GTSCreateGameActions.setDeleteQuestionStatus(true));
   };
   return (
     <div className=" my-3 py-3 shadow-smallShadow rounded-md">
@@ -48,7 +50,10 @@ const QuestionsButtons = ({ questionNumber }: IQuestionsButtonsProps) => {
               <FontAwesomeIcon className=" pr-2" icon={faPencil} />
               <h1>Редактировать</h1>
             </div>
-            <div className=" py-3 flex justify-center items-center gap-2 cursor-pointer  px-4  hover:scale-105 duration-200 rounded-lg ease-in hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-red-400 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadowflex">
+            <div
+              onClick={showDeleteQuestionModalHandler}
+              className=" py-3 flex justify-center items-center gap-2 cursor-pointer  px-4  hover:scale-105 duration-200 rounded-lg ease-in hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-red-400 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadowflex"
+            >
               <FontAwesomeIcon className=" pr-2" icon={faTrash} />
               <h1>Удалить</h1>
             </div>

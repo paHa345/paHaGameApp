@@ -7,6 +7,7 @@ export interface IGTSCreateGameSlice {
     gameIsBeingCreated: boolean;
     gameIsBeingUpdated: boolean;
     updatedQuestionNumber?: number;
+    deleteQuestionStatus: boolean;
 
     currentAddedSong?: number;
     currentQuestion?: {
@@ -28,6 +29,7 @@ interface IGTSCreateGameState {
   gameIsBeingCreated: boolean;
   gameIsBeingUpdated: boolean;
   updatedQuestionNumber?: number;
+  deleteQuestionStatus: boolean;
 
   currentAddedSong?: number;
   currentQuestion?: {
@@ -47,6 +49,8 @@ export const initGuessThatSongState: IGTSCreateGameState = {
   createdGameName: "",
   gameIsBeingCreated: false,
   gameIsBeingUpdated: false,
+  deleteQuestionStatus: false,
+
   // currentQuestion: {
   //   answersArr: [{ text: "" }],
   //   correctAnswerIndex: -1,
@@ -109,7 +113,6 @@ export const GTSCreateGameSlice = createSlice({
       }
     },
     setCurrentQuestionAnswer(state, action) {
-      console.log(action.payload);
       const data = { text: action.payload.text };
       if (
         state.currentQuestion?.answersArr &&
@@ -189,7 +192,6 @@ export const GTSCreateGameSlice = createSlice({
         type: string;
       }
     ) {
-      console.log(action);
       const addOrDeleteNumberAnswers = (number: number) => {
         if (number > 0 && state.createdGTSGame[action.payload.updatedQuestion].answersArr) {
           for (let i = 0; i < number; i++) {
@@ -206,6 +208,15 @@ export const GTSCreateGameSlice = createSlice({
         action.payload.setAnswerNumber -
         state.createdGTSGame[action.payload.updatedQuestion].answersArr.length;
       addOrDeleteNumberAnswers(different);
+    },
+    updateQuestionSongURL(state, action) {
+      state.createdGTSGame[action.payload.updatedQuestion].songURL = action.payload.songURL;
+    },
+    setDeleteQuestionStatus(state, action) {
+      state.deleteQuestionStatus = action.payload;
+    },
+    deleteQuestion(state, action) {
+      state.createdGTSGame.splice(action.payload, 1);
     },
   },
   extraReducers(builder) {},

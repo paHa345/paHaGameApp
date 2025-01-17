@@ -355,6 +355,15 @@ export interface IAttemptCrosswordGameSchema {
   }[];
 }
 
+export interface IGTSGameSchema {
+  name: string;
+  userID: string;
+  isCompleted: boolean;
+  isCorrect: boolean;
+  changeDate: Date;
+  GTSGameObj: { songURL: string; correctAnswer: number; answersArr: { text: string }[] }[];
+}
+
 export interface IOneExerciseTypes {
   nameRu: string;
   nameEn: string;
