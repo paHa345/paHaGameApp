@@ -1,7 +1,11 @@
 "use client";
 
 import { AppDispatch } from "@/app/store";
-import { GTSCreateGameActions, IGTSCreateGameSlice } from "@/app/store/GTSCreateGameSlice";
+import {
+  GTSCreateGameActions,
+  GTSCreateGameFetchStatus,
+  IGTSCreateGameSlice,
+} from "@/app/store/GTSCreateGameSlice";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useRef, useState } from "react";
@@ -9,6 +13,8 @@ import { useDispatch, useSelector } from "react-redux";
 import GTSAddSongQuestionSectionMain from "./GTSAddSongQuectionSection/GTSAddSongQuestionSectionMain";
 import QuestionsButtons from "./QuestionsButtons/QuestionsButtons";
 import DeleteGTSQuestionModalMain from "./DeleteQuestionSection/DeleteQuestionModalMain";
+import AddGTSGameButtonMain from "./AddGTSGameSection/AddGTSGameButtonMain";
+import PublicGTSGameMain from "./PublicGTSGameSection/PublicGTSGameMain";
 
 const GuessThatSongCreateGameMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -25,8 +31,16 @@ const GuessThatSongCreateGameMain = () => {
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.createdGTSGame
   );
 
+  console.log(currentGameAdded);
+
   const deleteQuestionStatus = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.deleteQuestionStatus
+  );
+  const uploadGTSGameStatus = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.uploadCurrentGTSGameStatus
+  );
+  const uploadGTSGameErrorMessage = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.uploadCurrentGTSGameErrorMessage
   );
 
   const changeGameValue = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,6 +66,12 @@ const GuessThatSongCreateGameMain = () => {
       />
     );
   });
+
+  const [isChecked, setIsChecked] = useState(false);
+  const handleCheckboxChange = () => {
+    console.log("werwer");
+    setIsChecked(!isChecked);
+  };
 
   return (
     <div className=" pt-8 py-5 min-h-[70vh]">
@@ -90,10 +110,22 @@ const GuessThatSongCreateGameMain = () => {
         {currentGameAdded && addedQuestionsButtonsEl}
         <div></div>
       </div>
-
       {deleteQuestionStatus && <DeleteGTSQuestionModalMain></DeleteGTSQuestionModalMain>}
-
       {gameIsBeingCreated && <GTSAddSongQuestionSectionMain></GTSAddSongQuestionSectionMain>}
+      {!gameIsBeingCreated && currentGameAdded.length > 0 && (
+        <PublicGTSGameMain></PublicGTSGameMain>
+      )}
+      {!gameIsBeingCreated && currentGameAdded.length > 0 && (
+        <AddGTSGameButtonMain></AddGTSGameButtonMain>
+      )}
+      {uploadGTSGameStatus === GTSCreateGameFetchStatus.Error && (
+        <div className=" flex justify-center items-center">
+          <div className=" my-2 w-11/12 py-1 px-3 rounded-lg bg-red-300">
+            <h1 className=" text-center">Ошибка загрузки игры. Повторите попытку позже.</h1>
+            <p className=" text-center"> {uploadGTSGameErrorMessage}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

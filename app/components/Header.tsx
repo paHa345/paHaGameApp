@@ -68,6 +68,7 @@ const Header = () => {
       const userParams = initDataParams.get("user") as any;
       const user = JSON.parse(userParams);
       dispatch(appStateActions.setTelegranUserData(user));
+      console.log(user);
     } else {
       dispatch(
         appStateActions.setTelegranUserData({

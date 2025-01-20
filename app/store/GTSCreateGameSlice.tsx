@@ -1,4 +1,37 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
+export const uploadGTSGameAndUpdateStore = createAsyncThunk(
+  "GTSCreateGameState/uploadGTSGameAndUpdateStore",
+  async function (GTSCreatedGameObj: any, { rejectWithValue, dispatch }) {
+    try {
+      const saveCurrentGTSGameReq = await fetch(`/api/guessThatSong/addGTSGame`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+        },
+        body: JSON.stringify(GTSCreatedGameObj),
+      });
+
+      const data = await saveCurrentGTSGameReq.json();
+
+      // dispatch(crosswordActions.setCrosswordId(data.result._id));
+
+      if (!saveCurrentGTSGameReq.ok) {
+        throw new Error(data.message);
+      }
+    } catch (error: any) {
+      dispatch(GTSCreateGameActions.setUploadCurrentGTSGameErrorMessage(error.message));
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export enum GTSCreateGameFetchStatus {
+  Ready = "ready",
+  Loading = "loading",
+  Resolve = "resolve",
+  Error = "error",
+}
 
 export interface IGTSCreateGameSlice {
   GTSCreateGameState: {
@@ -8,6 +41,9 @@ export interface IGTSCreateGameSlice {
     gameIsBeingUpdated: boolean;
     updatedQuestionNumber?: number;
     deleteQuestionStatus: boolean;
+    uploadCurrentGTSGameStatus: GTSCreateGameFetchStatus;
+    uploadCurrentGTSGameErrorMessage: string;
+    createdGameIsCompleted: boolean;
 
     currentAddedSong?: number;
     currentQuestion?: {
@@ -30,6 +66,9 @@ interface IGTSCreateGameState {
   gameIsBeingUpdated: boolean;
   updatedQuestionNumber?: number;
   deleteQuestionStatus: boolean;
+  uploadCurrentGTSGameStatus: GTSCreateGameFetchStatus;
+  uploadCurrentGTSGameErrorMessage: string;
+  createdGameIsCompleted: boolean;
 
   currentAddedSong?: number;
   currentQuestion?: {
@@ -50,6 +89,9 @@ export const initGuessThatSongState: IGTSCreateGameState = {
   gameIsBeingCreated: false,
   gameIsBeingUpdated: false,
   deleteQuestionStatus: false,
+  uploadCurrentGTSGameStatus: GTSCreateGameFetchStatus.Ready,
+  uploadCurrentGTSGameErrorMessage: "",
+  createdGameIsCompleted: false,
 
   // currentQuestion: {
   //   answersArr: [{ text: "" }],
@@ -218,8 +260,27 @@ export const GTSCreateGameSlice = createSlice({
     deleteQuestion(state, action) {
       state.createdGTSGame.splice(action.payload, 1);
     },
+    setUploadCurrentGTSGameStatus(state, action) {
+      state.uploadCurrentGTSGameStatus = action.payload;
+    },
+    setUploadCurrentGTSGameErrorMessage(state, action) {
+      state.uploadCurrentGTSGameErrorMessage = action.payload;
+    },
+    setCreatedGameIsCompletedStatus(state, action) {
+      state.createdGameIsCompleted = action.payload;
+    },
   },
-  extraReducers(builder) {},
+  extraReducers(builder) {
+    builder.addCase(uploadGTSGameAndUpdateStore.pending, (state) => {
+      state.uploadCurrentGTSGameStatus = GTSCreateGameFetchStatus.Loading;
+    });
+    builder.addCase(uploadGTSGameAndUpdateStore.fulfilled, (state) => {
+      state.uploadCurrentGTSGameStatus = GTSCreateGameFetchStatus.Resolve;
+    });
+    builder.addCase(uploadGTSGameAndUpdateStore.rejected, (state, action) => {
+      state.uploadCurrentGTSGameStatus = GTSCreateGameFetchStatus.Error;
+    });
+  },
 });
 
 export const GTSCreateGameActions = GTSCreateGameSlice.actions;

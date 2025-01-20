@@ -1,3 +1,6 @@
+import { connectMongoDB } from "@/app/libs/MongoConnect";
+import GTSGame from "@/app/models/GTSGameModel";
+import User from "@/app/models/UserModel";
 import { authOptions } from "@/app/utils/authOptions";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -14,7 +17,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "Для данного url только POST запросы" }, { status: 400 });
   }
   try {
-    return NextResponse.json({ message: "Success" }, { status: 200 });
+    await connectMongoDB();
+    const currentUser = await User.findOne({ email: session.user?.email }).select("_id");
+
+    console.log(currentUser);
+
+    const GTSGameBody = await req.json();
+    GTSGameBody.userID = currentUser._id;
+    GTSGameBody.changeDate = new Date(Date.now());
+    console.log(GTSGameBody);
+
+    const addedGTSGame = await GTSGame.create(GTSGameBody);
+
+    return NextResponse.json({ message: "Success", result: addedGTSGame }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ message: error?.message }, { status: 400 });
   }

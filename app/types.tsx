@@ -359,7 +359,7 @@ export interface IGTSGameSchema {
   name: string;
   userID: string;
   isCompleted: boolean;
-  isCorrect: boolean;
+  // isCorrect: boolean;
   changeDate: Date;
   GTSGameObj: { songURL: string; correctAnswer: number; answersArr: { text: string }[] }[];
 }
