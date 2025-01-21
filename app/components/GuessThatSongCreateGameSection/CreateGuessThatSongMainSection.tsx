@@ -31,6 +31,10 @@ const GuessThatSongCreateGameMain = () => {
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.createdGTSGame
   );
 
+  const currentGameID = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.updatedGameID
+  );
+
   console.log(currentGameAdded);
 
   const deleteQuestionStatus = useSelector(
@@ -67,14 +71,9 @@ const GuessThatSongCreateGameMain = () => {
     );
   });
 
-  const [isChecked, setIsChecked] = useState(false);
-  const handleCheckboxChange = () => {
-    console.log("werwer");
-    setIsChecked(!isChecked);
-  };
-
   return (
     <div className=" pt-8 py-5 min-h-[70vh]">
+      <div>{currentGameID && <h1>ID Игры {currentGameID}</h1>}</div>
       <div className=" flex flex-col gap-3 justify-center items-center text-center text-2xl">
         <h1>Укажите количество песен в игре</h1>
         <div className=" border-2 border-solid rounded-md border-cyan-900 w-20">

@@ -18,16 +18,22 @@ export async function POST(req: NextRequest) {
   }
   try {
     await connectMongoDB();
-    const currentUser = await User.findOne({ email: session.user?.email }).select("_id");
-
-    console.log(currentUser);
 
     const GTSGameBody = await req.json();
-    GTSGameBody.userID = currentUser._id;
-    GTSGameBody.changeDate = new Date(Date.now());
-    console.log(GTSGameBody);
+    let addedGTSGame = 8;
+    if (GTSGameBody.gameID) {
+      console.log("Update Game in DB");
+      console.log(GTSGameBody);
+      // тут нужно вернуть объект и записать его в addedGTSGame
+    } else {
+      const currentUser = await User.findOne({ email: session.user?.email }).select("_id");
 
-    const addedGTSGame = await GTSGame.create(GTSGameBody);
+      GTSGameBody.userID = currentUser._id;
+      GTSGameBody.changeDate = new Date(Date.now());
+      console.log(GTSGameBody);
+
+      addedGTSGame = await GTSGame.create(GTSGameBody);
+    }
 
     return NextResponse.json({ message: "Success", result: addedGTSGame }, { status: 200 });
   } catch (error: any) {

@@ -10,12 +10,26 @@ const GTSGameSchema = new mongoose.Schema<IGTSGameSchema>({
   GTSGameObj: [
     {
       songURL: { type: String, required: true },
-      correctAnswer: { type: Number, required: true },
+      correctAnswerIndex: { type: Number, required: true },
       answersArr: [{ text: { type: String, required: true } }],
     },
   ],
 });
 
+//уникальное имя, проверяет все документы в коллекции
+// и если есть с таким же полем name то будет ошибка загрузки
+GTSGameSchema.pre("save", { document: true, query: false }, async function (doc, next) {
+  console.log(` Coach ${this.name}`);
+  const IsGTSGameInDB = await mongoose.model("GTSGame").findOne({ name: this.name });
+
+  console.log(IsGTSGameInDB);
+  if (IsGTSGameInDB) {
+    throw new Error("Игра с таким именем уже существует. Измените имя");
+  }
+});
+GTSGameSchema.index({ name: 1 }, { unique: true });
+
+//тут "GTSGames" это имя коллекции в базе данных
 const GTSGame =
   mongoose.models.GTSGame || mongoose.model<IGTSGameSchema>("GTSGame", GTSGameSchema, "GTSGames");
 

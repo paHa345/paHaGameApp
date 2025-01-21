@@ -16,6 +16,9 @@ const AddGTSGameButtonMain = () => {
   const currentGTSGame = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.createdGTSGame
   );
+  const gameID = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.updatedGameID
+  );
   const addedCurrentGTSGameName = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.createdGameName
   );
@@ -23,20 +26,21 @@ const AddGTSGameButtonMain = () => {
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.createdGameIsCompleted
   );
   const addGTSGameHandler = () => {
-    console.log(currentGTSGame);
+    console.log(gameID);
     dispatch(
       uploadGTSGameAndUpdateStore({
-        name: addedCurrentGTSGameName,
-        GTSGameObj: currentGTSGame,
-        isCompleted: gameIsCompletedStatus,
+        gameID: gameID,
+        currentGame: {
+          name: addedCurrentGTSGameName,
+          GTSGameObj: currentGTSGame,
+          isCompleted: gameIsCompletedStatus,
+        },
       })
     );
   };
   const uploadGTSGameStatus = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.uploadCurrentGTSGameStatus
   );
-
-  console.log(uploadGTSGameStatus);
 
   useEffect(() => {
     if (

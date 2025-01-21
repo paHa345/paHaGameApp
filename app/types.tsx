@@ -361,7 +361,7 @@ export interface IGTSGameSchema {
   isCompleted: boolean;
   // isCorrect: boolean;
   changeDate: Date;
-  GTSGameObj: { songURL: string; correctAnswer: number; answersArr: { text: string }[] }[];
+  GTSGameObj: { songURL: string; correctAnswerIndex: number; answersArr: { text: string }[] }[];
 }
 
 export interface IOneExerciseTypes {

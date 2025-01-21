@@ -20,7 +20,7 @@ const execiseSchema = new mongoose.Schema<IExerciseSchema>({
   avgUsersRaiting: { type: String, required: false },
 });
 
-execiseSchema.index({ id: 1, name: 1 }, { unique: true });
+execiseSchema.index({ id: 1, name: 1 });
 
 // execiseSchema.pre("find", (next, docs) => {
 //   console.log(`Pre find hook this ${docs}`);

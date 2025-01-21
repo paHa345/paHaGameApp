@@ -4,12 +4,16 @@ export const uploadGTSGameAndUpdateStore = createAsyncThunk(
   "GTSCreateGameState/uploadGTSGameAndUpdateStore",
   async function (GTSCreatedGameObj: any, { rejectWithValue, dispatch }) {
     try {
+      console.log(GTSCreatedGameObj);
+      if (GTSCreatedGameObj.gameID) {
+        GTSCreatedGameObj.currentGame.gameID = GTSCreatedGameObj.gameID;
+      }
       const saveCurrentGTSGameReq = await fetch(`/api/guessThatSong/addGTSGame`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json;charset=utf-8",
         },
-        body: JSON.stringify(GTSCreatedGameObj),
+        body: JSON.stringify(GTSCreatedGameObj.currentGame),
       });
 
       const data = await saveCurrentGTSGameReq.json();
@@ -19,7 +23,10 @@ export const uploadGTSGameAndUpdateStore = createAsyncThunk(
       if (!saveCurrentGTSGameReq.ok) {
         throw new Error(data.message);
       }
+
+      dispatch(GTSCreateGameActions.setUpdatedGameID(data.result._id));
     } catch (error: any) {
+      console.log(error);
       dispatch(GTSCreateGameActions.setUploadCurrentGTSGameErrorMessage(error.message));
       return rejectWithValue(error.message);
     }
@@ -35,6 +42,7 @@ export enum GTSCreateGameFetchStatus {
 
 export interface IGTSCreateGameSlice {
   GTSCreateGameState: {
+    updatedGameID?: string;
     createdGgameValue: number;
     createdGameName: string;
     gameIsBeingCreated: boolean;
@@ -62,6 +70,8 @@ export interface IGTSCreateGameSlice {
 interface IGTSCreateGameState {
   createdGgameValue: number;
   createdGameName: string;
+  updatedGameID?: string;
+
   gameIsBeingCreated: boolean;
   gameIsBeingUpdated: boolean;
   updatedQuestionNumber?: number;
@@ -268,6 +278,9 @@ export const GTSCreateGameSlice = createSlice({
     },
     setCreatedGameIsCompletedStatus(state, action) {
       state.createdGameIsCompleted = action.payload;
+    },
+    setUpdatedGameID(state, action) {
+      state.updatedGameID = action.payload;
     },
   },
   extraReducers(builder) {
