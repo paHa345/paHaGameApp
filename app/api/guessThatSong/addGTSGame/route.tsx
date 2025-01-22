@@ -20,11 +20,14 @@ export async function POST(req: NextRequest) {
     await connectMongoDB();
 
     const GTSGameBody = await req.json();
-    let addedGTSGame = 8;
+    let addedGTSGame;
     if (GTSGameBody.gameID) {
       console.log("Update Game in DB");
       console.log(GTSGameBody);
       // тут нужно вернуть объект и записать его в addedGTSGame
+      addedGTSGame = await GTSGame.findByIdAndUpdate(GTSGameBody.gameID, GTSGameBody, {
+        new: true,
+      });
     } else {
       const currentUser = await User.findOne({ email: session.user?.email }).select("_id");
 

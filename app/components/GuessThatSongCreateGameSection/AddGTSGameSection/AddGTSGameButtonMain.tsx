@@ -74,7 +74,7 @@ const AddGTSGameButtonMain = () => {
           uploadGTSGameStatus === GTSCreateGameFetchStatus.Resolve) && (
           <FontAwesomeIcon className=" pr-2 fa-spin" icon={faSpinner} />
         )}
-        <h1>Загрузить игру</h1>
+        <h1>Сохранить игру</h1>
       </div>
     </div>
   );

@@ -33,6 +33,46 @@ export const uploadGTSGameAndUpdateStore = createAsyncThunk(
   }
 );
 
+export const downloadCurrentUserAllGTSGame = createAsyncThunk(
+  "GTSCreateGameState/downloadCurrentUserAllGTSGame",
+  async function (_, { rejectWithValue, dispatch }) {
+    try {
+      const currentUserGTSGameReq = await fetch(`/api/guessThatSong/getCurrentUserAllGames`);
+      if (!currentUserGTSGameReq.ok) {
+        throw new Error("Ошибка сервера");
+      }
+      const GTSGames = await currentUserGTSGameReq.json();
+      dispatch(GTSCreateGameActions.setCurrentUserDownloadedAllGTSGame(GTSGames.result));
+    } catch (error: any) {
+      console.log(error);
+      dispatch(GTSCreateGameActions.setdownloadCurrentUserAllGTSGameStatus(error.message));
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const downloadCurrentUserGTSGameAndAddInState = createAsyncThunk(
+  "GTSCreateGameState/downloadCurrentUserGTSGameAndAddInState",
+  async function (GTSGameID, { rejectWithValue, dispatch }) {
+    try {
+      const currentUserGTSGameReq = await fetch(
+        `/api/guessThatSong/getCurrentUserGTSGame/${GTSGameID}`
+      );
+      if (!currentUserGTSGameReq.ok) {
+        throw new Error("Ошибка сервера");
+      }
+      const GTSGames = await currentUserGTSGameReq.json();
+      // dispatch(GTSCreateGameActions.setCurrentUserDownloadedAllGTSGame(GTSGames.result));
+    } catch (error: any) {
+      console.log(error);
+      dispatch(
+        GTSCreateGameActions.downloadCurrentUserGTSGameAndAddInStateErrorMessage(error.message)
+      );
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export enum GTSCreateGameFetchStatus {
   Ready = "ready",
   Loading = "loading",
@@ -52,7 +92,19 @@ export interface IGTSCreateGameSlice {
     uploadCurrentGTSGameStatus: GTSCreateGameFetchStatus;
     uploadCurrentGTSGameErrorMessage: string;
     createdGameIsCompleted: boolean;
+    showDownloadModalStatus: boolean;
+    currentUserDownloadedAllGTSGame?: {
+      _id: string;
+      name: string;
+      userID: string;
+      changeDate: Date;
+      isCompleted: boolean;
+    }[];
 
+    downloadCurrentUserAllGTSGameStatus: GTSCreateGameFetchStatus;
+    downloadCurrentUserAllGTSGameErrorMessage: string;
+    downloadCurrentUserGTSGameAndAddInStateStatus: GTSCreateGameFetchStatus;
+    downloadCurrentUserGTSGameAndAddInStateErrorMessage: string;
     currentAddedSong?: number;
     currentQuestion?: {
       answersArr?: { text: string }[];
@@ -79,6 +131,20 @@ interface IGTSCreateGameState {
   uploadCurrentGTSGameStatus: GTSCreateGameFetchStatus;
   uploadCurrentGTSGameErrorMessage: string;
   createdGameIsCompleted: boolean;
+  showDownloadModalStatus: boolean;
+
+  currentUserDownloadedAllGTSGame?: {
+    _id: string;
+    name: string;
+    userID: string;
+    changeDate: Date;
+    isCompleted: boolean;
+  }[];
+
+  downloadCurrentUserAllGTSGameStatus: GTSCreateGameFetchStatus;
+  downloadCurrentUserAllGTSGameErrorMessage: string;
+  downloadCurrentUserGTSGameAndAddInStateStatus: GTSCreateGameFetchStatus;
+  downloadCurrentUserGTSGameAndAddInStateErrorMessage: string;
 
   currentAddedSong?: number;
   currentQuestion?: {
@@ -99,9 +165,17 @@ export const initGuessThatSongState: IGTSCreateGameState = {
   gameIsBeingCreated: false,
   gameIsBeingUpdated: false,
   deleteQuestionStatus: false,
+  showDownloadModalStatus: false,
+
   uploadCurrentGTSGameStatus: GTSCreateGameFetchStatus.Ready,
   uploadCurrentGTSGameErrorMessage: "",
   createdGameIsCompleted: false,
+
+  downloadCurrentUserAllGTSGameStatus: GTSCreateGameFetchStatus.Ready,
+  downloadCurrentUserAllGTSGameErrorMessage: "",
+
+  downloadCurrentUserGTSGameAndAddInStateStatus: GTSCreateGameFetchStatus.Ready,
+  downloadCurrentUserGTSGameAndAddInStateErrorMessage: "",
 
   // currentQuestion: {
   //   answersArr: [{ text: "" }],
@@ -282,16 +356,52 @@ export const GTSCreateGameSlice = createSlice({
     setUpdatedGameID(state, action) {
       state.updatedGameID = action.payload;
     },
+    setDownloadModalStatus(state, action) {
+      state.showDownloadModalStatus = action.payload;
+    },
+    setCurrentUserDownloadedAllGTSGame(state, action) {
+      state.currentUserDownloadedAllGTSGame = action.payload;
+    },
+    setdownloadCurrentUserAllGTSGameStatus(state, action) {
+      state.downloadCurrentUserAllGTSGameStatus = action.payload;
+    },
+    downloadCurrentUserAllGTSGameErrorMessage(state, action) {
+      state.downloadCurrentUserAllGTSGameErrorMessage = action.payload;
+    },
+    setDownloadCurrentUserGTSGameAndAddInStateStatus(state, action) {
+      state.downloadCurrentUserGTSGameAndAddInStateStatus = action.payload;
+    },
+    downloadCurrentUserGTSGameAndAddInStateErrorMessage(state, action) {
+      state.downloadCurrentUserGTSGameAndAddInStateErrorMessage = action.payload;
+    },
   },
   extraReducers(builder) {
     builder.addCase(uploadGTSGameAndUpdateStore.pending, (state) => {
       state.uploadCurrentGTSGameStatus = GTSCreateGameFetchStatus.Loading;
     });
+    builder.addCase(downloadCurrentUserAllGTSGame.pending, (state) => {
+      state.downloadCurrentUserAllGTSGameStatus = GTSCreateGameFetchStatus.Loading;
+    });
+    builder.addCase(downloadCurrentUserGTSGameAndAddInState.pending, (state) => {
+      state.downloadCurrentUserGTSGameAndAddInStateStatus = GTSCreateGameFetchStatus.Loading;
+    });
     builder.addCase(uploadGTSGameAndUpdateStore.fulfilled, (state) => {
       state.uploadCurrentGTSGameStatus = GTSCreateGameFetchStatus.Resolve;
     });
+    builder.addCase(downloadCurrentUserAllGTSGame.fulfilled, (state) => {
+      state.downloadCurrentUserAllGTSGameStatus = GTSCreateGameFetchStatus.Resolve;
+    });
+    builder.addCase(downloadCurrentUserGTSGameAndAddInState.fulfilled, (state) => {
+      state.downloadCurrentUserGTSGameAndAddInStateStatus = GTSCreateGameFetchStatus.Resolve;
+    });
     builder.addCase(uploadGTSGameAndUpdateStore.rejected, (state, action) => {
       state.uploadCurrentGTSGameStatus = GTSCreateGameFetchStatus.Error;
+    });
+    builder.addCase(downloadCurrentUserAllGTSGame.rejected, (state, action) => {
+      state.downloadCurrentUserAllGTSGameStatus = GTSCreateGameFetchStatus.Error;
+    });
+    builder.addCase(downloadCurrentUserGTSGameAndAddInState.rejected, (state, action) => {
+      state.downloadCurrentUserGTSGameAndAddInStateStatus = GTSCreateGameFetchStatus.Error;
     });
   },
 });
