@@ -1,4 +1,14 @@
+import { AppDispatch } from "@/app/store";
+import {
+  downloadCurrentUserGTSGameAndAddInState,
+  GTSCreateGameActions,
+  GTSCreateGameFetchStatus,
+  IGTSCreateGameSlice,
+} from "@/app/store/GTSCreateGameSlice";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 interface IGTSGameProps {
   GTSGame: {
@@ -11,8 +21,29 @@ interface IGTSGameProps {
 }
 
 const GTSGameCard = ({ GTSGame }: IGTSGameProps) => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const fetchCurrentGTSGameStatus = useSelector(
+    (state: IGTSCreateGameSlice) =>
+      state.GTSCreateGameState.downloadCurrentUserGTSGameAndAddInStateStatus
+  );
+
+  const fetchCurrentGTSGameErrorMessage = useSelector(
+    (state: IGTSCreateGameSlice) =>
+      state.GTSCreateGameState.downloadCurrentUserGTSGameAndAddInStateErrorMessage
+  );
+  const fetchingGTSGameID = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.downloadedCurrentUserGTSGameID
+  );
+
+  const loadGTSGameHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    console.log(GTSGame._id);
+    dispatch(downloadCurrentUserGTSGameAndAddInState(GTSGame._id));
+    // TODO: Load GTS game
+  };
   return (
-    <article className="  transition-shadow px-1 py-1 bg-gradient-to-tr from-secoundaryColor to-slate-200 rounded-lg shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow">
+    <article className=" mb-4  transition-shadow px-1 py-1 bg-gradient-to-tr from-secoundaryColor to-slate-200 rounded-lg shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow">
       <div className=" flex flex-col">
         <div className=" flex flex-col gap-2">
           <div className=" flex justify-center items-center">
@@ -35,11 +66,27 @@ const GTSGameCard = ({ GTSGame }: IGTSGameProps) => {
             </span>
           </div>
         </div>
+        {fetchCurrentGTSGameStatus === GTSCreateGameFetchStatus.Error &&
+          fetchingGTSGameID === GTSGame._id && (
+            <div>
+              <h1>{fetchCurrentGTSGameErrorMessage}</h1>
+            </div>
+          )}
         <button
-          //   onClick={loadCrosswordHandler}
+          disabled={
+            fetchCurrentGTSGameStatus === GTSCreateGameFetchStatus.Loading ||
+            fetchCurrentGTSGameStatus === GTSCreateGameFetchStatus.Error
+              ? true
+              : false
+          }
+          onClick={loadGTSGameHandler}
           className=" py-2 bg-mainColor hover:bg-mainGroupColour rounded-md"
         >
-          Загрузить кроссворд
+          {fetchCurrentGTSGameStatus === GTSCreateGameFetchStatus.Loading &&
+            fetchingGTSGameID === GTSGame._id && (
+              <FontAwesomeIcon className=" mr-4 animate-spin" icon={faSpinner}></FontAwesomeIcon>
+            )}
+          Загрузить
         </button>
       </div>
     </article>

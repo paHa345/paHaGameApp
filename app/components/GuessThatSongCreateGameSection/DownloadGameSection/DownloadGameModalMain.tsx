@@ -28,6 +28,11 @@ const DownloadGameModalMain = () => {
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.currentUserDownloadedAllGTSGame
   );
 
+  const fetchCurrentGTSGameStatus = useSelector(
+    (state: IGTSCreateGameSlice) =>
+      state.GTSCreateGameState.downloadCurrentUserGTSGameAndAddInStateStatus
+  );
+
   const GTSGameCardsEl = downloadedCurrentUserGTSGames?.map((GTSGame) => {
     return <GTSGameCard key={GTSGame._id} GTSGame={GTSGame}></GTSGameCard>;
   });
@@ -40,6 +45,29 @@ const DownloadGameModalMain = () => {
     //   dispatch(crosswordActions.resetCurrentUserCrosswordsArr());
     // };
   }, []);
+
+  useEffect(() => {
+    if (
+      fetchCurrentGTSGameStatus === GTSCreateGameFetchStatus.Error ||
+      fetchCurrentGTSGameStatus === GTSCreateGameFetchStatus.Resolve
+    ) {
+      const timeoutId = setTimeout(() => {
+        dispatch(
+          GTSCreateGameActions.setDownloadCurrentUserGTSGameAndAddInStateStatus(
+            GTSCreateGameFetchStatus.Ready
+          )
+        );
+      }, 5000);
+      return () => {
+        dispatch(
+          GTSCreateGameActions.setDownloadCurrentUserGTSGameAndAddInStateStatus(
+            GTSCreateGameFetchStatus.Ready
+          )
+        );
+      };
+    }
+  }, [fetchCurrentGTSGameStatus]);
+
   return (
     <div className="modal-overlay">
       <div className=" modal-wrapper">

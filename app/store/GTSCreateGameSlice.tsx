@@ -53,16 +53,19 @@ export const downloadCurrentUserAllGTSGame = createAsyncThunk(
 
 export const downloadCurrentUserGTSGameAndAddInState = createAsyncThunk(
   "GTSCreateGameState/downloadCurrentUserGTSGameAndAddInState",
-  async function (GTSGameID, { rejectWithValue, dispatch }) {
+  async function (GTSGameID: string, { rejectWithValue, dispatch }) {
     try {
+      dispatch(GTSCreateGameActions.setDownloadedCurrentUserGTSGameID(GTSGameID));
       const currentUserGTSGameReq = await fetch(
         `/api/guessThatSong/getCurrentUserGTSGame/${GTSGameID}`
       );
       if (!currentUserGTSGameReq.ok) {
-        throw new Error("Ошибка сервера");
+        console.log(currentUserGTSGameReq);
+        throw new Error(`Ошибка сервера:${"Повторите попытку позднее"} `);
       }
-      const GTSGames = await currentUserGTSGameReq.json();
-      // dispatch(GTSCreateGameActions.setCurrentUserDownloadedAllGTSGame(GTSGames.result));
+      const GTSGame = await currentUserGTSGameReq.json();
+      console.log(GTSGame.result);
+      dispatch(GTSCreateGameActions.setDownloadedGTSGameInState(GTSGame.result));
     } catch (error: any) {
       console.log(error);
       dispatch(
@@ -105,6 +108,8 @@ export interface IGTSCreateGameSlice {
     downloadCurrentUserAllGTSGameErrorMessage: string;
     downloadCurrentUserGTSGameAndAddInStateStatus: GTSCreateGameFetchStatus;
     downloadCurrentUserGTSGameAndAddInStateErrorMessage: string;
+    downloadedCurrentUserGTSGameID?: string;
+    addQuestionStatus: boolean;
     currentAddedSong?: number;
     currentQuestion?: {
       answersArr?: { text: string }[];
@@ -132,6 +137,7 @@ interface IGTSCreateGameState {
   uploadCurrentGTSGameErrorMessage: string;
   createdGameIsCompleted: boolean;
   showDownloadModalStatus: boolean;
+  downloadedCurrentUserGTSGameID?: string;
 
   currentUserDownloadedAllGTSGame?: {
     _id: string;
@@ -145,6 +151,7 @@ interface IGTSCreateGameState {
   downloadCurrentUserAllGTSGameErrorMessage: string;
   downloadCurrentUserGTSGameAndAddInStateStatus: GTSCreateGameFetchStatus;
   downloadCurrentUserGTSGameAndAddInStateErrorMessage: string;
+  addQuestionStatus: boolean;
 
   currentAddedSong?: number;
   currentQuestion?: {
@@ -170,6 +177,7 @@ export const initGuessThatSongState: IGTSCreateGameState = {
   uploadCurrentGTSGameStatus: GTSCreateGameFetchStatus.Ready,
   uploadCurrentGTSGameErrorMessage: "",
   createdGameIsCompleted: false,
+  addQuestionStatus: false,
 
   downloadCurrentUserAllGTSGameStatus: GTSCreateGameFetchStatus.Ready,
   downloadCurrentUserAllGTSGameErrorMessage: "",
@@ -373,6 +381,38 @@ export const GTSCreateGameSlice = createSlice({
     },
     downloadCurrentUserGTSGameAndAddInStateErrorMessage(state, action) {
       state.downloadCurrentUserGTSGameAndAddInStateErrorMessage = action.payload;
+    },
+    setDownloadedCurrentUserGTSGameID(state, action) {
+      state.downloadedCurrentUserGTSGameID = action.payload;
+    },
+    setDownloadedGTSGameInState(
+      state,
+      action: {
+        payload: {
+          GTSGameObj: {
+            answersArr: { text: string; _id: string }[];
+            correctAnswerIndex: number;
+            songURL: string;
+            _id: string;
+          }[];
+          changeDate: Date;
+          isCompleted: boolean;
+          name: string;
+          userID: string;
+          _id: string;
+        };
+        type: string;
+      }
+    ) {
+      console.log(action.payload.GTSGameObj.length);
+      state.createdGgameValue = action.payload.GTSGameObj.length;
+      state.createdGameName = action.payload.name;
+      state.createdGameIsCompleted = action.payload.isCompleted;
+      state.createdGTSGame = action.payload.GTSGameObj;
+      state.updatedGameID = action.payload._id;
+    },
+    setAddQuestionStatus(state, action) {
+      state.addQuestionStatus = action.payload;
     },
   },
   extraReducers(builder) {

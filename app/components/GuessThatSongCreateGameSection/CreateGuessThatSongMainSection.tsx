@@ -42,16 +42,22 @@ const GuessThatSongCreateGameMain = () => {
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.showDownloadModalStatus
   );
 
+  const addQuestionStatus = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.addQuestionStatus
+  );
+
   return (
     <div className=" pt-8 py-5 min-h-[70vh]">
       <CrateGTSQuestion></CrateGTSQuestion>
       {showDownloadGTSGameModal && <DownloadGameModalMain></DownloadGameModalMain>}
 
       {deleteQuestionStatus && <DeleteGTSQuestionModalMain></DeleteGTSQuestionModalMain>}
-      {gameIsBeingCreated && <GTSAddSongQuestionSectionMain></GTSAddSongQuestionSectionMain>}
+      {addQuestionStatus && <GTSAddSongQuestionSectionMain></GTSAddSongQuestionSectionMain>}
+      {/* {gameIsBeingCreated && } */}
       {!gameIsBeingCreated && currentGameAdded.length > 0 && (
         <PublicGTSGameMain></PublicGTSGameMain>
       )}
+
       {!gameIsBeingCreated && currentGameAdded.length > 0 && (
         <AddGTSGameButtonMain></AddGTSGameButtonMain>
       )}
