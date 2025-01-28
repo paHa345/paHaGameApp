@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 
+import io from "./../../api/guessThatSong/webSocketServer/route";
+
 const WSTestMain = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -17,16 +19,27 @@ const WSTestMain = () => {
   //   };
 
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:3000/api/guessThatSong/webSocketServer");
+    const socket = new WebSocket(`ws://localhost:3000/api/guessThatSong/webSocketServer`);
 
-    socket.onmessage = (event: any) => {
-      //   setMessages([...messages, event.data]);
-    };
+    socket.addEventListener("open", (event) => {
+      console.log("WebSocket connection opened", event);
+    });
+
+    // socket.send("Hello, server!");
+
+    socket.addEventListener("message", (event) => {
+      const message = event.data;
+      console.log("Received message:", message);
+    });
+
+    socket.addEventListener("close", (event) => {
+      console.log("WebSocket connection closed", event);
+    });
 
     return () => {
       socket.close();
     };
-  }, [messages]);
+  }, []);
 
   return <div>WSTestMain</div>;
 };
