@@ -355,6 +355,15 @@ export interface IAttemptCrosswordGameSchema {
   }[];
 }
 
+export interface IGTSAttemptSchema {
+  telegramUserName?: string;
+  telegramID: number;
+  startDate: Date;
+  GTSGameID: string;
+  timeRemained: number;
+  isCompleted: boolean;
+}
+
 export interface IGTSGameSchema {
   name: string;
   userID: string;
