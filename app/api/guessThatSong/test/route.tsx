@@ -1,7 +1,7 @@
 import GTSGameAttempt from "@/app/models/GTSGameAttemptModel";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url as string);
   const type = searchParams.get("type") || null;
   const amount = parseFloat(searchParams.get("amount") || "0");
