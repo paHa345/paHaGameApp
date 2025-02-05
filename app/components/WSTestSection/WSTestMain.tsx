@@ -11,13 +11,14 @@ const WSTestMain = () => {
   let newEventSource: EventSource;
   const clickSSEHandler = function (this: string, e: React.MouseEvent<HTMLDivElement>) {
     e.preventDefault();
+
     console.log("click");
 
     console.log(newEventSource?.readyState);
 
     if (newEventSource?.readyState !== 1) {
       newEventSource = new EventSource(
-        `http://localhost:3000/api/guessThatSong/test?type=${"type"}&amount=${10}&status=${"start"}`
+        `/api/guessThatSong/test?type=${"type"}&amount=${10}&status=${"start"}`
       );
     }
 
@@ -29,6 +30,7 @@ const WSTestMain = () => {
     newEventSource.onerror = (e) => {
       console.error("SSE error", e);
       newEventSource.close();
+      setEventIsWorking(false);
     };
 
     newEventSource.addEventListener("bye", function () {
@@ -64,14 +66,14 @@ const WSTestMain = () => {
       <h1>WSTestMain</h1>
       <div className=" flex justify-center items-center ">
         <div
-          className={` font-bold text-2xl cursor-pointer bg-lime-300 mx-2 my-2 py-4 px-4 rounded-lg hover:scale-105 hover:text-slate-500`}
+          className={` cursor-pointer font-bold text-2xl  bg-lime-300 mx-2 my-2 py-4 px-4 rounded-lg hover:scale-105 hover:text-slate-500`}
           onClick={clickSSEHandler.bind("start")}
         >
           <h1>Start</h1>
         </div>
 
         <div
-          className={` font-bold text-2xl cursor-pointer bg-red-300 mx-2 my-2 py-4 px-4 rounded-lg hover:scale-105 hover:text-slate-500`}
+          className={` cursor-pointer  font-bold text-2xl bg-red-300 mx-2 my-2 py-4 px-4 rounded-lg hover:scale-105 hover:text-slate-500`}
           onClick={stopSSEHandler.bind("stop")}
         >
           <h1>Stop</h1>
