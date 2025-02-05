@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
 
   let i = 0;
 
-  let timer = setInterval(write, 1000);
+  let timer = setInterval(write, 5000);
   write();
 
   async function write() {
