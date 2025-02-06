@@ -61,26 +61,34 @@ const WSTestMain = () => {
     newEventSource.close();
   };
 
-  const startReadableStreamHandler = async () => {
+  let aborter = new AbortController();
+
+  const startReadableStreamHandler = async function (
+    this: string,
+    e: React.MouseEvent<HTMLDivElement>
+  ) {
+    aborter = new AbortController();
     console.log("Start Readable Stream");
-    const readable = new ReadableStream({
-      start(controller) {
-        controller.enqueue("Hello, Readable Stream!");
-        controller.enqueue("World!");
-        controller.close();
-      },
-    });
+    // const readable = new ReadableStream({
+    //   start(controller) {
+    //     controller.enqueue("Hello, Readable Stream!");
+    //     controller.enqueue("World!");
+    //     controller.close();
+    //   },
+    // });
 
     // const resData = await fetch("/api/readableStreamTest");
     // const data = await resData.json();
     // console.log(data);
 
-    async function readData(url: string) {
+    async function readData(url: string, { signal }: any) {
+      console.log(aborter.signal);
       const response = await fetch(url);
 
       if (response.body) {
         const data: any = response.body;
         for await (const chunk of data) {
+          if (signal.aborted) break;
           // Do something with each "chunk"
           console.log(new TextDecoder().decode(chunk));
         }
@@ -88,7 +96,7 @@ const WSTestMain = () => {
       }
     }
 
-    readData("/api/readableStreamTest");
+    readData("/api/readableStreamTest", { signal: aborter.signal });
 
     // await fetch("/api/readableStreamTest")
     //   .then((response) => response.text()) // Получаем текстовую информацию
@@ -109,6 +117,11 @@ const WSTestMain = () => {
     //   }
     // })();
   };
+
+  const stopRedableStream = () => {
+    aborter.abort();
+  };
+
   return (
     <div>
       {" "}
@@ -130,10 +143,16 @@ const WSTestMain = () => {
       </div>
       <div className=" flex justify-center items-center ">
         <div
-          className={` cursor-pointer font-bold text-2xl  bg-lime-300 mx-2 my-2 py-4 px-4 rounded-lg hover:scale-105 hover:text-slate-500`}
-          onClick={startReadableStreamHandler}
+          className={` text-center cursor-pointer font-bold text-2xl  bg-lime-300 mx-2 my-2 py-4 px-4 rounded-lg hover:scale-105 hover:text-slate-500`}
+          onClick={startReadableStreamHandler.bind("start")}
         >
           <h1>Start Readable Stream</h1>
+        </div>
+        <div
+          className={` text-center  cursor-pointer  font-bold text-2xl bg-red-300 mx-2 my-2 py-4 px-4 rounded-lg hover:scale-105 hover:text-slate-500`}
+          onClick={stopRedableStream}
+        >
+          <h1>Stop Readable Stream</h1>
         </div>
       </div>
     </div>
