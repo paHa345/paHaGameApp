@@ -9,7 +9,7 @@ export const config = {
 // const delay = (ms: any) => new Promise((res) => setTimeout(res, ms));
 
 export const maxDuration = 60;
-export async function POST(req: NextRequest, segmentData: any) {
+export async function GET(req: NextRequest, segmentData: any) {
   try {
     await connectMongoDB();
     const params = await segmentData.params;
