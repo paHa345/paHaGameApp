@@ -7,7 +7,7 @@ export const config = {
 
 const delay = (ms: any) => new Promise((res) => setTimeout(res, ms));
 
-export const maxDuration = 60;
+export const maxDuration = 10;
 export async function GET() {
   const encoder = new TextEncoder();
   await connectMongoDB();
@@ -45,9 +45,13 @@ export async function GET() {
             "679affc8d6353d1c90440870",
             {
               $set: { timeRemained: currentTime - 10 },
+            },
+            {
+              new: true,
             }
-          );
-          controller.enqueue(encoder.encode(`${String(Date.now())}  `));
+          ).select("timeRemained");
+          console.log(updatedGTSGameAttempt.timeRemained);
+          controller.enqueue(encoder.encode(`${String(updatedGTSGameAttempt.timeRemained)}  `));
         } else {
           clearInterval(intervalID);
           controller.close();
