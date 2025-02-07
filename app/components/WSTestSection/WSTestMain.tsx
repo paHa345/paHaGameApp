@@ -74,7 +74,7 @@ const WSTestMain = () => {
       console.log("Srart stream");
       console.log(aborter.signal);
       const response = await fetch(url, {
-        // signal: signal,
+        signal: signal,
         method: "POST",
         headers: { "Content-Type": "text/html; charset=utf-8" },
       });
