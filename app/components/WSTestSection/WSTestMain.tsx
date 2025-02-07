@@ -85,7 +85,7 @@ const WSTestMain = () => {
       }
     }
 
-    readData("/api/guessThatSong/setAttamptTimeRemained/679affc8d6353d1c90440870", {
+    readData("/api/readableStreamTest", {
       signal: aborter.signal,
     });
   };
