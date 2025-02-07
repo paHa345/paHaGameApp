@@ -35,6 +35,7 @@ export async function GET() {
       }, 1000);
 
       async function fetchData() {
+        console.log(readable);
         if (readable.locked) {
           const currentGTSGameAttemptTime = await GTSGameAttempt.findById(
             "679affc8d6353d1c90440870"
