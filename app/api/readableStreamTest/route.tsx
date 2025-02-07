@@ -1,3 +1,4 @@
+import { connectMongoDB } from "@/app/libs/MongoConnect";
 import GTSGameAttempt from "@/app/models/GTSGameAttemptModel";
 
 export const config = {
@@ -6,8 +7,10 @@ export const config = {
 
 const delay = (ms: any) => new Promise((res) => setTimeout(res, ms));
 
+export const maxDuration = 5;
 export async function GET() {
   const encoder = new TextEncoder();
+  await connectMongoDB();
 
   const readable = new ReadableStream({
     async start(controller) {
