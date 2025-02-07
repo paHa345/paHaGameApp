@@ -73,7 +73,11 @@ const WSTestMain = () => {
     async function readData(url: string, { signal }: any) {
       console.log("Srart stream");
       console.log(aborter.signal);
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        // signal: signal,
+        method: "POST",
+        headers: { "Content-Type": "text/html; charset=utf-8" },
+      });
 
       if (response.body) {
         const data: any = response.body;
@@ -82,31 +86,12 @@ const WSTestMain = () => {
           console.log(new TextDecoder().decode(chunk));
         }
         console.log("Finish stream");
-
-        // Exit when done
       }
     }
 
-    readData("/api/readableStreamTest", { signal: aborter.signal });
-
-    // await fetch("/api/readableStreamTest")
-    //   .then((response) => response.text()) // Получаем текстовую информацию
-    //   .then((text) => console.log(text))
-    //   .catch((error) => console.error("Произошла ошибка:", error));
-
-    // if (resData.body) {
-    //   const reader = resData.body.getReader();
-    //   console.log(reader);
-    // }
-    // (async () => {
-    //   while (true) {
-    //     const { done, value } = await reader.read();
-    //     if (done) {
-    //       break;
-    //     }
-    //     console.log(value);
-    //   }
-    // })();
+    readData("/api/guessThatSong/setAttamptTimeRemained/679affc8d6353d1c90440870", {
+      signal: aborter.signal,
+    });
   };
 
   const stopRedableStream = () => {

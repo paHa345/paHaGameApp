@@ -5,9 +5,9 @@ export const config = {
   runtime: "edge",
 };
 
-const delay = (ms: any) => new Promise((res) => setTimeout(res, ms));
+// const delay = (ms: any) => new Promise((res) => setTimeout(res, ms));
 
-export const maxDuration = 10;
+export const maxDuration = 60;
 export async function GET() {
   const encoder = new TextEncoder();
   await connectMongoDB();
