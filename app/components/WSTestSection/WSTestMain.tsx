@@ -73,7 +73,7 @@ const WSTestMain = () => {
     async function readData(url: string, { signal }: any) {
       console.log("Srart stream");
       console.log(aborter.signal);
-      const response = await fetch(url);
+      const response = await fetch(url, signal);
 
       if (response.body) {
         const data: any = response.body;
