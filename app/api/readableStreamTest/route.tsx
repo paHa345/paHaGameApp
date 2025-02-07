@@ -6,6 +6,7 @@ export const config = {
 };
 
 // const delay = (ms: any) => new Promise((res) => setTimeout(res, ms));
+export const maxDuration = 60;
 
 export async function GET() {
   const encoder = new TextEncoder();
