@@ -6,6 +6,8 @@ export const config = {
   runtime: "edge",
 };
 
+export const dynamic = "force-dynamic";
+
 // const delay = (ms: any) => new Promise((res) => setTimeout(res, ms));
 // export const maxDuration = 20;
 
@@ -68,7 +70,6 @@ export async function GET(req: NextRequest) {
                 }
               ).select("timeRemained");
             console.log(updatedGTSGameAttempt.timeRemained);
-            console.log(req.signal);
 
             controller.enqueue(
               encoder.encode(`${String(updatedGTSGameAttempt.timeRemained)}  `)
