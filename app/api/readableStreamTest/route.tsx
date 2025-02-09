@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
             }
           ).select("timeRemained");
           console.log(updatedGTSGameAttempt.timeRemained);
-          console.log(req.signal);
+          console.log(req);
 
           controller.enqueue(
             encoder.encode(`${String(updatedGTSGameAttempt.timeRemained)}  `)
