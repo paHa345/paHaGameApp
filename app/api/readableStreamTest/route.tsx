@@ -16,7 +16,6 @@ export async function GET(req: NextRequest) {
   const readable = new ReadableStream({
     async start(controller) {
       const intervalID = setInterval(async () => {
-        console.log(req.signal);
         // const currentGTSGameAttemptTime = await GTSGameAttempt.findById(
         //   "679affc8d6353d1c90440870"
         // ).select("timeRemained");
@@ -55,7 +54,7 @@ export async function GET(req: NextRequest) {
             }
           ).select("timeRemained");
           console.log(updatedGTSGameAttempt.timeRemained);
-          console.log(req);
+          console.log(req.signal.onabort);
 
           controller.enqueue(
             encoder.encode(`${String(updatedGTSGameAttempt.timeRemained)}  `)
