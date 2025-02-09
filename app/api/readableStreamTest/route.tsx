@@ -18,6 +18,10 @@ export async function GET(req: NextRequest) {
     // cleanup()
   };
 
+  req.signal.addEventListener("abort", () => {
+    console.log("sdfsdf");
+  });
+
   try {
     const encoder = new TextEncoder();
     await connectMongoDB();
