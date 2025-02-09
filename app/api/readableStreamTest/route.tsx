@@ -2,11 +2,11 @@ import { connectMongoDB } from "@/app/libs/MongoConnect";
 import GTSGameAttempt from "@/app/models/GTSGameAttemptModel";
 import { NextRequest, NextResponse } from "next/server";
 
-export const config = {
-  runtime: "edge",
-};
+// export const config = {
+//   runtime: "edge",
+// };
 
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 // const delay = (ms: any) => new Promise((res) => setTimeout(res, ms));
 // export const maxDuration = 20;
