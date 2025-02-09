@@ -23,6 +23,9 @@ export async function GET(req: NextRequest) {
   req.signal.addEventListener("abort", () => {
     console.log("sdfsdf");
   });
+  const responseStream = new TransformStream();
+
+  const writer = responseStream.writable.getWriter();
 
   try {
     const encoder = new TextEncoder();
@@ -70,6 +73,7 @@ export async function GET(req: NextRequest) {
                 }
               ).select("timeRemained");
             console.log(updatedGTSGameAttempt.timeRemained);
+            console.log(writer);
 
             controller.enqueue(
               encoder.encode(`${String(updatedGTSGameAttempt.timeRemained)}  `)
