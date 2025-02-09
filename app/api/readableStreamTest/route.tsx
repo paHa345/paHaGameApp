@@ -1,5 +1,6 @@
 import { connectMongoDB } from "@/app/libs/MongoConnect";
 import GTSGameAttempt from "@/app/models/GTSGameAttemptModel";
+import { NextRequest } from "next/server";
 
 export const config = {
   runtime: "edge",
@@ -8,13 +9,14 @@ export const config = {
 // const delay = (ms: any) => new Promise((res) => setTimeout(res, ms));
 // export const maxDuration = 20;
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const encoder = new TextEncoder();
   await connectMongoDB();
 
   const readable = new ReadableStream({
     async start(controller) {
       const intervalID = setInterval(async () => {
+        console.log(req.signal);
         // const currentGTSGameAttemptTime = await GTSGameAttempt.findById(
         //   "679affc8d6353d1c90440870"
         // ).select("timeRemained");
@@ -40,7 +42,9 @@ export async function GET() {
             "679affc8d6353d1c90440870"
           ).select("timeRemained");
 
-          const currentTime = JSON.parse(JSON.stringify(currentGTSGameAttemptTime.timeRemained));
+          const currentTime = JSON.parse(
+            JSON.stringify(currentGTSGameAttemptTime.timeRemained)
+          );
           const updatedGTSGameAttempt = await GTSGameAttempt.findByIdAndUpdate(
             "679affc8d6353d1c90440870",
             {
@@ -51,7 +55,9 @@ export async function GET() {
             }
           ).select("timeRemained");
           console.log(updatedGTSGameAttempt.timeRemained);
-          controller.enqueue(encoder.encode(`${String(updatedGTSGameAttempt.timeRemained)}  `));
+          controller.enqueue(
+            encoder.encode(`${String(updatedGTSGameAttempt.timeRemained)}  `)
+          );
         } else {
           clearInterval(intervalID);
           controller.close();
