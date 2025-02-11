@@ -2,9 +2,9 @@ import { connectMongoDB } from "@/app/libs/MongoConnect";
 import GTSGameAttempt from "@/app/models/GTSGameAttemptModel";
 import { NextRequest, NextResponse } from "next/server";
 
-// export const config = {
-//   runtime: "edge",
-// };
+export const config = {
+  runtime: "edge",
+};
 
 // export const dynamic = "force-dynamic";
 
@@ -59,25 +59,20 @@ export async function GET(req: NextRequest) {
               "679affc8d6353d1c90440870"
             ).select("timeRemained");
 
-            const currentTime = JSON.parse(
-              JSON.stringify(currentGTSGameAttemptTime.timeRemained)
-            );
-            const updatedGTSGameAttempt =
-              await GTSGameAttempt.findByIdAndUpdate(
-                "679affc8d6353d1c90440870",
-                {
-                  $set: { timeRemained: currentTime - 10 },
-                },
-                {
-                  new: true,
-                }
-              ).select("timeRemained");
+            const currentTime = JSON.parse(JSON.stringify(currentGTSGameAttemptTime.timeRemained));
+            const updatedGTSGameAttempt = await GTSGameAttempt.findByIdAndUpdate(
+              "679affc8d6353d1c90440870",
+              {
+                $set: { timeRemained: currentTime - 10 },
+              },
+              {
+                new: true,
+              }
+            ).select("timeRemained");
             console.log(updatedGTSGameAttempt.timeRemained);
             console.log(writer);
 
-            controller.enqueue(
-              encoder.encode(`${String(updatedGTSGameAttempt.timeRemained)}  `)
-            );
+            controller.enqueue(encoder.encode(`${String(updatedGTSGameAttempt.timeRemained)}  `));
           } else {
             clearInterval(intervalID);
             controller.close();
@@ -102,9 +97,6 @@ export async function GET(req: NextRequest) {
       headers: { "Content-Type": "text/html; charset=utf-8" },
     });
   } catch (error: any) {
-    return NextResponse.json(
-      { message: "Request was aborted" },
-      { status: 499 }
-    );
+    return NextResponse.json({ message: "Request was aborted" }, { status: 499 });
   }
 }

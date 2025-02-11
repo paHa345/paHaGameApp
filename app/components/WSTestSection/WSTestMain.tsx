@@ -68,7 +68,6 @@ const WSTestMain = () => {
     e: React.MouseEvent<HTMLDivElement>
   ) {
     aborter = new AbortController();
-    console.log("Start Readable Stream");
 
     async function readData(url: string, { signal }: any) {
       console.log("Srart stream");
