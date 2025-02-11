@@ -1,10 +1,7 @@
 "use client";
 
 import { AppDispatch } from "@/app/store";
-import {
-  guessThatSongActions,
-  IGuessThatSongSlice,
-} from "@/app/store/guessThatSongSlice";
+import { guessThatSongActions, IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -24,9 +21,7 @@ const DisplayTrack = ({ audioRef }: IDisplayTrackProps) => {
   };
   const onLoadedMetadata = () => {
     console.log(audioRef.current?.duration);
-    dispatch(
-      guessThatSongActions.setCurrentSongDuration(audioRef.current?.duration)
-    );
+    dispatch(guessThatSongActions.setCurrentSongDuration(audioRef.current?.duration));
   };
 
   return (
@@ -35,7 +30,7 @@ const DisplayTrack = ({ audioRef }: IDisplayTrackProps) => {
         onEnded={endSongHandler}
         onLoadedMetadata={onLoadedMetadata}
         ref={audioRef}
-        src="https://rhjm8idplsgk4vxo.public.blob.vercel-storage.com/Black_Sabbath_-_Neon_Knights_47956657%20(mp3cut.net)-0o9CPiA4j34FNKCJbJAeynWTnLUDiZ.mp3"
+        src="https://rhjm8idplsgk4vxo.public.blob.vercel-storage.com/Black_Sabbath_-_Iron_Man_47874627%20(mp3cut.net)-APLZ7dbL3Y9LGUt4uWkKC5VEV1pZMc.mp3"
       ></audio>
     </div>
   );
