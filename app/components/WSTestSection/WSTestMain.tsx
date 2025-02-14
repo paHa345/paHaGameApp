@@ -83,8 +83,7 @@ const WSTestMain = () => {
         console.log("Finish stream");
       }
     }
-
-    readData("/api/readableStreamTest", {
+    readData(`${process.env.NEXT_PUBLIC_EXPRESS_SERVER_HOST}GTSAttempts`, {
       signal: aborter.signal,
     });
   };
