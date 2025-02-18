@@ -13,7 +13,7 @@ interface IGTSGameCard {
 }
 const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
   const loadGTSGameStatus = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.fetchAvailableGTSGamesStatus
+    (state: IGuessThatSongSlice) => state.guessThatSongState.fetchAvailableGTSGameStatus
   );
 
   const loadGTSGameHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
