@@ -83,6 +83,12 @@ export enum GTSCreateGameFetchStatus {
   Error = "error",
 }
 
+export enum GTSCreatedGameComplexity {
+  easy = 15,
+  medium = 10,
+  hard = 8,
+}
+
 export interface IGTSCreateGameSlice {
   GTSCreateGameState: {
     updatedGameID?: string;
@@ -116,6 +122,8 @@ export interface IGTSCreateGameSlice {
       correctAnswerIndex?: number;
       songURL?: string;
     };
+    GTSAddedGameComplexity: GTSCreatedGameComplexity;
+
     createdGTSGame: {
       answersArr: { text: string }[];
       correctAnswerIndex: number;
@@ -159,6 +167,8 @@ interface IGTSCreateGameState {
     correctAnswerIndex?: number;
     songURL?: string;
   };
+  GTSAddedGameComplexity: GTSCreatedGameComplexity;
+
   createdGTSGame: {
     answersArr: { text: string }[];
     correctAnswerIndex: number;
@@ -189,6 +199,8 @@ export const initGuessThatSongState: IGTSCreateGameState = {
   //   answersArr: [{ text: "" }],
   //   correctAnswerIndex: -1,
   // },
+  GTSAddedGameComplexity: GTSCreatedGameComplexity.medium,
+
   createdGTSGame: [
     // {
     //   answersArr: [{ text: "string" }],
@@ -413,6 +425,9 @@ export const GTSCreateGameSlice = createSlice({
     },
     setAddQuestionStatus(state, action) {
       state.addQuestionStatus = action.payload;
+    },
+    setGTSAddedGameComplexity(state, action) {
+      state.GTSAddedGameComplexity = action.payload;
     },
   },
   extraReducers(builder) {

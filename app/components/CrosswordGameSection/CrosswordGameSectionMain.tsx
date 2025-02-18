@@ -45,46 +45,8 @@ const CrosswordGameSection = () => {
 
   return (
     <div className=" flex justify-center items-center h-[80vh] py-10 px-8">
-      {/* <AnimatePresence initial={false}>
-        {showCrosswordGameChooseModal ? (
-          <motion.div
-            transition={{ duration: 0.3 }}
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-            className=" h-full w-full"
-            key="box"
-          >
-            {" "}
-            <LoadCrosswordGameModalMain></LoadCrosswordGameModalMain>
-          </motion.div>
-        ) : (
-          <ChooseCrosswordButton></ChooseCrosswordButton>
-        )}
-      </AnimatePresence> */}
-
-      {/* <AnimatePresence
-        // Disable any initial animations on children that
-        // are present when the component is first rendered
-        initial={false}
-        // Only render one component at a time.
-        // The exiting component will finish its exit
-        // animation before entering component is rendered
-        mode="sync"
-        // Fires when all exiting nodes have completed animating out
-        onExitComplete={() => null}
-      > */}
-      {/* {showCrosswordGameChooseModal ? ( */}
       <LoadCrosswordGameModalMain />
-      {/* ) : ( */}
       {!showCrosswordGameChooseModal && <ChooseCrosswordButton></ChooseCrosswordButton>}
-      {/* )} */}
-      {/* </AnimatePresence> */}
-
-      {/* <button className="button" onClick={() => setIsOpen(true)}>
-        Open Modal
-      </button>
-      <Modal isOpen={isOpen} setIsOpen={setIsOpen} /> */}
     </div>
   );
 };

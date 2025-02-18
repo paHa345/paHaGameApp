@@ -1,8 +1,17 @@
 "use client";
 
 import { AppDispatch } from "@/app/store";
-import { GTSCreateGameActions, IGTSCreateGameSlice } from "@/app/store/GTSCreateGameSlice";
-import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  GTSCreatedGameComplexity,
+  GTSCreateGameActions,
+  IGTSCreateGameSlice,
+} from "@/app/store/GTSCreateGameSlice";
+import {
+  faChessKnight,
+  faChessPawn,
+  faChessQueen,
+  faCirclePlus,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,6 +28,9 @@ const CrateGTSQuestion = () => {
   );
   const currentGameAdded = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.createdGTSGame
+  );
+  const currentGameComplexity = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.GTSAddedGameComplexity
   );
 
   const currentGameID = useSelector(
@@ -58,6 +70,13 @@ const CrateGTSQuestion = () => {
     e.preventDefault();
     dispatch(GTSCreateGameActions.setAddQuestionStatus(true));
   };
+  const setGameComplexity = function (
+    this: GTSCreatedGameComplexity,
+    e: React.MouseEvent<HTMLDivElement>
+  ) {
+    console.log(this);
+    dispatch(GTSCreateGameActions.setGTSAddedGameComplexity(this));
+  };
   return (
     <div>
       <div>
@@ -80,6 +99,35 @@ const CrateGTSQuestion = () => {
             value={createdGameName ? createdGameName : ""}
             onChange={changeCreatedGameNameHandler}
           />
+        </div>
+        <div>
+          <h1>Сложность игры</h1>
+          <div className=" py-3 flex justify-center items-center">
+            <div
+              className={` ${currentGameComplexity === GTSCreatedGameComplexity.easy ? "  scale-110 shadow-audioControlsButtonHoverShadow " : ""} cursor-pointer py-2 px-4 mx-4 transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:scale-110 hover:bg-gradient-to-tl `}
+              onClick={setGameComplexity.bind(GTSCreatedGameComplexity.easy)}
+            >
+              <FontAwesomeIcon className=" pr-2" icon={faChessPawn} />
+              <h1 className=" text-base">Легко</h1>
+              <h1 className=" text-sm">(15 сек)</h1>
+            </div>
+            <div
+              className={`  ${currentGameComplexity === GTSCreatedGameComplexity.medium ? " scale-110 shadow-audioControlsButtonHoverShadow " : ""} cursor-pointer py-2 px-4 mx-4  transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-amber-300 shadow-exerciseCardShadow hover:scale-110 hover:bg-gradient-to-tl `}
+              onClick={setGameComplexity.bind(GTSCreatedGameComplexity.medium)}
+            >
+              <FontAwesomeIcon className=" pr-2" icon={faChessKnight} />
+              <h1 className=" text-base"> Средне</h1>
+              <h1 className=" text-sm">(10 сек) </h1>
+            </div>
+            <div
+              className={` ${currentGameComplexity === GTSCreatedGameComplexity.hard ? "  scale-110 shadow-audioControlsButtonHoverShadow " : ""} cursor-pointer py-2 px-4 mx-4  transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-red-300 shadow-exerciseCardShadow hover:scale-110 hover:bg-gradient-to-tl `}
+              onClick={setGameComplexity.bind(GTSCreatedGameComplexity.hard)}
+            >
+              <FontAwesomeIcon className=" pr-2" icon={faChessQueen} />
+              <h1 className=" text-base"> Сложно</h1>
+              <h1 className=" text-sm">(8 сек) </h1>
+            </div>
+          </div>
         </div>
         <div className=" py-5">
           <button

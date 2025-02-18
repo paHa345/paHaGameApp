@@ -19,6 +19,9 @@ const AddGTSGameButtonMain = () => {
   const gameID = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.updatedGameID
   );
+  const gameComplexity = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.GTSAddedGameComplexity
+  );
   const addedCurrentGTSGameName = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.createdGameName
   );
@@ -30,6 +33,7 @@ const AddGTSGameButtonMain = () => {
     dispatch(
       uploadGTSGameAndUpdateStore({
         gameID: gameID,
+        gameComplexity: gameComplexity,
         currentGame: {
           name: addedCurrentGTSGameName,
           GTSGameObj: currentGTSGame,
