@@ -38,9 +38,7 @@ const CrosswordGameSection = () => {
       );
       dispatch(crossworGamedActions.setAttemptID(JSON.parse(currentAttemptID)));
       dispatch(crossworGamedActions.setCrosswordGame(JSON.parse(currentCrossword)));
-
       dispatch(crossworGamedActions.setStartGameStatus(true));
-
       redirect("/crosswordGame/game");
     }
   });

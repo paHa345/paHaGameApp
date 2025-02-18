@@ -21,7 +21,6 @@ import {
 import AvailableCrosswordGameCard from "./AvailableCrosswordGameCard";
 import AvailableCrosswordPaginationMain from "./AvailableCrosswordPaginationMain";
 import { CSSTransition } from "react-transition-group";
-import { div } from "framer-motion/client";
 
 import { AnimatePresence } from "motion/react";
 import * as motion from "motion/react-client";

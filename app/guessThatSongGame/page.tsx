@@ -1,10 +1,11 @@
 import React from "react";
-import GameSeactionMain from "../components/GuessThatSong/GameSection/GameSeactionMain";
+// import GameSeactionMain from "../components/GuessThatSong/GameSection/GameSeactionMain";
+import GTSGameSectionMain from "../components/GuessThatSong/GTSGameSection/GTSGameSectionMain";
 
 const page = () => {
   return (
     <div>
-      <GameSeactionMain></GameSeactionMain>
+      <GTSGameSectionMain></GTSGameSectionMain>
     </div>
   );
 };

@@ -71,7 +71,6 @@ const WSTestMain = () => {
 
     async function readData(url: string, { signal }: any) {
       console.log("Srart stream");
-      console.log(aborter.signal);
       const response = await fetch(url, signal);
 
       if (response.body) {
@@ -83,7 +82,7 @@ const WSTestMain = () => {
         console.log("Finish stream");
       }
     }
-    readData(`${process.env.NEXT_PUBLIC_EXPRESS_SERVER_HOST}GTSAttempts`, {
+    readData(`${process.env.NEXT_PUBLIC_EXPRESS_SERVER_HOST}GTSAttempts/679affc8d6353d1c90440870`, {
       signal: aborter.signal,
     });
   };
