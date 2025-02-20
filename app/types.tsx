@@ -1,4 +1,5 @@
 import { AddedWordDirection } from "./store/crosswordSlice";
+import { GTSCreatedGameComplexity } from "./store/GTSCreateGameSlice";
 
 export const mainMuscleGrourArr = [
   { nameRu: "Бицепс", nameEn: "biceps" },
@@ -362,12 +363,15 @@ export interface IGTSAttemptSchema {
   GTSGameID: string;
   timeRemained: number;
   isCompleted: boolean;
+  currentQuestion: number;
+  answerTime: number;
 }
 
 export interface IGTSGameSchema {
   name: string;
   userID: string;
   isCompleted: boolean;
+  gameComplexity: number;
   // isCorrect: boolean;
   changeDate: Date;
   GTSGameObj: { songURL: string; correctAnswerIndex: number; answersArr: { text: string }[] }[];

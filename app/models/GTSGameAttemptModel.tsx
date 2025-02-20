@@ -8,6 +8,8 @@ const GTSGameAttemptSchema = new mongoose.Schema<IGTSAttemptSchema>({
   GTSGameID: { type: String, required: true },
   timeRemained: { type: Number, required: true },
   isCompleted: { type: Boolean, required: true },
+  currentQuestion: { type: Number, required: true },
+  answerTime: { type: Number, required: true },
 });
 
 const GTSGameAttempt =

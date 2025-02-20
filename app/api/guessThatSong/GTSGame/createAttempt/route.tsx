@@ -12,12 +12,10 @@ export async function POST(req: NextRequest) {
     }
     await connectMongoDB();
     const body = await req.json();
-    console.log(body);
     const currentGTSGame = await GTSGame.findById(body.GTSGameID);
     if (currentGTSGame === null) {
       return NextResponse.json({ message: "Не найдена игра" }, { status: 400 });
     }
-    console.log(currentGTSGame.GTSGameObj.length);
     const completedAttempt = await GTSGameAttempt.find({
       GTSGameID: body.GTSGameID,
       telegramUserID: body.telegramUserID,
@@ -28,7 +26,7 @@ export async function POST(req: NextRequest) {
     }
 
     const uncompletedAttempt = await GTSGameAttempt.find({
-      crosswordID: body.crosswordID,
+      GTSGameID: body.GTSGameID,
       telegramID: body.telegramID,
       isCompleted: false,
     });
@@ -39,7 +37,14 @@ export async function POST(req: NextRequest) {
 
     const startDate = new Date();
 
-    const newAttampt = await GTSGameAttempt.create({ ...body, startDate: startDate });
+    // console.log(currentGTSGame.gameComplexity);
+    // console.log(currentGTSGame.GTSGameObj.length);
+
+    const newAttampt = await GTSGameAttempt.create({
+      ...body,
+      startDate: startDate,
+      timeRemained: currentGTSGame.GTSGameObj.length * currentGTSGame.gameComplexity,
+    });
     return NextResponse.json({ message: "Success", result: newAttampt });
   } catch (error: any) {
     return NextResponse.json({ message: error?.message }, { status: 400 });

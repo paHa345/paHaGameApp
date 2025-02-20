@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
 
     const GTSGameBody = await req.json();
     let addedGTSGame;
+    console.log(GTSGameBody);
     if (GTSGameBody.gameID) {
       console.log("Update Game in DB");
       console.log(GTSGameBody);

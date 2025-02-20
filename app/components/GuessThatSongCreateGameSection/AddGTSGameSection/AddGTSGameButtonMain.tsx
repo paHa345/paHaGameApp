@@ -33,8 +33,8 @@ const AddGTSGameButtonMain = () => {
     dispatch(
       uploadGTSGameAndUpdateStore({
         gameID: gameID,
-        gameComplexity: gameComplexity,
         currentGame: {
+          gameComplexity: gameComplexity,
           name: addedCurrentGTSGameName,
           GTSGameObj: currentGTSGame,
           isCompleted: gameIsCompletedStatus,

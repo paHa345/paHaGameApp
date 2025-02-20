@@ -104,7 +104,7 @@ const CrateGTSQuestion = () => {
           <h1>Сложность игры</h1>
           <div className=" py-3 flex justify-center items-center">
             <div
-              className={` ${currentGameComplexity === GTSCreatedGameComplexity.easy ? "  scale-110 shadow-audioControlsButtonHoverShadow " : ""} cursor-pointer py-2 px-4 mx-4 transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-lime-300 shadow-exerciseCardShadow hover:scale-110 hover:bg-gradient-to-tl `}
+              className={` ${currentGameComplexity === GTSCreatedGameComplexity.easy ? "  scale-110 shadow-audioControlsButtonHoverShadow " : "shadow-exerciseCardShadow "} cursor-pointer py-2 px-4 mx-4 transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-lime-300 hover:scale-110 hover:bg-gradient-to-tl `}
               onClick={setGameComplexity.bind(GTSCreatedGameComplexity.easy)}
             >
               <FontAwesomeIcon className=" pr-2" icon={faChessPawn} />
@@ -112,7 +112,7 @@ const CrateGTSQuestion = () => {
               <h1 className=" text-sm">(15 сек)</h1>
             </div>
             <div
-              className={`  ${currentGameComplexity === GTSCreatedGameComplexity.medium ? " scale-110 shadow-audioControlsButtonHoverShadow " : ""} cursor-pointer py-2 px-4 mx-4  transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-amber-300 shadow-exerciseCardShadow hover:scale-110 hover:bg-gradient-to-tl `}
+              className={`  ${currentGameComplexity === GTSCreatedGameComplexity.medium ? " scale-110 shadow-audioControlsButtonHoverShadow " : "shadow-exerciseCardShadow "} cursor-pointer py-2 px-4 mx-4  transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-amber-300 hover:scale-110 hover:bg-gradient-to-tl `}
               onClick={setGameComplexity.bind(GTSCreatedGameComplexity.medium)}
             >
               <FontAwesomeIcon className=" pr-2" icon={faChessKnight} />
@@ -120,7 +120,7 @@ const CrateGTSQuestion = () => {
               <h1 className=" text-sm">(10 сек) </h1>
             </div>
             <div
-              className={` ${currentGameComplexity === GTSCreatedGameComplexity.hard ? "  scale-110 shadow-audioControlsButtonHoverShadow " : ""} cursor-pointer py-2 px-4 mx-4  transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-red-300 shadow-exerciseCardShadow hover:scale-110 hover:bg-gradient-to-tl `}
+              className={` ${currentGameComplexity === GTSCreatedGameComplexity.hard ? "  scale-110 shadow-audioControlsButtonHoverShadow " : "shadow-exerciseCardShadow "} cursor-pointer py-2 px-4 mx-4  transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-red-300 hover:scale-110 hover:bg-gradient-to-tl `}
               onClick={setGameComplexity.bind(GTSCreatedGameComplexity.hard)}
             >
               <FontAwesomeIcon className=" pr-2" icon={faChessQueen} />

@@ -1,11 +1,13 @@
 import mongoose from "mongoose";
 import { IGTSGameSchema } from "../types";
+import { GTSCreatedGameComplexity } from "../store/GTSCreateGameSlice";
 
 const GTSGameSchema = new mongoose.Schema<IGTSGameSchema>({
   name: { type: String, required: true },
   userID: { type: String, required: true },
   isCompleted: { type: Boolean, required: true },
   // isCorrect: { type: Boolean, required: true },
+  gameComplexity: { type: Number, required: true },
   changeDate: { type: Date, required: true },
   GTSGameObj: [
     {

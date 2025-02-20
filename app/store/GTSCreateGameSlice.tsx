@@ -408,6 +408,7 @@ export const GTSCreateGameSlice = createSlice({
             _id: string;
           }[];
           changeDate: Date;
+          gameComplexity: number;
           isCompleted: boolean;
           name: string;
           userID: string;
@@ -422,6 +423,7 @@ export const GTSCreateGameSlice = createSlice({
       state.createdGameIsCompleted = action.payload.isCompleted;
       state.createdGTSGame = action.payload.GTSGameObj;
       state.updatedGameID = action.payload._id;
+      state.GTSAddedGameComplexity = action.payload.gameComplexity;
     },
     setAddQuestionStatus(state, action) {
       state.addQuestionStatus = action.payload;
