@@ -35,12 +35,12 @@ const ChooseGTSGameButton = () => {
 
         <div>
           <h1 className=" text-3xl lg:text-2xl text-center font-bold pb-2">
-            Выберете "Угадай мелодию"
+            Выберете игру "Угадай мелодию"
           </h1>
         </div>
         <div>
           <h1 className=" text-lg lg:text-sm">
-            <span className=" text-2xl lg:text-base"></span>И начните игру
+            <span className=" text-2xl lg:text-base"></span>И отгадывайте песни
           </h1>
         </div>
       </div>

@@ -1,8 +1,16 @@
-import { GTSGameFetchStatus, IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
+import { AppDispatch } from "@/app/store";
+import {
+  createAttemptAndAddInSlice,
+  GTSGameFetchStatus,
+  IGuessThatSongSlice,
+} from "@/app/store/guessThatSongSlice";
+import { useTelegram } from "@/app/telegramProvider";
 import { faHeadphones, faTrophy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
+import { redirect } from "next/navigation";
 
 interface IGTSGameCard {
   GTSGameData: {
@@ -12,6 +20,9 @@ interface IGTSGameCard {
   };
 }
 const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { user } = useTelegram();
+
   const loadGTSGameStatus = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.fetchAvailableGTSGameStatus
   );
@@ -19,6 +30,29 @@ const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
   const loadGTSGameHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
+    if (user) {
+      dispatch(
+        createAttemptAndAddInSlice({
+          GTSGameID: GTSGameData._id,
+          telegramID: user?.id,
+          telegramUserName: user?.username,
+        })
+      );
+    } else {
+      dispatch(
+        createAttemptAndAddInSlice({
+          GTSGameID: GTSGameData._id,
+          telegramID: 777777,
+          telegramUserName: "paHa345",
+        })
+      );
+    }
+
+    setTimeout(() => {
+      redirect("/guessThatSongGame/game");
+    }, 2000);
+
+    console.log(user?.id);
     console.log("Load GTS Game");
     console.log(GTSGameData._id);
   };

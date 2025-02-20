@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import LoadingAvailableGTSGameCards from "./LoadingAvailableGTSGameCards";
 import LoadGTSGameNotification from "./LoadGTSGameNotification";
+import CreateAttemptNotification from "./CreateAttemptNotification";
 
 const AvailableGTSGamelistModalMain = () => {
   const [touchStart, setTouchStart] = useState(0);
@@ -65,6 +66,10 @@ const AvailableGTSGamelistModalMain = () => {
 
   const fetchGTSGamesStatus = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.fetchGTSGamesArrStatus
+  );
+
+  const createAttemptStatus = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.createAttemptStatus
   );
 
   const isDesktop = useSelector(
@@ -160,6 +165,11 @@ const AvailableGTSGamelistModalMain = () => {
                   className={` transition-all  ${fetchGTSGamesStatus === GTSGameFetchStatus.Loading ? " opacity-100" : "opacity-0"} flex justify-center items-center h-5/6`}
                 >
                   <LoadingAvailableGTSGameCards></LoadingAvailableGTSGameCards>
+                </div>
+                <div
+                  className={` transition-all  ${createAttemptStatus === GTSGameFetchStatus.Loading ? " opacity-100" : "opacity-0"} flex justify-center items-center h-5/6`}
+                >
+                  <CreateAttemptNotification></CreateAttemptNotification>
                 </div>
 
                 {loadGTSGameStatus === GTSGameFetchStatus.Ready && (

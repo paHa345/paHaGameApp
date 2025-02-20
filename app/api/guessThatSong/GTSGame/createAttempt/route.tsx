@@ -42,8 +42,12 @@ export async function POST(req: NextRequest) {
 
     const newAttampt = await GTSGameAttempt.create({
       ...body,
+      isCompleted: false,
+      currentQuestion: 0,
+      answerTime: 10,
       startDate: startDate,
       timeRemained: currentGTSGame.GTSGameObj.length * currentGTSGame.gameComplexity,
+      attemptTime: currentGTSGame.GTSGameObj.length * currentGTSGame.gameComplexity,
     });
     return NextResponse.json({ message: "Success", result: newAttampt });
   } catch (error: any) {

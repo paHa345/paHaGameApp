@@ -10,12 +10,14 @@ export const getAvailableGTSGames = createAsyncThunk(
       const getAvailableGTSGamesReq = await fetch(
         `/api/guessThatSong/GTSGame/getAvailableGTSGames?page=${getGTSGamesData?.page ? getGTSGamesData?.page : 1}`
       );
+
       const availableGTSGames = await getAvailableGTSGamesReq.json();
+
       if (!getAvailableGTSGamesReq.ok) {
         throw new Error(availableGTSGames.message);
       }
 
-      console.log(availableGTSGames.result.isLastPage);
+      // console.log(availableGTSGames.result.isLastPage);
       dispatch(
         guessThatSongActions.setAvailableGTSGamesArr(availableGTSGames.result.availableGTSGames)
       );
@@ -26,6 +28,37 @@ export const getAvailableGTSGames = createAsyncThunk(
       dispatch(guessThatSongActions.setShowHideGTSGamesList(true));
       dispatch(guessThatSongActions.setAvailableGTSGamesErrorMessage(error.message));
 
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const createAttemptAndAddInSlice = createAsyncThunk(
+  "GTSGameState/createAttemptAndAddInSlice",
+  async function (attemptData: any, { rejectWithValue, dispatch }) {
+    try {
+      console.log(attemptData);
+
+      const createGTSGameAttemptReq = await fetch(`/api/guessThatSong/GTSGame/createAttempt`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(attemptData),
+      });
+      if (!createGTSGameAttemptReq.ok) {
+        throw new Error("Ошибка сервера");
+      }
+      const createdGTSGameAttempt = await createGTSGameAttemptReq.json();
+
+      if (createdGTSGameAttempt.result.length) {
+        dispatch(
+          guessThatSongActions.setCurrentGTSGameAttemptID(createdGTSGameAttempt.result[0]._id)
+        );
+      } else {
+        dispatch(guessThatSongActions.setCurrentGTSGameAttemptID(createdGTSGameAttempt.result._id));
+      }
+    } catch (error: any) {
       return rejectWithValue(error.message);
     }
   }
@@ -59,6 +92,9 @@ export interface IGuessThatSongSlice {
     fetchGTSGamesArrStatus: GTSGameFetchStatus;
     getAvailableGTSGamesErrorMessage?: string;
     fetchAvailableGTSGameStatus: GTSGameFetchStatus;
+    createAttemptStatus: GTSGameFetchStatus;
+    createAttemptErrorMessage?: string;
+    currentGTSGameAttemptID?: string;
   };
 }
 
@@ -82,6 +118,9 @@ interface IGuessThatSongState {
   fetchGTSGamesArrStatus: GTSGameFetchStatus;
   getAvailableGTSGamesErrorMessage?: string;
   fetchAvailableGTSGameStatus: GTSGameFetchStatus;
+  createAttemptStatus: GTSGameFetchStatus;
+  createAttemptErrorMessage?: string;
+  currentGTSGameAttemptID?: string;
 }
 
 export const initGuessThatSongState: IGuessThatSongState = {
@@ -97,6 +136,7 @@ export const initGuessThatSongState: IGuessThatSongState = {
   isLastGTSGamesListPage: false,
   fetchGTSGamesArrStatus: GTSGameFetchStatus.Ready,
   fetchAvailableGTSGameStatus: GTSGameFetchStatus.Ready,
+  createAttemptStatus: GTSGameFetchStatus.Ready,
 };
 
 export const guessThatSongSlice = createSlice({
@@ -142,16 +182,34 @@ export const guessThatSongSlice = createSlice({
     setFetchAvailableGTSGameStatus(state, action) {
       state.fetchAvailableGTSGameStatus = action.payload;
     },
+    setCreateAttemptStatus(state, action) {
+      state.createAttemptStatus = action.payload;
+    },
+    setCreateAttemptErrorMessage(state, action) {
+      state.createAttemptErrorMessage = action.payload;
+    },
+    setCurrentGTSGameAttemptID(state, action) {
+      state.currentGTSGameAttemptID = action.payload;
+    },
   },
   extraReducers(builder) {
     builder.addCase(getAvailableGTSGames.pending, (state) => {
       state.fetchGTSGamesArrStatus = GTSGameFetchStatus.Loading;
     });
+    builder.addCase(createAttemptAndAddInSlice.pending, (state) => {
+      state.createAttemptStatus = GTSGameFetchStatus.Loading;
+    });
     builder.addCase(getAvailableGTSGames.fulfilled, (state) => {
       state.fetchGTSGamesArrStatus = GTSGameFetchStatus.Resolve;
     });
+    builder.addCase(createAttemptAndAddInSlice.fulfilled, (state) => {
+      state.createAttemptStatus = GTSGameFetchStatus.Resolve;
+    });
     builder.addCase(getAvailableGTSGames.rejected, (state) => {
       state.fetchGTSGamesArrStatus = GTSGameFetchStatus.Error;
+    });
+    builder.addCase(createAttemptAndAddInSlice.rejected, (state) => {
+      state.createAttemptStatus = GTSGameFetchStatus.Error;
     });
   },
 });
