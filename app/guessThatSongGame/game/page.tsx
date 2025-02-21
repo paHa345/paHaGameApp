@@ -1,6 +1,9 @@
+import GTSGameSectionMain from "@/app/components/GuessThatSong/GTSGameSection/GTSGameSectionMain";
+import { IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { Suspense } from "react";
+import { useSelector } from "react-redux";
 
 const page = () => {
   return (
@@ -21,7 +24,7 @@ const page = () => {
       >
         {/* <TransitionTemplate> */}
         {/* <CrosswordGameTableMain></CrosswordGameTableMain> */}
-        <h1>GTSGame Page</h1>
+        <GTSGameSectionMain></GTSGameSectionMain>
         {/* </TransitionTemplate> */}
       </Suspense>
     </>

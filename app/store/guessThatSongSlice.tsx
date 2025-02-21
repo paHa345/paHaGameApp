@@ -59,6 +59,22 @@ export const createAttemptAndAddInSlice = createAsyncThunk(
         dispatch(guessThatSongActions.setCurrentGTSGameAttemptID(createdGTSGameAttempt.result._id));
       }
     } catch (error: any) {
+      dispatch(guessThatSongActions.setCreateAttemptErrorMessage(error.message));
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const startGTSGameLaunchAttemptTimer = createAsyncThunk(
+  "GTSGameState/startGTSGameLaunchAttemptTimer",
+  async function ({ currentAttemptID, telegramUserID }: any, { rejectWithValue, dispatch }) {
+    try {
+      const getGTSGameStartDataReq = await fetch(
+        `/api/guessThatSong/GTSGame/getGTSGameSongAndPosition/${currentAttemptID}/${telegramUserID}`
+      );
+      const getGTSGameStartData = await getGTSGameStartDataReq.json();
+      console.log(getGTSGameStartData);
+    } catch (error: any) {
       return rejectWithValue(error.message);
     }
   }
@@ -95,6 +111,7 @@ export interface IGuessThatSongSlice {
     createAttemptStatus: GTSGameFetchStatus;
     createAttemptErrorMessage?: string;
     currentGTSGameAttemptID?: string;
+    startGameStatus: boolean;
   };
 }
 
@@ -121,6 +138,7 @@ interface IGuessThatSongState {
   createAttemptStatus: GTSGameFetchStatus;
   createAttemptErrorMessage?: string;
   currentGTSGameAttemptID?: string;
+  startGameStatus: boolean;
 }
 
 export const initGuessThatSongState: IGuessThatSongState = {
@@ -137,6 +155,7 @@ export const initGuessThatSongState: IGuessThatSongState = {
   fetchGTSGamesArrStatus: GTSGameFetchStatus.Ready,
   fetchAvailableGTSGameStatus: GTSGameFetchStatus.Ready,
   createAttemptStatus: GTSGameFetchStatus.Ready,
+  startGameStatus: false,
 };
 
 export const guessThatSongSlice = createSlice({
@@ -190,6 +209,9 @@ export const guessThatSongSlice = createSlice({
     },
     setCurrentGTSGameAttemptID(state, action) {
       state.currentGTSGameAttemptID = action.payload;
+    },
+    setStartGameStatus(state, action) {
+      state.startGameStatus = action.payload;
     },
   },
   extraReducers(builder) {

@@ -1,24 +1,32 @@
 "use client";
-import { AppDispatch } from "@/app/store";
+
 import { IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
+import { redirect } from "next/navigation";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import ChooseGTSGameButton from "./ChooseGTSGameButton";
-import AvailableGTSGamelistModalMain from "../AvailableGTSGameListModal/AvailableGTSGamelistModalMain";
-import LoadCrosswordGameModalMain from "../../CrosswordGameLoadModalSection/LoadCrosswordGameModalMain";
+import { useSelector } from "react-redux";
+import StartGameButton from "./StartGameButton";
+import { h1 } from "framer-motion/client";
 
 const GTSGameSectionMain = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const showGTSGameChooseModal = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.showChooseGTSModal
+  const currentAttemptID = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSGameAttemptID
   );
-
+  console.log(currentAttemptID);
+  const startGameStatus = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.startGameStatus
+  );
+  console.log(startGameStatus);
+  if (!currentAttemptID) {
+    redirect("/guessThatSongGame");
+  }
   return (
-    <div className=" flex justify-center items-center h-[80vh] py-10 px-8">
-      <AvailableGTSGamelistModalMain></AvailableGTSGamelistModalMain>
-
-      {!showGTSGameChooseModal && <ChooseGTSGameButton></ChooseGTSGameButton>}
-    </div>
+    <>
+      {!startGameStatus && (
+        <div className="flex justify-center items-center h-[70vh] ">
+          <StartGameButton></StartGameButton>{" "}
+        </div>
+      )}
+    </>
   );
 };
 
