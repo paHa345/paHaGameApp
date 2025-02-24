@@ -72,9 +72,15 @@ export const startGTSGameLaunchAttemptTimer = createAsyncThunk(
       const getGTSGameStartDataReq = await fetch(
         `/api/guessThatSong/GTSGame/getGTSGameSongAndPosition/${currentAttemptID}/${telegramUserID}`
       );
+      if (!getGTSGameStartDataReq.ok) {
+        throw new Error("Ошибка сервера");
+      }
       const getGTSGameStartData = await getGTSGameStartDataReq.json();
       console.log(getGTSGameStartData);
+      dispatch(guessThatSongActions.setCurrentGTSAttemptData(getGTSGameStartData.result));
+      dispatch(guessThatSongActions.setStartGameStatus(true));
     } catch (error: any) {
+      dispatch(guessThatSongActions.setStartGTSGameLaunchAttemptTimerErrorMessage(error.message));
       return rejectWithValue(error.message);
     }
   }
@@ -112,6 +118,15 @@ export interface IGuessThatSongSlice {
     createAttemptErrorMessage?: string;
     currentGTSGameAttemptID?: string;
     startGameStatus: boolean;
+    currentGTSAttemptData: {
+      attemptFullTime: number;
+      attemptTimeRemained: number;
+      songURL: string;
+      questionAnswers: { text: string; _id: string };
+    };
+    startGTSGameLaunchAttemptTimerStatus: GTSGameFetchStatus;
+    startGTSGameLaunchAttemptTimerErrorMessage?: string;
+    currentAttemptSongIsPlaying: boolean;
   };
 }
 
@@ -139,6 +154,16 @@ interface IGuessThatSongState {
   createAttemptErrorMessage?: string;
   currentGTSGameAttemptID?: string;
   startGameStatus: boolean;
+
+  currentGTSAttemptData: {
+    attemptFullTime: number;
+    attemptTimeRemained: number;
+    songURL: string;
+    questionAnswers: { text: string; _id: string };
+  };
+  startGTSGameLaunchAttemptTimerStatus: GTSGameFetchStatus;
+  startGTSGameLaunchAttemptTimerErrorMessage?: string;
+  currentAttemptSongIsPlaying: boolean;
 }
 
 export const initGuessThatSongState: IGuessThatSongState = {
@@ -156,6 +181,15 @@ export const initGuessThatSongState: IGuessThatSongState = {
   fetchAvailableGTSGameStatus: GTSGameFetchStatus.Ready,
   createAttemptStatus: GTSGameFetchStatus.Ready,
   startGameStatus: false,
+
+  currentGTSAttemptData: {
+    attemptFullTime: 0,
+    attemptTimeRemained: 0,
+    songURL: "",
+    questionAnswers: { text: "", _id: "" },
+  },
+  startGTSGameLaunchAttemptTimerStatus: GTSGameFetchStatus.Ready,
+  currentAttemptSongIsPlaying: false,
 };
 
 export const guessThatSongSlice = createSlice({
@@ -213,6 +247,15 @@ export const guessThatSongSlice = createSlice({
     setStartGameStatus(state, action) {
       state.startGameStatus = action.payload;
     },
+    setCurrentGTSAttemptData(state, action) {
+      state.currentGTSAttemptData = action.payload;
+    },
+    setStartGTSGameLaunchAttemptTimerErrorMessage(state, action) {
+      state.startGTSGameLaunchAttemptTimerErrorMessage = action.payload;
+    },
+    setCurrentAttemptSongIsPlaying(state, action) {
+      state.currentAttemptSongIsPlaying = action.payload;
+    },
   },
   extraReducers(builder) {
     builder.addCase(getAvailableGTSGames.pending, (state) => {
@@ -221,17 +264,26 @@ export const guessThatSongSlice = createSlice({
     builder.addCase(createAttemptAndAddInSlice.pending, (state) => {
       state.createAttemptStatus = GTSGameFetchStatus.Loading;
     });
+    builder.addCase(startGTSGameLaunchAttemptTimer.pending, (state) => {
+      state.startGTSGameLaunchAttemptTimerStatus = GTSGameFetchStatus.Loading;
+    });
     builder.addCase(getAvailableGTSGames.fulfilled, (state) => {
       state.fetchGTSGamesArrStatus = GTSGameFetchStatus.Resolve;
     });
     builder.addCase(createAttemptAndAddInSlice.fulfilled, (state) => {
       state.createAttemptStatus = GTSGameFetchStatus.Resolve;
     });
+    builder.addCase(startGTSGameLaunchAttemptTimer.fulfilled, (state) => {
+      state.startGTSGameLaunchAttemptTimerStatus = GTSGameFetchStatus.Resolve;
+    });
     builder.addCase(getAvailableGTSGames.rejected, (state) => {
       state.fetchGTSGamesArrStatus = GTSGameFetchStatus.Error;
     });
     builder.addCase(createAttemptAndAddInSlice.rejected, (state) => {
       state.createAttemptStatus = GTSGameFetchStatus.Error;
+    });
+    builder.addCase(startGTSGameLaunchAttemptTimer.rejected, (state) => {
+      state.startGTSGameLaunchAttemptTimerStatus = GTSGameFetchStatus.Error;
     });
   },
 });

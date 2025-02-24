@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import React from "react";
 import { useSelector } from "react-redux";
 import StartGameButton from "./StartGameButton";
-import { h1 } from "framer-motion/client";
+import CurrentGTSGame from "./CurrentGTSGame";
 
 const GTSGameSectionMain = () => {
   const currentAttemptID = useSelector(
@@ -25,6 +25,12 @@ const GTSGameSectionMain = () => {
         <div className="flex justify-center items-center h-[70vh] ">
           <StartGameButton></StartGameButton>{" "}
         </div>
+      )}
+      {startGameStatus && (
+        // <div className="flex justify-center items-center h-[70vh] ">
+        //   <h1 className="text-3xl text-center">Игра началась</h1>
+        <CurrentGTSGame></CurrentGTSGame>
+        // </div>
       )}
     </>
   );

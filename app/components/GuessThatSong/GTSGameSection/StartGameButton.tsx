@@ -18,8 +18,11 @@ const StartGameButton = () => {
   const currentAttemptID = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSGameAttemptID
   );
+  const startGameStatus = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.startGTSGameLaunchAttemptTimerStatus
+  );
+  console.log(startGameStatus);
   const startGameHandler = () => {
-    // TODO: Navigate to the game page
     if (!user) {
       dispatch(
         startGTSGameLaunchAttemptTimer({
