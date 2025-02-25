@@ -122,11 +122,13 @@ export interface IGuessThatSongSlice {
       attemptFullTime: number;
       attemptTimeRemained: number;
       songURL: string;
-      questionAnswers: { text: string; _id: string };
+      questionAnswers: { text: string; _id: string }[];
     };
     startGTSGameLaunchAttemptTimerStatus: GTSGameFetchStatus;
     startGTSGameLaunchAttemptTimerErrorMessage?: string;
     currentAttemptSongIsPlaying: boolean;
+    abortController?: AbortController;
+    showGTSAnswersModal: boolean;
   };
 }
 
@@ -159,11 +161,13 @@ interface IGuessThatSongState {
     attemptFullTime: number;
     attemptTimeRemained: number;
     songURL: string;
-    questionAnswers: { text: string; _id: string };
+    questionAnswers: { text: string; _id: string }[];
   };
   startGTSGameLaunchAttemptTimerStatus: GTSGameFetchStatus;
   startGTSGameLaunchAttemptTimerErrorMessage?: string;
   currentAttemptSongIsPlaying: boolean;
+  abortController?: AbortController;
+  showGTSAnswersModal: boolean;
 }
 
 export const initGuessThatSongState: IGuessThatSongState = {
@@ -186,10 +190,11 @@ export const initGuessThatSongState: IGuessThatSongState = {
     attemptFullTime: 0,
     attemptTimeRemained: 0,
     songURL: "",
-    questionAnswers: { text: "", _id: "" },
+    questionAnswers: [{ text: "", _id: "" }],
   },
   startGTSGameLaunchAttemptTimerStatus: GTSGameFetchStatus.Ready,
   currentAttemptSongIsPlaying: false,
+  showGTSAnswersModal: false,
 };
 
 export const guessThatSongSlice = createSlice({
@@ -255,6 +260,15 @@ export const guessThatSongSlice = createSlice({
     },
     setCurrentAttemptSongIsPlaying(state, action) {
       state.currentAttemptSongIsPlaying = action.payload;
+    },
+    setAbortController(state, action) {
+      state.abortController = action.payload;
+    },
+    setCurrentAttemptTimeRemained(state, action) {
+      state.currentGTSAttemptData.attemptTimeRemained = action.payload;
+    },
+    setShowGTSAnswersModal(state, action) {
+      state.showGTSAnswersModal = action.payload;
     },
   },
   extraReducers(builder) {

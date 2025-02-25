@@ -8,14 +8,16 @@ import { useDispatch, useSelector } from "react-redux";
 
 interface ISongStartStopButtonProps {
   audioRef: React.RefObject<HTMLAudioElement>;
-  //   progressBarRef: React.MutableRefObject<null>;
-  abortController: AbortController;
 }
-const SongStartStopButton = ({ audioRef, abortController }: ISongStartStopButtonProps) => {
+const SongStartStopButton = ({ audioRef }: ISongStartStopButtonProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const songIsPlaying = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentAttemptSongIsPlaying
+  );
+
+  const abortController = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.abortController
   );
 
   const stopStartSongHandler = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -25,15 +27,17 @@ const SongStartStopButton = ({ audioRef, abortController }: ISongStartStopButton
       audioRef.current?.pause();
       dispatch(guessThatSongActions.setCurrentAttemptSongIsPlaying(false));
 
-      abortController.abort();
+      abortController?.abort();
+      dispatch(guessThatSongActions.setAbortController(undefined));
+      console.log("Stop song");
+      dispatch(guessThatSongActions.setShowGTSAnswersModal(true));
     } else {
       audioRef.current?.play();
+      if (!abortController) {
+        dispatch(guessThatSongActions.setAbortController(new AbortController()));
+      }
       dispatch(guessThatSongActions.setCurrentAttemptSongIsPlaying(true));
     }
-    // if (audioRef.current) {
-    //   audioRef.current.currentTime = 0;
-    // }
-    // dispatch(guessThatSongActions.setSongIsPlayingStatus(!songIsPlaying));
   };
 
   useEffect(() => {

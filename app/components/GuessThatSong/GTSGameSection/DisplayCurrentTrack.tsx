@@ -1,14 +1,15 @@
 import { AppDispatch } from "@/app/store";
 import { guessThatSongActions, IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
-import React from "react";
+import { Dispatch } from "@reduxjs/toolkit";
+import React, { SetStateAction, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import FetchConyroller from "./FetchConyroller";
 
 interface IDisplayCurrentTrackProps {
   audioRef: React.RefObject<HTMLAudioElement>;
-  abortController: AbortController;
 }
 
-const DisplayCurrentTrack = ({ audioRef, abortController }: IDisplayCurrentTrackProps) => {
+const DisplayCurrentTrack = ({ audioRef }: IDisplayCurrentTrackProps) => {
   const currentAttempt = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSGameAttemptID
   );
@@ -23,53 +24,40 @@ const DisplayCurrentTrack = ({ audioRef, abortController }: IDisplayCurrentTrack
     // dispatch(guessThatSongActions.setSongIsPlayingStatus(!songIsPlaying));
   };
 
+  const abortController = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.abortController
+  );
+
   const audioCanLoadHandler = (e: any) => {
     console.log("Audio can load");
-    abortController = new AbortController();
-
-    async function readData(url: string, { signal }: any) {
-      console.log("Srart stream");
-      const response = await fetch(url, signal);
-
-      if (response.body) {
-        const data: any = response.body;
-        for await (const chunk of data) {
-          if (signal.aborted) break;
-          console.log(new TextDecoder().decode(chunk));
-        }
-        console.log("Finish stream");
-      }
+    if (!abortController) {
+      dispatch(guessThatSongActions.setAbortController(new AbortController()));
     }
-    readData(`${process.env.NEXT_PUBLIC_EXPRESS_SERVER_HOST}GTSAttempts/${currentAttempt}`, {
-      signal: abortController.signal,
-    });
-    audioRef.current?.play();
-    dispatch(guessThatSongActions.setCurrentAttemptSongIsPlaying(true));
   };
 
-  const startReadableStreamHandler = async function (
-    this: string,
-    e: React.MouseEvent<HTMLDivElement>
-  ) {
-    abortController = new AbortController();
+  // const startReadableStreamHandler = async function (
+  //   this: string,
+  //   e: React.MouseEvent<HTMLDivElement>
+  // ) {
+  //   setAborter(new AbortController());
 
-    async function readData(url: string, { signal }: any) {
-      console.log("Srart stream");
-      const response = await fetch(url, signal);
+  //   async function readData(url: string, { signal }: any) {
+  //     console.log("Srart stream");
+  //     const response = await fetch(url, signal);
 
-      if (response.body) {
-        const data: any = response.body;
-        for await (const chunk of data) {
-          if (signal.aborted) break;
-          console.log(new TextDecoder().decode(chunk));
-        }
-        console.log("Finish stream");
-      }
-    }
-    readData(`${process.env.NEXT_PUBLIC_EXPRESS_SERVER_HOST}GTSAttempts/${currentAttempt}`, {
-      signal: abortController.signal,
-    });
-  };
+  //     if (response.body) {
+  //       const data: any = response.body;
+  //       for await (const chunk of data) {
+  //         if (signal.aborted) break;
+  //         console.log(new TextDecoder().decode(chunk));
+  //       }
+  //       console.log("Finish stream");
+  //     }
+  //   }
+  //   readData(`${process.env.NEXT_PUBLIC_EXPRESS_SERVER_HOST}GTSAttempts/${currentAttempt}`, {
+  //     signal: abortController?.signal,
+  //   });
+  // };
 
   // const stopRedableStream = () => {
   //     abortController.abort();
@@ -84,6 +72,7 @@ const DisplayCurrentTrack = ({ audioRef, abortController }: IDisplayCurrentTrack
         src={`${currentAttemptData.songURL}`}
         // controls
       ></audio>
+      <FetchConyroller audioRef={audioRef}></FetchConyroller>
     </div>
   );
 };
