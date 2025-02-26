@@ -8,6 +8,7 @@ import { AppDispatch } from "@/app/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import GTSGameAnswer from "./GTSGameAnswer";
+import RemainedTimeAnswerModal from "./RemainedTimeAnswerModal";
 
 const AnswersModalMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -58,7 +59,7 @@ const AnswersModalMain = () => {
   const answersEls = currentGTSAnswers.map((answer) => {
     return (
       <div key={answer._id}>
-        <GTSGameAnswer answerText={answer.text}></GTSGameAnswer>
+        <GTSGameAnswer id={answer._id} answerText={answer.text}></GTSGameAnswer>
       </div>
     );
   });
@@ -94,9 +95,18 @@ const AnswersModalMain = () => {
               </div>
             </div>
 
-            <div className=" w-full rounded-lg my-3 flex flex-col justify-center items-center">
+            <div className=" w-full h-[60vh] min-h-96 overflow-hidden overflow-y-scroll rounded-lg my-3 flex flex-col">
               <div className=" w-full flex flex-col justify-center items-center">
-                <div className="   w-full  flex  justify-around items-center">{answersEls}</div>
+                <div className="   w-full flex  justify-around items-center">
+                  <div className=" w-10/12 py-4  grid sm:grid-cols-2 grid-cols-1 gap-6">
+                    {answersEls}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className=" flex justify-center items-center">
+              <div className=" w-11/12">
+                <RemainedTimeAnswerModal></RemainedTimeAnswerModal>
               </div>
             </div>
           </motion.div>{" "}

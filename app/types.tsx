@@ -366,6 +366,11 @@ export interface IGTSAttemptSchema {
   isCompleted: boolean;
   currentQuestion: number;
   answerTime: number;
+  attemptQuestionStatus: {
+    questionID: string;
+    getAnswer: boolean;
+    answerIsCorrect?: boolean;
+  }[];
 }
 
 export interface IGTSGameSchema {

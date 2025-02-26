@@ -11,6 +11,13 @@ const GTSGameAttemptSchema = new mongoose.Schema<IGTSAttemptSchema>({
   isCompleted: { type: Boolean, required: true },
   currentQuestion: { type: Number, required: true },
   answerTime: { type: Number, required: true },
+  attemptQuestionStatus: [
+    {
+      questionID: { type: String, required: true },
+      getAnswer: { type: Boolean, required: true },
+      answerIsCorrect: { type: Boolean, required: false },
+    },
+  ],
 });
 
 const GTSGameAttempt =

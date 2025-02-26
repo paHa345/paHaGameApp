@@ -32,6 +32,7 @@ export async function GET(req: NextRequest, segmentData: any) {
     const questionAnswers = currentGame.GTSGameObj[currentAttempt[0].currentQuestion].answersArr;
     const attemptTimeRemained = currentAttempt[0].timeRemained;
     const attemptFullTime = currentAttempt[0].attemptTime;
+    const answerTime = currentAttempt[0].answerTime;
 
     return NextResponse.json({
       message: "sucess",
@@ -40,6 +41,7 @@ export async function GET(req: NextRequest, segmentData: any) {
         questionAnswers: questionAnswers,
         attemptTimeRemained: attemptTimeRemained,
         attemptFullTime: attemptFullTime,
+        answerTime: answerTime,
       },
     });
   } catch (error: any) {

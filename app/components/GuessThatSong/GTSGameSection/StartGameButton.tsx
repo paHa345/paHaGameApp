@@ -2,6 +2,7 @@
 
 import { AppDispatch } from "@/app/store";
 import {
+  GTSGameFetchStatus,
   IGuessThatSongSlice,
   startGTSGameLaunchAttemptTimer,
 } from "@/app/store/guessThatSongSlice";
@@ -15,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 const StartGameButton = () => {
   const { user } = useTelegram();
   const dispatch = useDispatch<AppDispatch>();
+
   const currentAttemptID = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSGameAttemptID
   );
@@ -48,7 +50,10 @@ const StartGameButton = () => {
       >
         <div className=" flex justify-center items-center flex-col px-5 py-5 ">
           <div className=" h-20 w-20">
-            <FontAwesomeIcon className="fa-fw fa-4x" icon={faHeadphonesAlt} />
+            <FontAwesomeIcon
+              className={`fa-fw fa-4x ${startGameStatus === GTSGameFetchStatus.Loading ? "animate-spin" : ""} `}
+              icon={faHeadphonesAlt}
+            />
           </div>
 
           <div>

@@ -25,6 +25,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Вы уже пытались сыграть в эту игру" }, { status: 400 });
     }
 
+    const attemptQuestionStatus = currentGTSGame.GTSGameObj.map(
+      (question: {
+        _id: string;
+        songURL: string;
+        correctAnswerIndex: number;
+        answersArr: { text: string };
+      }) => {
+        return { questionID: question._id, getAnswer: false };
+      }
+    );
+
     const uncompletedAttempt = await GTSGameAttempt.find({
       GTSGameID: body.GTSGameID,
       telegramID: body.telegramID,
@@ -37,9 +48,6 @@ export async function POST(req: NextRequest) {
 
     const startDate = new Date();
 
-    // console.log(currentGTSGame.gameComplexity);
-    // console.log(currentGTSGame.GTSGameObj.length);
-
     const newAttampt = await GTSGameAttempt.create({
       ...body,
       isCompleted: false,
@@ -48,6 +56,7 @@ export async function POST(req: NextRequest) {
       startDate: startDate,
       timeRemained: currentGTSGame.GTSGameObj.length * currentGTSGame.gameComplexity,
       attemptTime: currentGTSGame.GTSGameObj.length * currentGTSGame.gameComplexity,
+      attemptQuestionStatus: attemptQuestionStatus,
     });
     return NextResponse.json({ message: "Success", result: newAttampt });
   } catch (error: any) {
