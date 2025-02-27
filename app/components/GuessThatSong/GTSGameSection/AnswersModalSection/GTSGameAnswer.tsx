@@ -12,9 +12,13 @@ const GTSGameAnswer = ({ answerText, id }: IGTSGameAnswerProps) => {
   const chosenGTSGameAnswerID = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.chosenGTSGameAnswerID
   );
+  const stopAnswerTimeController = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.stopAnswerTimerController
+  );
   const chooseAnswerHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     dispatch(guessThatSongActions.setChosenGTSGameAnswerID(id));
+    stopAnswerTimeController?.abort();
   };
   return (
     <div

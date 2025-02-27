@@ -27,8 +27,9 @@ const FetchAnswerTimeStream = () => {
             if (signal?.aborted) break;
 
             const time = new TextDecoder().decode(chunk).split(" ");
-            console.log(time[1]);
-            dispatch(guessThatSongActions.setCurrentAnswerTimeRemained(time[1]));
+            if (time[0] === "answerTimeRemained:") {
+              dispatch(guessThatSongActions.setCurrentAnswerTimeRemained(time[1]));
+            }
           }
           console.log("Finish stream");
         }

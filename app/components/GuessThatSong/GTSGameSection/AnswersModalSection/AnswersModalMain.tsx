@@ -66,13 +66,8 @@ const AnswersModalMain = () => {
   });
 
   useEffect(() => {
-    console.log("create controller");
     dispatch(guessThatSongActions.setStopAnswerTimerController(new AbortController()));
   }, []);
-
-  const clickHandler = () => {
-    // dispatch(guessThatSongActions.setStopAnswerTimerController(new AbortController()));
-  };
 
   return (
     <AnimatePresence>
@@ -120,7 +115,6 @@ const AnswersModalMain = () => {
               </div>
             </div>
             <FetchAnswerTimeStream></FetchAnswerTimeStream>
-            <button onClick={clickHandler}>Get</button>
           </motion.div>{" "}
         </motion.div>
       )}
