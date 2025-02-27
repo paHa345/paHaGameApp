@@ -31,6 +31,7 @@ const SongStartStopButton = ({ audioRef }: ISongStartStopButtonProps) => {
       dispatch(guessThatSongActions.setAbortController(undefined));
       console.log("Stop song");
       dispatch(guessThatSongActions.setShowGTSAnswersModal(true));
+      dispatch(guessThatSongActions.setStopAnswerTimerController(new AbortController()));
     } else {
       audioRef.current?.play();
       if (!abortController) {

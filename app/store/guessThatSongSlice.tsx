@@ -131,6 +131,8 @@ export interface IGuessThatSongSlice {
     abortController?: AbortController;
     showGTSAnswersModal: boolean;
     chosenGTSGameAnswerID?: string;
+    stopAnswerTimerController?: AbortController;
+    currentAnswerTimeRemained: number;
   };
 }
 
@@ -172,6 +174,8 @@ interface IGuessThatSongState {
   abortController?: AbortController;
   showGTSAnswersModal: boolean;
   chosenGTSGameAnswerID?: string;
+  stopAnswerTimerController?: AbortController;
+  currentAnswerTimeRemained: number;
 }
 
 export const initGuessThatSongState: IGuessThatSongState = {
@@ -200,6 +204,7 @@ export const initGuessThatSongState: IGuessThatSongState = {
   startGTSGameLaunchAttemptTimerStatus: GTSGameFetchStatus.Ready,
   currentAttemptSongIsPlaying: false,
   showGTSAnswersModal: false,
+  currentAnswerTimeRemained: 10,
 };
 
 export const guessThatSongSlice = createSlice({
@@ -280,6 +285,12 @@ export const guessThatSongSlice = createSlice({
     },
     setChosenGTSGameAnswerID(state, action) {
       state.chosenGTSGameAnswerID = action.payload;
+    },
+    setStopAnswerTimerController(state, action) {
+      state.stopAnswerTimerController = action.payload;
+    },
+    setCurrentAnswerTimeRemained(state, action) {
+      state.currentGTSAttemptData.answerTime = action.payload;
     },
   },
   extraReducers(builder) {

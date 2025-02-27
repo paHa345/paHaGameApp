@@ -1,7 +1,7 @@
 "use client";
 import { guessThatSongActions, IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
 import { AnimatePresence } from "framer-motion";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as motion from "motion/react-client";
 import { AppDispatch } from "@/app/store";
@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import GTSGameAnswer from "./GTSGameAnswer";
 import RemainedTimeAnswerModal from "./RemainedTimeAnswerModal";
+import FetchAnswerTimeStream from "./FetchAnswerTimeStream";
 
 const AnswersModalMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -64,6 +65,15 @@ const AnswersModalMain = () => {
     );
   });
 
+  useEffect(() => {
+    console.log("create controller");
+    dispatch(guessThatSongActions.setStopAnswerTimerController(new AbortController()));
+  }, []);
+
+  const clickHandler = () => {
+    // dispatch(guessThatSongActions.setStopAnswerTimerController(new AbortController()));
+  };
+
   return (
     <AnimatePresence>
       {showGTSAnswersModal && (
@@ -109,6 +119,8 @@ const AnswersModalMain = () => {
                 <RemainedTimeAnswerModal></RemainedTimeAnswerModal>
               </div>
             </div>
+            <FetchAnswerTimeStream></FetchAnswerTimeStream>
+            <button onClick={clickHandler}>Get</button>
           </motion.div>{" "}
         </motion.div>
       )}
