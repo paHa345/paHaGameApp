@@ -68,6 +68,7 @@ const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
               <div className=" text-slate-800 flex justify-center items-center pt-5 h-14 w-14">
                 <FontAwesomeIcon className="fa-fw fa-2x" icon={faHeadphones} />
               </div>
+              <h1>{user?.id}</h1>
               <h1 className=" text-center grow text-2xl text font-bold pl-1 py-2 my-2 sm:py-8 sm:my-8">
                 {GTSGameData.name}
               </h1>
