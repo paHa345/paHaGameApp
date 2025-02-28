@@ -14,6 +14,7 @@ import { AnimatePresence } from "framer-motion";
 import * as motion from "motion/react-client";
 import { useRouter } from "next/navigation";
 import { IAppSlice } from "@/app/store/appStateSlice";
+import { useTelegram } from "@/app/telegramProvider";
 
 const StartGameModalMain = () => {
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
@@ -22,6 +23,8 @@ const StartGameModalMain = () => {
   const crosswordID = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame._id
   );
+
+  const { user } = useTelegram();
 
   const router = useRouter();
 
@@ -148,6 +151,8 @@ const StartGameModalMain = () => {
           >
             <div className="modal-header">
               {/* <LoadCrosswordGameNotification></LoadCrosswordGameNotification> */}
+
+              <h1>Hello {user?.id}</h1>
 
               {telegramUser?.username && (
                 <div className=" font-semibold text-2xl pb-4">
