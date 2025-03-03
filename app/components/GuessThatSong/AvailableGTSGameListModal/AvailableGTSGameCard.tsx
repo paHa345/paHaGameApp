@@ -21,7 +21,7 @@ interface IGTSGameCard {
 }
 const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { user } = useTelegram();
+  // const { user } = useTelegram();
 
   const loadGTSGameStatus = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.fetchAvailableGTSGameStatus
@@ -29,6 +29,18 @@ const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
 
   const loadGTSGameHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    let user;
+    const params = new URLSearchParams(window.location.hash.slice(1));
+    console.log(params.size);
+
+    const initData = params.get("tgWebAppData");
+    if (initData !== null) {
+      const initDataParams = new URLSearchParams(initData);
+      const userParams = initDataParams.get("user") as any;
+      user = JSON.parse(userParams);
+      console.log(user);
+    }
 
     if (user) {
       dispatch(
@@ -68,7 +80,6 @@ const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
               <div className=" text-slate-800 flex justify-center items-center pt-5 h-14 w-14">
                 <FontAwesomeIcon className="fa-fw fa-2x" icon={faHeadphones} />
               </div>
-              <h1>{user?.id}</h1>
               <h1 className=" text-center grow text-2xl text font-bold pl-1 py-2 my-2 sm:py-8 sm:my-8">
                 {GTSGameData.name}
               </h1>
