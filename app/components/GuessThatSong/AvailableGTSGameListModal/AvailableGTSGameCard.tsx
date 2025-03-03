@@ -31,7 +31,7 @@ const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
     e.preventDefault();
 
     let user;
-    const hash = window.location.hash.slice(1);
+    const hash = window.location.hash;
     console.log(hash);
 
     console.log(`hash: ${hash}`);
