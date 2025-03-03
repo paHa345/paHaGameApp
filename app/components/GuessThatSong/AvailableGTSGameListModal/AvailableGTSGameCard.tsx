@@ -34,8 +34,10 @@ const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
     const params = new URLSearchParams(window.location.hash.slice(1));
     console.log(params.size);
 
+    console.log(`Params: ${params}`);
+
     const initData = params.get("tgWebAppData");
-    console.log(`Params: ${initData}`);
+    console.log(`tgWebAppData: ${initData}`);
     if (initData !== null) {
       const initDataParams = new URLSearchParams(initData);
       const userParams = initDataParams.get("user") as any;
