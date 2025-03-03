@@ -31,28 +31,28 @@ const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
     e.preventDefault();
 
     let user;
-    const params = new URLSearchParams(window.location.hash.slice(1));
-    console.log(params.size);
+    const hash = window.location.hash.slice(1);
+    console.log(hash);
 
-    console.log(`Params: ${params}`);
+    console.log(`hash: ${hash}`);
 
-    const initData = params.get("tgWebAppData");
-    console.log(`tgWebAppData: ${initData}`);
-    if (initData !== null) {
-      const initDataParams = new URLSearchParams(initData);
-      const userParams = initDataParams.get("user") as any;
-      user = JSON.parse(userParams);
-      console.log(user);
+    const params = new URLSearchParams(hash);
+    console.log(`params: ${params}`);
+    if (params.get("tgWebAppData") !== null) {
+      // const initDataParams = new URLSearchParams(initData);
+      // const userParams = initDataParams.get("user") as any;
+      // user = JSON.parse(userParams);
+      // console.log(user);
     }
 
     if (user) {
-      dispatch(
-        createAttemptAndAddInSlice({
-          GTSGameID: GTSGameData._id,
-          telegramID: user?.id,
-          telegramUserName: user?.username,
-        })
-      );
+      // dispatch(
+      //   createAttemptAndAddInSlice({
+      //     GTSGameID: GTSGameData._id,
+      //     telegramID: user?.id,
+      //     telegramUserName: user?.username,
+      //   })
+      // );
     } else {
       dispatch(
         createAttemptAndAddInSlice({
@@ -67,7 +67,6 @@ const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
       redirect("/guessThatSongGame/game");
     }, 2000);
 
-    console.log(user?.id);
     console.log("Load GTS Game");
     console.log(GTSGameData._id);
   };
