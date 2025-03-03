@@ -12,7 +12,7 @@ import { faFolderClosed } from "@fortawesome/free-regular-svg-icons";
 import { faFolderOpen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const ChooseGTSGameButton = () => {
@@ -22,6 +22,20 @@ const ChooseGTSGameButton = () => {
     e.preventDefault();
     dispatch(guessThatSongActions.setShowChooseGTSModal(true));
   };
+
+  useEffect(() => {
+    console.log("Effect");
+    const params = new URLSearchParams(window.location.hash.slice(1));
+    console.log(params.size);
+
+    const initData = params.get("tgWebAppData");
+    if (initData !== null) {
+      const initDataParams = new URLSearchParams(initData);
+      const userParams = initDataParams.get("user") as any;
+      const user = JSON.parse(userParams);
+      console.log(`TG User ${user}`);
+    }
+  }, []);
 
   return (
     <article
