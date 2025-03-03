@@ -152,11 +152,10 @@ const StartGameModalMain = () => {
             <div className="modal-header">
               {/* <LoadCrosswordGameNotification></LoadCrosswordGameNotification> */}
 
-              <h1>Hello {user?.username}</h1>
+              {/* <h1>Hello {user?.username}</h1> */}
 
               {telegramUser?.username && (
                 <div className=" font-semibold text-2xl pb-4">
-                  <h2>Приветствуем, {(window as any).Telegram?.WebApp}!</h2>
                   {/* <h3>Ваш Telegram ID: {user?.id}</h3> */}
                 </div>
               )}

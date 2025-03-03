@@ -14,7 +14,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const StartGameButton = () => {
-  const { user } = useTelegram();
+  // const { user } = useTelegram();
   const dispatch = useDispatch<AppDispatch>();
 
   const currentAttemptID = useSelector(
@@ -25,6 +25,17 @@ const StartGameButton = () => {
   );
   console.log(startGameStatus);
   const startGameHandler = () => {
+    let user;
+    const params = new URLSearchParams(window.location.hash.slice(1));
+    console.log(params.size);
+
+    const initData = params.get("tgWebAppData");
+    if (initData !== null) {
+      const initDataParams = new URLSearchParams(initData);
+      const userParams = initDataParams.get("user") as any;
+      user = JSON.parse(userParams);
+      console.log(user);
+    }
     if (!user) {
       dispatch(
         startGTSGameLaunchAttemptTimer({
