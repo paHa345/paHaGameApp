@@ -57,7 +57,7 @@ const Header = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.hash.slice(1));
-    console.log(params.size);
+    console.log(params);
 
     const initData = params.get("tgWebAppData");
     if (initData !== null) {
