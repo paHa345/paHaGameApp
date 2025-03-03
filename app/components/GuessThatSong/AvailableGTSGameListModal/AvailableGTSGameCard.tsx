@@ -7,7 +7,7 @@ import {
 import { useTelegram } from "@/app/telegramProvider";
 import { faHeadphones, faTrophy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { retrieveLaunchParams } from "@telegram-apps/sdk";
 
@@ -67,6 +67,19 @@ const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
         })
       );
     }
+
+    useEffect(() => {
+      const params = new URLSearchParams(window.location.hash.slice(1));
+      console.log(params.size);
+
+      const initData = params.get("tgWebAppData");
+      if (initData !== null) {
+        const initDataParams = new URLSearchParams(initData);
+        const userParams = initDataParams.get("user") as any;
+        const user = JSON.parse(userParams);
+        console.log(user);
+      }
+    }, []);
 
     setTimeout(() => {
       redirect("/guessThatSongGame/game");
