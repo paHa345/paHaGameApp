@@ -24,7 +24,6 @@ import { retrieveLaunchParams } from "@telegram-apps/sdk";
 import { crossworGamedActions, ICrosswordGameSlice } from "../store/crosswordGameSlice";
 import { div } from "framer-motion/client";
 import { appStateActions, IAppSlice } from "../store/appStateSlice";
-import { parseInitData } from "@telegram-apps/sdk";
 import { useTelegram } from "../telegramProvider";
 
 // import CountRequestsAddToCoach from "./HeaderSection/CountRequestsAddToCoach";
