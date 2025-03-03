@@ -55,10 +55,6 @@ const Header = () => {
 
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
 
-  const { user } = useTelegram();
-
-  console.log(user);
-
   useEffect(() => {
     const params = new URLSearchParams(window.location.hash.slice(1));
     console.log(params.size);

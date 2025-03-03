@@ -1,3 +1,4 @@
+"use client";
 import { AppDispatch } from "@/app/store";
 import {
   createAttemptAndAddInSlice,
@@ -22,8 +23,8 @@ interface IGTSGameCard {
 }
 const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
   const dispatch = useDispatch<AppDispatch>();
-  // const { user } = useTelegram();
-  const { initDataRaw, initData } = retrieveLaunchParams();
+  const { user } = useTelegram();
+  // const { initDataRaw, initData } = retrieveLaunchParams();
 
   const loadGTSGameStatus = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.fetchAvailableGTSGameStatus
@@ -32,32 +33,14 @@ const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
   const loadGTSGameHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    console.log(initData);
-    console.log(initDataRaw);
-
-    let user;
-    const hash = window.location.hash;
-    console.log(hash);
-
-    console.log(`hash: ${hash}`);
-
-    const params = new URLSearchParams(hash);
-    console.log(`params: ${params}`);
-    if (params.get("tgWebAppData") !== null) {
-      // const initDataParams = new URLSearchParams(initData);
-      // const userParams = initDataParams.get("user") as any;
-      // user = JSON.parse(userParams);
-      // console.log(user);
-    }
-
     if (user) {
-      // dispatch(
-      //   createAttemptAndAddInSlice({
-      //     GTSGameID: GTSGameData._id,
-      //     telegramID: user?.id,
-      //     telegramUserName: user?.username,
-      //   })
-      // );
+      dispatch(
+        createAttemptAndAddInSlice({
+          GTSGameID: GTSGameData._id,
+          telegramID: user?.id,
+          telegramUserName: user?.username,
+        })
+      );
     } else {
       dispatch(
         createAttemptAndAddInSlice({
@@ -69,6 +52,7 @@ const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
     }
 
     useEffect(() => {
+      console.log("asfasd");
       const params = new URLSearchParams(window.location.hash.slice(1));
       console.log(params.size);
 
