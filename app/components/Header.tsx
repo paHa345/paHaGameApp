@@ -24,6 +24,7 @@ import { crossworGamedActions, ICrosswordGameSlice } from "../store/crosswordGam
 import { div } from "framer-motion/client";
 import { appStateActions, IAppSlice } from "../store/appStateSlice";
 import { useTelegram } from "../telegramProvider";
+import { retrieveLaunchParams } from "@telegram-apps/sdk";
 
 // import CountRequestsAddToCoach from "./HeaderSection/CountRequestsAddToCoach";
 
@@ -59,7 +60,8 @@ const Header = () => {
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
 
   useEffect(() => {
-    console.log(`Window: ${(window as any).Telegram}`);
+    const { initDataRaw, initData } = retrieveLaunchParams();
+    console.log(`Init data: ${initData}`);
   });
 
   useEffect(() => {
