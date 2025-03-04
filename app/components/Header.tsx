@@ -59,7 +59,7 @@ const Header = () => {
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
 
   useEffect(() => {
-    console.log((window as any).Telegram);
+    console.log(`Window: ${(window as any).Telegram}`);
   });
 
   useEffect(() => {
