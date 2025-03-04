@@ -58,7 +58,7 @@ const Header = () => {
   useEffect(() => {
     const { initDataRaw, initData } = retrieveLaunchParams();
     console.log(`Init data: ${initData}`);
-    console.log(`Window: ${window}`);
+    console.log(`Window: ${window.Telegram}`);
   });
 
   useEffect(() => {
