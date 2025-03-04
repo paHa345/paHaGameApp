@@ -18,7 +18,6 @@ import { init, retrieveLaunchParams } from "@telegram-apps/sdk";
 
 const ChooseGTSGameButton = () => {
   const dispatch = useDispatch<AppDispatch>();
-  init();
 
   const chooseGTSButtonHandler = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
@@ -26,6 +25,7 @@ const ChooseGTSGameButton = () => {
   };
 
   useEffect(() => {
+    init();
     const { initDataRaw, initData } = retrieveLaunchParams();
 
     console.log(initData);
