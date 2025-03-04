@@ -13,6 +13,19 @@ const GamesSectionMain = () => {
     dispatch(crossworGamedActions.clearCurrentUserCompletedAttempt());
     dispatch(crossworGamedActions.setEndAttempt(false));
   });
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.hash.slice(1));
+    console.log(params);
+
+    const initData = params.get("tgWebAppData");
+    if (initData !== null) {
+      const initDataParams = new URLSearchParams(initData);
+      const userParams = initDataParams.get("user") as any;
+      const user = JSON.parse(userParams);
+      console.log(`TGUser : ${user}`);
+    }
+  }, []);
   return (
     <section className=" container mx-auto">
       <div className=" py-5">
