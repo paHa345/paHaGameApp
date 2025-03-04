@@ -48,9 +48,10 @@ const Header = () => {
   const session = useSession();
 
   const path = usePathname();
-  const { user } = useTelegram();
 
-  console.log(`TG User : ${user?.id}`);
+  const { initDataRaw, initData } = retrieveLaunchParams();
+
+  console.log(`TG User : ${initData}`);
 
   const currentCrosswordLength = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame.crosswordLength
