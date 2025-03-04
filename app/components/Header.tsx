@@ -49,9 +49,12 @@ const Header = () => {
   const path = usePathname();
 
   const { user } = useTelegram();
-  const app = (window as any).Telegram?.WebApp;
 
-  console.log(`user : ${app}`);
+  // const app = (window as any).Telegram?.WebApp;
+
+  console.log((window as any).Telegram);
+
+  console.log(`user : ${user}`);
 
   const currentCrosswordLength = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame.crosswordLength
