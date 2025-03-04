@@ -4,7 +4,6 @@ import Header from "../Header";
 import Footer from "../Footer";
 import SessionProviderComponent from "../SessionProviderSection/SessionProvider";
 import ReduxProvider from "@/app/ReduxProvider";
-import { retrieveLaunchParams } from "@telegram-apps/sdk";
 import Transition from "../Transition";
 import { usePathname, useRouter } from "next/navigation";
 import { ViewTransitions } from "next-view-transitions";
