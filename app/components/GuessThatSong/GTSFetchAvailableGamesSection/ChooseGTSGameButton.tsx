@@ -23,6 +23,11 @@ const ChooseGTSGameButton = () => {
     dispatch(guessThatSongActions.setShowChooseGTSModal(true));
   };
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.hash.slice(1));
+    console.log(`Perems: ${params}`);
+  }, []);
+
   return (
     <article
       onClick={chooseGTSButtonHandler}
