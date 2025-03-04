@@ -30,11 +30,14 @@ const ChooseGTSGameButton = () => {
     dispatch(guessThatSongActions.setShowChooseGTSModal(true));
   };
 
-  // useEffect(() => {
-  //   console.log("Effect");
-  //   const params = new URLSearchParams(window.location.hash.slice(1));
-  //   console.log(params.size);
-  // });
+  useEffect(() => {
+    console.log("Effect");
+    if (isTelegramWebApp()) {
+      const { initData } = retrieveLaunchParams();
+
+      console.log(initData?.user);
+    }
+  });
 
   return (
     <article
