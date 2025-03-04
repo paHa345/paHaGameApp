@@ -19,14 +19,14 @@ import { init, retrieveLaunchParams } from "@telegram-apps/sdk-react";
 const ChooseGTSGameButton = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  init();
-
   const chooseGTSButtonHandler = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     dispatch(guessThatSongActions.setShowChooseGTSModal(true));
   };
 
   useEffect(() => {
+    init();
+
     console.log("Effect");
     const params = new URLSearchParams(window.location.hash.slice(1));
     console.log(params.size);
