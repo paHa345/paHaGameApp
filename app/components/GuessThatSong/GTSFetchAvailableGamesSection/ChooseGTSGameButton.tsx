@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { init, retrieveLaunchParams } from "@telegram-apps/sdk-react";
+import { retrieveLaunchParams } from "@telegram-apps/sdk-react";
 
 const ChooseGTSGameButton = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -25,8 +25,6 @@ const ChooseGTSGameButton = () => {
   };
 
   useEffect(() => {
-    init();
-
     console.log("Effect");
     const params = new URLSearchParams(window.location.hash.slice(1));
     console.log(params.size);

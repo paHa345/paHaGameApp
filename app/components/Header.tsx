@@ -23,6 +23,7 @@ import { isTelegramWebApp } from "./Layout/MainLayout";
 import { crossworGamedActions, ICrosswordGameSlice } from "../store/crosswordGameSlice";
 import { div } from "framer-motion/client";
 import { appStateActions, IAppSlice } from "../store/appStateSlice";
+import { init } from "@telegram-apps/sdk-react";
 
 // import CountRequestsAddToCoach from "./HeaderSection/CountRequestsAddToCoach";
 
@@ -54,6 +55,7 @@ const Header = () => {
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
 
   useEffect(() => {
+    init();
     const params = new URLSearchParams(window.location.hash.slice(1));
     console.log(params);
 
