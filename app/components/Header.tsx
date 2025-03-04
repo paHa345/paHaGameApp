@@ -48,6 +48,9 @@ const Header = () => {
 
   const path = usePathname();
 
+  const { user } = useTelegram();
+  console.log(`user : ${user?.id}`);
+
   const currentCrosswordLength = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame.crosswordLength
   );

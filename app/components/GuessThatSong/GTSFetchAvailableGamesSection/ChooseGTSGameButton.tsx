@@ -23,19 +23,6 @@ const ChooseGTSGameButton = () => {
     dispatch(guessThatSongActions.setShowChooseGTSModal(true));
   };
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.hash.slice(1));
-    console.log(params);
-
-    const initData = params.get("tgWebAppData");
-    if (initData !== null) {
-      const initDataParams = new URLSearchParams(initData);
-      const userParams = initDataParams.get("user") as any;
-      const user = JSON.parse(userParams);
-      console.log(`TGUser : ${user.id}`);
-    }
-  }, []);
-
   return (
     <article
       onClick={chooseGTSButtonHandler}
