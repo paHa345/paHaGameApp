@@ -15,23 +15,26 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { retrieveLaunchParams } from "@telegram-apps/sdk-react";
+import { isTelegramWebApp } from "../../Layout/MainLayout";
 
 const ChooseGTSGameButton = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const chooseGTSButtonHandler = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
+    if (isTelegramWebApp()) {
+      const { initData } = retrieveLaunchParams();
+
+      console.log(initData?.user);
+    }
     dispatch(guessThatSongActions.setShowChooseGTSModal(true));
   };
 
-  useEffect(() => {
-    console.log("Effect");
-    const params = new URLSearchParams(window.location.hash.slice(1));
-    console.log(params.size);
-    const { initDataRaw, initData } = retrieveLaunchParams();
-
-    console.log(initData?.user);
-  });
+  // useEffect(() => {
+  //   console.log("Effect");
+  //   const params = new URLSearchParams(window.location.hash.slice(1));
+  //   console.log(params.size);
+  // });
 
   return (
     <article

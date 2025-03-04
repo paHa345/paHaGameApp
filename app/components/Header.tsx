@@ -55,7 +55,6 @@ const Header = () => {
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
 
   useEffect(() => {
-    init();
     const params = new URLSearchParams(window.location.hash.slice(1));
     console.log(params);
 
@@ -84,6 +83,7 @@ const Header = () => {
   useEffect(() => {
     if (isTelegramWebApp()) {
       // console.log("User is using Telegram Web App or in-app browser.");
+      init();
       dispatch(crossworGamedActions.setBrowserType("telegram"));
     } else {
       // console.log("User is using a regular browser.");

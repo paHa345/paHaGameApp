@@ -10,7 +10,6 @@ import { faHeadphones, faTrophy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { retrieveLaunchParams } from "@telegram-apps/sdk-react";
 
 import { redirect } from "next/navigation";
 
@@ -24,7 +23,6 @@ interface IGTSGameCard {
 const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useTelegram();
-  // const { initDataRaw, initData } = retrieveLaunchParams();
 
   const loadGTSGameStatus = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.fetchAvailableGTSGameStatus
