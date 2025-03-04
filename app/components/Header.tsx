@@ -50,10 +50,6 @@ const Header = () => {
 
   const { user } = useTelegram();
 
-  // const app = (window as any).Telegram?.WebApp;
-
-  console.log((window as any).Telegram);
-
   console.log(`user : ${user}`);
 
   const currentCrosswordLength = useSelector(
@@ -61,6 +57,10 @@ const Header = () => {
   );
 
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
+
+  useEffect(() => {
+    console.log((window as any).Telegram);
+  });
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.hash.slice(1));
