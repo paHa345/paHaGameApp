@@ -49,10 +49,6 @@ const Header = () => {
 
   const path = usePathname();
 
-  const { user } = useTelegram();
-
-  console.log(`user : ${user}`);
-
   const currentCrosswordLength = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame.crosswordLength
   );
@@ -62,6 +58,7 @@ const Header = () => {
   useEffect(() => {
     const { initDataRaw, initData } = retrieveLaunchParams();
     console.log(`Init data: ${initData}`);
+    console.log(`Window: ${window}`);
   });
 
   useEffect(() => {
