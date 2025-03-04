@@ -20,7 +20,6 @@ import { usePathname } from "next/navigation";
 import TransitionTemplate from "./TransitionTemplate";
 import { AppDispatch } from "../store";
 import { isTelegramWebApp } from "./Layout/MainLayout";
-import { retrieveLaunchParams } from "@telegram-apps/sdk";
 import { crossworGamedActions, ICrosswordGameSlice } from "../store/crosswordGameSlice";
 import { div } from "framer-motion/client";
 import { appStateActions, IAppSlice } from "../store/appStateSlice";
@@ -48,10 +47,6 @@ const Header = () => {
   const session = useSession();
 
   const path = usePathname();
-
-  const { initDataRaw, initData } = retrieveLaunchParams();
-
-  console.log(`TG User : ${initData}`);
 
   const currentCrosswordLength = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.crosswordGame.crosswordLength
