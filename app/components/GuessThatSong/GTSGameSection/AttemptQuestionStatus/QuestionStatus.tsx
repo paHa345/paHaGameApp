@@ -5,11 +5,12 @@ import React from "react";
 
 interface IQuestionStatusProps {
   isCompleted: boolean;
+  isCurrent: boolean;
 }
-const QuestionStatus = ({ isCompleted }: IQuestionStatusProps) => {
+const QuestionStatus = ({ isCompleted, isCurrent }: IQuestionStatusProps) => {
   return (
     <div>
-      <div className=" ">
+      <div className={`${isCurrent ? " bg-cyan-200" : " bg-amber-200"} py-1 px-1 rounded-lg`}>
         <FontAwesomeIcon
           style={{ color: `${isCompleted ? " green" : "gray"}` }}
           className="fa-fw fa-3x red"
