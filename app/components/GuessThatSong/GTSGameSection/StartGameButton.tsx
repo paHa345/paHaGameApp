@@ -12,6 +12,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { div } from "framer-motion/client";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { isTelegramWebApp } from "../../Layout/MainLayout";
+import { retrieveLaunchParams } from "@telegram-apps/sdk-react";
 
 const StartGameButton = () => {
   // const { user } = useTelegram();
@@ -25,32 +27,40 @@ const StartGameButton = () => {
   );
   console.log(startGameStatus);
   const startGameHandler = () => {
-    let user;
-    const params = new URLSearchParams(window.location.hash.slice(1));
-    console.log(params.size);
+    if (isTelegramWebApp()) {
+      const { initData } = retrieveLaunchParams();
 
-    const initData = params.get("tgWebAppData");
-    if (initData !== null) {
-      const initDataParams = new URLSearchParams(initData);
-      const userParams = initDataParams.get("user") as any;
-      user = JSON.parse(userParams);
-      console.log(user);
-    }
-    if (!user) {
+      console.log(initData?.user);
       dispatch(
         startGTSGameLaunchAttemptTimer({
           currentAttemptID: currentAttemptID,
-          telegramUserID: 777777,
+          telegramUserID: initData?.user?.id,
         })
       );
     } else {
       dispatch(
         startGTSGameLaunchAttemptTimer({
           currentAttemptID: currentAttemptID,
-          telegramUserID: user?.id,
+          telegramUserID: 777777,
         })
       );
     }
+
+    // if (!user) {
+    //   dispatch(
+    //     startGTSGameLaunchAttemptTimer({
+    //       currentAttemptID: currentAttemptID,
+    //       telegramUserID: 777777,
+    //     })
+    //   );
+    // } else {
+    //   dispatch(
+    //     startGTSGameLaunchAttemptTimer({
+    //       currentAttemptID: currentAttemptID,
+    //       telegramUserID: user?.id,
+    //     })
+    //   );
+    // }
   };
 
   return (

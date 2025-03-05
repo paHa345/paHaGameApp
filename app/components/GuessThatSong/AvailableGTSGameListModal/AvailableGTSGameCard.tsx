@@ -12,6 +12,8 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { redirect } from "next/navigation";
+import { isTelegramWebApp } from "../../Layout/MainLayout";
+import { retrieveLaunchParams } from "@telegram-apps/sdk-react";
 
 interface IGTSGameCard {
   GTSGameData: {
@@ -31,12 +33,13 @@ const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
   const loadGTSGameHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    if (user) {
+    if (isTelegramWebApp()) {
+      const { initData } = retrieveLaunchParams();
       dispatch(
         createAttemptAndAddInSlice({
           GTSGameID: GTSGameData._id,
-          telegramID: user?.id,
-          telegramUserName: user?.username,
+          telegramID: initData?.user?.id,
+          telegramUserName: initData?.user?.username,
         })
       );
     } else {
@@ -48,6 +51,24 @@ const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
         })
       );
     }
+
+    // if (user) {
+    //   dispatch(
+    //     createAttemptAndAddInSlice({
+    //       GTSGameID: GTSGameData._id,
+    //       telegramID: user?.id,
+    //       telegramUserName: user?.username,
+    //     })
+    //   );
+    // } else {
+    //   dispatch(
+    //     createAttemptAndAddInSlice({
+    //       GTSGameID: GTSGameData._id,
+    //       telegramID: 777777,
+    //       telegramUserName: "paHa345",
+    //     })
+    //   );
+    // }
 
     setTimeout(() => {
       redirect("/guessThatSongGame/game");
