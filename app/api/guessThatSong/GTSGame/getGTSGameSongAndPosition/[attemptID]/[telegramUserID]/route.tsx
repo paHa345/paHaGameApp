@@ -33,6 +33,8 @@ export async function GET(req: NextRequest, segmentData: any) {
     const attemptTimeRemained = currentAttempt[0].timeRemained;
     const attemptFullTime = currentAttempt[0].attemptTime;
     const answerTime = currentAttempt[0].answerTime;
+    const questionsStatus = currentAttempt[0].attemptQuestionStatus;
+    const currentQuestion = currentAttempt[0].currentQuestion;
 
     return NextResponse.json({
       message: "sucess",
@@ -42,6 +44,8 @@ export async function GET(req: NextRequest, segmentData: any) {
         attemptTimeRemained: attemptTimeRemained,
         attemptFullTime: attemptFullTime,
         answerTime: answerTime,
+        questionsStatus: questionsStatus,
+        currentQuestion: currentQuestion,
       },
     });
   } catch (error: any) {

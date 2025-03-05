@@ -124,6 +124,12 @@ export interface IGuessThatSongSlice {
       songURL: string;
       questionAnswers: { text: string; _id: string }[];
       answerTime: number;
+      questionsStatus: {
+        questionID: string;
+        getAnswer: boolean;
+        _id: string;
+      }[];
+      currentQuestion: number;
     };
     startGTSGameLaunchAttemptTimerStatus: GTSGameFetchStatus;
     startGTSGameLaunchAttemptTimerErrorMessage?: string;
@@ -167,6 +173,12 @@ interface IGuessThatSongState {
     songURL: string;
     questionAnswers: { text: string; _id: string }[];
     answerTime: number;
+    questionsStatus: {
+      questionID: string;
+      getAnswer: boolean;
+      _id: string;
+    }[];
+    currentQuestion: number;
   };
   startGTSGameLaunchAttemptTimerStatus: GTSGameFetchStatus;
   startGTSGameLaunchAttemptTimerErrorMessage?: string;
@@ -200,6 +212,14 @@ export const initGuessThatSongState: IGuessThatSongState = {
     songURL: "",
     questionAnswers: [{ text: "", _id: "" }],
     answerTime: 0,
+    questionsStatus: [
+      {
+        questionID: "",
+        getAnswer: true,
+        _id: "",
+      },
+    ],
+    currentQuestion: 0,
   },
   startGTSGameLaunchAttemptTimerStatus: GTSGameFetchStatus.Ready,
   currentAttemptSongIsPlaying: false,
