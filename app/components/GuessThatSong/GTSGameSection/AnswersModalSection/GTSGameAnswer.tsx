@@ -1,5 +1,9 @@
 import { AppDispatch } from "@/app/store";
-import { guessThatSongActions, IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
+import {
+  checkGTSGameAnswerAndSetQuestion,
+  guessThatSongActions,
+  IGuessThatSongSlice,
+} from "@/app/store/guessThatSongSlice";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -15,10 +19,14 @@ const GTSGameAnswer = ({ answerText, id }: IGTSGameAnswerProps) => {
   const stopAnswerTimeController = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.stopAnswerTimerController
   );
+  const attemptID = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSGameAttemptID
+  );
   const chooseAnswerHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     dispatch(guessThatSongActions.setChosenGTSGameAnswerID(id));
     stopAnswerTimeController?.abort();
+    dispatch(checkGTSGameAnswerAndSetQuestion({ answerID: id, attemptID: attemptID }));
   };
   return (
     <div

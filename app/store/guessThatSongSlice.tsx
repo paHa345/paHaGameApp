@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { GTSCreateGameActions } from "./GTSCreateGameSlice";
+import { isTelegramWebApp } from "../components/Layout/MainLayout";
+import { retrieveLaunchParams } from "@telegram-apps/sdk-react";
 
 export const getAvailableGTSGames = createAsyncThunk(
   "GTSGameState/getAvailableGTSGames",
@@ -86,6 +88,42 @@ export const startGTSGameLaunchAttemptTimer = createAsyncThunk(
   }
 );
 
+export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
+  "GTSGameState/checkGTSGameAnswerAndSetQuestion",
+  async function ({ answerID, attemptID }: any, { rejectWithValue, dispatch }) {
+    try {
+      let telegramUserID;
+      if (isTelegramWebApp()) {
+        const { initData } = retrieveLaunchParams();
+
+        telegramUserID = initData?.user;
+      } else {
+        telegramUserID = 777777;
+      }
+      console.log(telegramUserID);
+      console.log(answerID);
+      console.log(attemptID);
+      const checkAnswerReq = await fetch(`/api/guessThatSong/GTSGame/checkAnswer/`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ telegramUserID, answerID, attemptID }),
+      });
+
+      if (!checkAnswerReq.ok) {
+        throw new Error("Ошибка сервера");
+      }
+
+      const checkAnswer = await checkAnswerReq.json();
+
+      console.log(checkAnswer);
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export enum GTSGameFetchStatus {
   Ready = "ready",
   Loading = "loading",
@@ -139,6 +177,8 @@ export interface IGuessThatSongSlice {
     chosenGTSGameAnswerID?: string;
     stopAnswerTimerController?: AbortController;
     currentAnswerTimeRemained: number;
+    checkGTSGameAnswerStatus: GTSGameFetchStatus;
+    checkGTSGameAnswerErrorMessage?: string;
   };
 }
 
@@ -188,6 +228,8 @@ interface IGuessThatSongState {
   chosenGTSGameAnswerID?: string;
   stopAnswerTimerController?: AbortController;
   currentAnswerTimeRemained: number;
+  checkGTSGameAnswerStatus: GTSGameFetchStatus;
+  checkGTSGameAnswerErrorMessage?: string;
 }
 
 export const initGuessThatSongState: IGuessThatSongState = {
@@ -225,6 +267,7 @@ export const initGuessThatSongState: IGuessThatSongState = {
   currentAttemptSongIsPlaying: false,
   showGTSAnswersModal: false,
   currentAnswerTimeRemained: 10,
+  checkGTSGameAnswerStatus: GTSGameFetchStatus.Ready,
 };
 
 export const guessThatSongSlice = createSlice({
@@ -312,6 +355,9 @@ export const guessThatSongSlice = createSlice({
     setCurrentAnswerTimeRemained(state, action) {
       state.currentGTSAttemptData.answerTime = action.payload;
     },
+    setCheckGTSGameAnswerStatus(state, action) {
+      state.checkGTSGameAnswerStatus = action.payload;
+    },
   },
   extraReducers(builder) {
     builder.addCase(getAvailableGTSGames.pending, (state) => {
@@ -323,6 +369,9 @@ export const guessThatSongSlice = createSlice({
     builder.addCase(startGTSGameLaunchAttemptTimer.pending, (state) => {
       state.startGTSGameLaunchAttemptTimerStatus = GTSGameFetchStatus.Loading;
     });
+    builder.addCase(checkGTSGameAnswerAndSetQuestion.pending, (state) => {
+      state.checkGTSGameAnswerStatus = GTSGameFetchStatus.Loading;
+    });
     builder.addCase(getAvailableGTSGames.fulfilled, (state) => {
       state.fetchGTSGamesArrStatus = GTSGameFetchStatus.Resolve;
     });
@@ -332,6 +381,9 @@ export const guessThatSongSlice = createSlice({
     builder.addCase(startGTSGameLaunchAttemptTimer.fulfilled, (state) => {
       state.startGTSGameLaunchAttemptTimerStatus = GTSGameFetchStatus.Resolve;
     });
+    builder.addCase(checkGTSGameAnswerAndSetQuestion.fulfilled, (state) => {
+      state.checkGTSGameAnswerStatus = GTSGameFetchStatus.Resolve;
+    });
     builder.addCase(getAvailableGTSGames.rejected, (state) => {
       state.fetchGTSGamesArrStatus = GTSGameFetchStatus.Error;
     });
@@ -340,6 +392,9 @@ export const guessThatSongSlice = createSlice({
     });
     builder.addCase(startGTSGameLaunchAttemptTimer.rejected, (state) => {
       state.startGTSGameLaunchAttemptTimerStatus = GTSGameFetchStatus.Error;
+    });
+    builder.addCase(checkGTSGameAnswerAndSetQuestion.rejected, (state) => {
+      state.checkGTSGameAnswerStatus = GTSGameFetchStatus.Error;
     });
   },
 });
