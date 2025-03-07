@@ -53,6 +53,14 @@ export async function PATCH(req: NextRequest) {
 
     //меняем attemptQuestionStatus
 
+    const updatedGTSGameAttempt2 = await GTSGameAttempt.findByIdAndUpdate(body.attemptID, {
+      $set: { answerTime: 10 },
+    });
+
+    console.log("Set answer Time");
+
+    console.log(updatedGTSGameAttempt2);
+
     const currentAttemptQuestionStatus = JSON.parse(
       JSON.stringify(currentAttempt.attemptQuestionStatus)
     );
@@ -65,7 +73,7 @@ export async function PATCH(req: NextRequest) {
     console.log(currentAttemptQuestionStatus);
     // сохраняем изменения в базу
     const updatedGTSGameAttempt = await GTSGameAttempt.findByIdAndUpdate(body.attemptID, {
-      $set: { attemptQuestionStatus: currentAttemptQuestionStatus, answerTime: 10 },
+      $set: { attemptQuestionStatus: currentAttemptQuestionStatus },
     });
     // если вопрос последний, то завершаем попытку
     let attemptIsCompleted = false;

@@ -1,12 +1,16 @@
 "use client";
-import { guessThatSongActions, IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
+import {
+  GTSGameFetchStatus,
+  guessThatSongActions,
+  IGuessThatSongSlice,
+} from "@/app/store/guessThatSongSlice";
 import { AnimatePresence } from "framer-motion";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as motion from "motion/react-client";
 import { AppDispatch } from "@/app/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faHeadphonesSimple, faMusic, faXmark } from "@fortawesome/free-solid-svg-icons";
 import GTSGameAnswer from "./GTSGameAnswer";
 import RemainedTimeAnswerModal from "./RemainedTimeAnswerModal";
 import FetchAnswerTimeStream from "./FetchAnswerTimeStream";
@@ -16,6 +20,10 @@ const AnswersModalMain = () => {
 
   const showGTSAnswersModal = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.showGTSAnswersModal
+  );
+
+  const checkAnswerStatus = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.checkGTSGameAnswerStatus
   );
 
   const hideGTSAnswersModalHandler = (
@@ -90,6 +98,11 @@ const AnswersModalMain = () => {
           >
             <div className="modal-header flex justify-start items-center w-full ">
               <div className=" w-full flex justify-end items-center">
+                {checkAnswerStatus === GTSGameFetchStatus.Loading && (
+                  <div className=" absolute top-20 left-9 px-10 animate-spin">
+                    <FontAwesomeIcon className=" fa-4x" icon={faHeadphonesSimple} />
+                  </div>
+                )}
                 <a
                   className={` bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200`}
                   onClick={hideGTSAnswersModalHandler}

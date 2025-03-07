@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { GTSCreateGameActions } from "./GTSCreateGameSlice";
 import { isTelegramWebApp } from "../components/Layout/MainLayout";
 import { retrieveLaunchParams } from "@telegram-apps/sdk-react";
+import { redirect } from "next/navigation";
 
 export const getAvailableGTSGames = createAsyncThunk(
   "GTSGameState/getAvailableGTSGames",
@@ -118,6 +119,19 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
       const checkAnswer = await checkAnswerReq.json();
 
       console.log(checkAnswer);
+
+      if (checkAnswer.result.attemptIsCompleted) {
+        setTimeout(() => {
+          dispatch(guessThatSongActions.setStartGameStatus(false));
+          dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
+          redirect("/results");
+        }, 1000);
+      }
+
+      setTimeout(() => {
+        dispatch(guessThatSongActions.setStartGameStatus(false));
+        dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
+      }, 5000);
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
