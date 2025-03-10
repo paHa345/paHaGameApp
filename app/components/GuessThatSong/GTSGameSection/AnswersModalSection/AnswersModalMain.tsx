@@ -18,6 +18,14 @@ import FetchAnswerTimeStream from "./FetchAnswerTimeStream";
 const AnswersModalMain = () => {
   const dispatch = useDispatch<AppDispatch>();
 
+  const bonusTime = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.bonusTime
+  );
+
+  const answerIsCorrect = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.answerIsCorrect
+  );
+
   const showGTSAnswersModal = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.showGTSAnswersModal
   );
@@ -63,8 +71,6 @@ const AnswersModalMain = () => {
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.questionAnswers
   );
 
-  console.log(currentGTSAnswers);
-
   const answersEls = currentGTSAnswers.map((answer) => {
     return (
       <div key={answer._id}>
@@ -72,6 +78,8 @@ const AnswersModalMain = () => {
       </div>
     );
   });
+
+  const answerStatus = answerIsCorrect ? "Верно" : "Ошибка";
 
   useEffect(() => {
     dispatch(guessThatSongActions.setStopAnswerTimerController(new AbortController()));
@@ -103,6 +111,18 @@ const AnswersModalMain = () => {
                     <FontAwesomeIcon className=" fa-4x" icon={faHeadphonesSimple} />
                   </div>
                 )}
+                <div>
+                  <div className=" text-3xl text-center">
+                    {answerIsCorrect !== null ? <h1>{answerStatus}</h1> : <div></div>}
+                  </div>
+
+                  {bonusTime >= 0 && (
+                    <div>
+                      <h1 className=" px-5 text-2xl text-center">Дополнительное время: </h1>
+                      <h1 className=" px-5 text-2xl text-center">+{bonusTime} сек</h1>
+                    </div>
+                  )}
+                </div>
                 <a
                   className={` bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200`}
                   onClick={hideGTSAnswersModalHandler}

@@ -93,6 +93,8 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
   "GTSGameState/checkGTSGameAnswerAndSetQuestion",
   async function ({ answerID, attemptID }: any, { rejectWithValue, dispatch }) {
     try {
+      dispatch(guessThatSongActions.setBonusTime(-1));
+      dispatch(guessThatSongActions.setAnswerIsCorrect(null));
       let telegramUserID;
       if (isTelegramWebApp()) {
         const { initData } = retrieveLaunchParams();
@@ -101,9 +103,7 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
       } else {
         telegramUserID = 777777;
       }
-      console.log(telegramUserID);
-      console.log(answerID);
-      console.log(attemptID);
+
       const checkAnswerReq = await fetch(`/api/guessThatSong/GTSGame/checkAnswer/`, {
         method: "PATCH",
         headers: {
@@ -134,6 +134,8 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
       }
 
       console.log(checkAnswer);
+      dispatch(guessThatSongActions.setBonusTime(checkAnswer.result.bonusTime));
+      dispatch(guessThatSongActions.setAnswerIsCorrect(checkAnswer.result.isCorrect));
 
       if (checkAnswer.result.attemptIsCompleted) {
         setTimeout(() => {
@@ -143,10 +145,10 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
         }, 1000);
       }
 
-      setTimeout(() => {
-        dispatch(guessThatSongActions.setStartGameStatus(false));
-        dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
-      }, 5000);
+      // setTimeout(() => {
+      //   dispatch(guessThatSongActions.setStartGameStatus(false));
+      //   dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
+      // }, 5000);
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -197,6 +199,8 @@ export interface IGuessThatSongSlice {
         _id: string;
       }[];
       currentQuestion: number;
+      bonusTime: number;
+      answerIsCorrect: boolean | null;
     };
     startGTSGameLaunchAttemptTimerStatus: GTSGameFetchStatus;
     startGTSGameLaunchAttemptTimerErrorMessage?: string;
@@ -248,6 +252,8 @@ interface IGuessThatSongState {
       _id: string;
     }[];
     currentQuestion: number;
+    bonusTime: number;
+    answerIsCorrect: boolean | null;
   };
   startGTSGameLaunchAttemptTimerStatus: GTSGameFetchStatus;
   startGTSGameLaunchAttemptTimerErrorMessage?: string;
@@ -291,6 +297,8 @@ export const initGuessThatSongState: IGuessThatSongState = {
       },
     ],
     currentQuestion: 0,
+    bonusTime: -1,
+    answerIsCorrect: null,
   },
   startGTSGameLaunchAttemptTimerStatus: GTSGameFetchStatus.Ready,
   currentAttemptSongIsPlaying: false,
@@ -386,6 +394,12 @@ export const guessThatSongSlice = createSlice({
     },
     setCheckGTSGameAnswerStatus(state, action) {
       state.checkGTSGameAnswerStatus = action.payload;
+    },
+    setBonusTime(state, action) {
+      state.currentGTSAttemptData.bonusTime = action.payload;
+    },
+    setAnswerIsCorrect(state, action) {
+      state.currentGTSAttemptData.answerIsCorrect = action.payload;
     },
   },
   extraReducers(builder) {

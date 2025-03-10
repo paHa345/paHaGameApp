@@ -22,6 +22,10 @@ const GTSGameAnswer = ({ answerText, id }: IGTSGameAnswerProps) => {
   const attemptID = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSGameAttemptID
   );
+
+  const answerIsCorrect = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.answerIsCorrect
+  );
   const chooseAnswerHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     dispatch(guessThatSongActions.setChosenGTSGameAnswerID(id));
