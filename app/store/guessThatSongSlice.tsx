@@ -118,6 +118,21 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
 
       const checkAnswer = await checkAnswerReq.json();
 
+      const setAttemptFullAnswerTimeReq = await fetch(
+        `/api/guessThatSong/GTSGame/setAttemptFullAnswerTime/`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ telegramUserID, answerID, attemptID }),
+        }
+      );
+
+      if (!setAttemptFullAnswerTimeReq.ok) {
+        throw new Error("Ошибка сервера");
+      }
+
       console.log(checkAnswer);
 
       if (checkAnswer.result.attemptIsCompleted) {
