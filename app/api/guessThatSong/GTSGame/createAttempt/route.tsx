@@ -18,9 +18,15 @@ export async function POST(req: NextRequest) {
     }
     const completedAttempt = await GTSGameAttempt.find({
       GTSGameID: body.GTSGameID,
-      telegramUserID: body.telegramUserID,
+      telegramID: body.telegramID,
       isCompleted: true,
     });
+    console.log(body);
+    console.log("Is completed");
+    console.log(completedAttempt);
+
+    console.log(completedAttempt.length);
+
     if (completedAttempt.length !== 0) {
       return NextResponse.json({ message: "Вы уже пытались сыграть в эту игру" }, { status: 400 });
     }
