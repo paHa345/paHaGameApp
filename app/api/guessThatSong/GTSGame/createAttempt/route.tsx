@@ -16,6 +16,8 @@ export async function POST(req: NextRequest) {
     if (currentGTSGame === null) {
       return NextResponse.json({ message: "Не найдена игра" }, { status: 400 });
     }
+
+    console.log(body);
     const completedAttempt = await GTSGameAttempt.find({
       GTSGameID: body.GTSGameID,
       telegramID: body.telegramID,

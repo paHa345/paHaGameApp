@@ -22,6 +22,10 @@ const AnswersModalMain = () => {
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.bonusTime
   );
 
+  const chosenGTSGameAnswerID = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.chosenGTSGameAnswerID
+  );
+
   const answerIsCorrect = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.answerIsCorrect
   );
@@ -111,18 +115,18 @@ const AnswersModalMain = () => {
                     <FontAwesomeIcon className=" fa-4x" icon={faHeadphonesSimple} />
                   </div>
                 )}
-                <div>
-                  <div className=" text-3xl text-center">
-                    {answerIsCorrect !== null ? <h1>{answerStatus}</h1> : <div></div>}
-                  </div>
+                {bonusTime >= 0 && (
+                  <div className="text-center">
+                    <div className=" text-3xl text-center">
+                      <h1>{answerStatus}</h1>
+                    </div>
 
-                  {bonusTime >= 0 && (
                     <div>
                       <h1 className=" px-5 text-2xl text-center">Дополнительное время: </h1>
                       <h1 className=" px-5 text-2xl text-center">+{bonusTime} сек</h1>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
                 <a
                   className={` bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200`}
                   onClick={hideGTSAnswersModalHandler}

@@ -32,10 +32,20 @@ const GTSGameAnswer = ({ answerText, id }: IGTSGameAnswerProps) => {
     stopAnswerTimeController?.abort();
     dispatch(checkGTSGameAnswerAndSetQuestion({ answerID: id, attemptID: attemptID }));
   };
+  let answerStatus = null;
+
+  if (chosenGTSGameAnswerID === id && answerIsCorrect === true) {
+    answerStatus = true;
+  }
+  if (chosenGTSGameAnswerID === id && answerIsCorrect === false) {
+    answerStatus = false;
+  }
+
+  // chosenGTSGameAnswerID === id && answerIsCorrect ? (answerStatus = true) : (answerStatus = false);
   return (
     <div
       onClick={chooseAnswerHandler}
-      className={` cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor ${chosenGTSGameAnswerID === id ? "to-yellow-200 scale-110" : "to-cyan-200"}  hover:to-yellow-200 shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
+      className={` ${answerStatus === true && "to-green-300"} ${answerStatus === false && "to-red-300"}  cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor ${chosenGTSGameAnswerID === id ? "to-yellow-200 scale-110" : "to-cyan-200"}  hover:to-yellow-200 shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
     >
       <h1 className=" text-2xl text-center">{answerText}</h1>
     </div>

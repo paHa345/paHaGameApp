@@ -49,6 +49,7 @@ export const createAttemptAndAddInSlice = createAsyncThunk(
         },
         body: JSON.stringify(attemptData),
       });
+
       if (!createGTSGameAttemptReq.ok) {
         throw new Error("Ошибка сервера");
       }
@@ -133,7 +134,12 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
         throw new Error("Ошибка сервера");
       }
 
+      const setAttemptFullAnswerTime = await setAttemptFullAnswerTimeReq.json();
+
       console.log(checkAnswer);
+
+      console.log(setAttemptFullAnswerTime);
+
       dispatch(guessThatSongActions.setBonusTime(checkAnswer.result.bonusTime));
       dispatch(guessThatSongActions.setAnswerIsCorrect(checkAnswer.result.isCorrect));
 
@@ -141,14 +147,15 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
         setTimeout(() => {
           dispatch(guessThatSongActions.setStartGameStatus(false));
           dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
+          // dispatch(guessThatSongActions.setCurrentGTSGameAttemptID(""));
           redirect("/results");
-        }, 1000);
+        }, 4000);
       }
 
-      // setTimeout(() => {
-      //   dispatch(guessThatSongActions.setStartGameStatus(false));
-      //   dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
-      // }, 5000);
+      setTimeout(() => {
+        dispatch(guessThatSongActions.setStartGameStatus(false));
+        dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
+      }, 5000);
     } catch (error: any) {
       return rejectWithValue(error.message);
     }

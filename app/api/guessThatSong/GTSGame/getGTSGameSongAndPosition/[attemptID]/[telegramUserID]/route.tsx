@@ -17,6 +17,7 @@ export async function GET(req: NextRequest, segmentData: any) {
     const currentAttempt = await GTSGameAttempt.find({
       _id: params.attemptID,
       telegramID: params.telegramUserID,
+      isCompleted: false,
     });
     if (!currentAttempt.length) {
       return NextResponse.json({ message: "Не удалось найти текущую попытку" }, { status: 400 });

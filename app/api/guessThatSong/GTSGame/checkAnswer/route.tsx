@@ -67,6 +67,7 @@ export async function PATCH(req: NextRequest) {
     const updatedGTSGameAttempt = await GTSGameAttempt.findByIdAndUpdate(body.attemptID, {
       $set: { attemptQuestionStatus: currentAttemptQuestionStatus },
     });
+
     // если вопрос последний, то завершаем попытку
     let attemptIsCompleted = false;
     if (currentAttempt.currentQuestion === currentGameQuestions.GTSGameObj.length - 1) {
@@ -88,6 +89,7 @@ export async function PATCH(req: NextRequest) {
         attemptIsCompleted: attemptIsCompleted,
         bonusTime: currentAttempt.answerTime,
         isCorrect: isCorrect,
+        attempt: currentAttempt,
       },
     });
   } catch (error: any) {

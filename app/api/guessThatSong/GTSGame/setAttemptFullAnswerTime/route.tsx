@@ -27,6 +27,9 @@ export async function PATCH(req: NextRequest) {
       },
       { new: true }
     );
+
+    console.log("Full time");
+    console.log(currentUpdatedAttempt);
     return NextResponse.json({
       message: "Success",
       result: currentUpdatedAttempt,
