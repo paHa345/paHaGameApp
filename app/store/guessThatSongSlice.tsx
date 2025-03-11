@@ -136,10 +136,6 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
 
       const setAttemptFullAnswerTime = await setAttemptFullAnswerTimeReq.json();
 
-      console.log(checkAnswer);
-
-      console.log(setAttemptFullAnswerTime);
-
       dispatch(guessThatSongActions.setBonusTime(checkAnswer.result.bonusTime));
       dispatch(guessThatSongActions.setAnswerIsCorrect(checkAnswer.result.isCorrect));
 

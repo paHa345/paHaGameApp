@@ -13,7 +13,7 @@ export async function PATCH(req: NextRequest) {
     }
     await connectMongoDB();
     const body: { telegramUserID: number; answerID: string; attemptID: string } = await req.json();
-    console.log(body);
+
     const currentAttempt = await GTSGameAttempt.findById(body.attemptID);
     const currentGameQuestions = await GTSGame.findById(currentAttempt.GTSGameID).select(
       "GTSGameObj"
@@ -31,9 +31,8 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ message: "Не удалось найти ответ" }, { status: 400 });
     }
 
-    console.log(currentAttempt.attemptQuestionStatus);
-
     let isCorrect;
+    let bonusTime = 0;
 
     if (
       userAnswerIndex ===
@@ -41,11 +40,19 @@ export async function PATCH(req: NextRequest) {
     ) {
       console.log("Correct");
       isCorrect = true;
-      console.log(currentAttempt.answerTime);
-      const updatedGTSGameAttemptTime = await GTSGameAttempt.findByIdAndUpdate(body.attemptID, {
-        $set: { timeRemained: currentAttempt.timeRemained + currentAttempt.answerTime },
-      });
-      currentAttempt;
+      bonusTime = currentAttempt.answerTime;
+      if (currentAttempt.timeRemained + currentAttempt.answerTime > currentAttempt.attemptTime) {
+        const updatedGTSGameAttemptTime = await GTSGameAttempt.findByIdAndUpdate(body.attemptID, {
+          $set: {
+            timeRemained: currentAttempt.timeRemained + currentAttempt.answerTime,
+            attemptTime: currentAttempt.timeRemained + currentAttempt.answerTime,
+          },
+        });
+      } else {
+        const updatedGTSGameAttemptTime = await GTSGameAttempt.findByIdAndUpdate(body.attemptID, {
+          $set: { timeRemained: currentAttempt.timeRemained + currentAttempt.answerTime },
+        });
+      }
     } else {
       console.log("Wrong");
       isCorrect = false;
@@ -62,7 +69,6 @@ export async function PATCH(req: NextRequest) {
       ? (currentAttemptQuestionStatus[currentAttempt.currentQuestion].answerIsCorrect = true)
       : (currentAttemptQuestionStatus[currentAttempt.currentQuestion].answerIsCorrect = false);
 
-    console.log(currentAttemptQuestionStatus);
     // сохраняем изменения в базу
     const updatedGTSGameAttempt = await GTSGameAttempt.findByIdAndUpdate(body.attemptID, {
       $set: { attemptQuestionStatus: currentAttemptQuestionStatus },
@@ -87,7 +93,7 @@ export async function PATCH(req: NextRequest) {
       message: "Success",
       result: {
         attemptIsCompleted: attemptIsCompleted,
-        bonusTime: currentAttempt.answerTime,
+        bonusTime: bonusTime,
         isCorrect: isCorrect,
         attempt: currentAttempt,
       },
