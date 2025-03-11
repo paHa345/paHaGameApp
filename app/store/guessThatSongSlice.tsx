@@ -100,7 +100,7 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
       if (isTelegramWebApp()) {
         const { initData } = retrieveLaunchParams();
 
-        telegramUserID = initData?.user;
+        telegramUserID = initData?.user?.id;
       } else {
         telegramUserID = 777777;
       }
