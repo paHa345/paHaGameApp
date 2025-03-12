@@ -59,8 +59,22 @@ export const createAttemptAndAddInSlice = createAsyncThunk(
         dispatch(
           guessThatSongActions.setCurrentGTSGameAttemptID(createdGTSGameAttempt.result[0]._id)
         );
+        dispatch(guessThatSongActions.setCurrentGTSAttemptData(createdGTSGameAttempt.result[0]));
+        console.log(createdGTSGameAttempt.result[0]);
+        dispatch(
+          guessThatSongActions.setAttemptQuestionStatus(
+            createdGTSGameAttempt.result[0].attemptQuestionStatus
+          )
+        );
       } else {
         dispatch(guessThatSongActions.setCurrentGTSGameAttemptID(createdGTSGameAttempt.result._id));
+        console.log(createdGTSGameAttempt.result);
+        dispatch(guessThatSongActions.setCurrentGTSAttemptData(createdGTSGameAttempt.result));
+        dispatch(
+          guessThatSongActions.setAttemptQuestionStatus(
+            createdGTSGameAttempt.result.attemptQuestionStatus
+          )
+        );
       }
     } catch (error: any) {
       dispatch(guessThatSongActions.setCreateAttemptErrorMessage(error.message));
@@ -138,6 +152,25 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
 
       dispatch(guessThatSongActions.setBonusTime(checkAnswer.result.bonusTime));
       dispatch(guessThatSongActions.setAnswerIsCorrect(checkAnswer.result.isCorrect));
+
+      const getCurrentAttemptReq = await fetch(
+        `/api/guessThatSong/GTSGame/getCurrentAttempt/${attemptID}/${telegramUserID}`
+      );
+
+      if (!getCurrentAttemptReq.ok) {
+        throw new Error("Ошибка сервера");
+      }
+
+      const getCurrentAttempt = await getCurrentAttemptReq.json();
+
+      dispatch(
+        guessThatSongActions.setAttemptCurrentQuestion(getCurrentAttempt.result.currentQuestion)
+      );
+      dispatch(
+        guessThatSongActions.setAttemptQuestionStatus(
+          getCurrentAttempt.result.attemptQuestionStatus
+        )
+      );
 
       if (checkAnswer.result.attemptIsCompleted) {
         setTimeout(() => {
@@ -368,6 +401,14 @@ export const guessThatSongSlice = createSlice({
     setCurrentGTSAttemptData(state, action) {
       state.currentGTSAttemptData = action.payload;
     },
+
+    setAttemptCurrentQuestion(state, action) {
+      state.currentGTSAttemptData.currentQuestion = action.payload;
+    },
+    setAttemptQuestionStatus(state, action) {
+      state.currentGTSAttemptData.questionsStatus = action.payload;
+    },
+
     setStartGTSGameLaunchAttemptTimerErrorMessage(state, action) {
       state.startGTSGameLaunchAttemptTimerErrorMessage = action.payload;
     },

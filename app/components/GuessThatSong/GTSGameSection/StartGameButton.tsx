@@ -2,7 +2,9 @@
 
 import { AppDispatch } from "@/app/store";
 import {
+  createAttemptAndAddInSlice,
   GTSGameFetchStatus,
+  guessThatSongActions,
   IGuessThatSongSlice,
   startGTSGameLaunchAttemptTimer,
 } from "@/app/store/guessThatSongSlice";
@@ -10,10 +12,11 @@ import { useTelegram } from "@/app/telegramProvider";
 import { faFolderOpen, faHeadphonesAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { div } from "framer-motion/client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { isTelegramWebApp } from "../../Layout/MainLayout";
 import { retrieveLaunchParams } from "@telegram-apps/sdk-react";
+import StartGameButtonText from "./StartGameButtonText";
 
 const StartGameButton = () => {
   // const { user } = useTelegram();
@@ -25,12 +28,17 @@ const StartGameButton = () => {
   const startGameStatus = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.startGTSGameLaunchAttemptTimerStatus
   );
+
+  const currentNumberAttemptQuestion = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.currentQuestion
+  );
+
+  console.log(currentNumberAttemptQuestion);
   console.log(startGameStatus);
   const startGameHandler = () => {
     if (isTelegramWebApp()) {
       const { initData } = retrieveLaunchParams();
 
-      console.log(initData?.user);
       dispatch(
         startGTSGameLaunchAttemptTimer({
           currentAttemptID: currentAttemptID,
@@ -63,6 +71,28 @@ const StartGameButton = () => {
     // }
   };
 
+  // useEffect(() => {
+  //   console.log("Start Game effect");
+  //   if (isTelegramWebApp()) {
+  //     const { initData } = retrieveLaunchParams();
+  //     dispatch(
+  //       createAttemptAndAddInSlice({
+  //         GTSGameID: currentAttemptID,
+  //         telegramID: initData?.user?.id,
+  //         telegramUserName: initData?.user?.username,
+  //       })
+  //     );
+  //   } else {
+  //     dispatch(
+  //       createAttemptAndAddInSlice({
+  //         GTSGameID: currentAttemptID,
+  //         telegramID: 777777,
+  //         telegramUserName: "paHa345",
+  //       })
+  //     );
+  //   }
+  // });
+
   return (
     <div className=" flex justify-center items-center w-10/12 ">
       <article
@@ -78,7 +108,9 @@ const StartGameButton = () => {
           </div>
 
           <div>
-            <h1 className=" text-3xl lg:text-2xl text-center font-bold pb-2">Начать попытку</h1>
+            <div className=" text-3xl lg:text-2xl text-center font-bold pb-2">
+              <StartGameButtonText></StartGameButtonText>
+            </div>
           </div>
           {/* <div>
             <h1 className=" text-lg lg:text-sm">

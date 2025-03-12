@@ -6,6 +6,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import StartGameButton from "./StartGameButton";
 import CurrentGTSGame from "./CurrentGTSGame";
+import CurrentAttemptQuestionStatusMain from "../GameSection/CurrentAttemptQuestionStatusSection/CurrentAttemptQuestionStatusMain";
 
 const GTSGameSectionMain = () => {
   const currentAttemptID = useSelector(
@@ -22,7 +23,8 @@ const GTSGameSectionMain = () => {
   return (
     <>
       {!startGameStatus && (
-        <div className="flex justify-center items-center h-[70vh] ">
+        <div className="flex justify-center items-center h-[70vh] flex-col gap-7 ">
+          <CurrentAttemptQuestionStatusMain></CurrentAttemptQuestionStatusMain>
           <StartGameButton></StartGameButton>{" "}
         </div>
       )}
