@@ -110,6 +110,7 @@ export interface IAttemptsSlice {
     }[];
     getAllGamesErrorMessage?: string;
     getGameAttemptsErrorMessage?: string;
+    selectedGamesName?: string;
   };
 }
 
@@ -148,6 +149,7 @@ interface IAttemptsState {
   }[];
   getAllGamesErrorMessage?: string;
   getGameAttemptsErrorMessage?: string;
+  selectedGamesName?: string;
 }
 
 const initAppState: IAttemptsState = {
@@ -219,6 +221,9 @@ export const attemptsSlice = createSlice({
     },
     setGetGameAttemptsErrorMessage(state, action) {
       state.getGameAttemptsErrorMessage = action.payload;
+    },
+    setSelectedGamesName(state, action) {
+      state.selectedGamesName = action.payload;
     },
   },
   extraReducers(builder) {

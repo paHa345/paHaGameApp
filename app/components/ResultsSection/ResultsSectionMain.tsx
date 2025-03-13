@@ -9,6 +9,7 @@ import AllGamesList from "./AllGamesList";
 import { attemptsActions, attemptsFetchStatus, IAttemptsSlice } from "@/app/store/attemptsSlice";
 
 import { IAppSlice } from "@/app/store/appStateSlice";
+import SelectGameButtonsMain from "./SelectGameButtonsSection/SelectGameButtonsMain";
 
 const ResultsSectionMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -31,6 +32,7 @@ const ResultsSectionMain = () => {
       <section className={`min-h-[80vh] container mx-auto pb-20`}>
         <div className=" py-5">
           <h1 className="font-roboto text-center text-3xl font-bold">Результаты</h1>
+          <SelectGameButtonsMain></SelectGameButtonsMain>
         </div>
         {currentUserCompletedAttempt && (
           <div className=" w-full shadow-crosswordGameCellMenuButtonActive rounded-lg py-5 my-3 flex justify-center items-center flex-col gap-2">
