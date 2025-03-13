@@ -19,6 +19,7 @@ const CurrentAttemptQuestionStatusMain = () => {
       <CurrentAttemptQuestion
         isCurrent={currentQuestion === number}
         isCompleted={question.getAnswer}
+        answerIsCorrect={question?.answerIsCorrect}
         key={question._id}
       />
     );
@@ -26,8 +27,8 @@ const CurrentAttemptQuestionStatusMain = () => {
   console.log(currentAttemptQuestionStatusArr);
   return (
     <div className="w-11/12">
-      <div className=" text-center text-lg">
-        <h1>Вопросы</h1>
+      <div className=" text-center">
+        <h1 className=" text-2xl">Вопросы</h1>
       </div>
 
       <div className=" px-5 py-5 overflow-hidden overflow-x-scroll flex justify-start items-start gap-3">

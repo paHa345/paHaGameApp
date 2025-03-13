@@ -42,8 +42,8 @@ export async function GET(req: NextRequest, segmentData: any) {
       result: {
         songURL: songURL,
         questionAnswers: questionAnswers,
-        attemptTimeRemained: attemptTimeRemained,
-        attemptFullTime: attemptFullTime,
+        timeRemained: attemptTimeRemained,
+        attemptTime: attemptFullTime,
         answerTime: answerTime,
         questionsStatus: questionsStatus,
         currentQuestion: currentQuestion,

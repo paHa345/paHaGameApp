@@ -224,14 +224,15 @@ export interface IGuessThatSongSlice {
     currentGTSGameAttemptID?: string;
     startGameStatus: boolean;
     currentGTSAttemptData: {
-      attemptFullTime: number;
-      attemptTimeRemained: number;
+      attemptTime: number;
+      timeRemained: number;
       songURL: string;
       questionAnswers: { text: string; _id: string }[];
       answerTime: number;
       questionsStatus: {
         questionID: string;
         getAnswer: boolean;
+        answerIsCorrect?: boolean;
         _id: string;
       }[];
       currentQuestion: number;
@@ -277,8 +278,8 @@ interface IGuessThatSongState {
   startGameStatus: boolean;
 
   currentGTSAttemptData: {
-    attemptFullTime: number;
-    attemptTimeRemained: number;
+    attemptTime: number;
+    timeRemained: number;
     songURL: string;
     questionAnswers: { text: string; _id: string }[];
     answerTime: number;
@@ -289,7 +290,7 @@ interface IGuessThatSongState {
     }[];
     currentQuestion: number;
     bonusTime: number;
-    answerIsCorrect: boolean | null;
+    answerIsCorrect?: boolean;
   };
   startGTSGameLaunchAttemptTimerStatus: GTSGameFetchStatus;
   startGTSGameLaunchAttemptTimerErrorMessage?: string;
@@ -320,8 +321,8 @@ export const initGuessThatSongState: IGuessThatSongState = {
   startGameStatus: false,
 
   currentGTSAttemptData: {
-    attemptFullTime: 0,
-    attemptTimeRemained: 0,
+    attemptTime: 0,
+    timeRemained: 0,
     songURL: "",
     questionAnswers: [{ text: "", _id: "" }],
     answerTime: 0,
@@ -334,7 +335,6 @@ export const initGuessThatSongState: IGuessThatSongState = {
     ],
     currentQuestion: 0,
     bonusTime: -1,
-    answerIsCorrect: null,
   },
   startGTSGameLaunchAttemptTimerStatus: GTSGameFetchStatus.Ready,
   currentAttemptSongIsPlaying: false,
@@ -419,7 +419,7 @@ export const guessThatSongSlice = createSlice({
       state.abortController = action.payload;
     },
     setCurrentAttemptTimeRemained(state, action) {
-      state.currentGTSAttemptData.attemptTimeRemained = action.payload;
+      state.currentGTSAttemptData.timeRemained = action.payload;
     },
     setShowGTSAnswersModal(state, action) {
       state.showGTSAnswersModal = action.payload;

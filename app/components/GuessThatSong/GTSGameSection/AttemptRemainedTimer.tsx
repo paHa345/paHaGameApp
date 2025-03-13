@@ -4,13 +4,14 @@ import { useSelector } from "react-redux";
 
 const AttemptRemainedTimer = () => {
   const remainedTime = useSelector(
-    (state: IGuessThatSongSlice) =>
-      state.guessThatSongState.currentGTSAttemptData.attemptTimeRemained
+    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.timeRemained
   );
   const attemptFullTime = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.attemptFullTime
+    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.attemptTime
   );
   const percentage = (remainedTime / attemptFullTime) * 100;
+
+  console.log(attemptFullTime);
   return (
     <div className=" flex justify-center items-center w-full flex-col">
       <div className=" flex justify-center items-center flex-col">
