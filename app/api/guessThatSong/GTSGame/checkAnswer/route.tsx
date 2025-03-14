@@ -64,6 +64,23 @@ export async function PATCH(req: NextRequest) {
       JSON.stringify(currentAttempt.attemptQuestionStatus)
     );
 
+    console.log(currentGameQuestions);
+    //установливаем правильное название песни
+    currentAttemptQuestionStatus[currentAttempt.currentQuestion].correctAnswerSongName =
+      currentGameQuestions.GTSGameObj[currentAttempt.currentQuestion].answersArr[
+        currentGameQuestions.GTSGameObj[currentAttempt.currentQuestion].correctAnswerIndex
+      ].text;
+
+    console.log("userAnswerIndex");
+    console.log(userAnswerIndex);
+
+    //установливаем  название песни выбранное пользователем
+    //проверить
+    currentAttemptQuestionStatus[currentAttempt.currentQuestion].userAnswerSongName =
+      currentGameQuestions.GTSGameObj[currentAttempt.currentQuestion].answersArr[
+        userAnswerIndex
+      ].text;
+
     currentAttemptQuestionStatus[currentAttempt.currentQuestion].getAnswer = true;
     isCorrect
       ? (currentAttemptQuestionStatus[currentAttempt.currentQuestion].answerIsCorrect = true)
