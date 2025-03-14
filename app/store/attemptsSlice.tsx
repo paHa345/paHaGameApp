@@ -4,23 +4,42 @@ import { crosswordGameFetchStatus } from "./crosswordGameSlice";
 export const getAllGamesList = createAsyncThunk(
   "attemptsState/getAllGamesList",
   async function (
-    getGamesFata: { telegramID: number | undefined; page?: number },
+    getGamesFata: { telegramID: number | undefined; page?: number; gamesName: string | undefined },
     { rejectWithValue, dispatch }
   ) {
     try {
       dispatch(attemptsActions.setShowHideGamesList(false));
-      const getAllGamesListReq = await fetch(
-        `/api/games/getAllGames/${getGamesFata.telegramID}?page=${getGamesFata?.page ? getGamesFata?.page : 1}`
-      );
-      const allGamesList = await getAllGamesListReq.json();
-      if (!getAllGamesListReq.ok) {
-        throw new Error(allGamesList.message);
+
+      console.log(getGamesFata.gamesName);
+
+      if (getGamesFata.gamesName === "Crossword") {
+        const getAllCrosswordGamesListReq = await fetch(
+          `/api/games/getAllGames/${getGamesFata.telegramID}?page=${getGamesFata?.page ? getGamesFata?.page : 1}`
+        );
+        const allCrosswordGamesList = await getAllCrosswordGamesListReq.json();
+        if (!getAllCrosswordGamesListReq.ok) {
+          throw new Error(allCrosswordGamesList.message);
+        }
+        dispatch(attemptsActions.setGamesList(allCrosswordGamesList.result.games));
+        dispatch(attemptsActions.setIsLastGamesListPage(allCrosswordGamesList.result.isLastPage));
       }
+
+      if (getGamesFata.gamesName === "GTS") {
+        const getAllGTSGamesListReq = await fetch(
+          `/api/guessThatSong/GTSGame/getAvailableGTSGames?page=${getGamesFata?.page ? getGamesFata?.page : 1}`
+        );
+        const allGTSGamesList = await getAllGTSGamesListReq.json();
+        if (!getAllGTSGamesListReq.ok) {
+          throw new Error(allGTSGamesList.message);
+        }
+
+        dispatch(attemptsActions.setGamesList(allGTSGamesList.result.availableGTSGames));
+        dispatch(attemptsActions.setIsLastGamesListPage(allGTSGamesList.result.isLastPage));
+      }
+
       // console.log(allGamesList);
       // dispatch(crossworGamedActions.setAvailableCrosswordGamesArr(crosswords.result));
-      dispatch(attemptsActions.setGamesList(allGamesList.result.games));
       dispatch(attemptsActions.setGamesListCurrentPage(getGamesFata?.page));
-      dispatch(attemptsActions.setIsLastGamesListPage(allGamesList.result.isLastPage));
       dispatch(attemptsActions.setShowHideGamesList(true));
     } catch (error: any) {
       dispatch(attemptsActions.setGetAllGamesErrorMessage(error.message));

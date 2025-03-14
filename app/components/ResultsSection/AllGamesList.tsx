@@ -27,6 +27,7 @@ const AllGamesList = () => {
   const fetchGamesListErrorMessage = useSelector(
     (state: IAttemptsSlice) => state.attemptsState.getAllGamesErrorMessage
   );
+  const gamesName = useSelector((state: IAttemptsSlice) => state.attemptsState.selectedGamesName);
 
   const showHideGamesList = useSelector(
     (state: IAttemptsSlice) => state.attemptsState.showHideGamesList
@@ -62,7 +63,7 @@ const AllGamesList = () => {
   );
 
   useEffect(() => {
-    dispatch(getAllGamesList({ telegramID: telegramUser?.id, page: 1 }));
+    dispatch(getAllGamesList({ telegramID: telegramUser?.id, page: 1, gamesName: gamesName }));
 
     // if (!user?.id) {
     //   dispatch(getAllGamesList({ telegramID: 777777, page: 1 }));
@@ -136,7 +137,13 @@ const AllGamesList = () => {
     if (isLeftSwipe || isRightSwipe) {
       if (isLeftSwipe && !isGamesListLastPage) {
         dispatch(attemptsActions.setGamesListTransitionClasses("games-list-left"));
-        dispatch(getAllGamesList({ telegramID: telegramUser?.id, page: gamesListCurrentPage + 1 }));
+        dispatch(
+          getAllGamesList({
+            telegramID: telegramUser?.id,
+            page: gamesListCurrentPage + 1,
+            gamesName: gamesName,
+          })
+        );
 
         // if (!user?.id) {
         //   dispatch(getAllGamesList({ telegramID: 777777, page: gamesListCurrentPage + 1 }));
@@ -146,7 +153,13 @@ const AllGamesList = () => {
       }
       if (isRightSwipe && gamesListCurrentPage > 1) {
         dispatch(attemptsActions.setGamesListTransitionClasses("games-list-right"));
-        dispatch(getAllGamesList({ telegramID: telegramUser?.id, page: gamesListCurrentPage - 1 }));
+        dispatch(
+          getAllGamesList({
+            telegramID: telegramUser?.id,
+            page: gamesListCurrentPage - 1,
+            gamesName: gamesName,
+          })
+        );
 
         // if (!user?.id) {
         //   dispatch(getAllGamesList({ telegramID: 777777, page: gamesListCurrentPage - 1 }));

@@ -17,15 +17,15 @@ const ResultsSectionMain = () => {
     (state: ICrosswordGameSlice) => state.crosswordGameState.currentUserCompletedAttempt
   );
 
+  const currentGamesType = useSelector(
+    (state: IAttemptsSlice) => state.attemptsState.selectedGamesName
+  );
+
   useEffect(() => {
     dispatch(attemptsActions.setGameAllAttempts(undefined));
     dispatch(attemptsActions.setGetGameAllAttemptsFetchStatus(attemptsFetchStatus.Ready));
     dispatch(crossworGamedActions.setEndAttempt(false));
   });
-
-  const telegramUserdata = useSelector((state: IAppSlice) => state.appState.telegranUserData);
-
-  console.log(telegramUserdata?.id);
 
   return (
     <>
@@ -44,9 +44,13 @@ const ResultsSectionMain = () => {
             </div>
           </div>
         )}
-        <div className=" flex flex-col justify-center items-center">
-          <AllGamesList></AllGamesList>
-        </div>
+
+        {currentGamesType && (
+          <div className=" flex flex-col justify-center items-center">
+            <AllGamesList></AllGamesList>
+          </div>
+        )}
+
         <div className=" flex flex-col justify-center items-center py-3">
           <CurrentGameAttempts></CurrentGameAttempts>
         </div>

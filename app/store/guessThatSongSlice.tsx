@@ -172,6 +172,13 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
         )
       );
 
+      dispatch(
+        guessThatSongActions.setCurrentAttemptTimeRemained(getCurrentAttempt.result.timeRemained)
+      );
+      dispatch(
+        guessThatSongActions.setCurrentAttamptAnswerTime(getCurrentAttempt.result.answerTime)
+      );
+
       if (checkAnswer.result.attemptIsCompleted) {
         setTimeout(() => {
           dispatch(guessThatSongActions.setStartGameStatus(false));
@@ -234,6 +241,8 @@ export interface IGuessThatSongSlice {
         getAnswer: boolean;
         answerIsCorrect?: boolean;
         _id: string;
+        userAnswerSongName?: string;
+        correctAnswerSongName?: string;
       }[];
       currentQuestion: number;
       bonusTime: number;
@@ -287,6 +296,8 @@ interface IGuessThatSongState {
       questionID: string;
       getAnswer: boolean;
       _id: string;
+      userAnswerSongName?: string;
+      correctAnswerSongName?: string;
     }[];
     currentQuestion: number;
     bonusTime: number;

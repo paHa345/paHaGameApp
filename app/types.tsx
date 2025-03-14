@@ -370,7 +370,12 @@ export interface IGTSAttemptSchema {
     questionID: string;
     getAnswer: boolean;
     answerIsCorrect?: boolean;
+    userAnswerSongName?: string;
+    correctAnswerSongName?: string;
   }[];
+  firstName?: string;
+  lastName?: string;
+  userPhoto?: string;
 }
 
 export interface IGTSGameSchema {

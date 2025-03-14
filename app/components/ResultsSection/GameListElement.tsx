@@ -17,6 +17,8 @@ interface IGameDataProps {
 const GameListElement = ({ gameData, isSelected }: IGameDataProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
+  const ganesName = useSelector((state: IAttemptsSlice) => state.attemptsState.selectedGamesName);
+
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
 
   const attemptsLimitOnPage = useSelector(
@@ -60,7 +62,7 @@ const GameListElement = ({ gameData, isSelected }: IGameDataProps) => {
       onClick={loadGameAttemptsHandler}
       // ${loadCrosswordGameStatus === crosswordGameFetchStatus.Ready ? "cursor-pointer" : ""}
       className={` cursor-pointer
-     w-11/12 px-4 mx-4 ${isSelected ? " scale-110 shadow-crosswordGameCellMenuButtonActive" : "shadow-exerciseCardHowerShadow"} sm:hover:scale-105 transition-all  rounded-lg ease-in-out duration-300 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-lime-200 sm:hover:shadow-crosswordGameCellMenuButtonActive`}
+     w-11/12 px-4 mx-4 ${isSelected ? " scale-110 shadow-crosswordGameCellMenuButtonActive" : "shadow-exerciseCardHowerShadow"} sm:hover:scale-105 transition-all  rounded-lg ease-in-out duration-300 hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor ${ganesName === "GTS" ? " to-cyan-200" : "to-lime-200"}  sm:hover:shadow-crosswordGameCellMenuButtonActive`}
     >
       <div className=" flex flex-col">
         <div className=" flex flex-col gap-2">

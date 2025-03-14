@@ -40,6 +40,9 @@ const AvailableGTSGameCard = ({ GTSGameData }: IGTSGameCard) => {
           GTSGameID: GTSGameData._id,
           telegramID: initData?.user?.id,
           telegramUserName: initData?.user?.username,
+          firstName: initData?.user?.firstName,
+          lastname: initData?.user?.lastName,
+          userPhoto: initData?.user?.photoUrl,
         })
       );
     } else {

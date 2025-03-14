@@ -10,6 +10,8 @@ const GamesListPaginationMain = () => {
   const dispatch = useDispatch<AppDispatch>();
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
 
+  const gamesName = useSelector((state: IAttemptsSlice) => state.attemptsState.selectedGamesName);
+
   const gamesListCurrentPage = useSelector(
     (state: IAttemptsSlice) => state.attemptsState.gamesListCurrentPage
   );
@@ -27,7 +29,13 @@ const GamesListPaginationMain = () => {
     e.preventDefault();
     if (this.transition === "next" && !isGamesListLastPage) {
       dispatch(attemptsActions.setGamesListTransitionClasses("games-list-left"));
-      dispatch(getAllGamesList({ telegramID: telegramUser?.id, page: gamesListCurrentPage + 1 }));
+      dispatch(
+        getAllGamesList({
+          telegramID: telegramUser?.id,
+          page: gamesListCurrentPage + 1,
+          gamesName: gamesName,
+        })
+      );
 
       // if (!user?.id) {
       //   dispatch(getAllGamesList({ telegramID: 777777, page: gamesListCurrentPage + 1 }));
@@ -37,7 +45,13 @@ const GamesListPaginationMain = () => {
     }
     if (this.transition === "prev" && gamesListCurrentPage > 1) {
       dispatch(attemptsActions.setGamesListTransitionClasses("games-list-right"));
-      dispatch(getAllGamesList({ telegramID: telegramUser?.id, page: gamesListCurrentPage - 1 }));
+      dispatch(
+        getAllGamesList({
+          telegramID: telegramUser?.id,
+          page: gamesListCurrentPage - 1,
+          gamesName: gamesName,
+        })
+      );
 
       // if (!user?.id) {
       //   dispatch(getAllGamesList({ telegramID: 777777, page: gamesListCurrentPage - 1 }));

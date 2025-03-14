@@ -6,17 +6,23 @@ const SelectGameButtonsMain = () => {
     {
       name: "Кроссворд",
       color: "lime-200",
+      nameEn: "Crossword",
     },
     {
       name: "Угадай мелодию",
       color: "cyan-200",
+      nameEn: "GTS",
     },
   ];
 
   const gamesEls = gamesNamesArr.map((game) => {
     return (
       <div key={game.name}>
-        <SelectGameButton name={game.name} color={game.color}></SelectGameButton>
+        <SelectGameButton
+          nameEn={game.nameEn}
+          name={game.name}
+          color={game.color}
+        ></SelectGameButton>
       </div>
     );
   });
