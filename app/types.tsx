@@ -361,6 +361,7 @@ export interface IGTSAttemptSchema {
   telegramID: number;
   startDate: Date;
   GTSGameID: string;
+  GTSGameName: string;
   timeRemained: number;
   attemptTime: number;
   isCompleted: boolean;

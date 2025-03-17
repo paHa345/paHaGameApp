@@ -60,6 +60,7 @@ export async function POST(req: NextRequest) {
       timeRemained: currentGTSGame.GTSGameObj.length * currentGTSGame.gameComplexity,
       attemptTime: currentGTSGame.GTSGameObj.length * currentGTSGame.gameComplexity,
       attemptQuestionStatus: attemptQuestionStatus,
+      GTSGameName: currentGTSGame.name,
     });
     return NextResponse.json({ message: "Success", result: newAttampt });
   } catch (error: any) {

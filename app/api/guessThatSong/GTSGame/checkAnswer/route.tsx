@@ -64,22 +64,21 @@ export async function PATCH(req: NextRequest) {
       JSON.stringify(currentAttempt.attemptQuestionStatus)
     );
 
-    console.log(currentGameQuestions);
     //установливаем правильное название песни
     currentAttemptQuestionStatus[currentAttempt.currentQuestion].correctAnswerSongName =
       currentGameQuestions.GTSGameObj[currentAttempt.currentQuestion].answersArr[
         currentGameQuestions.GTSGameObj[currentAttempt.currentQuestion].correctAnswerIndex
       ].text;
 
-    console.log("userAnswerIndex");
-    console.log(userAnswerIndex);
-
     //установливаем  название песни выбранное пользователем
-    //проверить
     currentAttemptQuestionStatus[currentAttempt.currentQuestion].userAnswerSongName =
       currentGameQuestions.GTSGameObj[currentAttempt.currentQuestion].answersArr[
         userAnswerIndex
       ].text;
+
+    //установливаем  количество бонусных секунд, полученное за текущий вопрос
+
+    currentAttemptQuestionStatus[currentAttempt.currentQuestion].bonusTime = bonusTime;
 
     currentAttemptQuestionStatus[currentAttempt.currentQuestion].getAnswer = true;
     isCorrect

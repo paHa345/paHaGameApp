@@ -181,6 +181,7 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
 
       if (checkAnswer.result.attemptIsCompleted) {
         setTimeout(() => {
+          console.log(checkAnswer.result);
           dispatch(guessThatSongActions.setStartGameStatus(false));
           dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
           // dispatch(guessThatSongActions.setCurrentGTSGameAttemptID(""));
