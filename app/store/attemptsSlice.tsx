@@ -58,6 +58,7 @@ export const getGameAllAttempts = createAsyncThunk(
       telegramUserID: number | undefined;
       page?: number;
       limit?: number;
+      gamesName: string | undefined;
     },
     { rejectWithValue, dispatch }
   ) {
@@ -65,7 +66,7 @@ export const getGameAllAttempts = createAsyncThunk(
       dispatch(attemptsActions.setShowHideAttemptsList(false));
 
       const getGameAllAttemptsReq = await fetch(
-        `/api/attempts/${[gameUserData.gameID]}/${[gameUserData.telegramUserID]}?page=${gameUserData?.page ? gameUserData?.page : 1}${gameUserData?.limit ? `&limit=${gameUserData.limit}` : ""}`
+        `/api/attempts/getCrosswordGameAttempts/${[gameUserData.gameID]}/${[gameUserData.telegramUserID]}?page=${gameUserData?.page ? gameUserData?.page : 1}${gameUserData?.limit ? `&limit=${gameUserData.limit}` : ""}`
       );
       const gameAllAttempts = await getGameAllAttemptsReq.json();
       if (!getGameAllAttemptsReq.ok) {

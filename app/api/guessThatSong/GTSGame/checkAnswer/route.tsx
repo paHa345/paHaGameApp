@@ -91,16 +91,25 @@ export async function PATCH(req: NextRequest) {
     });
 
     // если вопрос последний, то завершаем попытку
+    let updatedAttempt;
     let attemptIsCompleted = false;
     if (currentAttempt.currentQuestion === currentGameQuestions.GTSGameObj.length - 1) {
-      await GTSGameAttempt.findByIdAndUpdate(body.attemptID, {
-        $set: { isCompleted: true },
-      });
+      updatedAttempt = await GTSGameAttempt.findByIdAndUpdate(
+        body.attemptID,
+        {
+          $set: { isCompleted: true },
+        },
+        { new: true }
+      );
       attemptIsCompleted = true;
     } else {
-      await GTSGameAttempt.findByIdAndUpdate(body.attemptID, {
-        $set: { currentQuestion: currentAttempt.currentQuestion + 1 },
-      });
+      updatedAttempt = await GTSGameAttempt.findByIdAndUpdate(
+        body.attemptID,
+        {
+          $set: { currentQuestion: currentAttempt.currentQuestion + 1 },
+        },
+        { new: true }
+      );
     }
 
     // переключаем на следующий вопрос
@@ -111,7 +120,7 @@ export async function PATCH(req: NextRequest) {
         attemptIsCompleted: attemptIsCompleted,
         bonusTime: bonusTime,
         isCorrect: isCorrect,
-        attempt: currentAttempt,
+        attempt: updatedAttempt,
       },
     });
   } catch (error: any) {

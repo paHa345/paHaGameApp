@@ -181,12 +181,15 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
 
       if (checkAnswer.result.attemptIsCompleted) {
         setTimeout(() => {
-          console.log(checkAnswer.result);
+          console.log(checkAnswer.result.attempt);
+          dispatch(
+            guessThatSongActions.setCurrentUserCompletedGTSAttempt(checkAnswer.result.attempt)
+          );
           dispatch(guessThatSongActions.setStartGameStatus(false));
           dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
           // dispatch(guessThatSongActions.setCurrentGTSGameAttemptID(""));
           redirect("/results");
-        }, 4000);
+        }, 2000);
       }
 
       setTimeout(() => {
@@ -259,6 +262,31 @@ export interface IGuessThatSongSlice {
     currentAnswerTimeRemained: number;
     checkGTSGameAnswerStatus: GTSGameFetchStatus;
     checkGTSGameAnswerErrorMessage?: string;
+    currentUserCompletedGTSAttempt?: {
+      _id: string;
+      telegramUserName?: string;
+      telegramID: number;
+      startDate: Date;
+      GTSGameID: string;
+      GTSGameName: string;
+      timeRemained: number;
+      attemptTime: number;
+      isCompleted: boolean;
+      currentQuestion: number;
+      answerTime: number;
+      attemptQuestionStatus: {
+        _id: string;
+        questionID: string;
+        getAnswer: boolean;
+        answerIsCorrect?: boolean;
+        userAnswerSongName?: string;
+        correctAnswerSongName?: string;
+        bonusTime?: number;
+      }[];
+      firstName?: string;
+      lastName?: string;
+      userPhoto?: string;
+    };
   };
 }
 
@@ -304,6 +332,34 @@ interface IGuessThatSongState {
     bonusTime: number;
     answerIsCorrect?: boolean;
   };
+
+  currentUserCompletedGTSAttempt?: {
+    _id: string;
+    telegramUserName?: string;
+    telegramID: number;
+    startDate: Date;
+    GTSGameID: string;
+    GTSGameName: string;
+    timeRemained: number;
+    attemptTime: number;
+    isCompleted: boolean;
+    currentQuestion: number;
+    answerTime: number;
+    attemptQuestionStatus: {
+      _id: string;
+
+      questionID: string;
+      getAnswer: boolean;
+      answerIsCorrect?: boolean;
+      userAnswerSongName?: string;
+      correctAnswerSongName?: string;
+      bonusTime?: number;
+    }[];
+    firstName?: string;
+    lastName?: string;
+    userPhoto?: string;
+  };
+
   startGTSGameLaunchAttemptTimerStatus: GTSGameFetchStatus;
   startGTSGameLaunchAttemptTimerErrorMessage?: string;
   currentAttemptSongIsPlaying: boolean;
@@ -456,6 +512,9 @@ export const guessThatSongSlice = createSlice({
     },
     setAnswerIsCorrect(state, action) {
       state.currentGTSAttemptData.answerIsCorrect = action.payload;
+    },
+    setCurrentUserCompletedGTSAttempt(state, action) {
+      state.currentUserCompletedGTSAttempt = action.payload;
     },
   },
   extraReducers(builder) {

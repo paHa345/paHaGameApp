@@ -28,12 +28,14 @@ const GameListElement = ({ gameData, isSelected }: IGameDataProps) => {
   const loadGameAttemptsHandler = (e: React.MouseEvent<HTMLElement>) => {
     // Add your code here to load game attempts
     // Example: dispatch(loadGameAttempts(gameData.id));
+    console.log(ganesName);
     dispatch(
       getGameAllAttempts({
         gameID: gameData._id,
         telegramUserID: telegramUser?.id,
         page: 1,
         limit: attemptsLimitOnPage,
+        gamesName: ganesName,
       })
     );
     // if (!user?.id) {

@@ -10,7 +10,7 @@ import { Transition } from "react-transition-group";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import TransitionTemplate from "../TransitionTemplate";
 
-const CurrentUserCompletedAttempt = () => {
+const CurrentUserCompletedCrosswordAttempt = () => {
   const dispatch = useDispatch<AppDispatch>();
   const currentUserCompletedAttempt = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.currentUserCompletedAttempt
@@ -125,4 +125,4 @@ const CurrentUserCompletedAttempt = () => {
   );
 };
 
-export default CurrentUserCompletedAttempt;
+export default CurrentUserCompletedCrosswordAttempt;
