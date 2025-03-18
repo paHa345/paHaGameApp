@@ -1,4 +1,5 @@
 import { IAppSlice } from "@/app/store/appStateSlice";
+import { IAttemptsSlice } from "@/app/store/attemptsSlice";
 import { faSquare, faSquareCheck, faSquareXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
@@ -8,23 +9,27 @@ import { useSelector } from "react-redux";
 interface IAttemptProps {
   numberInLeaderBoard?: number;
   attempt: {
-    completedCorrectly: boolean;
-    crosswordID: string;
-    crosswordName: string;
-    duration: string;
-    finishDate: Date;
+    completedCorrectly?: boolean;
+    crosswordID?: string;
+    crosswordName?: string;
+    duration?: string;
+    finishDate?: Date;
     isCompleted: boolean;
-    startDate: Date;
+    startDate?: Date;
     telegramID: number;
     telegramUserName?: string;
     _id: string;
     userPhoto?: string;
     firstName?: string;
     lastName?: string;
+    GTSGameID?: string;
+    GTSGameName?: string;
+    timeRemained?: number;
   };
 }
 const Attempt = ({ attempt, numberInLeaderBoard }: IAttemptProps) => {
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
+  const gameName = useSelector((state: IAttemptsSlice) => state.attemptsState.selectedGamesName);
 
   return (
     <>
@@ -57,32 +62,45 @@ const Attempt = ({ attempt, numberInLeaderBoard }: IAttemptProps) => {
             <h1>{` ${attempt.telegramID}`}</h1>
           </div> */}
 
-            <div className=" flex flex-row justify-center items-center  gap-1">
-              {" "}
-              <h1>Выполнено верно</h1>
-              {attempt.completedCorrectly ? (
-                <div>
-                  <FontAwesomeIcon
-                    style={{ color: "green" }}
-                    className="fa-fw"
-                    icon={faSquareCheck}
-                  />
-                </div>
-              ) : (
-                <div>
-                  <FontAwesomeIcon
-                    style={{ color: "red" }}
-                    className="fa-fw"
-                    icon={faSquareXmark}
-                  />
-                </div>
-              )}
-            </div>
-            <div className=" flex flex-row justify-center items-center  gap-1">
-              {" "}
-              <h1>Времени затрачено</h1>
-              <h1>{attempt.duration}</h1>
-            </div>
+            {gameName === "Crossword" && (
+              <div className=" flex flex-row justify-center items-center  gap-1">
+                {" "}
+                <h1>Выполнено верно</h1>
+                {attempt?.completedCorrectly ? (
+                  <div>
+                    <FontAwesomeIcon
+                      style={{ color: "green" }}
+                      className="fa-fw"
+                      icon={faSquareCheck}
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    <FontAwesomeIcon
+                      style={{ color: "red" }}
+                      className="fa-fw"
+                      icon={faSquareXmark}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {gameName === "Crossword" && (
+              <div className=" flex flex-row justify-center items-center  gap-1">
+                {" "}
+                <h1>Времени затрачено</h1>
+                <h1>{attempt?.duration}</h1>
+              </div>
+            )}
+
+            {gameName === "GTS" && (
+              <div className=" flex flex-row justify-center items-center  gap-1">
+                {" "}
+                <h1>Баллов набрано</h1>
+                <h1>{attempt?.timeRemained}</h1>
+              </div>
+            )}
             {/* <div>{attempt.startDate.toLocaleString()}</div>
      <div>{attempt.finishDate?.toLocaleString()}</div> */}
           </div>

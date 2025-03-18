@@ -65,17 +65,36 @@ export const getGameAllAttempts = createAsyncThunk(
     try {
       dispatch(attemptsActions.setShowHideAttemptsList(false));
 
-      const getGameAllAttemptsReq = await fetch(
-        `/api/attempts/getCrosswordGameAttempts/${[gameUserData.gameID]}/${[gameUserData.telegramUserID]}?page=${gameUserData?.page ? gameUserData?.page : 1}${gameUserData?.limit ? `&limit=${gameUserData.limit}` : ""}`
-      );
-      const gameAllAttempts = await getGameAllAttemptsReq.json();
-      if (!getGameAllAttemptsReq.ok) {
-        throw new Error(gameAllAttempts.message);
+      if (gameUserData.gamesName === "Crossword") {
+        const getGameAllAttemptsReq = await fetch(
+          `/api/attempts/getCrosswordGameAttempts/${[gameUserData.gameID]}/${[gameUserData.telegramUserID]}?page=${gameUserData?.page ? gameUserData?.page : 1}${gameUserData?.limit ? `&limit=${gameUserData.limit}` : ""}`
+        );
+        const gameAllAttempts = await getGameAllAttemptsReq.json();
+        if (!getGameAllAttemptsReq.ok) {
+          throw new Error(gameAllAttempts.message);
+        }
+
+        dispatch(attemptsActions.setGameAllAttempts(gameAllAttempts.result.allGameAttempts));
+        dispatch(attemptsActions.setIsLastAttemptsListPage(gameAllAttempts.result.isLastPage));
       }
+
+      if (gameUserData.gamesName === "GTS") {
+        const getGameAllAttemptsReq = await fetch(
+          `/api/attempts/getGTSGameAttempts/${[gameUserData.gameID]}/${[gameUserData.telegramUserID]}?page=${gameUserData?.page ? gameUserData?.page : 1}${gameUserData?.limit ? `&limit=${gameUserData.limit}` : ""}`
+        );
+        const gameAllAttempts = await getGameAllAttemptsReq.json();
+        if (!getGameAllAttemptsReq.ok) {
+          throw new Error(gameAllAttempts.message);
+        }
+
+        console.log(gameAllAttempts.result);
+
+        dispatch(attemptsActions.setGameAllAttempts(gameAllAttempts.result.allGameAttempts));
+        dispatch(attemptsActions.setIsLastAttemptsListPage(gameAllAttempts.result.isLastPage));
+      }
+
       dispatch(attemptsActions.setCurrentGameID(gameUserData.gameID));
-      dispatch(attemptsActions.setGameAllAttempts(gameAllAttempts.result.allGameAttempts));
       dispatch(attemptsActions.setAttemptsListCurrentPage(gameUserData?.page));
-      dispatch(attemptsActions.setIsLastAttemptsListPage(gameAllAttempts.result.isLastPage));
       dispatch(attemptsActions.setShowHideAttemptsList(true));
     } catch (error: any) {
       dispatch(attemptsActions.setShowHideAttemptsList(true));
@@ -114,19 +133,22 @@ export interface IAttemptsSlice {
     getGameAllAttemptsFetchStatus: attemptsFetchStatus;
     currentGameID?: string;
     gameAllAttempts?: {
-      completedCorrectly: boolean;
-      crosswordID: string;
-      crosswordName: string;
-      duration: string;
-      finishDate: Date;
+      completedCorrectly?: boolean;
+      crosswordID?: string;
+      crosswordName?: string;
+      duration?: string;
+      finishDate?: Date;
       isCompleted: boolean;
-      startDate: Date;
+      startDate?: Date;
       telegramID: number;
       telegramUserName?: string;
       _id: string;
       userPhoto?: string;
       firstName?: string;
       lastName?: string;
+      GTSGameID?: string;
+      GTSGameName?: string;
+      timeRemained?: number;
     }[];
     getAllGamesErrorMessage?: string;
     getGameAttemptsErrorMessage?: string;
@@ -155,17 +177,22 @@ interface IAttemptsState {
   setGamesListFetchStatus: attemptsFetchStatus;
   getGameAllAttemptsFetchStatus: attemptsFetchStatus;
   gameAllAttempts?: {
-    completedCorrectly: boolean;
-    crosswordID: string;
-    crosswordName: string;
-    duration: string;
-    finishDate: Date;
+    completedCorrectly?: boolean;
+    crosswordID?: string;
+    crosswordName?: string;
+    duration?: string;
+    finishDate?: Date;
     isCompleted: boolean;
-    startDate: Date;
+    startDate?: Date;
     telegramID: number;
     telegramUserName?: string;
     _id: string;
     userPhoto?: string;
+    firstName?: string;
+    lastName?: string;
+    GTSGameID?: string;
+    GTSGameName?: string;
+    timeRemained?: number;
   }[];
   getAllGamesErrorMessage?: string;
   getGameAttemptsErrorMessage?: string;
