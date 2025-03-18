@@ -16,6 +16,8 @@ const ResultPaginationMain = () => {
 
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
 
+  const gamesName = useSelector((state: IAttemptsSlice) => state.attemptsState.selectedGamesName);
+
   const attemptsListCurrentPage = useSelector(
     (state: IAttemptsSlice) => state.attemptsState.attemptsListCurrentPage
   );
@@ -46,6 +48,7 @@ const ResultPaginationMain = () => {
           telegramUserID: telegramUser?.id,
           page: attemptsListCurrentPage + 1,
           limit: attemptsLimitOnPage,
+          gamesName: gamesName,
         })
       );
     }
@@ -58,6 +61,7 @@ const ResultPaginationMain = () => {
           telegramUserID: telegramUser?.id,
           page: attemptsListCurrentPage - 1,
           limit: attemptsLimitOnPage,
+          gamesName: gamesName,
         })
       );
     }
