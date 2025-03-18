@@ -25,6 +25,9 @@ const CurrentGameAttempts = () => {
   const getGameAllAttemptsStatus = useSelector(
     (state: IAttemptsSlice) => state.attemptsState.getGameAllAttemptsFetchStatus
   );
+
+  const gamesName = useSelector((state: IAttemptsSlice) => state.attemptsState.selectedGamesName);
+
   const showHideAttemptsList = useSelector(
     (state: IAttemptsSlice) => state.attemptsState.showHideAttemptsList
   );
@@ -97,6 +100,7 @@ const CurrentGameAttempts = () => {
             gameID: currentGameID,
             telegramUserID: telegramUser?.id,
             page: attemptsListCurrentPage + 1,
+            gamesName: gamesName,
           })
         );
         // if (!user?.id) {
@@ -124,6 +128,7 @@ const CurrentGameAttempts = () => {
             gameID: currentGameID,
             telegramUserID: telegramUser?.id,
             page: attemptsListCurrentPage - 1,
+            gamesName: gamesName,
           })
         );
         // if (!user?.id) {
