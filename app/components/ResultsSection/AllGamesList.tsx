@@ -81,6 +81,7 @@ const AllGamesList = () => {
           telegramUserID: telegramUser?.id,
           page: 1,
           limit: attemptsLimitOnPage,
+          gamesName: gamesName,
         })
       );
       // if (!user?.id) {
