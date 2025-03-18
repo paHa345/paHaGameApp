@@ -5,11 +5,13 @@ import GameSectionCard from "./GameSectionCard";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/store";
 import { crossworGamedActions } from "@/app/store/crosswordGameSlice";
+import { guessThatSongActions } from "@/app/store/guessThatSongSlice";
 
 const GamesSectionMain = () => {
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     // console.log("clear attempt data");
+    dispatch(guessThatSongActions.setCurrentUserCompletedGTSAttempt(undefined));
     dispatch(crossworGamedActions.clearCurrentUserCompletedAttempt());
     dispatch(crossworGamedActions.setEndAttempt(false));
   });

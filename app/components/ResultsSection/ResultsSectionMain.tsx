@@ -9,7 +9,7 @@ import { attemptsActions, attemptsFetchStatus, IAttemptsSlice } from "@/app/stor
 
 import { IAppSlice } from "@/app/store/appStateSlice";
 import SelectGameButtonsMain from "./SelectGameButtonsSection/SelectGameButtonsMain";
-import { IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
+import { guessThatSongActions, IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
 import CurrentUserCompletedCrosswordAttempt from "./CurrentUserCompletedCrosswordAttempt";
 import CurrentUserCompletedGTSGameAttempt from "./CurrentUserCompletedGTSGameAttempt";
 
@@ -27,11 +27,29 @@ const ResultsSectionMain = () => {
     (state: IAttemptsSlice) => state.attemptsState.selectedGamesName
   );
 
+  const currentUserCompletedCrosswordAttempt = useSelector(
+    (state: ICrosswordGameSlice) => state.crosswordGameState.currentUserCompletedAttempt
+  );
+
+  const currentUserCompletedGTSGameAttempt = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.currentUserCompletedGTSAttempt
+  );
+
   useEffect(() => {
     dispatch(attemptsActions.setGameAllAttempts(undefined));
     dispatch(attemptsActions.setGetGameAllAttemptsFetchStatus(attemptsFetchStatus.Ready));
     dispatch(crossworGamedActions.setEndAttempt(false));
   });
+
+  useEffect(() => {
+    if (currentUserCompletedCrosswordAttempt) {
+      dispatch(attemptsActions.setSelectedGamesName("Crossword"));
+    }
+
+    if (currentUserCompletedGTSGameAttempt) {
+      dispatch(attemptsActions.setSelectedGamesName("GTS"));
+    }
+  }, []);
 
   return (
     <>

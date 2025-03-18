@@ -15,6 +15,7 @@ import { ICrosswordGameSlice } from "@/app/store/crosswordGameSlice";
 import { CSSTransition } from "react-transition-group";
 import GamesListPaginationMain from "./GamesListPaginationMain";
 import { IAppSlice } from "@/app/store/appStateSlice";
+import { IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
 
 const AllGamesList = () => {
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
@@ -39,10 +40,17 @@ const AllGamesList = () => {
     (state: IAttemptsSlice) => state.attemptsState?.gameAllAttempts
   );
 
-  const selectedGameListID =
-    gameAllAttemptsData && gameAllAttemptsData.length > 0
-      ? gameAllAttemptsData[0].crosswordID
-      : undefined;
+  let selectedGameListID: string | undefined;
+
+  if (gameAllAttemptsData && gameAllAttemptsData.length > 0) {
+    gamesName === "Crossword"
+      ? (selectedGameListID = gameAllAttemptsData[0].crosswordID)
+      : (selectedGameListID = gameAllAttemptsData[0].GTSGameID);
+  }
+
+  // gameAllAttemptsData && gameAllAttemptsData.length > 0
+  //   ? gameAllAttemptsData[0].GTSGameID
+  //   : undefined;
 
   const gamesElements = gamesList?.map((game) => {
     const isSelected = game._id === selectedGameListID;
@@ -50,8 +58,12 @@ const AllGamesList = () => {
       <GameListElement isSelected={isSelected} key={game._id} gameData={game}></GameListElement>
     );
   });
-  const currentUserCompletedAttempt = useSelector(
+  const currentUserCompletedCrosswordAttempt = useSelector(
     (state: ICrosswordGameSlice) => state.crosswordGameState.currentUserCompletedAttempt
+  );
+
+  const currentUserCompletedGTSGameAttempt = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.currentUserCompletedGTSAttempt
   );
 
   const gamesListTransitionClasses = useSelector(
@@ -74,37 +86,32 @@ const AllGamesList = () => {
   }, []);
 
   useEffect(() => {
-    if (currentUserCompletedAttempt) {
+    if (currentUserCompletedCrosswordAttempt) {
       dispatch(
         getGameAllAttempts({
-          gameID: currentUserCompletedAttempt.crosswordID,
+          gameID: currentUserCompletedCrosswordAttempt.crosswordID,
           telegramUserID: telegramUser?.id,
           page: 1,
           limit: attemptsLimitOnPage,
           gamesName: gamesName,
         })
       );
-      // if (!user?.id) {
-      //   dispatch(
-      //     getGameAllAttempts({
-      //       gameID: currentUserCompletedAttempt.crosswordID,
-      //       telegramUserID: 777777,
-      //       page: 1,
-      //       limit: attemptsLimitOnPage,
-      //     })
-      //   );
-      // } else {
-      //   dispatch(
-      //     getGameAllAttempts({
-      //       gameID: currentUserCompletedAttempt.crosswordID,
-      //       telegramUserID: user?.id,
-      //       page: 1,
-      //       limit: attemptsLimitOnPage,
-      //     })
-      //   );
-      // }
     }
-  }, [currentUserCompletedAttempt]);
+
+    // console.log(currentUserCompletedGTSGameAttempt);
+
+    if (currentUserCompletedGTSGameAttempt) {
+      dispatch(
+        getGameAllAttempts({
+          gameID: currentUserCompletedGTSGameAttempt.GTSGameID,
+          telegramUserID: telegramUser?.id,
+          page: 1,
+          limit: attemptsLimitOnPage,
+          gamesName: gamesName,
+        })
+      );
+    }
+  }, [currentUserCompletedCrosswordAttempt, currentUserCompletedGTSGameAttempt]);
 
   const gamesListCurrentPage = useSelector(
     (state: IAttemptsSlice) => state.attemptsState.gamesListCurrentPage

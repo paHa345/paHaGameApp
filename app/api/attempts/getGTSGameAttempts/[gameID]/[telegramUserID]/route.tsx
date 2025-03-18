@@ -41,7 +41,7 @@ export async function GET(req: NextRequest, segmentData: any) {
     console.log(isLastPage);
     const allGameAttempts = await GTSGameAttempt.aggregate([
       { $match: { GTSGameID: params.gameID, isCompleted: true } },
-      { $sort: { timeRemained: 1 } },
+      { $sort: { timeRemained: -1 } },
       { $skip: skip },
       { $limit: limit },
     ]);
