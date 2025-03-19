@@ -14,6 +14,8 @@ const CurrentAttemptQuestionStatusMain = () => {
   const currentAttemptQuestionStatusArr = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.questionsStatus
   );
+
+  console.log(currentQuestion);
   const questionsStatusEls = attemptQuestions.map((question, number) => {
     return (
       <CurrentAttemptQuestion
@@ -26,9 +28,12 @@ const CurrentAttemptQuestionStatusMain = () => {
   });
   console.log(currentAttemptQuestionStatusArr);
   return (
-    <div className="w-11/12">
+    <div className="w-full shadow-cardElementShadow rounded-xl py-3 px-3">
       <div className=" text-center">
-        <h1 className=" text-2xl">Вопросы</h1>
+        <h1 className=" text-2xl ">
+          Вопрос
+          <span> {currentQuestion + 1}</span> из <span>{attemptQuestions.length}</span>
+        </h1>
       </div>
 
       <div className=" px-5 py-5 overflow-hidden overflow-x-scroll flex justify-start items-start gap-3">
