@@ -42,7 +42,11 @@ const AnswersModalMain = () => {
     e: React.MouseEvent<HTMLAnchorElement> | React.MouseEvent<HTMLDivElement>
   ) => {
     e.preventDefault();
-    dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
+    let closeWindow = confirm("Вы действительно хотите покинуть данную страницу?");
+
+    if (closeWindow) {
+      dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
+    }
   };
 
   const backdropVariant = {
