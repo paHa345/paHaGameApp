@@ -97,7 +97,7 @@ const StartGameButton = () => {
     <div className=" flex justify-center items-center w-10/12 ">
       <article
         onClick={startGameHandler}
-        className=" flex justify-center items-center cursor-pointer hover:scale-110 transition-all rounded-lg ease-in duration-300  hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-cyan-200 shadow-exerciseCardShadow hover:shadow-exerciseCardHowerShadow"
+        className=" flex justify-center items-center cursor-pointer hover:scale-110 transition-all rounded-lg ease-in duration-200  hover:bg-gradient-to-tl bg-gradient-to-tr from-secoundaryColor to-cyan-200 shadow-cardElementShadow "
       >
         <div className=" flex justify-center items-center flex-col px-5 py-5 ">
           <div className=" h-20 w-20">

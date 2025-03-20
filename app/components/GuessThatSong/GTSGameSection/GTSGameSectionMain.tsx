@@ -24,7 +24,7 @@ const GTSGameSectionMain = () => {
   return (
     <>
       {!startGameStatus && (
-        <div className=" mt-8 flex justify-center items-center h-[70vh] flex-col gap-7 ">
+        <div className=" mt-8 flex justify-center items-center h-[79vh] flex-col gap-7 ">
           <CurrentAttemptQuestionStatusMain></CurrentAttemptQuestionStatusMain>
           <StartGameButton></StartGameButton>{" "}
           <CurrentAttemptTimeStatusMain></CurrentAttemptTimeStatusMain>

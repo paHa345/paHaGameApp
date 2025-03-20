@@ -16,6 +16,7 @@ import {
   faPencil,
   faXmark,
   faChessBoard,
+  faHeadphonesAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
 import MyPageNotification from "./MyPageNotification";
@@ -43,6 +44,11 @@ const MyPage = () => {
       </h1>
     );
 
+  const uploadFileHandler = (e: React.MouseEvent) => {
+    e.preventDefault();
+    console.log("upload");
+  };
+
   useEffect(() => {
     const createdCrossword = localStorage.getItem("createdCrossword");
     const crosswordName = localStorage.getItem("crosswordName");
@@ -54,9 +60,7 @@ const MyPage = () => {
       crosswordValue !== null &&
       crosswordId !== null
     ) {
-      dispatch(
-        crosswordActions.setCreatedCrossword(JSON.parse(createdCrossword))
-      );
+      dispatch(crosswordActions.setCreatedCrossword(JSON.parse(createdCrossword)));
       dispatch(crosswordActions.setCrosswordName(JSON.parse(crosswordName)));
       dispatch(crosswordActions.setCrosswordValue(JSON.parse(crosswordValue)));
       dispatch(crosswordActions.setCrosswordId(JSON.parse(crosswordId)));
@@ -78,20 +82,13 @@ const MyPage = () => {
         </div>
         <div>
           {" "}
-          <button
-            className=" my-5"
-            onClick={() => signOut({ callbackUrl: "/login" })}
-          >
+          <button className=" my-5" onClick={() => signOut({ callbackUrl: "/login" })}>
             Выйти
           </button>
         </div>
 
         <div className=" py-5">
-          <Link
-            className=" buttonStandart"
-            rel="stylesheet"
-            href="/createCrossword"
-          >
+          <Link className=" buttonStandart" rel="stylesheet" href="/createCrossword">
             <span>
               <FontAwesomeIcon className=" pr-3 fa-fw" icon={faChessBoard} />
             </span>
@@ -100,16 +97,21 @@ const MyPage = () => {
         </div>
 
         <div className=" py-5">
-          <Link
-            className=" buttonStandart"
-            rel="stylesheet"
-            href="/createGuessThatSong"
-          >
+          <Link className=" buttonStandart" rel="stylesheet" href="/createGuessThatSong">
             <span>
-              <FontAwesomeIcon className=" pr-3 fa-fw" icon={faChessBoard} />
+              <FontAwesomeIcon className=" pr-3 fa-fw" icon={faHeadphonesAlt} />
             </span>
             Создание игры 'Угадай мелодию'
           </Link>
+        </div>
+
+        <div className=" py-5">
+          <div onClick={uploadFileHandler} className=" buttonStandart">
+            <span>
+              <FontAwesomeIcon className=" pr-3 fa-fw" icon={faChessBoard} />
+            </span>
+            Upload file to timeweb
+          </div>
         </div>
       </section>
     </>

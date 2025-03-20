@@ -15,16 +15,16 @@ const CurrentAttemptTimeStatusMain = () => {
   );
 
   return (
-    <div className=" flex justify-center items-center w-full flex-col">
-      <div className=" flex justify-center items-center flex-col">
+    <div className=" bg-cyan-50 bg-opacity-60 rounded-xl shadow-cardElementShadow px-5 py-5  flex justify-center items-center w-full flex-col">
+      <div className=" flex justify-center items-center flex-col text-2xl">
         <h1>Времени осталось</h1>
-        <h1>{currentAttemptRemainedTime} сек</h1>
+        <h1 className=" font-bold pb-2">{currentAttemptRemainedTime} сек</h1>
       </div>
       <div
         style={{
           background: ` ${currentAttemptRemainedTime && currentAttemptFullTime ? `linear-gradient(to right, rgba(22, 128, 204, 0.5 ) ${(currentAttemptRemainedTime * 100) / currentAttemptFullTime}%, #ccc ${(currentAttemptRemainedTime * 100) / currentAttemptFullTime}%` : ""}`,
         }}
-        className="progress w-full h-10 rounded-md"
+        className="progress w-full h-10 rounded-md shadow-timeBarShadow "
       ></div>
     </div>
   );

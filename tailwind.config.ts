@@ -26,8 +26,7 @@ export default {
 
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors: {
         mainColor: "#F0C808",
@@ -66,7 +65,9 @@ export default {
           "rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset",
         audioControlsButtonShadow: "rgba(0, 0, 0, 0.35) 10px 5px 15px",
         audioControlsButtonHoverShadow: "rgba(0, 0, 0, 0.35) 15px 5px 12px",
+        timeBarShadow: "rgba(17, 17, 26, 0.6) 1px 1px 6px",
       },
+
       fontFamily: {
         sans: ['"Proxima Nova"', ...defaultTheme.fontFamily.sans],
       },

@@ -28,7 +28,7 @@ const CurrentAttemptQuestionStatusMain = () => {
   });
   console.log(currentAttemptQuestionStatusArr);
   return (
-    <div className="w-full shadow-cardElementShadow rounded-xl py-3 px-3">
+    <div className="w-full shadow-cardElementShadow rounded-xl px-3">
       <div className=" text-center">
         <h1 className=" text-2xl ">
           Вопрос
@@ -36,7 +36,7 @@ const CurrentAttemptQuestionStatusMain = () => {
         </h1>
       </div>
 
-      <div className=" px-5 py-5 overflow-hidden overflow-x-scroll flex justify-start items-start gap-3">
+      <div className=" px-3 py-3 overflow-hidden overflow-x-scroll flex justify-start items-start gap-3">
         {questionsStatusEls}
       </div>
     </div>

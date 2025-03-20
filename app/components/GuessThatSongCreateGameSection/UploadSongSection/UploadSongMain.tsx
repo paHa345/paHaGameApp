@@ -32,7 +32,7 @@ const UploadSongMain = () => {
       return;
     }
     console.log(inputFileRef.current?.files[0].size);
-    if (inputFileRef.current?.files[0].size > 1000000) {
+    if (inputFileRef.current?.files[0].size > 3000000) {
       //   setAddImageNotification("Слишком большой объём выбранного изображения");
       console.log("Too big");
       return;
