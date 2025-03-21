@@ -5,8 +5,8 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   const CREDENTIAL = {
-    accessKeyId: "RUEYZDINIEP2SO663H37",
-    secretAccessKey: "zqvXoz5xz82HIGMBqI2vKLhKaPdwSDTh9tVld9GG",
+    accessKeyId: "RUEYZDINIEP2SO66543H37",
+    secretAccessKey: "zqvXoz5xz82HIGMBqI2vKLhKaPdw;lkSDTh9tVld9GG",
   };
   const s3Client = new S3Client({
     region: "ru-1",
