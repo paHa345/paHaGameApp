@@ -7,8 +7,12 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 
+import { useS3Upload } from "next-s3-upload";
+
 import { IWorkout } from "@/app/types";
 import { AppDispatch } from "@/app/store";
+
+import { S3Client, PutObjectCommand, S3 } from "@aws-sdk/client-s3";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -30,6 +34,41 @@ const MyPage = () => {
   //   dispatch(setCurrentUserWorkouts());
   //   dispatch(setCurrentUserInState());
   // }, []);
+
+  const CREDENTIAL = {
+    accessKeyId: "RUEYZDINIEP2SO663H37",
+    secretAccessKey: "zqvXoz5xz82HIGMBqI2vKLhKaPdwSDTh9tVld9GG",
+  };
+
+  const s3 = new S3({
+    endpoint: "https://s3.timeweb.com",
+    region: "ru-1",
+    forcePathStyle: true,
+    apiVersion: "latest",
+    credentials: CREDENTIAL,
+  });
+
+  const [file, setFile] = useState<File | null>(null);
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const res = await fetch("/api/uploadTimeweb", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (res.ok) {
+      setMessage("File uploaded successfully!");
+    } else {
+      setMessage("Failed to upload file.");
+    }
+  };
 
   const greeting =
     session?.user.userType === "coach" ? (
@@ -113,6 +152,20 @@ const MyPage = () => {
             Upload file to timeweb
           </div>
         </div>
+
+        <form onSubmit={handleSubmit}>
+          <input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} />
+          <button type="submit">Upload</button>
+          {message && <p>{message}</p>}
+        </form>
+
+        {/* <div>
+          <FileInput onChange={handleFileChange} />
+
+          <button onClick={openFileDialog}>Upload file</button>
+
+          {imageUrl && <img src={imageUrl} />}
+        </div> */}
       </section>
     </>
   );
