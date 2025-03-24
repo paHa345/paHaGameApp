@@ -188,13 +188,21 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
           dispatch(guessThatSongActions.setStartGameStatus(false));
           dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
           // dispatch(guessThatSongActions.setCurrentGTSGameAttemptID(""));
+          dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
+
           redirect("/results");
         }, 2000);
       }
 
+      //тут устанавливаем уведомление "Переходим к следующему вопросу"
+
+      dispatch(guessThatSongActions.setNextQuestionNotification("Переходим к следующему вопросу"));
+
       setTimeout(() => {
+        console.log("Переходим к следующему вопросу");
         dispatch(guessThatSongActions.setStartGameStatus(false));
         dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
+        dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
       }, 5000);
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -287,6 +295,7 @@ export interface IGuessThatSongSlice {
       lastName?: string;
       userPhoto?: string;
     };
+    nextQuestionNotification?: string;
   };
 }
 
@@ -370,6 +379,7 @@ interface IGuessThatSongState {
   currentAnswerTimeRemained: number;
   checkGTSGameAnswerStatus: GTSGameFetchStatus;
   checkGTSGameAnswerErrorMessage?: string;
+  nextQuestionNotification?: string;
 }
 
 export const initGuessThatSongState: IGuessThatSongState = {
@@ -515,6 +525,9 @@ export const guessThatSongSlice = createSlice({
     },
     setCurrentUserCompletedGTSAttempt(state, action) {
       state.currentUserCompletedGTSAttempt = action.payload;
+    },
+    setNextQuestionNotification(state, action) {
+      state.nextQuestionNotification = action.payload;
     },
   },
   extraReducers(builder) {

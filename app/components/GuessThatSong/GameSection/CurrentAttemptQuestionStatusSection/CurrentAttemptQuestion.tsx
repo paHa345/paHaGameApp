@@ -25,12 +25,12 @@ const CurrentAttemptQuestion = ({
   return (
     <div>
       <div
-        className={` ${isCurrent ? " scale-110" : ""} ${answerBGColor}  py-3 px-3 rounded-2xl shadow-audioControlsButtonHoverShadow `}
+        className={` ${isCurrent ? " scale-110" : ""} ${answerBGColor}  py-0 px-0 my-3 rounded-full shadow-audioControlsButtonHoverShadow `}
       >
         <FontAwesomeIcon
           // style={{ color: "green" }}
           style={{ color: `${isCompleted ? " black" : "gray"}` }}
-          className={`fa-fw fa-3x ${isCurrent ? "animate-spin" : ""} `}
+          className={`fa-fw fa-3x ${isCurrent ? "animate-spin" : ""} py-0 px-0 h-10 w-10 `}
           icon={faCompactDisc}
         />
 

@@ -26,6 +26,10 @@ const AnswersModalMain = () => {
     (state: IGuessThatSongSlice) => state.guessThatSongState.chosenGTSGameAnswerID
   );
 
+  const nextQuestionNotification = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.nextQuestionNotification
+  );
+
   const answerIsCorrect = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.answerIsCorrect
   );
@@ -114,23 +118,32 @@ const AnswersModalMain = () => {
           >
             <div className="modal-header flex justify-start items-center w-full ">
               <div className=" w-full flex justify-end items-center">
-                {checkAnswerStatus === GTSGameFetchStatus.Loading && (
-                  <div className=" absolute top-20 left-9 px-10 animate-spin">
-                    <FontAwesomeIcon className=" fa-4x" icon={faHeadphonesSimple} />
-                  </div>
-                )}
-                {bonusTime >= 0 && (
-                  <div className="text-center">
-                    <div className=" text-3xl text-center">
-                      <h1>{answerStatus}</h1>
+                <div className=" w-full flex justify-center items-center flex-col">
+                  {nextQuestionNotification && (
+                    <div className=" text-center text-xl px-1 py-1 rounded-md bg-lime-100">
+                      {" "}
+                      <h1>{nextQuestionNotification}</h1>
                     </div>
+                  )}
+                  {checkAnswerStatus === GTSGameFetchStatus.Loading && (
+                    <div className=" absolute top-20 left-9 px-10 animate-spin">
+                      <FontAwesomeIcon className=" fa-4x" icon={faHeadphonesSimple} />
+                    </div>
+                  )}
+                  {bonusTime >= 0 && (
+                    <div className="text-center">
+                      <div className=" text-3xl text-center">
+                        <h1>{answerStatus}</h1>
+                      </div>
 
-                    <div>
-                      <h1 className=" px-5 text-2xl text-center">Дополнительное время: </h1>
-                      <h1 className=" px-5 text-2xl text-center">+{bonusTime} сек</h1>
+                      <div>
+                        <h1 className=" px-5 text-2xl text-center">Дополнительное время: </h1>
+                        <h1 className=" px-5 text-2xl text-center">+{bonusTime} сек</h1>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
+
                 <a
                   className={` bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200`}
                   onClick={hideGTSAnswersModalHandler}

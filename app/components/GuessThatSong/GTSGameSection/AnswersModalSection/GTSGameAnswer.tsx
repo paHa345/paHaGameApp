@@ -1,6 +1,7 @@
 import { AppDispatch } from "@/app/store";
 import {
   checkGTSGameAnswerAndSetQuestion,
+  GTSGameFetchStatus,
   guessThatSongActions,
   IGuessThatSongSlice,
 } from "@/app/store/guessThatSongSlice";
@@ -16,6 +17,9 @@ const GTSGameAnswer = ({ answerText, id }: IGTSGameAnswerProps) => {
   const chosenGTSGameAnswerID = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.chosenGTSGameAnswerID
   );
+  const checkGTSGameAnswerStatus = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.checkGTSGameAnswerStatus
+  );
   const stopAnswerTimeController = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.stopAnswerTimerController
   );
@@ -28,6 +32,11 @@ const GTSGameAnswer = ({ answerText, id }: IGTSGameAnswerProps) => {
   );
   const chooseAnswerHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
+    console.log(checkGTSGameAnswerStatus);
+    if (checkGTSGameAnswerStatus !== GTSGameFetchStatus.Resolve) {
+      console.log("Stop");
+      return;
+    }
     dispatch(guessThatSongActions.setChosenGTSGameAnswerID(id));
     stopAnswerTimeController?.abort();
     dispatch(checkGTSGameAnswerAndSetQuestion({ answerID: id, attemptID: attemptID }));
