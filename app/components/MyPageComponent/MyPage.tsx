@@ -36,8 +36,8 @@ const MyPage = () => {
   // }, []);
 
   const CREDENTIAL = {
-    accessKeyId: "RUEYZDINIEP2SO663H37",
-    secretAccessKey: "zqvXoz5xz82HIGMBqI2vKLhKaPdwSDTh9tVld9GG",
+    accessKeyId: process.env.NEXT_PUBLIC_ACCESSKEYID as string,
+    secretAccessKey: process.env.NEXT_PUBLIC_SECRETACCESSKEY as string,
   };
 
   const s3 = new S3({

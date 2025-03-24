@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { S3, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 
 const CREDENTIAL = {
-  accessKeyId: "RUEYZDINIEP2SO663H37",
-  secretAccessKey: "zqvXoz5xz82HIGMBqI2vKLhKaPdwSDTh9tVld9GG",
+  accessKeyId: process.env.NEXT_PUBLIC_ACCESSKEYID as string,
+  secretAccessKey: process.env.NEXT_PUBLIC_SECRETACCESSKEY as string,
 };
 const s3Client = new S3Client({
   region: "ru-1",

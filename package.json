@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.772.0",
+    "@aws-sdk/s3-presigned-post": "^3.772.0",
     "@ffmpeg/core": "^0.12.8",
     "@ffmpeg/ffmpeg": "^0.12.6",
     "@ffmpeg/types": "^0.12.3",
@@ -55,6 +56,7 @@
     "styled": "^1.0.0",
     "swr": "^2.2.5",
     "typescript-plugin-styled-components": "^3.0.0",
+    "uuid": "^11.1.0",
     "ws": "^8.18.0"
   },
   "devDependencies": {
