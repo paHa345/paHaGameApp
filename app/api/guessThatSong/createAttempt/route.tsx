@@ -12,7 +12,6 @@ export async function POST(req: NextRequest) {
     }
     await connectMongoDB();
     const body = await req.json();
-    console.log(body);
     const currentGTSGame = await GTSGame.findById(body.GTSGameID);
     if (currentGTSGame === null) {
       return NextResponse.json({ message: "Не найдена игра" }, { status: 400 });
@@ -22,7 +21,6 @@ export async function POST(req: NextRequest) {
       telegramUserID: body.telegramUserID,
       isCompleted: true,
     });
-    console.log(completedAttempt);
     if (completedAttempt.length !== 0) {
       return NextResponse.json({ message: "Вы уже пытались сыграть в эту игру" }, { status: 400 });
     }
@@ -40,6 +38,8 @@ export async function POST(req: NextRequest) {
     const startDate = new Date();
 
     const newAttampt = await GTSGameAttempt.create({ ...body, startDate: startDate });
+
+    console.log(newAttampt);
     return NextResponse.json({ message: "Success", result: newAttampt });
   } catch (error: any) {
     return NextResponse.json({ message: error?.message }, { status: 400 });

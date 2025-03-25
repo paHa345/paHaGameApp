@@ -11,8 +11,6 @@ const CurrentAttemptQuestion = ({
   isCurrent,
   answerIsCorrect,
 }: IQuestionStatusProps) => {
-  console.log(answerIsCorrect);
-
   let answerBGColor = " bg-slate-300";
   // ${answerIsCorrect && isCompleted ? "bg-lime-300" : " bg-red-300"}
   if (answerIsCorrect && isCompleted) {

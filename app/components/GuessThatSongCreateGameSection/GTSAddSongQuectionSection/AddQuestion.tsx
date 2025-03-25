@@ -40,8 +40,6 @@ const AddQuestion = () => {
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.createdGTSGame
   );
 
-  console.log(createdGame);
-
   const answersEls = currentQuestion?.answersArr ? (
     currentQuestion.answersArr.map((answer, index) => {
       return (

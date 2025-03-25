@@ -33,7 +33,7 @@ const GTSGameAnswer = ({ answerText, id }: IGTSGameAnswerProps) => {
   const chooseAnswerHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     console.log(checkGTSGameAnswerStatus);
-    if (checkGTSGameAnswerStatus !== GTSGameFetchStatus.Resolve) {
+    if (checkGTSGameAnswerStatus === GTSGameFetchStatus.Loading) {
       console.log("Stop");
       return;
     }

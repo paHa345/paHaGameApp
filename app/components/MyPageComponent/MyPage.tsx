@@ -35,40 +35,27 @@ const MyPage = () => {
   //   dispatch(setCurrentUserInState());
   // }, []);
 
-  const CREDENTIAL = {
-    accessKeyId: process.env.NEXT_PUBLIC_ACCESSKEYID as string,
-    secretAccessKey: process.env.NEXT_PUBLIC_SECRETACCESSKEY as string,
-  };
+  // const [file, setFile] = useState<File | null>(null);
+  // const [message, setMessage] = useState("");
 
-  const s3 = new S3({
-    endpoint: "https://s3.timeweb.com",
-    region: "ru-1",
-    forcePathStyle: true,
-    apiVersion: "latest",
-    credentials: CREDENTIAL,
-  });
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (!file) return;
 
-  const [file, setFile] = useState<File | null>(null);
-  const [message, setMessage] = useState("");
+  //   const formData = new FormData();
+  //   formData.append("file", file);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!file) return;
+  //   const res = await fetch("/api/uploadTimeweb", {
+  //     method: "POST",
+  //     body: formData,
+  //   });
 
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const res = await fetch("/api/uploadTimeweb", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (res.ok) {
-      setMessage("File uploaded successfully!");
-    } else {
-      setMessage("Failed to upload file.");
-    }
-  };
+  //   if (res.ok) {
+  //     setMessage("File uploaded successfully!");
+  //   } else {
+  //     setMessage("Failed to upload file.");
+  //   }
+  // };
 
   const greeting =
     session?.user.userType === "coach" ? (
@@ -82,11 +69,6 @@ const MyPage = () => {
         {`Приветствуем, ${session?.user?.name}`}{" "}
       </h1>
     );
-
-  const uploadFileHandler = (e: React.MouseEvent) => {
-    e.preventDefault();
-    console.log("upload");
-  };
 
   useEffect(() => {
     const createdCrossword = localStorage.getItem("createdCrossword");
@@ -144,28 +126,11 @@ const MyPage = () => {
           </Link>
         </div>
 
-        <div className=" py-5">
-          <div onClick={uploadFileHandler} className=" buttonStandart">
-            <span>
-              <FontAwesomeIcon className=" pr-3 fa-fw" icon={faChessBoard} />
-            </span>
-            Upload file to timeweb
-          </div>
-        </div>
-
-        <form onSubmit={handleSubmit}>
+        {/* <form onSubmit={handleSubmit}>
           <input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} />
           <button type="submit">Upload</button>
           {message && <p>{message}</p>}
-        </form>
-
-        {/* <div>
-          <FileInput onChange={handleFileChange} />
-
-          <button onClick={openFileDialog}>Upload file</button>
-
-          {imageUrl && <img src={imageUrl} />}
-        </div> */}
+        </form> */}
       </section>
     </>
   );

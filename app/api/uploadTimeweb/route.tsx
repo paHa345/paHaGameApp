@@ -9,7 +9,7 @@ const CREDENTIAL = {
 const s3Client = new S3Client({
   region: "ru-1",
   credentials: CREDENTIAL,
-  endpoint: "https://s3.timeweb.com",
+  endpoint: "https://s3.timeweb.cloud",
   forcePathStyle: true,
   apiVersion: "latest",
 });
@@ -33,11 +33,11 @@ export async function POST(request: NextRequest) {
       ContentType: file.type,
     };
 
-    console.log(uploadParams);
+    const uploadedFile = await s3Client.send(new PutObjectCommand(uploadParams));
 
-    await s3Client.send(new PutObjectCommand(uploadParams));
+    const uploadedFileURL = `https://s3.timeweb.cloud/${uploadParams.Bucket}/${uploadParams.Key}`;
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, uploadedFileURL: uploadedFileURL });
   } catch (error: any) {
     console.log(error);
     return NextResponse.json({ error: "Upload failed", details: error }, { status: 500 });

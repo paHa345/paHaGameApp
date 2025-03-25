@@ -22,6 +22,7 @@ const UploadSongMain = () => {
   const [blob, setBlob] = useState<PutBlobResult | null>(null);
   const [songURL, setSongURL] = useState<string | null>(null);
   const inputFileRef = useRef<HTMLInputElement>(null);
+  const [message, setMessage] = useState("");
 
   const changeImageHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.files);
@@ -39,14 +40,83 @@ const UploadSongMain = () => {
     }
 
     const objectURL = URL.createObjectURL(e.target.files[0]);
-    // console.log(objectURL);
     setAddedSongURL(objectURL);
-    // setAddImageNotification("Изображение добавлено");
     console.log("Песня добавлена");
-    // console.log(addedExerciseImage);
   };
 
   const uploadSong = async () => {
+    try {
+      if (inputFileRef.current?.files?.length === 0) {
+        throw new Error("No file selected");
+      }
+      if (!inputFileRef.current?.files) {
+        throw new Error("No file selected");
+      }
+
+      const file = inputFileRef.current.files[0];
+
+      console.log(file);
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/uploadTimeweb", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (res.ok) {
+        setMessage("File uploaded successfully!");
+      } else {
+        setMessage("Failed to upload file.");
+      }
+
+      const uploadedFile = await res.json();
+
+      setSongURL(() => {
+        return uploadedFile.uploadedFileURL;
+      });
+
+      console.log(uploadedFile);
+
+      if (updateQuestionStatus) {
+        console.log("updated");
+        dispatch(
+          GTSCreateGameActions.updateQuestionSongURL({
+            updatedQuestion: updatedQuestionNumber,
+            songURL: uploadedFile.uploadedFileURL,
+          })
+        );
+      } else {
+        dispatch(GTSCreateGameActions.setSongURL(uploadedFile.uploadedFileURL));
+      }
+    } catch (error: any) {
+      console.log(error.message);
+    }
+
+    // const [file, setFile] = useState<File | null>(null);
+    // const [message, setMessage] = useState("");
+
+    // const handleSubmit = async (e: React.FormEvent) => {
+    //   e.preventDefault();
+    //   if (!file) return;
+
+    //   const formData = new FormData();
+    //   formData.append("file", file);
+
+    //   const res = await fetch("/api/uploadTimeweb", {
+    //     method: "POST",
+    //     body: formData,
+    //   });
+
+    //   if (res.ok) {
+    //     setMessage("File uploaded successfully!");
+    //   } else {
+    //     setMessage("Failed to upload file.");
+    //   }
+    // };
+  };
+
+  const uploadSongForVercelBlob = async () => {
     try {
       if (inputFileRef.current?.files?.length === 0) {
         throw new Error("No file selected");

@@ -1,5 +1,5 @@
 import { IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import CurrentAttemptQuestion from "./CurrentAttemptQuestion";
 import { div } from "framer-motion/client";
@@ -15,6 +15,10 @@ const CurrentAttemptQuestionStatusMain = () => {
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.questionsStatus
   );
 
+  const currentGTSAttemptData = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData
+  );
+
   console.log(currentQuestion);
   const questionsStatusEls = attemptQuestions.map((question, number) => {
     return (
@@ -26,7 +30,19 @@ const CurrentAttemptQuestionStatusMain = () => {
       />
     );
   });
-  console.log(currentAttemptQuestionStatusArr);
+
+  useEffect(() => {
+    console.log("Effect");
+    const questionStatusContainer = document.querySelector(".questionStatusContainer");
+
+    console.log(questionStatusContainer);
+
+    questionStatusContainer?.scrollTo({
+      left: currentGTSAttemptData.currentQuestion * 40,
+      behavior: "smooth",
+    });
+  });
+
   return (
     <div className="w-full shadow-cardElementShadow rounded-xl py-1 px-3">
       <div className=" text-center">
@@ -36,7 +52,7 @@ const CurrentAttemptQuestionStatusMain = () => {
         </h1>
       </div>
 
-      <div className=" my-3 overflow-hidden overflow-x-scroll flex justify-start items-start gap-3">
+      <div className="questionStatusContainer my-3 overflow-hidden overflow-x-scroll flex justify-start items-start gap-3">
         {questionsStatusEls}
       </div>
     </div>

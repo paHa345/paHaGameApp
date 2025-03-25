@@ -15,7 +15,6 @@ const UpdatedQuestionSong = () => {
       ? createdGame[updatedQuestionNumber].songURL
       : undefined;
 
-  console.log(updatedQuestionSongURL);
   return (
     <div className=" my-3 py-3">
       {/* {updatedQuestionNumber !== undefined && <h1>{createdGame[updatedQuestionNumber].songURL}</h1>} */}
