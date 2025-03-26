@@ -12,7 +12,7 @@ const QuestionStatus = ({ isCompleted, isCurrent, bonusTime }: IQuestionStatusPr
   console.log(bonusTime);
   return (
     <div>
-      <div className={`${isCurrent ? " bg-cyan-200" : " bg-amber-200"} py-1 px-1 rounded-lg`}>
+      <div className={`${isCurrent ? " bg-cyan-200" : " bg-amber-200"} rounded-lg`}>
         <FontAwesomeIcon
           style={{ color: `${isCompleted ? " green" : "gray"}` }}
           className="fa-fw fa-3x red"

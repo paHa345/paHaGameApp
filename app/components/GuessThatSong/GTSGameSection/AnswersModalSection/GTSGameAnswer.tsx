@@ -58,7 +58,7 @@ const GTSGameAnswer = ({ answerText, id }: IGTSGameAnswerProps) => {
     answerColor = " to-lime-200";
   }
 
-  if (chosenGTSGameAnswerID === id && !answerIsCorrect) {
+  if (chosenGTSGameAnswerID === id && !answerIsCorrect && answerIsCorrect !== null) {
     answerColor = " to-red-200";
   }
 
@@ -66,7 +66,7 @@ const GTSGameAnswer = ({ answerText, id }: IGTSGameAnswerProps) => {
   return (
     <div
       onClick={chooseAnswerHandler}
-      className={` cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor ${chosenGTSGameAnswerID === id && "scale-110"} ${answerColor}  hover:to-yellow-200 shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
+      className={` cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor ${chosenGTSGameAnswerID === id && "scale-110"} ${answerColor}  shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
     >
       <h1 className=" text-2xl text-center">{answerText}</h1>
     </div>

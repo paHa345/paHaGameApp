@@ -28,7 +28,7 @@ const CurrentAttemptQuestion = ({
   return (
     <div>
       <div
-        className={` ${isCurrent ? " scale-125" : ""} ${answerBGColor} py-0 px-0 my-3 rounded-full shadow-audioControlsButtonHoverShadow `}
+        className={` ${isCurrent ? " scale-125" : ""} ${answerBGColor} py-0 px-0 pb-2 my-3 rounded-full shadow-audioControlsButtonHoverShadow `}
       >
         {bonusTime ? (
           <p className=" text-center relative text-lg font-bold">{`+ ${bonusTime}`}</p>

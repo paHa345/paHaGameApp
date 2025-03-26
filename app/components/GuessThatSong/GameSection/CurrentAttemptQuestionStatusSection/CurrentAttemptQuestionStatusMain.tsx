@@ -53,7 +53,7 @@ const CurrentAttemptQuestionStatusMain = () => {
         </h1>
       </div>
 
-      <div className="questionStatusContainer my-3 overflow-hidden overflow-x-scroll flex justify-start items-start gap-3">
+      <div className="questionStatusContainer my-3 px-5 overflow-hidden overflow-x-scroll flex justify-start items-start gap-3">
         {questionsStatusEls}
       </div>
     </div>

@@ -14,9 +14,9 @@ const AttemptRemainedTimer = () => {
   console.log(attemptFullTime);
   return (
     <div className=" flex justify-center items-center w-full flex-col">
-      <div className=" flex justify-center items-center flex-col">
+      <div className=" flex justify-center items-center flex-col text-2xl">
         <h1>Времени осталось</h1>
-        <h1>{remainedTime} сек</h1>
+        <h1 className=" font-bold pb-2">{remainedTime} сек</h1>
       </div>
       <div
         style={{

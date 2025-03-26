@@ -331,10 +331,11 @@ interface IGuessThatSongState {
       _id: string;
       userAnswerSongName?: string;
       correctAnswerSongName?: string;
+      answerIsCorrect?: boolean;
     }[];
     currentQuestion: number;
     bonusTime: number;
-    answerIsCorrect?: boolean;
+    answerIsCorrect?: boolean | null;
   };
 
   currentUserCompletedGTSAttempt?: {
@@ -408,6 +409,7 @@ export const initGuessThatSongState: IGuessThatSongState = {
     ],
     currentQuestion: 0,
     bonusTime: -1,
+    answerIsCorrect: null,
   },
   startGTSGameLaunchAttemptTimerStatus: GTSGameFetchStatus.Ready,
   currentAttemptSongIsPlaying: false,
