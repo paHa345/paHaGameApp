@@ -26,6 +26,7 @@ const CurrentAttemptQuestionStatusMain = () => {
         isCurrent={currentQuestion === number}
         isCompleted={question.getAnswer}
         answerIsCorrect={question?.answerIsCorrect}
+        bonusTime={question.bonusTime}
         key={question._id}
       />
     );

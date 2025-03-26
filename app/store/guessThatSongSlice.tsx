@@ -40,8 +40,6 @@ export const createAttemptAndAddInSlice = createAsyncThunk(
   "GTSGameState/createAttemptAndAddInSlice",
   async function (attemptData: any, { rejectWithValue, dispatch }) {
     try {
-      console.log(attemptData);
-
       const createGTSGameAttemptReq = await fetch(`/api/guessThatSong/GTSGame/createAttempt`, {
         method: "POST",
         headers: {
@@ -60,7 +58,6 @@ export const createAttemptAndAddInSlice = createAsyncThunk(
           guessThatSongActions.setCurrentGTSGameAttemptID(createdGTSGameAttempt.result[0]._id)
         );
         dispatch(guessThatSongActions.setCurrentGTSAttemptData(createdGTSGameAttempt.result[0]));
-        console.log(createdGTSGameAttempt.result[0]);
         dispatch(
           guessThatSongActions.setAttemptQuestionStatus(
             createdGTSGameAttempt.result[0].attemptQuestionStatus
@@ -68,7 +65,6 @@ export const createAttemptAndAddInSlice = createAsyncThunk(
         );
       } else {
         dispatch(guessThatSongActions.setCurrentGTSGameAttemptID(createdGTSGameAttempt.result._id));
-        console.log(createdGTSGameAttempt.result);
         dispatch(guessThatSongActions.setCurrentGTSAttemptData(createdGTSGameAttempt.result));
         dispatch(
           guessThatSongActions.setAttemptQuestionStatus(
@@ -94,7 +90,6 @@ export const startGTSGameLaunchAttemptTimer = createAsyncThunk(
         throw new Error("Ошибка сервера");
       }
       const getGTSGameStartData = await getGTSGameStartDataReq.json();
-      console.log(getGTSGameStartData);
       dispatch(guessThatSongActions.setCurrentGTSAttemptData(getGTSGameStartData.result));
       dispatch(guessThatSongActions.setStartGameStatus(true));
     } catch (error: any) {
@@ -181,7 +176,6 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
 
       if (checkAnswer.result.attemptIsCompleted) {
         setTimeout(() => {
-          console.log(checkAnswer.result.attempt);
           dispatch(
             guessThatSongActions.setCurrentUserCompletedGTSAttempt(checkAnswer.result.attempt)
           );
@@ -191,7 +185,7 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
           dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
 
           redirect("/results");
-        }, 2000);
+        }, 1000);
       }
 
       //тут устанавливаем уведомление "Переходим к следующему вопросу"
@@ -199,11 +193,11 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
       dispatch(guessThatSongActions.setNextQuestionNotification("Переходим к следующему вопросу"));
 
       setTimeout(() => {
-        console.log("Переходим к следующему вопросу");
+        // console.log("Переходим к следующему вопросу");
         dispatch(guessThatSongActions.setStartGameStatus(false));
         dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
         dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
-      }, 5000);
+      }, 2000);
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -255,6 +249,7 @@ export interface IGuessThatSongSlice {
         _id: string;
         userAnswerSongName?: string;
         correctAnswerSongName?: string;
+        bonusTime?: number;
       }[];
       currentQuestion: number;
       bonusTime: number;

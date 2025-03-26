@@ -83,7 +83,7 @@ const AnswersModalMain = () => {
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.questionAnswers
   );
 
-  const answersEls = currentGTSAnswers.map((answer) => {
+  const answersEls = currentGTSAnswers.map((answer, index) => {
     return (
       <div key={answer._id}>
         <GTSGameAnswer id={answer._id} answerText={answer.text}></GTSGameAnswer>

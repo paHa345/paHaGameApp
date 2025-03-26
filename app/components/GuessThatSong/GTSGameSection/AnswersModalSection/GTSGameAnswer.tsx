@@ -30,9 +30,9 @@ const GTSGameAnswer = ({ answerText, id }: IGTSGameAnswerProps) => {
   const answerIsCorrect = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.answerIsCorrect
   );
+
   const chooseAnswerHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    console.log(checkGTSGameAnswerStatus);
     if (checkGTSGameAnswerStatus === GTSGameFetchStatus.Loading) {
       console.log("Stop");
       return;
@@ -50,11 +50,23 @@ const GTSGameAnswer = ({ answerText, id }: IGTSGameAnswerProps) => {
     answerStatus = false;
   }
 
+  let answerColor = "to-cyan-200";
+  if (chosenGTSGameAnswerID === id) {
+    answerColor = "to-yellow-200";
+  }
+  if (chosenGTSGameAnswerID === id && answerIsCorrect) {
+    answerColor = " to-lime-200";
+  }
+
+  if (chosenGTSGameAnswerID === id && !answerIsCorrect) {
+    answerColor = " to-red-200";
+  }
+
   // chosenGTSGameAnswerID === id && answerIsCorrect ? (answerStatus = true) : (answerStatus = false);
   return (
     <div
       onClick={chooseAnswerHandler}
-      className={` ${answerStatus === true && "to-green-300"} ${answerStatus === false && "to-red-300"}  cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor ${chosenGTSGameAnswerID === id ? "to-yellow-200 scale-110" : "to-cyan-200"}  hover:to-yellow-200 shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
+      className={` cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor ${chosenGTSGameAnswerID === id && "scale-110"} ${answerColor}  hover:to-yellow-200 shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
     >
       <h1 className=" text-2xl text-center">{answerText}</h1>
     </div>

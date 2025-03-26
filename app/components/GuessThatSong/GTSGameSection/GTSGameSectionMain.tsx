@@ -17,7 +17,13 @@ const GTSGameSectionMain = () => {
   const startGameStatus = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.startGameStatus
   );
-  console.log(startGameStatus);
+
+  const currentAttempt = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData
+  );
+
+  console.log(currentAttempt);
+
   if (!currentAttemptID) {
     redirect("/guessThatSongGame");
   }
