@@ -41,6 +41,7 @@ const UploadSongMain = () => {
 
     const objectURL = URL.createObjectURL(e.target.files[0]);
     setAddedSongURL(objectURL);
+    console.log(objectURL);
     console.log("Песня добавлена");
   };
 
@@ -163,8 +164,9 @@ const UploadSongMain = () => {
   };
 
   return (
-    <div>
+    <div className=" my-3 px-1 py-2 shadow-exerciseCardShadow">
       {/* <h1 className=" text-center text-3xl py-8">Угадай мелодию</h1> */}
+      <h1 className=" py-3 text-center text-xl">Песня</h1>
 
       <input name="file" onChange={changeImageHandler} ref={inputFileRef} type="file" required />
       {addedSongURL && (

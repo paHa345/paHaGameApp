@@ -121,6 +121,7 @@ export interface IGTSCreateGameSlice {
       answersArr?: { text: string }[];
       correctAnswerIndex?: number;
       songURL?: string;
+      imageURL?: string;
     };
     GTSAddedGameComplexity: GTSCreatedGameComplexity;
 
@@ -128,6 +129,7 @@ export interface IGTSCreateGameSlice {
       answersArr: { text: string }[];
       correctAnswerIndex: number;
       songURL: string;
+      imageURL?: string;
     }[];
   };
 }
@@ -166,6 +168,7 @@ interface IGTSCreateGameState {
     answersArr?: { text: string }[];
     correctAnswerIndex?: number;
     songURL?: string;
+    imageURL?: string;
   };
   GTSAddedGameComplexity: GTSCreatedGameComplexity;
 
@@ -173,6 +176,7 @@ interface IGTSCreateGameState {
     answersArr: { text: string }[];
     correctAnswerIndex: number;
     songURL: string;
+    imageURL?: string;
   }[];
 }
 
@@ -284,6 +288,11 @@ export const GTSCreateGameSlice = createSlice({
         state.currentQuestion.songURL = action.payload;
       }
     },
+    setImageURL(state, action) {
+      if (state.currentQuestion) {
+        state.currentQuestion.imageURL = action.payload;
+      }
+    },
     initCreatedGTSGame(state) {
       state.createdGTSGame = [];
     },
@@ -357,6 +366,9 @@ export const GTSCreateGameSlice = createSlice({
     },
     updateQuestionSongURL(state, action) {
       state.createdGTSGame[action.payload.updatedQuestion].songURL = action.payload.songURL;
+    },
+    updateQuestionImageURL(state, action) {
+      state.createdGTSGame[action.payload.updatedQuestion].imageURL = action.payload.imageURL;
     },
     setDeleteQuestionStatus(state, action) {
       state.deleteQuestionStatus = action.payload;

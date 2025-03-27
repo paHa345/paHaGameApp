@@ -387,7 +387,12 @@ export interface IGTSGameSchema {
   gameComplexity: number;
   // isCorrect: boolean;
   changeDate: Date;
-  GTSGameObj: { songURL: string; correctAnswerIndex: number; answersArr: { text: string }[] }[];
+  GTSGameObj: {
+    songURL: string;
+    imageURL?: string;
+    correctAnswerIndex: number;
+    answersArr: { text: string }[];
+  }[];
 }
 
 export interface IOneExerciseTypes {

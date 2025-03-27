@@ -44,18 +44,22 @@ export async function PATCH(req: NextRequest) {
       if (currentAttempt.timeRemained + currentAttempt.answerTime > currentAttempt.attemptTime) {
         const updatedGTSGameAttemptTime = await GTSGameAttempt.findByIdAndUpdate(body.attemptID, {
           $set: {
-            timeRemained: currentAttempt.timeRemained + currentAttempt.answerTime,
-            attemptTime: currentAttempt.timeRemained + currentAttempt.answerTime,
+            timeRemained: currentAttempt.timeRemained + bonusTime,
+            attemptTime: currentAttempt.timeRemained + bonusTime,
           },
         });
       } else {
         const updatedGTSGameAttemptTime = await GTSGameAttempt.findByIdAndUpdate(body.attemptID, {
-          $set: { timeRemained: currentAttempt.timeRemained + currentAttempt.answerTime },
+          $set: { timeRemained: currentAttempt.timeRemained + bonusTime },
         });
       }
     } else {
       console.log("Wrong");
+      bonusTime = -5;
       isCorrect = false;
+      await GTSGameAttempt.findByIdAndUpdate(body.attemptID, {
+        $set: { timeRemained: currentAttempt.timeRemained + bonusTime },
+      });
     }
 
     //меняем attemptQuestionStatus

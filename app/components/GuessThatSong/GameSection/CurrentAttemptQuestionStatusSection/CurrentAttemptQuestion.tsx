@@ -31,7 +31,7 @@ const CurrentAttemptQuestion = ({
         className={` ${isCurrent ? " scale-125" : ""} ${answerBGColor} py-0 px-0 pb-2 my-3 rounded-full shadow-audioControlsButtonHoverShadow `}
       >
         {bonusTime ? (
-          <p className=" text-center relative text-lg font-bold">{`+ ${bonusTime}`}</p>
+          <p className=" text-center relative text-lg font-bold">{` ${answerIsCorrect && isCompleted ? "+" : ""} ${bonusTime}`}</p>
         ) : (
           <p className=" opacity-0 text-center relative text-lg font-bold">{`+ ${0}`}</p>
         )}

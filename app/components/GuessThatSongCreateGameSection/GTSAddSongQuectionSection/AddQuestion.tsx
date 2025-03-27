@@ -7,6 +7,7 @@ import { div } from "framer-motion/client";
 import { faCirclePlus, faCross, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UploadSongMain from "../UploadSongSection/UploadSongMain";
+import UploadImageMain from "../UploadImageSection/UploadImageMain";
 
 const AddQuestion = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -103,6 +104,9 @@ const AddQuestion = () => {
     <div>
       <div>
         <UploadSongMain></UploadSongMain>
+      </div>
+      <div>
+        <UploadImageMain></UploadImageMain>
       </div>
       <div>
         <h1 className=" text-center text-2xl">Варианты ответов</h1>
