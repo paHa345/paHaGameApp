@@ -143,7 +143,7 @@ const AnswersModalMain = () => {
                       <FontAwesomeIcon className=" fa-4x" icon={faHeadphonesSimple} />
                     </div>
                   )}
-                  {checkGTSGameAnswerStatus === GTSGameFetchStatus.Resolve && (
+                  {bonusTime >= 0 && (
                     <div className="text-center">
                       <div className=" text-3xl text-center">
                         <h1>{answerStatus}</h1>
