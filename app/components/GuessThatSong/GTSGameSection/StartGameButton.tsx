@@ -33,8 +33,6 @@ const StartGameButton = () => {
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.currentQuestion
   );
 
-  console.log(currentNumberAttemptQuestion);
-  console.log(startGameStatus);
   const startGameHandler = () => {
     if (isTelegramWebApp()) {
       const { initData } = retrieveLaunchParams();

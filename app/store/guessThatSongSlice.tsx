@@ -147,6 +147,7 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
 
       dispatch(guessThatSongActions.setBonusTime(checkAnswer.result.bonusTime));
       dispatch(guessThatSongActions.setAnswerIsCorrect(checkAnswer.result.isCorrect));
+      dispatch(guessThatSongActions.setImageURL(checkAnswer.result.imageURL));
 
       const getCurrentAttemptReq = await fetch(
         `/api/guessThatSong/GTSGame/getCurrentAttempt/${attemptID}/${telegramUserID}`
@@ -183,6 +184,7 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
           dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
           // dispatch(guessThatSongActions.setCurrentGTSGameAttemptID(""));
           dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
+          dispatch(guessThatSongActions.setImageURL(undefined));
 
           redirect("/results");
         }, 1000);
@@ -197,7 +199,8 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
         dispatch(guessThatSongActions.setStartGameStatus(false));
         dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
         dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
-      }, 2000);
+        dispatch(guessThatSongActions.setImageURL(undefined));
+      }, 4000);
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -254,6 +257,7 @@ export interface IGuessThatSongSlice {
       currentQuestion: number;
       bonusTime: number;
       answerIsCorrect: boolean | null;
+      imageURL?: string;
     };
     startGTSGameLaunchAttemptTimerStatus: GTSGameFetchStatus;
     startGTSGameLaunchAttemptTimerErrorMessage?: string;
@@ -336,6 +340,7 @@ interface IGuessThatSongState {
     currentQuestion: number;
     bonusTime: number;
     answerIsCorrect?: boolean | null;
+    imageURL?: string;
   };
 
   currentUserCompletedGTSAttempt?: {
@@ -525,6 +530,9 @@ export const guessThatSongSlice = createSlice({
     },
     setNextQuestionNotification(state, action) {
       state.nextQuestionNotification = action.payload;
+    },
+    setImageURL(state, action) {
+      state.currentGTSAttemptData.imageURL = action.payload;
     },
   },
   extraReducers(builder) {

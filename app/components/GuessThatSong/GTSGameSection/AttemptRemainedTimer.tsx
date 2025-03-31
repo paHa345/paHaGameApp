@@ -11,7 +11,6 @@ const AttemptRemainedTimer = () => {
   );
   const percentage = (remainedTime / attemptFullTime) * 100;
 
-  console.log(attemptFullTime);
   return (
     <div className=" flex justify-center items-center w-full flex-col">
       <div className=" flex justify-center items-center flex-col text-2xl">

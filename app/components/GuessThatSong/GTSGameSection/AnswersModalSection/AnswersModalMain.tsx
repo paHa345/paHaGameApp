@@ -42,6 +42,13 @@ const AnswersModalMain = () => {
     (state: IGuessThatSongSlice) => state.guessThatSongState.checkGTSGameAnswerStatus
   );
 
+  const imageURL = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.imageURL
+  );
+  const currentGTSAttemptData = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData
+  );
+
   const hideGTSAnswersModalHandler = (
     e: React.MouseEvent<HTMLAnchorElement> | React.MouseEvent<HTMLDivElement>
   ) => {
@@ -85,7 +92,7 @@ const AnswersModalMain = () => {
 
   const answersEls = currentGTSAnswers.map((answer, index) => {
     return (
-      <div key={answer._id}>
+      <div key={answer._id} className="w-full">
         <GTSGameAnswer id={answer._id} answerText={answer.text}></GTSGameAnswer>
       </div>
     );
@@ -144,13 +151,13 @@ const AnswersModalMain = () => {
                   )}
                 </div>
 
-                <a
+                {/* <a
                   className={` bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200`}
                   onClick={hideGTSAnswersModalHandler}
                   href=""
                 >
                   <FontAwesomeIcon className=" fa-2x" icon={faXmark} />
-                </a>
+                </a> */}
               </div>
             </div>
 
@@ -158,7 +165,29 @@ const AnswersModalMain = () => {
               <div className=" w-full flex flex-col justify-center items-center">
                 <div className="   w-full flex  justify-around items-center">
                   <div className=" w-10/12 py-4  grid sm:grid-cols-2 grid-cols-1 gap-6">
-                    {answersEls}
+                    {imageURL ? (
+                      <div className=" flex justify-center items-center flex-col gap-3">
+                        <div className=" w-full h-full flex justify-center items-center ">
+                          <img className=" w-full h-full rounded-xl" src={imageURL} alt="Трек" />
+                        </div>
+                        <div
+                          className={` cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor ${answerIsCorrect ? "to-green-200" : "to-red-200"}  shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
+                        >
+                          <h1 className=" text-2xl text-center">
+                            {
+                              currentGTSAttemptData.questionsStatus[
+                                currentGTSAttemptData.currentQuestion - 1
+                              ]?.userAnswerSongName
+                            }
+                          </h1>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className=" w-full flex justify-center items-center flex-col gap-3 ">
+                        {" "}
+                        {answersEls}{" "}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

@@ -8,6 +8,8 @@ import GTSAnswer from "../GTSAddSongQuectionSection/GTSAnswer";
 import UpdatedQuestionAnswer from "./UpdatedQuestionAnswer";
 import { AppDispatch } from "@/app/store";
 import UpdatedQuestionSong from "./UpdatedQuestionSong";
+import UploadImageMain from "../UploadImageSection/UploadImageMain";
+import UpdatedQuestionImage from "./UpdatedQuestionImage";
 
 const UpdateQuestion = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -82,6 +84,20 @@ const UpdateQuestion = () => {
         </div>
 
         <UpdatedQuestionSong></UpdatedQuestionSong>
+      </div>
+
+      <div className="my-3 py-2 px-2 flex justify-center items-center flex-col shadow-smallShadow w-full">
+        <div>
+          <div className=" py-3">
+            {" "}
+            <h1 className=" text-center text-2xl">Редактирование изображения</h1>
+          </div>
+        </div>
+        <div>
+          <UploadImageMain></UploadImageMain>
+        </div>
+
+        <UpdatedQuestionImage></UpdatedQuestionImage>
       </div>
 
       <div>

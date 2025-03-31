@@ -77,7 +77,7 @@ const UploadImageMain = () => {
       if (updateQuestionStatus) {
         console.log("updated");
         dispatch(
-          GTSCreateGameActions.updateQuestionSongURL({
+          GTSCreateGameActions.updateQuestionImageURL({
             updatedQuestion: updatedQuestionNumber,
             imageURL: uploadedFile.uploadedFileURL,
           })
