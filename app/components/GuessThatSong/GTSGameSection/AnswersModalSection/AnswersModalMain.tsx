@@ -34,6 +34,10 @@ const AnswersModalMain = () => {
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.answerIsCorrect
   );
 
+  const checkGTSGameAnswerStatus = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.checkGTSGameAnswerStatus
+  );
+
   const showGTSAnswersModal = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.showGTSAnswersModal
   );
@@ -98,6 +102,8 @@ const AnswersModalMain = () => {
     );
   });
 
+  console.log(answerIsCorrect);
+
   const answerStatus = answerIsCorrect ? "Верно" : "Ошибка";
 
   useEffect(() => {
@@ -123,11 +129,11 @@ const AnswersModalMain = () => {
             // animate="visible"
             // exit="exit"
           >
-            <div className="modal-header flex justify-start items-center w-full ">
+            <div className=" h-[20vh] min-h-16 modal-header flex justify-start items-center w-full ">
               <div className=" w-full flex justify-end items-center">
                 <div className=" w-full flex justify-center items-center flex-col">
                   {nextQuestionNotification && (
-                    <div className=" text-center text-xl px-1 py-1 rounded-md bg-lime-100">
+                    <div className=" animate-pulse text-center text-xl px-1 py-1 rounded-md bg-lime-100">
                       {" "}
                       <h1>{nextQuestionNotification}</h1>
                     </div>
@@ -137,7 +143,7 @@ const AnswersModalMain = () => {
                       <FontAwesomeIcon className=" fa-4x" icon={faHeadphonesSimple} />
                     </div>
                   )}
-                  {bonusTime >= 0 && (
+                  {checkGTSGameAnswerStatus === GTSGameFetchStatus.Resolve && (
                     <div className="text-center">
                       <div className=" text-3xl text-center">
                         <h1>{answerStatus}</h1>
@@ -145,7 +151,7 @@ const AnswersModalMain = () => {
 
                       <div>
                         <h1 className=" px-5 text-2xl text-center">Дополнительное время: </h1>
-                        <h1 className=" px-5 text-2xl text-center">+{bonusTime} сек</h1>
+                        <h1 className=" px-5 text-2xl text-center">{bonusTime} сек</h1>
                       </div>
                     </div>
                   )}
@@ -161,7 +167,7 @@ const AnswersModalMain = () => {
               </div>
             </div>
 
-            <div className=" w-full h-[60vh] min-h-96 overflow-hidden overflow-y-scroll rounded-lg my-3 flex flex-col">
+            <div className=" w-full h-[50vh] min-h-96 overflow-hidden overflow-y-scroll rounded-lg my-3 flex flex-col">
               <div className=" w-full flex flex-col justify-center items-center">
                 <div className="   w-full flex  justify-around items-center">
                   <div className=" w-10/12 py-4  grid sm:grid-cols-2 grid-cols-1 gap-6">

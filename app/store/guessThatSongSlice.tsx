@@ -185,14 +185,18 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
           // dispatch(guessThatSongActions.setCurrentGTSGameAttemptID(""));
           dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
           dispatch(guessThatSongActions.setImageURL(undefined));
+          dispatch(guessThatSongActions.setAnswerIsCorrect(null));
+          // dispatch(guessThatSongActions.setCheckGTSGameAnswerStatus(GTSGameFetchStatus.Loading));
 
           redirect("/results");
-        }, 1000);
+        }, 4000);
       }
 
       //тут устанавливаем уведомление "Переходим к следующему вопросу"
 
-      dispatch(guessThatSongActions.setNextQuestionNotification("Переходим к следующему вопросу"));
+      dispatch(
+        guessThatSongActions.setNextQuestionNotification("Переходим к следующему вопросу...")
+      );
 
       setTimeout(() => {
         // console.log("Переходим к следующему вопросу");
@@ -200,6 +204,8 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
         dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
         dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
         dispatch(guessThatSongActions.setImageURL(undefined));
+        dispatch(guessThatSongActions.setAnswerIsCorrect(null));
+        // dispatch(guessThatSongActions.setCheckGTSGameAnswerStatus(GTSGameFetchStatus.Loading));
       }, 4000);
     } catch (error: any) {
       return rejectWithValue(error.message);
