@@ -208,7 +208,7 @@ const AnswersModalMain = () => {
                             }
                           </h1>
                         </div>
-                        <div>
+                        {/* <div>
                           <div
                             className={` cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor ${answerIsCorrect ? "to-green-200" : "to-red-200"}  shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
                           >
@@ -253,7 +253,7 @@ const AnswersModalMain = () => {
                               }
                             </h1>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     ) : (
                       <div className=" w-full flex justify-center items-center flex-col gap-3 ">
