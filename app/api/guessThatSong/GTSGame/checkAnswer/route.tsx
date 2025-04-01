@@ -48,8 +48,6 @@ export async function PATCH(req: NextRequest) {
             attemptTime: currentAttempt.timeRemained + bonusTime,
           },
         });
-
-        console.log(updatedGTSGameAttemptTime);
       } else {
         const updatedGTSGameAttemptTime = await GTSGameAttempt.findByIdAndUpdate(body.attemptID, {
           $set: { timeRemained: currentAttempt.timeRemained + bonusTime },
@@ -97,10 +95,7 @@ export async function PATCH(req: NextRequest) {
     });
 
     //получаем изображение
-    console.log("Check");
 
-    console.log(currentGameQuestions.GTSGameObj[currentAttempt.currentQuestion].imageURL);
-    console.log(currentAttempt.currentQuestion);
     // если вопрос последний, то завершаем попытку
     let updatedAttempt;
     let attemptIsCompleted = false;

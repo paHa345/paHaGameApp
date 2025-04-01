@@ -20,7 +20,6 @@ const FetchConyroller = ({ audioRef }: any) => {
   useEffect(() => {
     if (abortController) {
       async function readData(url: string, { signal }: any) {
-        console.log("Srart stream");
         const response = await fetch(url, signal);
 
         if (response.body) {
@@ -31,7 +30,6 @@ const FetchConyroller = ({ audioRef }: any) => {
             const time = new TextDecoder().decode(chunk).split(" ");
             dispatch(guessThatSongActions.setCurrentAttemptTimeRemained(time[1]));
           }
-          console.log("Finish stream");
         }
       }
       readData(`${process.env.NEXT_PUBLIC_EXPRESS_SERVER_HOST}GTSAttempts/${currentAttempt}`, {

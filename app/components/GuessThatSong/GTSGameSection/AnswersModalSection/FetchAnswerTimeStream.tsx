@@ -13,12 +13,9 @@ const FetchAnswerTimeStream = () => {
     (state: IGuessThatSongSlice) => state.guessThatSongState.stopAnswerTimerController
   );
 
-  console.log(stopAnswerTimeController);
-
   useEffect(() => {
     if (stopAnswerTimeController) {
       async function readData(url: string, { signal }: any) {
-        console.log("Srart stream");
         const response = await fetch(url, signal);
 
         if (response.body) {
@@ -31,7 +28,6 @@ const FetchAnswerTimeStream = () => {
               dispatch(guessThatSongActions.setCurrentAnswerTimeRemained(time[1]));
             }
           }
-          console.log("Finish stream");
         }
       }
       readData(`${process.env.NEXT_PUBLIC_EXPRESS_SERVER_HOST}answerTime/${currentAttempt}`, {

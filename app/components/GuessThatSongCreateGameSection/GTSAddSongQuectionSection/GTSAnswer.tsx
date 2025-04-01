@@ -1,13 +1,6 @@
 import { AppDispatch } from "@/app/store";
-import {
-  GTSCreateGameActions,
-  IGTSCreateGameSlice,
-} from "@/app/store/GTSCreateGameSlice";
-import {
-  faCheck,
-  faCheckCircle,
-  faCircleCheck,
-} from "@fortawesome/free-solid-svg-icons";
+import { GTSCreateGameActions, IGTSCreateGameSlice } from "@/app/store/GTSCreateGameSlice";
+import { faCheck, faCheckCircle, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { div } from "framer-motion/client";
 import React, { useState } from "react";
@@ -21,18 +14,15 @@ const GTSAnswer = ({ index }: IGTSAnswerProps) => {
   const [answer, setAnswer] = useState("");
   const changeAnswerHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAnswer(e.currentTarget.value);
-    console.log(e.currentTarget.value);
     dispatch(
       GTSCreateGameActions.setCurrentQuestionAnswer({
         index: index,
         text: e.currentTarget.value,
       })
     );
-    console.log(currentQuestion);
   };
   const currentCorrectAnswer = useSelector(
-    (state: IGTSCreateGameSlice) =>
-      state.GTSCreateGameState.currentQuestion?.correctAnswerIndex
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.currentQuestion?.correctAnswerIndex
   );
   const currentQuestion = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.currentQuestion
@@ -40,16 +30,12 @@ const GTSAnswer = ({ index }: IGTSAnswerProps) => {
 
   const setAnswerIsCorrect = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    console.log(index);
     dispatch(GTSCreateGameActions.setCorrectAnswerIndex(index));
   };
 
   return (
     <div className=" py-3 flex justify-center items-center">
-      <div
-        onClick={setAnswerIsCorrect}
-        className=" cursor-pointer hover:scale-110"
-      >
+      <div onClick={setAnswerIsCorrect} className=" cursor-pointer hover:scale-110">
         {currentCorrectAnswer === index ? (
           <FontAwesomeIcon className=" pr-2" icon={faCircleCheck} />
         ) : (

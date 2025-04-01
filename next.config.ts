@@ -6,6 +6,24 @@ const nextConfig: NextConfig = {
   // images: {
   //   unoptimized: true,
   // },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "s3.timeweb.cloud",
+        port: "",
+        pathname: "/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/uploads/**",
+        search: "",
+      },
+      {
+        protocol: "https",
+        hostname: "s3.twcstorage.ru",
+        port: "",
+        pathname: "/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/uploads/**",
+        search: "",
+      },
+    ],
+  },
 };
 export default nextConfig;
 

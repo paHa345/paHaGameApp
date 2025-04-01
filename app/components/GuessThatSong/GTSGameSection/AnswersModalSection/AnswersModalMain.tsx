@@ -14,6 +14,7 @@ import { faHeadphonesSimple, faMusic, faXmark } from "@fortawesome/free-solid-sv
 import GTSGameAnswer from "./GTSGameAnswer";
 import RemainedTimeAnswerModal from "./RemainedTimeAnswerModal";
 import FetchAnswerTimeStream from "./FetchAnswerTimeStream";
+import Image from "next/image";
 
 const AnswersModalMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -102,9 +103,8 @@ const AnswersModalMain = () => {
     );
   });
 
-  console.log(answerIsCorrect);
-
   const answerStatus = answerIsCorrect ? "Верно" : "Ошибка";
+  const showAnswerTimer = !bonusTime || (bonusTime <= 0 && bonusTime !== -5);
 
   useEffect(() => {
     dispatch(guessThatSongActions.setStopAnswerTimerController(new AbortController()));
@@ -155,6 +155,18 @@ const AnswersModalMain = () => {
                       </div>
                     </div>
                   )}
+                  {bonusTime === -5 && (
+                    <div className="text-center">
+                      <div className=" text-3xl text-center">
+                        <h1>{answerStatus}</h1>
+                      </div>
+
+                      <div>
+                        <h1 className=" px-5 text-2xl text-center">Дополнительное время: </h1>
+                        <h1 className=" px-5 text-2xl text-center">{bonusTime} сек</h1>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* <a
@@ -167,14 +179,23 @@ const AnswersModalMain = () => {
               </div>
             </div>
 
-            <div className=" w-full h-[50vh] min-h-96 overflow-hidden overflow-y-scroll rounded-lg my-3 flex flex-col">
+            <div
+              className={` w-full ${showAnswerTimer ? "h-[50vh]" : " h-[60vh]"} min-h-96 overflow-hidden overflow-y-scroll rounded-lg my-3 flex flex-col`}
+            >
               <div className=" w-full flex flex-col justify-center items-center">
                 <div className="   w-full flex  justify-around items-center">
                   <div className=" w-10/12 py-4  grid sm:grid-cols-2 grid-cols-1 gap-6">
                     {imageURL ? (
                       <div className=" flex justify-center items-center flex-col gap-3">
-                        <div className=" w-full h-full flex justify-center items-center ">
-                          <img className=" w-full h-full rounded-xl" src={imageURL} alt="Трек" />
+                        <div className=" h-[20vh]  w-full flex justify-center items-center ">
+                          <Image
+                            width="0"
+                            height="0"
+                            sizes="100vw"
+                            className="w-auto h-full rounded-xl"
+                            src={imageURL}
+                            alt="Трек"
+                          />
                         </div>
                         <div
                           className={` cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor ${answerIsCorrect ? "to-green-200" : "to-red-200"}  shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
@@ -187,6 +208,52 @@ const AnswersModalMain = () => {
                             }
                           </h1>
                         </div>
+                        <div>
+                          <div
+                            className={` cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor ${answerIsCorrect ? "to-green-200" : "to-red-200"}  shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
+                          >
+                            <h1 className=" text-2xl text-center">
+                              {
+                                currentGTSAttemptData.questionsStatus[
+                                  currentGTSAttemptData.currentQuestion - 1
+                                ]?.userAnswerSongName
+                              }
+                            </h1>
+                          </div>
+                          <div
+                            className={` cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor ${answerIsCorrect ? "to-green-200" : "to-red-200"}  shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
+                          >
+                            <h1 className=" text-2xl text-center">
+                              {
+                                currentGTSAttemptData.questionsStatus[
+                                  currentGTSAttemptData.currentQuestion - 1
+                                ]?.userAnswerSongName
+                              }
+                            </h1>
+                          </div>
+                          <div
+                            className={` cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor ${answerIsCorrect ? "to-green-200" : "to-red-200"}  shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
+                          >
+                            <h1 className=" text-2xl text-center">
+                              {
+                                currentGTSAttemptData.questionsStatus[
+                                  currentGTSAttemptData.currentQuestion - 1
+                                ]?.userAnswerSongName
+                              }
+                            </h1>
+                          </div>
+                          <div
+                            className={` cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor ${answerIsCorrect ? "to-green-200" : "to-red-200"}  shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
+                          >
+                            <h1 className=" text-2xl text-center">
+                              {
+                                currentGTSAttemptData.questionsStatus[
+                                  currentGTSAttemptData.currentQuestion - 1
+                                ]?.userAnswerSongName
+                              }
+                            </h1>
+                          </div>
+                        </div>
                       </div>
                     ) : (
                       <div className=" w-full flex justify-center items-center flex-col gap-3 ">
@@ -198,11 +265,16 @@ const AnswersModalMain = () => {
                 </div>
               </div>
             </div>
-            <div className=" flex justify-center items-center">
-              <div className=" w-11/12">
-                <RemainedTimeAnswerModal></RemainedTimeAnswerModal>
+            {showAnswerTimer ? (
+              <div className=" flex justify-center items-center">
+                <div className=" w-11/12">
+                  <RemainedTimeAnswerModal></RemainedTimeAnswerModal>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div></div>
+            )}
+
             <FetchAnswerTimeStream></FetchAnswerTimeStream>
           </motion.div>{" "}
         </motion.div>

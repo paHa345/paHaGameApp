@@ -205,7 +205,6 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
         dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
         dispatch(guessThatSongActions.setImageURL(undefined));
         dispatch(guessThatSongActions.setAnswerIsCorrect(null));
-        // dispatch(guessThatSongActions.setCheckGTSGameAnswerStatus(GTSGameFetchStatus.Loading));
       }, 4000);
     } catch (error: any) {
       return rejectWithValue(error.message);
