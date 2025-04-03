@@ -130,6 +130,13 @@ export interface IGTSCreateGameSlice {
       correctAnswerIndex: number;
       songURL: string;
       imageURL?: string;
+      artist: {
+        correctAnswerIndex: number;
+        artistAnswerArr: {
+          text: string;
+          isCorrect: boolean;
+        }[];
+      };
     }[];
   };
 }
@@ -177,6 +184,13 @@ interface IGTSCreateGameState {
     correctAnswerIndex: number;
     songURL: string;
     imageURL?: string;
+    artist: {
+      correctAnswerIndex?: number;
+      artistAnswerArr?: {
+        text: string;
+        isCorrect: boolean;
+      }[];
+    };
   }[];
 }
 
@@ -337,6 +351,68 @@ export const GTSCreateGameSlice = createSlice({
       state.createdGTSGame[action.payload.updatedAnswer].correctAnswerIndex =
         action.payload.correctAnswerIndex;
     },
+    addArtistsVariantsArr(state, action) {
+      const artistsVariants = Array.from(Array(4)).map((el, index) => {
+        if (index === 0) {
+          return {
+            text: "",
+            isCorrect: true,
+          };
+        } else {
+          return {
+            text: "",
+            isCorrect: false,
+          };
+        }
+      });
+      state.createdGTSGame[action.payload].artist = {
+        correctAnswerIndex: 0,
+        artistAnswerArr: artistsVariants,
+      };
+    },
+    updateAnswerArtistText(state, action) {
+      console.log(action.payload);
+      const data = state.createdGTSGame[action.payload.updatedAnswer].artist.artistAnswerArr;
+      if (data) {
+        state.createdGTSGame[action.payload.updatedAnswer].artist.artistAnswerArr = data.map(
+          (artist, index) => {
+            if (index === action.payload.updatedArtistIndex) {
+              return {
+                text: action.payload.text,
+                isCorrect: artist.isCorrect,
+              };
+            } else {
+              return {
+                text: artist.text,
+                isCorrect: artist.isCorrect,
+              };
+            }
+          }
+        );
+      }
+    },
+    updateArtistCorrectVariant(state, action) {
+      if (state.createdGTSGame[action.payload.updatedAnswer].artist !== undefined) {
+        state.createdGTSGame[action.payload.updatedAnswer].artist.correctAnswerIndex =
+          action.payload.correctAnswerIndex;
+        state.createdGTSGame[action.payload.updatedAnswer].artist.artistAnswerArr =
+          state.createdGTSGame[action.payload.updatedAnswer].artist.artistAnswerArr?.map(
+            (artist, index) => {
+              if (index === action.payload.correctAnswerIndex) {
+                return {
+                  text: artist.text,
+                  isCorrect: true,
+                };
+              } else {
+                return {
+                  text: artist.text,
+                  isCorrect: false,
+                };
+              }
+            }
+          );
+      }
+    },
     updateAnswersArr(
       state,
       action: {
@@ -418,6 +494,13 @@ export const GTSCreateGameSlice = createSlice({
             correctAnswerIndex: number;
             songURL: string;
             _id: string;
+            artist: {
+              correctAnswerIndex?: number;
+              artistAnswerArr?: {
+                text: string;
+                isCorrect: boolean;
+              }[];
+            };
           }[];
           changeDate: Date;
           gameComplexity: number;

@@ -392,6 +392,13 @@ export interface IGTSGameSchema {
     imageURL?: string;
     correctAnswerIndex: number;
     answersArr: { text: string }[];
+    artist?: {
+      correctAnswerIndex: number;
+      artistAnswerArr: {
+        text: string;
+        isCorrect: boolean;
+      }[];
+    };
   }[];
 }
 

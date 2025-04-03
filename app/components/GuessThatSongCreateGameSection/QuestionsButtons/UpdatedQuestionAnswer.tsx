@@ -1,6 +1,6 @@
 import { AppDispatch } from "@/app/store";
 import { GTSCreateGameActions, IGTSCreateGameSlice } from "@/app/store/GTSCreateGameSlice";
-import { faCheck, faCheckCircle, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faCheckCircle, faCircleCheck, faPencil } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { div } from "framer-motion/client";
 import React, { useState } from "react";
@@ -8,8 +8,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 interface IGTSAnswerProps {
   index: number;
+  text: string;
 }
-const UpdatedQuestionAnswer = ({ index }: IGTSAnswerProps) => {
+const UpdatedQuestionAnswer = ({ index, text }: IGTSAnswerProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const currentQuestion = useSelector(
@@ -58,7 +59,21 @@ const UpdatedQuestionAnswer = ({ index }: IGTSAnswerProps) => {
         )}
       </div>
 
-      <div
+      <div className=" flex gap-2">
+        <div className=" px-3 border-2 border-solid rounded-md border-cyan-900">
+          <input
+            className=" w-full py-1"
+            type="text"
+            size={40}
+            // defaultValue={"Введите название"}
+            placeholder={`Введите ответ ${index + 1}`}
+            value={text}
+            onChange={updateAnswerHandler}
+          />
+        </div>
+      </div>
+
+      {/* <div
         className={` ${
           currentUpdatedQuestion !== undefined &&
           currentGTSGame[currentUpdatedQuestion].correctAnswerIndex === index
@@ -73,17 +88,11 @@ const UpdatedQuestionAnswer = ({ index }: IGTSAnswerProps) => {
             size={40}
             // defaultValue={"Введите название"}
             placeholder={`Введите ответ ${index + 1}`}
-            value={
-              currentGTSGame !== undefined &&
-              currentUpdatedQuestion !== undefined &&
-              currentGTSGame[currentUpdatedQuestion].answersArr !== undefined
-                ? currentGTSGame[currentUpdatedQuestion].answersArr[index].text
-                : ""
-            }
+            value={text}
             onChange={updateAnswerHandler}
           />
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -15,6 +15,15 @@ const GTSGameSchema = new mongoose.Schema<IGTSGameSchema>({
       imageURL: { type: String, required: false },
       correctAnswerIndex: { type: Number, required: true },
       answersArr: [{ text: { type: String, required: true } }],
+      artist: {
+        correctAnswerIndex: { type: Number, required: false },
+        artistAnswerArr: [
+          {
+            text: { type: String, required: false },
+            isCorrect: { type: Boolean, required: false },
+          },
+        ],
+      },
     },
   ],
 });

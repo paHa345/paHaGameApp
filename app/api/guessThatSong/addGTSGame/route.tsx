@@ -21,10 +21,9 @@ export async function POST(req: NextRequest) {
 
     const GTSGameBody = await req.json();
     let addedGTSGame;
-    console.log(GTSGameBody);
     if (GTSGameBody.gameID) {
-      console.log("Update Game in DB");
-      console.log(GTSGameBody);
+      // console.log("Update Game in DB");
+      // console.log(GTSGameBody);
       // тут нужно вернуть объект и записать его в addedGTSGame
       addedGTSGame = await GTSGame.findByIdAndUpdate(GTSGameBody.gameID, GTSGameBody, {
         new: true,
@@ -34,7 +33,7 @@ export async function POST(req: NextRequest) {
 
       GTSGameBody.userID = currentUser._id;
       GTSGameBody.changeDate = new Date(Date.now());
-      console.log(GTSGameBody);
+      // console.log(GTSGameBody);
 
       addedGTSGame = await GTSGame.create(GTSGameBody);
     }

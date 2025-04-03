@@ -15,6 +15,7 @@ import GTSGameAnswer from "./GTSGameAnswer";
 import RemainedTimeAnswerModal from "./RemainedTimeAnswerModal";
 import FetchAnswerTimeStream from "./FetchAnswerTimeStream";
 import Image from "next/image";
+import ArtistAnswer from "./ArtistAnswer";
 
 const AnswersModalMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -38,6 +39,12 @@ const AnswersModalMain = () => {
   const checkGTSGameAnswerStatus = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.checkGTSGameAnswerStatus
   );
+
+  const artistAnswersArr = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.artistAnswerArr
+  );
+
+  console.log(artistAnswersArr);
 
   const showGTSAnswersModal = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.showGTSAnswersModal
@@ -99,6 +106,14 @@ const AnswersModalMain = () => {
     return (
       <div key={answer._id} className="w-full">
         <GTSGameAnswer id={answer._id} answerText={answer.text}></GTSGameAnswer>
+      </div>
+    );
+  });
+
+  const artistAnswerEl = artistAnswersArr.map((answer, index) => {
+    return (
+      <div key={answer._id} className="w-full">
+        <ArtistAnswer text={answer.text} artistAnswerID={answer._id}></ArtistAnswer>
       </div>
     );
   });
@@ -208,57 +223,14 @@ const AnswersModalMain = () => {
                             }
                           </h1>
                         </div>
-                        {/* <div>
-                          <div
-                            className={` cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor ${answerIsCorrect ? "to-green-200" : "to-red-200"}  shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
-                          >
-                            <h1 className=" text-2xl text-center">
-                              {
-                                currentGTSAttemptData.questionsStatus[
-                                  currentGTSAttemptData.currentQuestion - 1
-                                ]?.userAnswerSongName
-                              }
-                            </h1>
-                          </div>
-                          <div
-                            className={` cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor ${answerIsCorrect ? "to-green-200" : "to-red-200"}  shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
-                          >
-                            <h1 className=" text-2xl text-center">
-                              {
-                                currentGTSAttemptData.questionsStatus[
-                                  currentGTSAttemptData.currentQuestion - 1
-                                ]?.userAnswerSongName
-                              }
-                            </h1>
-                          </div>
-                          <div
-                            className={` cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor ${answerIsCorrect ? "to-green-200" : "to-red-200"}  shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
-                          >
-                            <h1 className=" text-2xl text-center">
-                              {
-                                currentGTSAttemptData.questionsStatus[
-                                  currentGTSAttemptData.currentQuestion - 1
-                                ]?.userAnswerSongName
-                              }
-                            </h1>
-                          </div>
-                          <div
-                            className={` cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor ${answerIsCorrect ? "to-green-200" : "to-red-200"}  shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
-                          >
-                            <h1 className=" text-2xl text-center">
-                              {
-                                currentGTSAttemptData.questionsStatus[
-                                  currentGTSAttemptData.currentQuestion - 1
-                                ]?.userAnswerSongName
-                              }
-                            </h1>
-                          </div>
-                        </div> */}
+                        {artistAnswerEl}
                       </div>
                     ) : (
-                      <div className=" w-full flex justify-center items-center flex-col gap-3 ">
-                        {" "}
-                        {answersEls}{" "}
+                      <div>
+                        <div className=" w-full flex justify-center items-center flex-col gap-3 ">
+                          {" "}
+                          {answersEls}{" "}
+                        </div>
                       </div>
                     )}
                   </div>

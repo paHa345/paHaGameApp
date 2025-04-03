@@ -1,4 +1,4 @@
-import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import { faPencil, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import UploadSongMain from "../UploadSongSection/UploadSongMain";
@@ -10,6 +10,8 @@ import { AppDispatch } from "@/app/store";
 import UpdatedQuestionSong from "./UpdatedQuestionSong";
 import UploadImageMain from "../UploadImageSection/UploadImageMain";
 import UpdatedQuestionImage from "./UpdatedQuestionImage";
+import UpdateQuestionArtistAnswer from "./UpdateQuestionArtistAnswer";
+import AddArtistToAnswerMain from "../AddArtistToAnswerSection/AddArtistToAnswerMain";
 
 const UpdateQuestion = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -53,10 +55,32 @@ const UpdateQuestion = () => {
     updatedQuestionNumber !== undefined &&
     updatedQuestionNumber > -1 ? (
       currentAddedGame[updatedQuestionNumber].answersArr?.map((answer, index) => {
+        // console.log(answer.text);
         return (
           <div key={index}>
             {" "}
-            <UpdatedQuestionAnswer index={index}></UpdatedQuestionAnswer>
+            <UpdatedQuestionAnswer text={answer.text} index={index}></UpdatedQuestionAnswer>
+          </div>
+        );
+      })
+    ) : (
+      <div>rrr</div>
+    );
+
+  const updatedArtistListEls =
+    currentAddedGame !== undefined &&
+    updatedQuestionNumber !== undefined &&
+    updatedQuestionNumber > -1 ? (
+      currentAddedGame[updatedQuestionNumber].artist?.artistAnswerArr.map((artist, index) => {
+        // console.log(answer.text);
+        return (
+          <div key={index}>
+            {" "}
+            <UpdateQuestionArtistAnswer
+              text={artist.text}
+              index={index}
+              isCorrect={artist.isCorrect}
+            ></UpdateQuestionArtistAnswer>
           </div>
         );
       })
@@ -125,6 +149,19 @@ const UpdateQuestion = () => {
           <div className=" grid gap-2 justify-center items-center sm:grid-cols-2">
             {updatedAnswersEls}
           </div>
+
+          {currentUpdatedQuestion &&
+          currentAddedGame[currentUpdatedQuestion].artist.correctAnswerIndex === undefined ? (
+            <AddArtistToAnswerMain></AddArtistToAnswerMain>
+          ) : (
+            <div>
+              <h1 className=" py-4 text-center text-2xl">Название исполнителя</h1>
+              <div className=" grid gap-2 justify-center items-center sm:grid-cols-2">
+                {updatedArtistListEls}
+              </div>
+            </div>
+          )}
+
           <div>
             <div className=" py-5 flex justify-center items-center">
               <div
