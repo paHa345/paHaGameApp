@@ -10,7 +10,6 @@ export async function GET(req: NextRequest, segmentData: any) {
     await connectMongoDB();
 
     const params = await segmentData.params;
-    console.log(params);
     const currentAttempt = await GTSGameAttempt.find({
       telegramID: params.telegramUserID,
       _id: params.attemptID,

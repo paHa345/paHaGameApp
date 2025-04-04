@@ -108,6 +108,16 @@ export const startGTSGameLaunchAttemptTimer = createAsyncThunk(
   }
 );
 
+export const checkArtistAnswerAndSetNextQuestion = createAsyncThunk(
+  "GTSGameState/checkArtistAnswerAndSetNextQuestion",
+  async function ({ answerID, attemptID }: any, { rejectWithValue, dispatch }) {
+    try {
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
   "GTSGameState/checkGTSGameAnswerAndSetQuestion",
   async function ({ answerID, attemptID }: any, { rejectWithValue, dispatch }) {
@@ -132,6 +142,8 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
       }
 
       const getArtistsList = await getArtistsListReq.json();
+
+      dispatch(guessThatSongActions.setArtistAnswerArr(getArtistsList.result.artistAnswerArr));
 
       const checkAnswerReq = await fetch(`/api/guessThatSong/GTSGame/checkAnswer/`, {
         method: "PATCH",
@@ -168,6 +180,28 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
       dispatch(guessThatSongActions.setAnswerIsCorrect(checkAnswer.result.isCorrect));
       dispatch(guessThatSongActions.setImageURL(checkAnswer.result.imageURL));
 
+      const setAttemptNextQuestionReq = await fetch(
+        `/api/guessThatSong/GTSGame/setAttemptNextQuestion`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ telegramUserID, answerID, attemptID }),
+        }
+      );
+
+      if (!setAttemptNextQuestionReq.ok) {
+        throw new Error("Ошибка сервера");
+      }
+
+      const setAttemptNextQuestion = await setAttemptNextQuestionReq.json();
+
+      //это будет в check Artist
+      // это установка след номера вопроса, она должна быть после
+      // проверки правильного ответа об исполнителе
+      //
+
       const getCurrentAttemptReq = await fetch(
         `/api/guessThatSong/GTSGame/getCurrentAttempt/${attemptID}/${telegramUserID}`
       );
@@ -194,12 +228,15 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
         guessThatSongActions.setCurrentAttamptAnswerTime(getCurrentAttempt.result.answerTime)
       );
 
-      dispatch(guessThatSongActions.setArtistAnswerArr(getArtistsList.result.artistAnswerArr));
+      //
+      //
 
-      if (checkAnswer.result.attemptIsCompleted) {
+      if (setAttemptNextQuestion.result.attemptIsCompleted) {
         setTimeout(() => {
           dispatch(
-            guessThatSongActions.setCurrentUserCompletedGTSAttempt(checkAnswer.result.attempt)
+            guessThatSongActions.setCurrentUserCompletedGTSAttempt(
+              setAttemptNextQuestion.result.attempt
+            )
           );
           dispatch(guessThatSongActions.setStartGameStatus(false));
           dispatch(guessThatSongActions.setShowGTSAnswersModal(false));

@@ -97,36 +97,36 @@ export async function PATCH(req: NextRequest) {
     //получаем изображение
 
     // если вопрос последний, то завершаем попытку
-    let updatedAttempt;
-    let attemptIsCompleted = false;
-    if (currentAttempt.currentQuestion === currentGameQuestions.GTSGameObj.length - 1) {
-      updatedAttempt = await GTSGameAttempt.findByIdAndUpdate(
-        body.attemptID,
-        {
-          $set: { isCompleted: true },
-        },
-        { new: true }
-      );
-      attemptIsCompleted = true;
-    } else {
-      updatedAttempt = await GTSGameAttempt.findByIdAndUpdate(
-        body.attemptID,
-        {
-          $set: { currentQuestion: currentAttempt.currentQuestion + 1 },
-        },
-        { new: true }
-      );
-    }
+    // let updatedAttempt;
+    // let attemptIsCompleted = false;
+    // if (currentAttempt.currentQuestion === currentGameQuestions.GTSGameObj.length - 1) {
+    //   updatedAttempt = await GTSGameAttempt.findByIdAndUpdate(
+    //     body.attemptID,
+    //     {
+    //       $set: { isCompleted: true },
+    //     },
+    //     { new: true }
+    //   );
+    //   attemptIsCompleted = true;
+    // } else {
+    //   updatedAttempt = await GTSGameAttempt.findByIdAndUpdate(
+    //     body.attemptID,
+    //     {
+    //       $set: { currentQuestion: currentAttempt.currentQuestion + 1 },
+    //     },
+    //     { new: true }
+    //   );
+    // }
 
     // переключаем на следующий вопрос
 
     return NextResponse.json({
       message: "Success",
       result: {
-        attemptIsCompleted: attemptIsCompleted,
+        // attemptIsCompleted: attemptIsCompleted,
         bonusTime: bonusTime,
         isCorrect: isCorrect,
-        attempt: updatedAttempt,
+        // attempt: updatedAttempt,
         imageURL: currentGameQuestions.GTSGameObj[currentAttempt.currentQuestion].imageURL,
       },
     });

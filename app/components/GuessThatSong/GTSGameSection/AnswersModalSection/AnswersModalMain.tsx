@@ -16,6 +16,7 @@ import RemainedTimeAnswerModal from "./RemainedTimeAnswerModal";
 import FetchAnswerTimeStream from "./FetchAnswerTimeStream";
 import Image from "next/image";
 import ArtistAnswer from "./ArtistAnswer";
+import AnswerMain from "./AnswersMain";
 
 const AnswersModalMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -43,8 +44,6 @@ const AnswersModalMain = () => {
   const artistAnswersArr = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.artistAnswerArr
   );
-
-  console.log(artistAnswersArr);
 
   const showGTSAnswersModal = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.showGTSAnswersModal
@@ -200,39 +199,7 @@ const AnswersModalMain = () => {
               <div className=" w-full flex flex-col justify-center items-center">
                 <div className="   w-full flex  justify-around items-center">
                   <div className=" w-10/12 py-4  grid sm:grid-cols-2 grid-cols-1 gap-6">
-                    {imageURL ? (
-                      <div className=" flex justify-center items-center flex-col gap-3">
-                        <div className=" h-[20vh]  w-full flex justify-center items-center ">
-                          <Image
-                            width="0"
-                            height="0"
-                            sizes="100vw"
-                            className="w-auto h-full rounded-xl"
-                            src={imageURL}
-                            alt="Трек"
-                          />
-                        </div>
-                        <div
-                          className={` cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor ${answerIsCorrect ? "to-green-200" : "to-red-200"}  shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
-                        >
-                          <h1 className=" text-2xl text-center">
-                            {
-                              currentGTSAttemptData.questionsStatus[
-                                currentGTSAttemptData.currentQuestion - 1
-                              ]?.userAnswerSongName
-                            }
-                          </h1>
-                        </div>
-                        {artistAnswerEl}
-                      </div>
-                    ) : (
-                      <div>
-                        <div className=" w-full flex justify-center items-center flex-col gap-3 ">
-                          {" "}
-                          {answersEls}{" "}
-                        </div>
-                      </div>
-                    )}
+                    <AnswerMain></AnswerMain>
                   </div>
                 </div>
               </div>
