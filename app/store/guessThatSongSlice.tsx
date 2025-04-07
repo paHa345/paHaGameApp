@@ -316,6 +316,9 @@ export interface IGuessThatSongSlice {
         userAnswerSongName?: string;
         correctAnswerSongName?: string;
         bonusTime?: number;
+        userAnswerArtistName?: string;
+        correctAnswerArtistName?: string;
+        artistAnswerIsCorrect?: boolean;
       }[];
       currentQuestion: number;
       bonusTime: number;
@@ -336,6 +339,8 @@ export interface IGuessThatSongSlice {
     currentAnswerTimeRemained: number;
     checkGTSGameAnswerStatus: GTSGameFetchStatus;
     checkGTSGameAnswerErrorMessage?: string;
+    checkArtistAnswerStatus: GTSGameFetchStatus;
+    checkArtistAnswerErrorMessage?: string;
     currentUserCompletedGTSAttempt?: {
       _id: string;
       telegramUserName?: string;
@@ -435,6 +440,9 @@ interface IGuessThatSongState {
       userAnswerSongName?: string;
       correctAnswerSongName?: string;
       bonusTime?: number;
+      userAnswerArtistName?: string;
+      correctAnswerArtistName?: string;
+      artistAnswerIsCorrect?: boolean;
     }[];
     firstName?: string;
     lastName?: string;
@@ -451,6 +459,8 @@ interface IGuessThatSongState {
   currentAnswerTimeRemained: number;
   checkGTSGameAnswerStatus: GTSGameFetchStatus;
   checkGTSGameAnswerErrorMessage?: string;
+  checkArtistAnswerStatus: GTSGameFetchStatus;
+  checkArtistAnswerErrorMessage?: string;
   nextQuestionNotification?: string;
 }
 
@@ -498,6 +508,7 @@ export const initGuessThatSongState: IGuessThatSongState = {
   showGTSAnswersModal: false,
   currentAnswerTimeRemained: 10,
   checkGTSGameAnswerStatus: GTSGameFetchStatus.Ready,
+  checkArtistAnswerStatus: GTSGameFetchStatus.Ready,
 };
 
 export const guessThatSongSlice = createSlice({
@@ -614,8 +625,15 @@ export const guessThatSongSlice = createSlice({
     setArtistAnswerArr(state, action) {
       state.currentGTSAttemptData.artistAnswerArr = action.payload;
     },
+    setCheckArtistAnswerStatus(state, action) {
+      state.checkArtistAnswerStatus = action.payload;
+    },
+    setCheckArtistAnswerErrorMessage(state, action) {
+      state.checkArtistAnswerErrorMessage = action.payload;
+    },
   },
   extraReducers(builder) {
+    //pending
     builder.addCase(getAvailableGTSGames.pending, (state) => {
       state.fetchGTSGamesArrStatus = GTSGameFetchStatus.Loading;
     });
@@ -628,6 +646,11 @@ export const guessThatSongSlice = createSlice({
     builder.addCase(checkGTSGameAnswerAndSetQuestion.pending, (state) => {
       state.checkGTSGameAnswerStatus = GTSGameFetchStatus.Loading;
     });
+    builder.addCase(checkArtistAnswerAndSetNextQuestion.pending, (state) => {
+      state.checkArtistAnswerStatus = GTSGameFetchStatus.Loading;
+    });
+
+    //fulfilled
     builder.addCase(getAvailableGTSGames.fulfilled, (state) => {
       state.fetchGTSGamesArrStatus = GTSGameFetchStatus.Resolve;
     });
@@ -640,6 +663,11 @@ export const guessThatSongSlice = createSlice({
     builder.addCase(checkGTSGameAnswerAndSetQuestion.fulfilled, (state) => {
       state.checkGTSGameAnswerStatus = GTSGameFetchStatus.Resolve;
     });
+    builder.addCase(checkArtistAnswerAndSetNextQuestion.fulfilled, (state) => {
+      state.checkArtistAnswerStatus = GTSGameFetchStatus.Resolve;
+    });
+
+    //rejected
     builder.addCase(getAvailableGTSGames.rejected, (state) => {
       state.fetchGTSGamesArrStatus = GTSGameFetchStatus.Error;
     });
@@ -651,6 +679,9 @@ export const guessThatSongSlice = createSlice({
     });
     builder.addCase(checkGTSGameAnswerAndSetQuestion.rejected, (state) => {
       state.checkGTSGameAnswerStatus = GTSGameFetchStatus.Error;
+    });
+    builder.addCase(checkArtistAnswerAndSetNextQuestion.rejected, (state) => {
+      state.checkArtistAnswerStatus = GTSGameFetchStatus.Error;
     });
   },
 });
