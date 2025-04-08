@@ -110,8 +110,121 @@ export const startGTSGameLaunchAttemptTimer = createAsyncThunk(
 
 export const checkArtistAnswerAndSetNextQuestion = createAsyncThunk(
   "GTSGameState/checkArtistAnswerAndSetNextQuestion",
-  async function ({ answerID, attemptID }: any, { rejectWithValue, dispatch }) {
+  async function (
+    { answerID, attemptID, userArtistAnserText }: any,
+    { rejectWithValue, dispatch }
+  ) {
     try {
+      let telegramUserID;
+      if (isTelegramWebApp()) {
+        const { initData } = retrieveLaunchParams();
+
+        telegramUserID = initData?.user?.id;
+      } else {
+        telegramUserID = 777777;
+      }
+
+      const checkArtistAnswerReq = await fetch(`/api/guessThatSong/GTSGame/checkArtistAnswer`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ telegramUserID, answerID, attemptID, userArtistAnserText }),
+      });
+
+      if (!checkArtistAnswerReq.ok) {
+        throw new Error("Ошибка сервера");
+      }
+
+      const checkArtistAnswer = await checkArtistAnswerReq.json();
+      dispatch(guessThatSongActions.setBonusTime(checkArtistAnswer.result.bonusTime));
+
+      const setAttemptNextQuestionReq = await fetch(
+        `/api/guessThatSong/GTSGame/setAttemptNextQuestion`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ telegramUserID, answerID, attemptID }),
+        }
+      );
+
+      if (!setAttemptNextQuestionReq.ok) {
+        throw new Error("Ошибка сервера");
+      }
+
+      const setAttemptNextQuestion = await setAttemptNextQuestionReq.json();
+
+      const getCurrentAttemptReq = await fetch(
+        `/api/guessThatSong/GTSGame/getCurrentAttempt/${attemptID}/${telegramUserID}`
+      );
+
+      if (!getCurrentAttemptReq.ok) {
+        throw new Error("Ошибка сервера");
+      }
+
+      const getCurrentAttempt = await getCurrentAttemptReq.json();
+
+      dispatch(
+        guessThatSongActions.setCurrentAttemptTimeRemained(getCurrentAttempt.result.timeRemained)
+      );
+      dispatch(
+        guessThatSongActions.setCurrentAttamptAnswerTime(getCurrentAttempt.result.answerTime)
+      );
+
+      //
+      //
+
+      if (setAttemptNextQuestion.result.attemptIsCompleted) {
+        setTimeout(() => {
+          dispatch(
+            guessThatSongActions.setAttemptQuestionStatus(
+              getCurrentAttempt.result.attemptQuestionStatus
+            )
+          );
+          dispatch(
+            guessThatSongActions.setAttemptCurrentQuestion(getCurrentAttempt.result.currentQuestion)
+          );
+          dispatch(
+            guessThatSongActions.setCurrentUserCompletedGTSAttempt(
+              setAttemptNextQuestion.result.attempt
+            )
+          );
+          dispatch(guessThatSongActions.setStartGameStatus(false));
+          dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
+          // dispatch(guessThatSongActions.setCurrentGTSGameAttemptID(""));
+          dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
+          dispatch(guessThatSongActions.setImageURL(undefined));
+          dispatch(guessThatSongActions.setAnswerIsCorrect(null));
+          // dispatch(guessThatSongActions.setCheckGTSGameAnswerStatus(GTSGameFetchStatus.Loading));
+
+          redirect("/results");
+        }, 4000);
+      }
+
+      //тут устанавливаем уведомление "Переходим к следующему вопросу"
+
+      dispatch(
+        guessThatSongActions.setNextQuestionNotification("Переходим к следующему вопросу...")
+      );
+
+      setTimeout(() => {
+        // console.log("Переходим к следующему вопросу");
+        dispatch(
+          guessThatSongActions.setAttemptQuestionStatus(
+            getCurrentAttempt.result.attemptQuestionStatus
+          )
+        );
+        dispatch(
+          guessThatSongActions.setAttemptCurrentQuestion(getCurrentAttempt.result.currentQuestion)
+        );
+        dispatch(guessThatSongActions.setStartGameStatus(false));
+        dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
+        dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
+        dispatch(guessThatSongActions.setImageURL(undefined));
+        dispatch(guessThatSongActions.setAnswerIsCorrect(null));
+      }, 4000);
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -180,22 +293,22 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
       dispatch(guessThatSongActions.setAnswerIsCorrect(checkAnswer.result.isCorrect));
       dispatch(guessThatSongActions.setImageURL(checkAnswer.result.imageURL));
 
-      const setAttemptNextQuestionReq = await fetch(
-        `/api/guessThatSong/GTSGame/setAttemptNextQuestion`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ telegramUserID, answerID, attemptID }),
-        }
-      );
+      // const setAttemptNextQuestionReq = await fetch(
+      //   `/api/guessThatSong/GTSGame/setAttemptNextQuestion`,
+      //   {
+      //     method: "PATCH",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({ telegramUserID, answerID, attemptID }),
+      //   }
+      // );
 
-      if (!setAttemptNextQuestionReq.ok) {
-        throw new Error("Ошибка сервера");
-      }
+      // if (!setAttemptNextQuestionReq.ok) {
+      //   throw new Error("Ошибка сервера");
+      // }
 
-      const setAttemptNextQuestion = await setAttemptNextQuestionReq.json();
+      // const setAttemptNextQuestion = await setAttemptNextQuestionReq.json();
 
       //это будет в check Artist
       // это установка след номера вопроса, она должна быть после
@@ -215,55 +328,56 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
       dispatch(
         guessThatSongActions.setAttemptCurrentQuestion(getCurrentAttempt.result.currentQuestion)
       );
+      console.log(getCurrentAttempt.result);
       dispatch(
         guessThatSongActions.setAttemptQuestionStatus(
           getCurrentAttempt.result.attemptQuestionStatus
         )
       );
 
-      dispatch(
-        guessThatSongActions.setCurrentAttemptTimeRemained(getCurrentAttempt.result.timeRemained)
-      );
-      dispatch(
-        guessThatSongActions.setCurrentAttamptAnswerTime(getCurrentAttempt.result.answerTime)
-      );
+      // dispatch(
+      //   guessThatSongActions.setCurrentAttemptTimeRemained(getCurrentAttempt.result.timeRemained)
+      // );
+      // dispatch(
+      //   guessThatSongActions.setCurrentAttamptAnswerTime(getCurrentAttempt.result.answerTime)
+      // );
 
-      //
-      //
+      // //
+      // //
 
-      if (setAttemptNextQuestion.result.attemptIsCompleted) {
-        setTimeout(() => {
-          dispatch(
-            guessThatSongActions.setCurrentUserCompletedGTSAttempt(
-              setAttemptNextQuestion.result.attempt
-            )
-          );
-          dispatch(guessThatSongActions.setStartGameStatus(false));
-          dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
-          // dispatch(guessThatSongActions.setCurrentGTSGameAttemptID(""));
-          dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
-          dispatch(guessThatSongActions.setImageURL(undefined));
-          dispatch(guessThatSongActions.setAnswerIsCorrect(null));
-          // dispatch(guessThatSongActions.setCheckGTSGameAnswerStatus(GTSGameFetchStatus.Loading));
+      // if (setAttemptNextQuestion.result.attemptIsCompleted) {
+      //   setTimeout(() => {
+      //     dispatch(
+      //       guessThatSongActions.setCurrentUserCompletedGTSAttempt(
+      //         setAttemptNextQuestion.result.attempt
+      //       )
+      //     );
+      //     dispatch(guessThatSongActions.setStartGameStatus(false));
+      //     dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
+      //     // dispatch(guessThatSongActions.setCurrentGTSGameAttemptID(""));
+      //     dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
+      //     dispatch(guessThatSongActions.setImageURL(undefined));
+      //     dispatch(guessThatSongActions.setAnswerIsCorrect(null));
+      //     // dispatch(guessThatSongActions.setCheckGTSGameAnswerStatus(GTSGameFetchStatus.Loading));
 
-          redirect("/results");
-        }, 4000);
-      }
+      //     redirect("/results");
+      //   }, 4000);
+      // }
 
-      //тут устанавливаем уведомление "Переходим к следующему вопросу"
+      // //тут устанавливаем уведомление "Переходим к следующему вопросу"
 
-      dispatch(
-        guessThatSongActions.setNextQuestionNotification("Переходим к следующему вопросу...")
-      );
+      // dispatch(
+      //   guessThatSongActions.setNextQuestionNotification("Переходим к следующему вопросу...")
+      // );
 
-      setTimeout(() => {
-        // console.log("Переходим к следующему вопросу");
-        dispatch(guessThatSongActions.setStartGameStatus(false));
-        dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
-        dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
-        dispatch(guessThatSongActions.setImageURL(undefined));
-        dispatch(guessThatSongActions.setAnswerIsCorrect(null));
-      }, 4000);
+      // setTimeout(() => {
+      //   // console.log("Переходим к следующему вопросу");
+      //   dispatch(guessThatSongActions.setStartGameStatus(false));
+      //   dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
+      //   dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
+      //   dispatch(guessThatSongActions.setImageURL(undefined));
+      //   dispatch(guessThatSongActions.setAnswerIsCorrect(null));
+      // }, 4000);
     } catch (error: any) {
       return rejectWithValue(error.message);
     }

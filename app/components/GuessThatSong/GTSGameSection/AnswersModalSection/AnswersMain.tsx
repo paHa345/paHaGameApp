@@ -60,10 +60,13 @@ const AnswerMain = () => {
           >
             <h1 className=" text-2xl text-center">
               {
-                currentGTSAttemptData.questionsStatus[currentGTSAttemptData.currentQuestion - 1]
+                currentGTSAttemptData.questionsStatus[currentGTSAttemptData.currentQuestion]
                   ?.userAnswerSongName
               }
             </h1>
+          </div>
+          <div>
+            <h1 className="text-2xl">Угадайте исполнителя</h1>
           </div>
           {artistAnswerEl}
         </div>

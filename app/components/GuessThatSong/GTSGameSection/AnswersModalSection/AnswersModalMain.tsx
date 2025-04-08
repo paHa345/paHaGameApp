@@ -53,6 +53,10 @@ const AnswersModalMain = () => {
     (state: IGuessThatSongSlice) => state.guessThatSongState.checkGTSGameAnswerStatus
   );
 
+  const checkArtistAnswerStatus = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.checkArtistAnswerStatus
+  );
+
   const imageURL = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.imageURL
   );
@@ -143,7 +147,7 @@ const AnswersModalMain = () => {
             // animate="visible"
             // exit="exit"
           >
-            <div className=" h-[20vh] min-h-16 modal-header flex justify-start items-center w-full ">
+            <div className=" h-[15vh] min-h-16 modal-header flex justify-start items-center w-full ">
               <div className=" w-full flex justify-end items-center">
                 <div className=" w-full flex justify-center items-center flex-col">
                   {nextQuestionNotification && (
@@ -152,35 +156,42 @@ const AnswersModalMain = () => {
                       <h1>{nextQuestionNotification}</h1>
                     </div>
                   )}
-                  {checkAnswerStatus === GTSGameFetchStatus.Loading && (
-                    <div className=" absolute top-20 left-9 px-10 animate-spin">
-                      <FontAwesomeIcon className=" fa-4x" icon={faHeadphonesSimple} />
-                    </div>
-                  )}
-                  {bonusTime >= 0 && (
-                    <div className="text-center">
-                      <div className=" text-3xl text-center">
-                        <h1>{answerStatus}</h1>
+                  <div className=" w-full flex justify-center items-center flex-row">
+                    {checkAnswerStatus === GTSGameFetchStatus.Loading && (
+                      <div className=" animate-spin">
+                        <FontAwesomeIcon className=" fa-2x" icon={faHeadphonesSimple} />
                       </div>
+                    )}
+                    {checkArtistAnswerStatus === GTSGameFetchStatus.Loading && (
+                      <div className=" animate-spin">
+                        <FontAwesomeIcon className=" fa-2x" icon={faHeadphonesSimple} />
+                      </div>
+                    )}
+                    {bonusTime >= 0 && (
+                      <div className="text-center">
+                        <div className=" text-2xl text-center">
+                          <h1>{answerStatus}</h1>
+                        </div>
 
-                      <div>
-                        <h1 className=" px-5 text-2xl text-center">Дополнительное время: </h1>
-                        <h1 className=" px-5 text-2xl text-center">{bonusTime} сек</h1>
+                        <div>
+                          <h1 className=" px-5 text-xl text-center">Дополнительное время: </h1>
+                          <h1 className=" px-5 text-xl text-center">{bonusTime} сек</h1>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  {bonusTime === -5 && (
-                    <div className="text-center">
-                      <div className=" text-3xl text-center">
-                        <h1>{answerStatus}</h1>
-                      </div>
+                    )}
+                    {bonusTime === -5 && (
+                      <div className="text-center">
+                        <div className=" text-2xl text-center">
+                          <h1>{answerStatus}</h1>
+                        </div>
 
-                      <div>
-                        <h1 className=" px-5 text-2xl text-center">Дополнительное время: </h1>
-                        <h1 className=" px-5 text-2xl text-center">{bonusTime} сек</h1>
+                        <div>
+                          <h1 className=" px-5 text-xl text-center">Дополнительное время: </h1>
+                          <h1 className=" px-5 text-xl text-center">{bonusTime} сек</h1>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
 
                 {/* <a

@@ -14,15 +14,46 @@ export async function PATCH(req: NextRequest) {
     await connectMongoDB();
     const body: { telegramUserID: number; answerID: string; attemptID: string } = await req.json();
 
-    const currentAttempt = await GTSGameAttempt.findById(body.attemptID);
-    const currentGameQuestions = await GTSGame.findById(currentAttempt.GTSGameID).select(
+    const currentAttempt = await GTSGameAttempt.find({
+      _id: body.attemptID,
+      telegramID: body.telegramUserID,
+      isCompleted: false,
+    });
+    const currentGameQuestions = await GTSGame.findById(currentAttempt[0].GTSGameID).select(
       "GTSGameObj"
     );
+
+    console.log("Data");
+    // console.log(currentAttempt[0]);
+    console.log(
+      currentGameQuestions.GTSGameObj[
+        currentAttempt[0].currentQuestion
+      ].artist.artistAnswerArr.find((artist: any) => {
+        return String(artist._id) === body.answerID;
+      })
+    );
+
+    //проверки
+    if (!currentAttempt[0]) {
+      return NextResponse.json({ message: "Не найдена попытка" }, { status: 400 });
+    }
+    if (!currentGameQuestions) {
+      return NextResponse.json({ message: "Не найдена игра" }, { status: 400 });
+    }
+    if (
+      !currentGameQuestions.GTSGameObj[
+        currentAttempt[0].currentQuestion
+      ].artist.artistAnswerArr.find((artist: any) => {
+        return String(artist._id) === body.answerID;
+      })
+    ) {
+      return NextResponse.json({ message: "Не найден ответ" }, { status: 400 });
+    }
 
     // если вопрос последний, то завершаем попытку
     let updatedAttempt;
     let attemptIsCompleted = false;
-    if (currentAttempt.currentQuestion === currentGameQuestions.GTSGameObj.length - 1) {
+    if (currentAttempt[0].currentQuestion === currentGameQuestions.GTSGameObj.length - 1) {
       updatedAttempt = await GTSGameAttempt.findByIdAndUpdate(
         body.attemptID,
         {
@@ -35,7 +66,7 @@ export async function PATCH(req: NextRequest) {
       updatedAttempt = await GTSGameAttempt.findByIdAndUpdate(
         body.attemptID,
         {
-          $set: { currentQuestion: currentAttempt.currentQuestion + 1 },
+          $set: { currentQuestion: currentAttempt[0].currentQuestion + 1 },
         },
         { new: true }
       );

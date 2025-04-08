@@ -95,15 +95,33 @@ export async function PATCH(req: NextRequest) {
     console.log(answerIsTrue);
     console.log(correctArtistText);
 
-    // console.log(currentGameQuestions.GTSGameObj[currentAttempt.currentQuestion]);
+    //update answer status arr
+
+    const updatedGTSGAttempt = await GTSGameAttempt.findByIdAndUpdate(body.attemptID, {
+      $set: {
+        [`attemptQuestionStatus.${currentAttempt[0].currentQuestion}.userAnswerArtistName`]:
+          body.userArtistAnserText,
+        [`attemptQuestionStatus.${currentAttempt[0].currentQuestion}.artistAnswerIsCorrect`]:
+          answerIsTrue,
+        [`attemptQuestionStatus.${currentAttempt[0].currentQuestion}.correctAnswerArtistName`]:
+          correctArtistText,
+        [`attemptQuestionStatus.${currentAttempt[0].currentQuestion}.bonusTime`]:
+          currentAttempt[0].attemptQuestionStatus[currentAttempt[0].currentQuestion].bonusTime +
+          bonusTime,
+      },
+    });
+
+    // переключаем на следующий вопрос
 
     return NextResponse.json({
       message: "Success",
       result: {
         isCorrect: answerIsTrue,
-        bonusTime: bonusTime,
+        bonusTime:
+          currentAttempt[0].attemptQuestionStatus[currentAttempt[0].currentQuestion].bonusTime +
+          bonusTime,
         correctArtistText: correctArtistText,
-        userArtistAnserText: body.userArtistAnserText,
+        userArtistAnswerText: body.userArtistAnserText,
       },
     });
   } catch (error: any) {
