@@ -41,6 +41,9 @@ const AnswerMain = () => {
       </div>
     );
   });
+
+  console.log(answerIsCorrect);
+
   return (
     <div>
       {imageURL ? (
@@ -50,7 +53,7 @@ const AnswerMain = () => {
               width="0"
               height="0"
               sizes="100vw"
-              className="w-auto h-full rounded-xl"
+              className="w-auto h-full rounded-md"
               src={imageURL}
               alt="Трек"
             />

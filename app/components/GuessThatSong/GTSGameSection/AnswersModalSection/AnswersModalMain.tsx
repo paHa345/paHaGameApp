@@ -17,6 +17,7 @@ import FetchAnswerTimeStream from "./FetchAnswerTimeStream";
 import Image from "next/image";
 import ArtistAnswer from "./ArtistAnswer";
 import AnswerMain from "./AnswersMain";
+import AnswerStatus from "./AnswerStatus";
 
 const AnswersModalMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -25,43 +26,8 @@ const AnswersModalMain = () => {
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.bonusTime
   );
 
-  const chosenGTSGameAnswerID = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.chosenGTSGameAnswerID
-  );
-
-  const nextQuestionNotification = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.nextQuestionNotification
-  );
-
-  const answerIsCorrect = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.answerIsCorrect
-  );
-
-  const checkGTSGameAnswerStatus = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.checkGTSGameAnswerStatus
-  );
-
-  const artistAnswersArr = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.artistAnswerArr
-  );
-
   const showGTSAnswersModal = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.showGTSAnswersModal
-  );
-
-  const checkAnswerStatus = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.checkGTSGameAnswerStatus
-  );
-
-  const checkArtistAnswerStatus = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.checkArtistAnswerStatus
-  );
-
-  const imageURL = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.imageURL
-  );
-  const currentGTSAttemptData = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData
   );
 
   const hideGTSAnswersModalHandler = (
@@ -101,27 +67,22 @@ const AnswersModalMain = () => {
     },
   };
 
-  const currentGTSAnswers = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.questionAnswers
-  );
+  // const answersEls = currentGTSAnswers.map((answer, index) => {
+  //   return (
+  //     <div key={answer._id} className="w-full">
+  //       <GTSGameAnswer id={answer._id} answerText={answer.text}></GTSGameAnswer>
+  //     </div>
+  //   );
+  // });
 
-  const answersEls = currentGTSAnswers.map((answer, index) => {
-    return (
-      <div key={answer._id} className="w-full">
-        <GTSGameAnswer id={answer._id} answerText={answer.text}></GTSGameAnswer>
-      </div>
-    );
-  });
+  // const artistAnswerEl = artistAnswersArr.map((answer, index) => {
+  //   return (
+  //     <div key={answer._id} className="w-full">
+  //       <ArtistAnswer text={answer.text} artistAnswerID={answer._id}></ArtistAnswer>
+  //     </div>
+  //   );
+  // });
 
-  const artistAnswerEl = artistAnswersArr.map((answer, index) => {
-    return (
-      <div key={answer._id} className="w-full">
-        <ArtistAnswer text={answer.text} artistAnswerID={answer._id}></ArtistAnswer>
-      </div>
-    );
-  });
-
-  const answerStatus = answerIsCorrect ? "Верно" : "Ошибка";
   const showAnswerTimer = !bonusTime || (bonusTime <= 0 && bonusTime !== -5);
 
   useEffect(() => {
@@ -147,62 +108,7 @@ const AnswersModalMain = () => {
             // animate="visible"
             // exit="exit"
           >
-            <div className=" h-[15vh] min-h-16 modal-header flex justify-start items-center w-full ">
-              <div className=" w-full flex justify-end items-center">
-                <div className=" w-full flex justify-center items-center flex-col">
-                  {nextQuestionNotification && (
-                    <div className=" animate-pulse text-center text-xl px-1 py-1 rounded-md bg-lime-100">
-                      {" "}
-                      <h1>{nextQuestionNotification}</h1>
-                    </div>
-                  )}
-                  <div className=" w-full flex justify-center items-center flex-row">
-                    {checkAnswerStatus === GTSGameFetchStatus.Loading && (
-                      <div className=" animate-spin">
-                        <FontAwesomeIcon className=" fa-2x" icon={faHeadphonesSimple} />
-                      </div>
-                    )}
-                    {checkArtistAnswerStatus === GTSGameFetchStatus.Loading && (
-                      <div className=" animate-spin">
-                        <FontAwesomeIcon className=" fa-2x" icon={faHeadphonesSimple} />
-                      </div>
-                    )}
-                    {bonusTime >= 0 && (
-                      <div className="text-center">
-                        <div className=" text-2xl text-center">
-                          <h1>{answerStatus}</h1>
-                        </div>
-
-                        <div>
-                          <h1 className=" px-5 text-xl text-center">Дополнительное время: </h1>
-                          <h1 className=" px-5 text-xl text-center">{bonusTime} сек</h1>
-                        </div>
-                      </div>
-                    )}
-                    {bonusTime === -5 && (
-                      <div className="text-center">
-                        <div className=" text-2xl text-center">
-                          <h1>{answerStatus}</h1>
-                        </div>
-
-                        <div>
-                          <h1 className=" px-5 text-xl text-center">Дополнительное время: </h1>
-                          <h1 className=" px-5 text-xl text-center">{bonusTime} сек</h1>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* <a
-                  className={` bg hover:bg-slate-400 px-2 py-1 rounded-full  hover:border-slate-400 border-solid border-2  border-slate-200`}
-                  onClick={hideGTSAnswersModalHandler}
-                  href=""
-                >
-                  <FontAwesomeIcon className=" fa-2x" icon={faXmark} />
-                </a> */}
-              </div>
-            </div>
+            <AnswerStatus></AnswerStatus>
 
             <div
               className={` w-full ${showAnswerTimer ? "h-[50vh]" : " h-[60vh]"} min-h-96 overflow-hidden overflow-y-scroll rounded-lg my-3 flex flex-col`}

@@ -19,13 +19,12 @@ const CurrentAttemptQuestionStatusMain = () => {
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData
   );
 
-  console.log(currentQuestion);
   const questionsStatusEls = attemptQuestions.map((question, number) => {
     return (
       <CurrentAttemptQuestion
         isCurrent={currentQuestion === number}
         isCompleted={question.getAnswer}
-        answerIsCorrect={question?.answerIsCorrect}
+        answerIsCorrect={question?.answerIsCorrect && question?.artistAnswerIsCorrect}
         bonusTime={question.bonusTime}
         key={question._id}
       />
@@ -33,10 +32,7 @@ const CurrentAttemptQuestionStatusMain = () => {
   });
 
   useEffect(() => {
-    console.log("Effect");
     const questionStatusContainer = document.querySelector(".questionStatusContainer");
-
-    console.log(questionStatusContainer);
 
     questionStatusContainer?.scrollTo({
       left: currentGTSAttemptData.currentQuestion * 40,

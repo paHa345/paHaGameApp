@@ -124,6 +124,13 @@ export const checkArtistAnswerAndSetNextQuestion = createAsyncThunk(
         telegramUserID = 777777;
       }
 
+      dispatch(
+        guessThatSongActions.setShowIsCorrectStatus({
+          song: false,
+          artist: false,
+        })
+      );
+
       const checkArtistAnswerReq = await fetch(`/api/guessThatSong/GTSGame/checkArtistAnswer`, {
         method: "PATCH",
         headers: {
@@ -138,6 +145,13 @@ export const checkArtistAnswerAndSetNextQuestion = createAsyncThunk(
 
       const checkArtistAnswer = await checkArtistAnswerReq.json();
       dispatch(guessThatSongActions.setBonusTime(checkArtistAnswer.result.bonusTime));
+      dispatch(guessThatSongActions.setArtistAnswerIsCorrect(checkArtistAnswer.result.isCorrect));
+      dispatch(
+        guessThatSongActions.setShowIsCorrectStatus({
+          song: false,
+          artist: true,
+        })
+      );
 
       const setAttemptNextQuestionReq = await fetch(
         `/api/guessThatSong/GTSGame/setAttemptNextQuestion`,
@@ -193,10 +207,17 @@ export const checkArtistAnswerAndSetNextQuestion = createAsyncThunk(
           );
           dispatch(guessThatSongActions.setStartGameStatus(false));
           dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
-          // dispatch(guessThatSongActions.setCurrentGTSGameAttemptID(""));
           dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
           dispatch(guessThatSongActions.setImageURL(undefined));
           dispatch(guessThatSongActions.setAnswerIsCorrect(null));
+          dispatch(guessThatSongActions.setArtistAnswerIsCorrect(null));
+          dispatch(
+            guessThatSongActions.setShowIsCorrectStatus({
+              song: false,
+              artist: false,
+            })
+          );
+
           // dispatch(guessThatSongActions.setCheckGTSGameAnswerStatus(GTSGameFetchStatus.Loading));
 
           redirect("/results");
@@ -224,6 +245,13 @@ export const checkArtistAnswerAndSetNextQuestion = createAsyncThunk(
         dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
         dispatch(guessThatSongActions.setImageURL(undefined));
         dispatch(guessThatSongActions.setAnswerIsCorrect(null));
+        dispatch(guessThatSongActions.setArtistAnswerIsCorrect(null));
+        dispatch(
+          guessThatSongActions.setShowIsCorrectStatus({
+            song: false,
+            artist: false,
+          })
+        );
       }, 4000);
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -292,28 +320,12 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
       dispatch(guessThatSongActions.setBonusTime(checkAnswer.result.bonusTime));
       dispatch(guessThatSongActions.setAnswerIsCorrect(checkAnswer.result.isCorrect));
       dispatch(guessThatSongActions.setImageURL(checkAnswer.result.imageURL));
-
-      // const setAttemptNextQuestionReq = await fetch(
-      //   `/api/guessThatSong/GTSGame/setAttemptNextQuestion`,
-      //   {
-      //     method: "PATCH",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify({ telegramUserID, answerID, attemptID }),
-      //   }
-      // );
-
-      // if (!setAttemptNextQuestionReq.ok) {
-      //   throw new Error("Ошибка сервера");
-      // }
-
-      // const setAttemptNextQuestion = await setAttemptNextQuestionReq.json();
-
-      //это будет в check Artist
-      // это установка след номера вопроса, она должна быть после
-      // проверки правильного ответа об исполнителе
-      //
+      dispatch(
+        guessThatSongActions.setShowIsCorrectStatus({
+          song: true,
+          artist: false,
+        })
+      );
 
       const getCurrentAttemptReq = await fetch(
         `/api/guessThatSong/GTSGame/getCurrentAttempt/${attemptID}/${telegramUserID}`
@@ -334,50 +346,6 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
           getCurrentAttempt.result.attemptQuestionStatus
         )
       );
-
-      // dispatch(
-      //   guessThatSongActions.setCurrentAttemptTimeRemained(getCurrentAttempt.result.timeRemained)
-      // );
-      // dispatch(
-      //   guessThatSongActions.setCurrentAttamptAnswerTime(getCurrentAttempt.result.answerTime)
-      // );
-
-      // //
-      // //
-
-      // if (setAttemptNextQuestion.result.attemptIsCompleted) {
-      //   setTimeout(() => {
-      //     dispatch(
-      //       guessThatSongActions.setCurrentUserCompletedGTSAttempt(
-      //         setAttemptNextQuestion.result.attempt
-      //       )
-      //     );
-      //     dispatch(guessThatSongActions.setStartGameStatus(false));
-      //     dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
-      //     // dispatch(guessThatSongActions.setCurrentGTSGameAttemptID(""));
-      //     dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
-      //     dispatch(guessThatSongActions.setImageURL(undefined));
-      //     dispatch(guessThatSongActions.setAnswerIsCorrect(null));
-      //     // dispatch(guessThatSongActions.setCheckGTSGameAnswerStatus(GTSGameFetchStatus.Loading));
-
-      //     redirect("/results");
-      //   }, 4000);
-      // }
-
-      // //тут устанавливаем уведомление "Переходим к следующему вопросу"
-
-      // dispatch(
-      //   guessThatSongActions.setNextQuestionNotification("Переходим к следующему вопросу...")
-      // );
-
-      // setTimeout(() => {
-      //   // console.log("Переходим к следующему вопросу");
-      //   dispatch(guessThatSongActions.setStartGameStatus(false));
-      //   dispatch(guessThatSongActions.setShowGTSAnswersModal(false));
-      //   dispatch(guessThatSongActions.setNextQuestionNotification(undefined));
-      //   dispatch(guessThatSongActions.setImageURL(undefined));
-      //   dispatch(guessThatSongActions.setAnswerIsCorrect(null));
-      // }, 4000);
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -436,7 +404,13 @@ export interface IGuessThatSongSlice {
       }[];
       currentQuestion: number;
       bonusTime: number;
-      answerIsCorrect: boolean | null;
+      answerIsCorrect?: boolean | null;
+      artistAnswerIsCorrect?: boolean | null;
+      showIsCorrectStatus: {
+        song: boolean;
+        artist: boolean;
+      };
+
       imageURL?: string;
       artistAnswerArr: {
         text: string;
@@ -526,6 +500,12 @@ interface IGuessThatSongState {
     currentQuestion: number;
     bonusTime: number;
     answerIsCorrect?: boolean | null;
+    artistAnswerIsCorrect?: boolean | null;
+    showIsCorrectStatus: {
+      song: boolean;
+      artist: boolean;
+    };
+
     imageURL?: string;
     artistAnswerArr: {
       text: string;
@@ -610,6 +590,12 @@ export const initGuessThatSongState: IGuessThatSongState = {
     currentQuestion: 0,
     bonusTime: -1,
     answerIsCorrect: null,
+    artistAnswerIsCorrect: null,
+    showIsCorrectStatus: {
+      song: false,
+      artist: false,
+    },
+
     artistAnswerArr: [
       {
         text: "",
@@ -726,6 +712,12 @@ export const guessThatSongSlice = createSlice({
     },
     setAnswerIsCorrect(state, action) {
       state.currentGTSAttemptData.answerIsCorrect = action.payload;
+    },
+    setArtistAnswerIsCorrect(state, action) {
+      state.currentGTSAttemptData.artistAnswerIsCorrect = action.payload;
+    },
+    setShowIsCorrectStatus(state, action) {
+      state.currentGTSAttemptData.showIsCorrectStatus = action.payload;
     },
     setCurrentUserCompletedGTSAttempt(state, action) {
       state.currentUserCompletedGTSAttempt = action.payload;

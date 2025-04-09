@@ -92,9 +92,6 @@ export async function PATCH(req: NextRequest) {
       });
     }
 
-    console.log(answerIsTrue);
-    console.log(correctArtistText);
-
     //update answer status arr
 
     const updatedGTSGAttempt = await GTSGameAttempt.findByIdAndUpdate(body.attemptID, {
