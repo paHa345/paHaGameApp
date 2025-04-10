@@ -4,6 +4,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import GTSGameAnswer from "./GTSGameAnswer";
 import ArtistAnswer from "./ArtistAnswer";
+import { div } from "framer-motion/client";
 
 const AnswerMain = () => {
   const imageURL = useSelector(
@@ -13,7 +14,15 @@ const AnswerMain = () => {
   const answerIsCorrect = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.answerIsCorrect
   );
+  const artistAnswerIsCorrect = useSelector(
+    (state: IGuessThatSongSlice) =>
+      state.guessThatSongState.currentGTSAttemptData.artistAnswerIsCorrect
+  );
 
+  const answerStatus = useSelector(
+    (state: IGuessThatSongSlice) =>
+      state.guessThatSongState.currentGTSAttemptData.showIsCorrectStatus
+  );
   const currentGTSAttemptData = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData
   );
@@ -24,6 +33,10 @@ const AnswerMain = () => {
 
   const currentGTSAnswers = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.questionAnswers
+  );
+
+  const chosenArtistAnswerID = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.chosenArtistAnswerID
   );
 
   const answersEls = currentGTSAnswers.map((answer, index) => {
@@ -37,12 +50,17 @@ const AnswerMain = () => {
   const artistAnswerEl = artistAnswersArr.map((answer, index) => {
     return (
       <div key={answer._id} className="w-full">
-        <ArtistAnswer text={answer.text} artistAnswerID={answer._id}></ArtistAnswer>
+        {(!answerStatus?.artist || chosenArtistAnswerID === answer._id) && (
+          <ArtistAnswer
+            isCorrect={artistAnswerIsCorrect}
+            artistAnswerIsChosen={chosenArtistAnswerID === answer._id}
+            text={answer.text}
+            artistAnswerID={answer._id}
+          ></ArtistAnswer>
+        )}
       </div>
     );
   });
-
-  console.log(answerIsCorrect);
 
   return (
     <div>
