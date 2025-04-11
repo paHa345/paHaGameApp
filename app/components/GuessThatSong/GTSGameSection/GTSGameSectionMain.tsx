@@ -27,7 +27,7 @@ const GTSGameSectionMain = () => {
   }
   return (
     <>
-      <AudioVisualiserMain></AudioVisualiserMain>
+      {/* <AudioVisualiserMain></AudioVisualiserMain> */}
       {!startGameStatus && (
         <div className=" mt-8 flex justify-center items-center h-[79vh] flex-col gap-7 ">
           <CurrentAttemptQuestionStatusMain></CurrentAttemptQuestionStatusMain>
