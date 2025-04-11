@@ -1,6 +1,7 @@
 import { AppDispatch } from "@/app/store";
 import {
   checkArtistAnswerAndSetNextQuestion,
+  GTSGameFetchStatus,
   guessThatSongActions,
   IGuessThatSongSlice,
 } from "@/app/store/guessThatSongSlice";
@@ -22,8 +23,19 @@ const ArtistAnswer = ({
   const attemptID = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSGameAttemptID
   );
+
+  const checkArtistAnswerStatus = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.checkArtistAnswerStatus
+  );
+
+  console.log(checkArtistAnswerStatus);
+
   const dispatch = useDispatch<AppDispatch>();
   const getArtistAnswerHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (checkArtistAnswerStatus === GTSGameFetchStatus.Loading) {
+      console.log("Not now");
+      return;
+    }
     dispatch(guessThatSongActions.setChosenArtistAnswerID(artistAnswerID));
 
     dispatch(
@@ -50,7 +62,7 @@ const ArtistAnswer = ({
       key={artistAnswerID}
       onClick={getArtistAnswerHandler}
       // ${isCorrect ? "to-green-200" : "to-red-200"}
-      className={` ${artistAnswerIsChosen && "scale-110"}  cursor-pointer py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor
+      className={` ${artistAnswerIsChosen && "scale-110"} ${checkArtistAnswerStatus !== GTSGameFetchStatus.Loading && "cursor-pointer"}   py-2 w-full bg-gradient-to-tr rounded-lg from-secoundaryColor
       ${answerColor}
       shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow `}
     >

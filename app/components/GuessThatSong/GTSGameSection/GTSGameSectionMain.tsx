@@ -8,6 +8,7 @@ import StartGameButton from "./StartGameButton";
 import CurrentGTSGame from "./CurrentGTSGame";
 import CurrentAttemptQuestionStatusMain from "../GameSection/CurrentAttemptQuestionStatusSection/CurrentAttemptQuestionStatusMain";
 import CurrentAttemptTimeStatusMain from "../GameSection/CurrentAttemptTimeStatusSection/CurrentAttemptTimeStatusMain";
+import AudioVisualiserMain from "./AudioVisualiserSection/AudioVisualiserMain";
 
 const GTSGameSectionMain = () => {
   const currentAttemptID = useSelector(
@@ -26,6 +27,7 @@ const GTSGameSectionMain = () => {
   }
   return (
     <>
+      <AudioVisualiserMain></AudioVisualiserMain>
       {!startGameStatus && (
         <div className=" mt-8 flex justify-center items-center h-[79vh] flex-col gap-7 ">
           <CurrentAttemptQuestionStatusMain></CurrentAttemptQuestionStatusMain>
