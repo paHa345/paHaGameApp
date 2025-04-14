@@ -25,43 +25,42 @@ const AudioVisualiserMain = () => {
     audioSource.connect(analyser);
     analyser.connect(audioCtx.destination);
 
-    ctx.fillStyle = "#ee5253";
-    ctx.fillRect(10, 10, 100, 100);
-    console.log(ctx);
-    console.log(canvas);
+    // ctx.fillStyle = "#ee5253";
+    // ctx.fillRect(10, 10, 100, 100);
+    // console.log(ctx);
+    // console.log(canvas);
 
     analyser.fftSize = 128;
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
     const barWidth = canvas.width / bufferLength;
 
-    // let x = 0;
-    // function animate() {
-    //   x = 0;
-    //   ctx.clearRect(0, 0, canvas.width, canvas.height);
-    //   analyser.getByteFrequencyData(dataArray);
-    //   let barHeight;
-    //   for (let i = 0; i < bufferLength; i++) {
-    //     barHeight = dataArray[i];
-    //     ctx.fillStyle = "blue";
-    //     ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-    //     x += barWidth;
-    //   }
+    let x = 0;
+    function animate() {
+      x = 0;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      analyser.getByteFrequencyData(dataArray);
+      let barHeight;
+      for (let i = 0; i < bufferLength; i++) {
+        barHeight = dataArray[i];
+        ctx.fillStyle = "blue";
+        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+        x += barWidth;
+      }
 
-    //   requestAnimationFrame(animate);
-    // }
+      requestAnimationFrame(animate);
+    }
 
-    // animate();
+    animate();
   }
 
   useEffect(() => {
-    const canvas: any = canvasRef.current;
-    if (canvas !== null) {
-      const context = canvas.getContext("2d");
-
-      context.fillStyle = "#ee5253";
-      context.fillRect(10, 10, 100, 100);
-    }
+    // const canvas: any = canvasRef.current;
+    // if (canvas !== null) {
+    //   const context = canvas.getContext("2d");
+    //   context.fillStyle = "#ee5253";
+    //   context.fillRect(10, 10, 100, 100);
+    // }
   });
 
   return (
