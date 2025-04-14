@@ -58,19 +58,78 @@ const AudioVisualiserMain = () => {
     const canvas: any = canvasRef.current;
     if (canvas !== null) {
       const context = canvas.getContext("2d");
-      context.fillStyle = "#ee5253";
-      context.fillRect(10, 10, 100, 100);
+      context.fillStyle = "#c7ecee"; // устанавливаем цвет заполнения фигуры
+      context.fillRect(10, 10, 100, 50);
+      context.strokeStyle = "#22a6b3"; // устанавливаем цвет контура фигуры
+      context.lineWidth = 4.5; // устанавливаем толщину линии
+      context.strokeRect(10, 10, 100, 50);
     }
   });
 
   return (
-    <div className=" flex justify-center items-center w-full">
-      <h1>Canvas</h1>
-      <div className=" flex justify-center items-center w-full" id="container">
-        <canvas ref={canvasRef} id="canvas" className=" w-60 h-60 z-50"></canvas>
-        <audio id="audio"></audio>
+    // <div className=" flex justify-center items-center w-full">
+    //   <h1>Canvas</h1>
+    //   <div className=" flex justify-center items-center w-full" id="container">
+    //     <canvas ref={canvasRef} id="canvas" className=" w-60 h-60 z-50"></canvas>
+    //     <audio id="audio"></audio>
+    //   </div>
+    // </div>
+    <body className="bg-gray-900 min-h-screen flex items-center justify-center p-4">
+      <div className="bg-gray-800 max-w-md w-full rounded-xl shadow-2xl p-6 space-y-6">
+        {/* <!-- Обложка --> */}
+        <div className="w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden shadow-lg">
+          <img
+            src="https://picsum.photos/200"
+            alt="Обложка"
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* <!-- Информация о треке --> */}
+        <div className="text-center space-y-2">
+          <h1 className="text-2xl font-semibold text-white">Название трека</h1>
+          <p className="text-gray-400">Исполнитель</p>
+        </div>
+
+        {/* <!-- Прогресс-бар --> */}
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm text-gray-400">
+            <span>0:00</span>
+            <span>3:45</span>
+          </div>
+          <div className="h-1 bg-gray-600 rounded-full cursor-pointer">
+            <div className="h-full bg-green-500 rounded-full w-1/3 relative">
+              <div className="w-3 h-3 bg-white rounded-full absolute right-0 -translate-y-1/2 top-1/2"></div>
+            </div>
+          </div>
+        </div>
+
+        {/* <!-- Управление воспроизведением --> */}
+        <div className="flex justify-center items-center gap-6">
+          <button className="text-white text-xl hover:text-green-500 transition-colors">
+            <i className="fas fa-backward"></i>
+          </button>
+          <button className="text-white text-3xl hover:text-green-500 transition-colors">
+            <i className="fas fa-play"></i>
+          </button>
+          <button className="text-white text-xl hover:text-green-500 transition-colors">
+            <i className="fas fa-forward"></i>
+          </button>
+        </div>
+
+        {/* <!-- Регулятор громкости --> */}
+        <div className="flex items-center gap-3">
+          <i className="fas fa-volume-up text-gray-400"></i>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value="80"
+            className="w-24 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
+          />
+        </div>
       </div>
-    </div>
+    </body>
   );
 };
 

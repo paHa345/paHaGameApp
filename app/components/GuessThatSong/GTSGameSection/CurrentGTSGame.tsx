@@ -5,15 +5,16 @@ import AttemptRemainedTimer from "./AttemptRemainedTimer";
 import DisplayCurrentTrack from "./DisplayCurrentTrack";
 import SongStartStopButton from "./SongStartStopButton";
 import AnswersModalMain from "./AnswersModalSection/AnswersModalMain";
-import AttemptQuestionStatusMain from "./AttemptQuestionStatus/AttemptQuestionStatusMain";
+import CurrentAttemptQuestionStatusMain from "../GameSection/CurrentAttemptQuestionStatusSection/CurrentAttemptQuestionStatusMain";
 
 const CurrentGTSGame = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   return (
     <>
-      <div className="flex justify-center items-center h-[70vh] flex-col ">
+      <div className="flex justify-center items-center h-[79vh] flex-col ">
         {/* <AttemptQuestionStatusMain></AttemptQuestionStatusMain> */}
+        <CurrentAttemptQuestionStatusMain></CurrentAttemptQuestionStatusMain>
         <DisplayCurrentTrack audioRef={audioRef}></DisplayCurrentTrack>
         <SongStartStopButton audioRef={audioRef}></SongStartStopButton>
         <AttemptRemainedTimer></AttemptRemainedTimer>

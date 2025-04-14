@@ -35,7 +35,7 @@ const GamesSectionMain = () => {
           gameData={{
             title: "Угадай мелодии",
             link: "guessThatSongGame",
-            description: "Получиться разгадать все мелодии за указанное время?",
+            description: "Получится разгадать все мелодии за указанное время?",
             image: "headphones",
 
             backgroundColor: "cyan",

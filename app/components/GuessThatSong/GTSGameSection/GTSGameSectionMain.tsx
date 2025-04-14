@@ -27,20 +27,22 @@ const GTSGameSectionMain = () => {
   }
   return (
     <>
-      <AudioVisualiserMain></AudioVisualiserMain>
-      {!startGameStatus && (
-        <div className=" mt-8 flex justify-center items-center h-[79vh] flex-col gap-7 ">
-          <CurrentAttemptQuestionStatusMain></CurrentAttemptQuestionStatusMain>
-          <StartGameButton></StartGameButton>{" "}
-          <CurrentAttemptTimeStatusMain></CurrentAttemptTimeStatusMain>
-        </div>
-      )}
-      {startGameStatus && (
-        // <div className="flex justify-center items-center h-[70vh] ">
-        //   <h1 className="text-3xl text-center">Игра началась</h1>
-        <CurrentGTSGame></CurrentGTSGame>
-        // </div>
-      )}
+      <div className=" bg-zinc-100 py-7 rounded-sm shadow-smallShadow">
+        {/* <AudioVisualiserMain></AudioVisualiserMain> */}
+        {!startGameStatus && (
+          <div className=" mt-8 flex justify-center items-center h-[79vh] flex-col gap-7 ">
+            <CurrentAttemptQuestionStatusMain></CurrentAttemptQuestionStatusMain>
+            <StartGameButton></StartGameButton>{" "}
+            <CurrentAttemptTimeStatusMain></CurrentAttemptTimeStatusMain>
+          </div>
+        )}
+        {startGameStatus && (
+          // <div className="flex justify-center items-center h-[70vh] ">
+          //   <h1 className="text-3xl text-center">Игра началась</h1>
+          <CurrentGTSGame></CurrentGTSGame>
+          // </div>
+        )}
+      </div>
     </>
   );
 };

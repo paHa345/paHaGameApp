@@ -15,7 +15,7 @@ const CurrentAttemptTimeStatusMain = () => {
   );
 
   return (
-    <div className=" bg-cyan-50 bg-opacity-60 rounded-xl shadow-cardElementShadow px-5 py-5  flex justify-center items-center w-full flex-col">
+    <div className=" border-t-2 border-zinc-300 bg-cyan-50 bg-opacity-60 rounded-sm px-5 pt-5 mb-3  flex justify-center items-center w-full flex-col">
       <div className=" flex justify-center items-center flex-col text-2xl">
         <h1>Времени осталось</h1>
         <h1 className=" font-bold pb-2">{currentAttemptRemainedTime} сек</h1>

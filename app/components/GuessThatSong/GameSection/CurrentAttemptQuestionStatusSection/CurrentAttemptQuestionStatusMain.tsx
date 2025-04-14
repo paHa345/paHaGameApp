@@ -41,7 +41,7 @@ const CurrentAttemptQuestionStatusMain = () => {
   });
 
   return (
-    <div className="w-full shadow-cardElementShadow rounded-xl py-1 px-3">
+    <div className="w-full rounded-sm py-1 px-3 border-b-2 border-zinc-300">
       <div className=" text-center">
         <h1 className=" text-2xl ">
           Вопрос

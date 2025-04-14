@@ -53,6 +53,28 @@ export async function PATCH(req: NextRequest) {
     // если вопрос последний, то завершаем попытку
     let updatedAttempt;
     let attemptIsCompleted = false;
+
+    //если время не осталось, то завершвем попытку
+
+    if (currentAttempt[0].timeRemained <= 0) {
+      updatedAttempt = await GTSGameAttempt.findByIdAndUpdate(
+        body.attemptID,
+        {
+          $set: { isCompleted: true },
+        },
+        { new: true }
+      );
+      attemptIsCompleted = true;
+
+      return NextResponse.json({
+        message: "Success",
+        result: {
+          attemptIsCompleted: attemptIsCompleted,
+          attempt: updatedAttempt,
+        },
+      });
+    }
+
     if (currentAttempt[0].currentQuestion === currentGameQuestions.GTSGameObj.length - 1) {
       updatedAttempt = await GTSGameAttempt.findByIdAndUpdate(
         body.attemptID,
