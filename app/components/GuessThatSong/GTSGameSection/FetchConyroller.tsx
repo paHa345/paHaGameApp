@@ -28,6 +28,19 @@ const FetchConyroller = ({ audioRef }: any) => {
             if (signal?.aborted) break;
 
             const time = new TextDecoder().decode(chunk).split(" ");
+            // console.log(time[0]);
+            // console.log(time[1]);
+            if (time[0] === "AttemptTimeIsUp:") {
+              audioRef.current?.pause();
+              dispatch(guessThatSongActions.setCurrentAttemptSongIsPlaying(false));
+
+              abortController?.abort();
+              dispatch(guessThatSongActions.setAbortController(undefined));
+              console.log("Stop song");
+              dispatch(guessThatSongActions.setShowGTSAnswersModal(true));
+              dispatch(guessThatSongActions.setStopAnswerTimerController(new AbortController()));
+              break;
+            }
             dispatch(guessThatSongActions.setCurrentAttemptTimeRemained(time[1]));
           }
         }

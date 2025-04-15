@@ -43,7 +43,8 @@ const CurrentAttemptQuestionStatusMain = () => {
   return (
     <div className="w-full rounded-sm py-1 px-3 border-b-2 border-zinc-300">
       <div className=" text-center">
-        <h1 className=" text-2xl ">
+        <h1 className=" text-2xl ">{currentGTSAttemptData.GTSGameName}</h1>
+        <h1 className=" text-xl ">
           Вопрос
           <span> {currentQuestion + 1}</span> из <span>{attemptQuestions.length}</span>
         </h1>

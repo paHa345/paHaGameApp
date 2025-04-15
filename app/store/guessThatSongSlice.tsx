@@ -53,6 +53,7 @@ export const createAttemptAndAddInSlice = createAsyncThunk(
       }
       const createdGTSGameAttempt = await createGTSGameAttemptReq.json();
 
+      console.log(createdGTSGameAttempt);
       if (createdGTSGameAttempt.result.length) {
         dispatch(
           guessThatSongActions.setCurrentGTSGameAttemptID(createdGTSGameAttempt.result[0]._id)
@@ -385,6 +386,7 @@ export interface IGuessThatSongSlice {
     currentGTSGameAttemptID?: string;
     startGameStatus: boolean;
     currentGTSAttemptData: {
+      GTSGameName: string;
       attemptTime: number;
       timeRemained: number;
       songURL: string;
@@ -489,6 +491,7 @@ interface IGuessThatSongState {
   startGameStatus: boolean;
 
   currentGTSAttemptData: {
+    GTSGameName: string;
     attemptTime: number;
     timeRemained: number;
     songURL: string;
@@ -582,6 +585,7 @@ export const initGuessThatSongState: IGuessThatSongState = {
   startGameStatus: false,
 
   currentGTSAttemptData: {
+    GTSGameName: "",
     attemptTime: 0,
     timeRemained: 0,
     songURL: "",

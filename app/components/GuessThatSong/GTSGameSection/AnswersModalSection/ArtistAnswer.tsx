@@ -28,8 +28,6 @@ const ArtistAnswer = ({
     (state: IGuessThatSongSlice) => state.guessThatSongState.checkArtistAnswerStatus
   );
 
-  console.log(checkArtistAnswerStatus);
-
   const dispatch = useDispatch<AppDispatch>();
   const getArtistAnswerHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     if (checkArtistAnswerStatus === GTSGameFetchStatus.Loading) {
