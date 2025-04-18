@@ -1,11 +1,12 @@
 import { IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
-import React, { ReactElement, useRef, useState } from "react";
+import React, { ReactElement, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import AttemptRemainedTimer from "./AttemptRemainedTimer";
 import DisplayCurrentTrack from "./DisplayCurrentTrack";
 import SongStartStopButton from "./SongStartStopButton";
 import AnswersModalMain from "./AnswersModalSection/AnswersModalMain";
 import CurrentAttemptQuestionStatusMain from "../GameSection/CurrentAttemptQuestionStatusSection/CurrentAttemptQuestionStatusMain";
+import GTSGameAudioVisualiser from "./AudioVisualiserSection/GTSGameAudioVisualiser";
 
 const CurrentGTSGame = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -15,6 +16,7 @@ const CurrentGTSGame = () => {
       <div className="flex justify-center items-center h-[79vh] flex-col ">
         {/* <AttemptQuestionStatusMain></AttemptQuestionStatusMain> */}
         <CurrentAttemptQuestionStatusMain></CurrentAttemptQuestionStatusMain>
+        {/* <GTSGameAudioVisualiser audioRef={audioRef}></GTSGameAudioVisualiser> */}
         <DisplayCurrentTrack audioRef={audioRef}></DisplayCurrentTrack>
         <SongStartStopButton audioRef={audioRef}></SongStartStopButton>
         <AttemptRemainedTimer></AttemptRemainedTimer>

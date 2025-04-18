@@ -363,6 +363,7 @@ export enum GTSGameFetchStatus {
 export interface IGuessThatSongSlice {
   guessThatSongState: {
     browserType: string;
+    audioSource?: any;
 
     songIsPlaying: boolean;
     songVolume: number;
@@ -467,6 +468,7 @@ export interface IGuessThatSongSlice {
 
 interface IGuessThatSongState {
   browserType: string;
+  audioSource?: any;
 
   songIsPlaying: boolean;
   songVolume: number;
@@ -750,6 +752,9 @@ export const guessThatSongSlice = createSlice({
     },
     setCheckArtistAnswerErrorMessage(state, action) {
       state.checkArtistAnswerErrorMessage = action.payload;
+    },
+    setAudioSource(state, action) {
+      state.audioSource = action.payload;
     },
   },
   extraReducers(builder) {

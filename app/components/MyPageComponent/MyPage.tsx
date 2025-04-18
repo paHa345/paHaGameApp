@@ -25,6 +25,7 @@ import {
 
 import MyPageNotification from "./MyPageNotification";
 import { crosswordActions } from "@/app/store/crosswordSlice";
+import AudioVisualiserMain from "../GuessThatSong/GTSGameSection/AudioVisualiserSection/AudioVisualiserMain";
 
 const MyPage = () => {
   const { data: session } = useSession();
@@ -125,6 +126,8 @@ const MyPage = () => {
             Создание игры 'Угадай мелодию'
           </Link>
         </div>
+
+        <AudioVisualiserMain></AudioVisualiserMain>
 
         {/* <form onSubmit={handleSubmit}>
           <input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} />

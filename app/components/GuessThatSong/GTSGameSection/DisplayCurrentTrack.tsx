@@ -1,7 +1,7 @@
 import { AppDispatch } from "@/app/store";
 import { guessThatSongActions, IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
 import { Dispatch } from "@reduxjs/toolkit";
-import React, { SetStateAction, useEffect } from "react";
+import React, { SetStateAction, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import FetchConyroller from "./FetchConyroller";
 
@@ -26,6 +26,10 @@ const DisplayCurrentTrack = ({ audioRef }: IDisplayCurrentTrackProps) => {
 
   const abortController = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.abortController
+  );
+
+  const audioSource = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.audioSource
   );
 
   const audioCanLoadHandler = (e: any) => {

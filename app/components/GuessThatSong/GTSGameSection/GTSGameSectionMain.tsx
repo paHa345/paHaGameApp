@@ -9,6 +9,8 @@ import CurrentGTSGame from "./CurrentGTSGame";
 import CurrentAttemptQuestionStatusMain from "../GameSection/CurrentAttemptQuestionStatusSection/CurrentAttemptQuestionStatusMain";
 import CurrentAttemptTimeStatusMain from "../GameSection/CurrentAttemptTimeStatusSection/CurrentAttemptTimeStatusMain";
 import AudioVisualiserMain from "./AudioVisualiserSection/AudioVisualiserMain";
+import GTSGameAudioVisualiser from "./AudioVisualiserSection/GTSGameAudioVisualiser";
+import { div } from "framer-motion/client";
 
 const GTSGameSectionMain = () => {
   const currentAttemptID = useSelector(
@@ -30,10 +32,13 @@ const GTSGameSectionMain = () => {
       <div className=" bg-zinc-100 py-7 rounded-sm shadow-smallShadow">
         {/* <AudioVisualiserMain></AudioVisualiserMain> */}
         {!startGameStatus && (
-          <div className=" flex justify-center items-center h-[79vh] flex-col gap-7 ">
-            <CurrentAttemptQuestionStatusMain></CurrentAttemptQuestionStatusMain>
-            <StartGameButton></StartGameButton>{" "}
-            <CurrentAttemptTimeStatusMain></CurrentAttemptTimeStatusMain>
+          <div>
+            {/* <GTSGameAudioVisualiser></GTSGameAudioVisualiser> */}
+            <div className=" flex justify-center items-center h-[79vh] flex-col gap-7 ">
+              <CurrentAttemptQuestionStatusMain></CurrentAttemptQuestionStatusMain>
+              <StartGameButton></StartGameButton>{" "}
+              <CurrentAttemptTimeStatusMain></CurrentAttemptTimeStatusMain>
+            </div>
           </div>
         )}
         {startGameStatus && (

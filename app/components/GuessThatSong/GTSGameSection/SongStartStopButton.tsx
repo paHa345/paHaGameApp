@@ -3,7 +3,7 @@ import { AppDispatch } from "@/app/store";
 import { guessThatSongActions, IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
 import { faCirclePlay, faCircleStop, faForward } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 interface ISongStartStopButtonProps {
@@ -40,6 +40,8 @@ const SongStartStopButton = ({ audioRef }: ISongStartStopButtonProps) => {
       dispatch(guessThatSongActions.setCurrentAttemptSongIsPlaying(true));
     }
   };
+  // let audioSource: any;
+  // const analyserRef = useRef(null) as any;
 
   useEffect(() => {
     if (audioRef.current !== null) {
