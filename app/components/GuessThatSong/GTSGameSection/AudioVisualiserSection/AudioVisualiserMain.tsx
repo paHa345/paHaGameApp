@@ -79,7 +79,7 @@ const AudioVisualiserMain = () => {
     <div id="content">
       <input onChange={changeFileHandler} type="file" id="thefile" accept="audio/*" />
       <canvas id="canvas" ref={canvasRef} width={400} height={250}></canvas>
-      <audio ref={audioRef} id="audio" controls></audio>
+      <audio crossOrigin="anonymous" ref={audioRef} id="audio" controls></audio>
     </div>
   );
 };
