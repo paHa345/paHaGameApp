@@ -10,8 +10,10 @@ const AudioVisualiserMain = () => {
     if (e.target.files === null) return;
     const audioElement = audioRef.current;
     if (audioElement) {
+      audioElement.crossOrigin = "anonymous";
+
       audioElement.src =
-        "https://s3.timeweb.cloud/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/GTSGameSong/Europe_-_The_Final_Countdown_47852087 (mp3cut (mp3cut.net).mp3";
+        "https://rhjm8idplsgk4vxo.public.blob.vercel-storage.com/Metallica_-_Master_Of_Puppets_47872908%20%28mp3cut.net%29-ERz4BbKW9azeQMvHu4TcVX57yuCa7S.mp3";
 
       audioElement.load();
       audioElement.play();
@@ -22,6 +24,7 @@ const AudioVisualiserMain = () => {
         const analyser = audioContext.createAnalyser();
         analyserRef.current = analyser;
         source.current.connect(analyser);
+        source.current.connect(audioContext.destination);
         analyser.connect(audioContext.destination);
 
         console.log(source);
@@ -79,7 +82,13 @@ const AudioVisualiserMain = () => {
     <div id="content">
       <input onChange={changeFileHandler} type="file" id="thefile" accept="audio/*" />
       <canvas id="canvas" ref={canvasRef} width={400} height={250}></canvas>
-      <audio crossOrigin="anonymous" ref={audioRef} id="audio" controls></audio>
+      <audio
+        // src="https://s3.timeweb.cloud/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/GTSGameSong/Warrant_-_Chery_Pie_76036339 (mp3cut.net).mp3"
+        // crossOrigin="anonymous"
+        ref={audioRef}
+        id="audio"
+        controls
+      ></audio>
     </div>
   );
 };
