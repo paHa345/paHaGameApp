@@ -13,7 +13,7 @@ const AudioVisualiserMain = () => {
       audioElement.crossOrigin = "anonymous";
 
       audioElement.src =
-        "https://rhjm8idplsgk4vxo.public.blob.vercel-storage.com/Metallica_-_Master_Of_Puppets_47872908%20%28mp3cut.net%29-ERz4BbKW9azeQMvHu4TcVX57yuCa7S.mp3";
+        "https://s3.timeweb.cloud/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/GTSGameSong/Europe_-_The_Final_Countdown_47852087 (mp3cut (mp3cut.net).mp3";
 
       audioElement.load();
       audioElement.play();
