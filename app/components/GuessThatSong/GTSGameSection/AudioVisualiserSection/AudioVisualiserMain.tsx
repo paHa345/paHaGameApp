@@ -80,6 +80,9 @@ const AudioVisualiserMain = () => {
   var audio = audioRef.current;
   var canvas = canvasRef.current;
   const addFileHandler = () => {
+    if (audio === null) {
+      return;
+    }
     audio.crossOrigin = "anonymous";
 
     audio.src =
