@@ -5,6 +5,7 @@ import { faCirclePlay, faCircleStop, faForward } from "@fortawesome/free-solid-s
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import GTSGameAudioVisualiser from "./AudioVisualiserSection/GTSGameAudioVisualiser";
 
 interface ISongStartStopButtonProps {
   audioRef: React.RefObject<HTMLAudioElement>;
@@ -54,9 +55,11 @@ const SongStartStopButton = ({ audioRef }: ISongStartStopButtonProps) => {
   }, [songIsPlaying, audioRef]);
 
   return (
-    <div className=" flex justify-center items-center flex-col">
+    <div className=" flex justify-center items-center flex-col relative w-full ">
+      <GTSGameAudioVisualiser audioRef={audioRef}></GTSGameAudioVisualiser>
+
       <div
-        className=" cursor-pointer transition-all ease-in duration-200   hover:underline  my-6 mx-6 py-8 px-8 rounded-3xl bg-gradient-to-tr from-secoundaryColor to-cyan-200 shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow"
+        className=" z-20 cursor-pointer transition-all ease-in duration-200   hover:underline  my-6 mx-6 py-8 px-8 rounded-3xl bg-gradient-to-tr from-secoundaryColor to-cyan-200 shadow-audioControlsButtonShadow hover:shadow-audioControlsButtonHoverShadow"
         onClick={stopStartSongHandler}
       >
         {!songIsPlaying ? (
