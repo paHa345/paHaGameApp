@@ -102,7 +102,7 @@ const AnswersModalMain = () => {
         >
           <motion.div
             onClick={(e) => e.stopPropagation()}
-            className=" w-11/12 h-5/6 flex flex-col bg-modalMainColor rounded-lg"
+            className=" w-11/12 h-[95%] flex flex-col bg-modalMainColor rounded-lg"
             variants={modalVariant}
             // initial="hidden"
             // animate="visible"
@@ -111,7 +111,7 @@ const AnswersModalMain = () => {
             <AnswerStatus></AnswerStatus>
 
             <div
-              className={` w-full ${showAnswerTimer ? "h-[50vh]" : " h-[60vh]"} min-h-96 overflow-hidden overflow-y-scroll rounded-lg my-3 flex flex-col`}
+              className={` w-full ${showAnswerTimer ? "h-[50vh]" : " h-[75vh]"} min-h-96 overflow-hidden overflow-y-scroll rounded-lg my-3 flex flex-col`}
             >
               <div className=" w-full flex flex-col justify-center items-center">
                 <div className="   w-full flex  justify-around items-center">

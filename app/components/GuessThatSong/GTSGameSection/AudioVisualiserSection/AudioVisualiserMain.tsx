@@ -12,8 +12,10 @@ const AudioVisualiserMain = () => {
     if (audioElement) {
       audioElement.crossOrigin = "anonymous";
 
+      // var files = e.target.files;
+      // audioElement.src = URL.createObjectURL(files[0]);
       audioElement.src =
-        "https://s3.timeweb.cloud/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/GTSGameSong/Europe_-_The_Final_Countdown_47852087 (mp3cut (mp3cut.net).mp3";
+        "https://s3.timeweb.cloud/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/uploads/1742878015640-Iron_Maiden_-_The_Trooper_47955104 (mp3cut.net).mp3";
 
       audioElement.load();
       audioElement.play();
@@ -43,7 +45,7 @@ const AudioVisualiserMain = () => {
         var WIDTH = canvasRef.current.width;
         var HEIGHT = canvasRef.current.height;
 
-        var barWidth = (WIDTH / bufferLength) * 0.9;
+        var barWidth = (WIDTH / bufferLength) * 1.3;
         var barHeight;
         var x = 0;
 
@@ -58,13 +60,13 @@ const AudioVisualiserMain = () => {
           ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
           for (var i = 0; i < bufferLength; i++) {
-            barHeight = dataArray[i];
+            barHeight = dataArray[i] * 0.65;
 
             // console.log(barHeight);
 
-            var r = barHeight + 2 * (i / bufferLength);
-            var g = 5 * (i / bufferLength) + 80;
-            var b = 30;
+            var r = barHeight + 15 * (i / bufferLength + 3);
+            var g = 5 * (i / bufferLength) + 120;
+            var b = 10;
 
             ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
             ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
@@ -147,8 +149,17 @@ const AudioVisualiserMain = () => {
 
   return (
     <div id="content" className=" flex w-full justify-center items-center flex-col gap-4">
+      <div className=" relative group w-full h-full mx-auto">
+        <canvas className=" rounded-2xl w-full" id="canvas" ref={canvasRef} height={175}></canvas>
+
+        <div
+          className=" absolute inset-0"
+          style={{
+            background: "radial-gradient(circle,transparent 40%, rgba(244, 244, 245, 0.9) 80%)",
+          }}
+        ></div>
+      </div>
       <input onChange={changeFileHandler} type="file" id="thefile" accept="audio/*" />
-      <canvas className=" rounded-2xl w-full" id="canvas" ref={canvasRef} height={250}></canvas>
       <audio ref={audioRef} id="audio" controls></audio>
     </div>
   );

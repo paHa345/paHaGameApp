@@ -90,7 +90,7 @@ const GTSGameAudioVisualiser = ({ audioRef }: IGTSGameAudioVisualiserProps) => {
         var WIDTH = canvasRef.current.width;
         var HEIGHT = canvasRef.current.height;
 
-        var barWidth = (WIDTH / bufferLength) * 0.9;
+        var barWidth = (WIDTH / bufferLength) * 1.2;
         var barHeight;
         var x = 0;
 
@@ -105,13 +105,11 @@ const GTSGameAudioVisualiser = ({ audioRef }: IGTSGameAudioVisualiserProps) => {
           ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
           for (var i = 0; i < bufferLength; i++) {
-            barHeight = dataArray[i];
+            barHeight = dataArray[i] * 0.65;
 
-            // console.log(barHeight);
-
-            var r = barHeight + 2 * (i / bufferLength);
-            var g = 5 * (i / bufferLength) + 80;
-            var b = 30;
+            var r = barHeight + 15 * (i / bufferLength + 3);
+            var g = 5 * (i / bufferLength) + 120;
+            var b = 20;
 
             ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
             ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
@@ -130,9 +128,15 @@ const GTSGameAudioVisualiser = ({ audioRef }: IGTSGameAudioVisualiserProps) => {
       <canvas
         id="canvas"
         ref={canvasRef}
-        height={170}
-        className=" w-full absolute top-0 left-0 z-10"
+        // height={170}
+        className=" h-full w-full absolute top-0 left-0 z-10"
       ></canvas>
+      <div
+        className=" absolute inset-0 z-10"
+        style={{
+          background: "radial-gradient(circle,transparent 40%, rgba(244, 244, 245, 0.9) 80%)",
+        }}
+      ></div>
     </div>
   );
 };

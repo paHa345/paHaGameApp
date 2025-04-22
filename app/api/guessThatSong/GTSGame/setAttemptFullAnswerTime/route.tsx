@@ -12,7 +12,6 @@ export async function PATCH(req: NextRequest) {
     }
     await connectMongoDB();
     const body: { telegramUserID: number; answerID: string; attemptID: string } = await req.json();
-    console.log(body);
     const currentAttempt = await GTSGameAttempt.find({
       _id: body.attemptID,
       telegramID: body.telegramUserID,
@@ -28,8 +27,6 @@ export async function PATCH(req: NextRequest) {
       { new: true }
     );
 
-    console.log("Full time");
-    console.log(currentUpdatedAttempt);
     return NextResponse.json({
       message: "Success",
       result: currentUpdatedAttempt,
