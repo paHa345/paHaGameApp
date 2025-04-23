@@ -24,7 +24,7 @@ const MainLayout = (props: any) => {
           <Header></Header>
         </ReduxProvider>
         <main
-          className=" min-h-[80vh] w-11/12
+          className=" text-headerButtonColor min-h-[80vh] w-11/12
           mx-auto"
         >
           {props.children}
