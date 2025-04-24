@@ -1,21 +1,31 @@
+import { div } from "framer-motion/client";
 import React, { useEffect, useRef, useState } from "react";
+import Peaks from "peaks.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPauseCircle, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
+import { faMinusCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 
 const AudioVisualiserMain = () => {
   const canvasRef = useRef(null) as any;
   const audioRef = useRef<HTMLMediaElement>(null);
   const source = useRef(null) as any;
   const analyserRef = useRef(null) as any;
+  const [peaksInstance, setPeaksInstance] = useState(null) as any;
+
+  const [editedSongIsPlaying, setEditedSongIsPlaying] = useState(false);
+
+  const [playbackTime, setPlaybackTime] = useState(0);
 
   const changeFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files === null) return;
     const audioElement = audioRef.current;
     if (audioElement) {
-      audioElement.crossOrigin = "anonymous";
+      // audioElement.crossOrigin = "anonymous";
 
-      // var files = e.target.files;
-      // audioElement.src = URL.createObjectURL(files[0]);
-      audioElement.src =
-        "https://s3.timeweb.cloud/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/uploads/1742878015640-Iron_Maiden_-_The_Trooper_47955104 (mp3cut.net).mp3";
+      var files = e.target.files;
+      audioElement.src = URL.createObjectURL(files[0]);
+      // audioElement.src =
+      //   "https://rus.hitmotop.com/get/cuts/bd/58/bd58c8fb52bfc79ec0cc55fb281b9822/50680499/Pantera_-_Floods_b128f0d419.mp3";
 
       audioElement.load();
       audioElement.play();
@@ -79,88 +89,158 @@ const AudioVisualiserMain = () => {
       }
     }
   };
+  const options = {
+    zoomview: {
+      container: document.getElementById("zoomview-container"),
+    },
+    overview: {
+      container: document.getElementById("overview-container"),
+    },
+    mediaElement: document.getElementById("peaksAudio"),
+    webAudio: {
+      audioContext: new AudioContext(),
+    },
+    waveformBuilderOptions: {
+      scale: 4,
+    },
+  } as any;
 
-  // var audio = audioRef.current;
-  // var canvas = canvasRef.current;
-  // const addFileHandler = () => {
-  //   if(audio === null){
-  //     return
+  const onPlay = () => {
+    if (!peaksInstance) return;
+    // console.log(peaksInstance);
+    // console.log(peaksInstance?.player.getCurrentTime());
+    setEditedSongIsPlaying(true);
 
-  //   }
-  //   audio.crossOrigin = "anonymous";
+    peaksInstance.player?.play();
+  };
+  const onPause = () => {
+    if (!peaksInstance) return;
+    setEditedSongIsPlaying(false);
 
-  //   audio.src =
-  //     "https://s3.timeweb.cloud/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/uploads/1743068319352-Ariya.mp3";
+    peaksInstance.player.pause();
+  };
 
-  //   audio.load();
-  //   audio.play();
-  //   var context = new AudioContext();
-  //   var src = context.createMediaElementSource(audio);
-  //   var analyser = context.createAnalyser();
+  const endPeakSongHandler = () => {
+    setEditedSongIsPlaying(false);
+  };
 
-  //   var ctx = canvas.getContext("2d");
+  const zoomOutHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    peaksInstance.zoom?.zoomOut();
+  };
+  const zoomInHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    peaksInstance.zoom?.zoomIn();
+  };
 
-  //   src.connect(analyser);
-  //   analyser.connect(context.destination);
+  useEffect(() => {});
 
-  //   analyser.fftSize = 1024;
+  const peaksAudioRef = useRef<HTMLMediaElement>(null);
 
-  //   var bufferLength = analyser.frequencyBinCount;
-  //   console.log(bufferLength);
+  const changePeaksFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files === null) return;
+    const audioElement = peaksAudioRef.current;
+    if (audioElement) {
+      // audioElement.crossOrigin = "anonymous";
 
-  //   var dataArray = new Uint8Array(bufferLength);
+      var files = e.target.files;
+      audioElement.src = URL.createObjectURL(files[0]);
 
-  //   var WIDTH = canvas.width;
-  //   var HEIGHT = canvas.height;
+      Peaks.init(options, function (err, peaks) {
+        if (err) {
+          console.error("Failed to initialize Peaks instance: " + err.message);
+          return;
+        }
+        if (!err) {
+          // peaks?.points.add({
+          //   time: 10,
+          //   labelText: "Start Point",
+          // });
 
-  //   var barWidth = (WIDTH / bufferLength) * 0.9;
-  //   var barHeight;
-  //   var x = 0;
+          console.log("Podcast editor is ready");
+          console.log(peaks?.player.getCurrentTime());
+          console.log(peaks?.player.getDuration());
 
-  //   function renderFrame() {
-  //     requestAnimationFrame(renderFrame);
+          const segment = peaks?.segments.add({
+            startTime: 0,
+            endTime: peaks?.player.getDuration(),
+            editable: true,
+          });
 
-  //     x = 0;
+          if (segment) {
+            peaks?.player.playSegment(segment, true);
+          }
+        }
 
-  //     analyser.getByteFrequencyData(dataArray);
+        setPeaksInstance(peaks);
 
-  //     ctx.fillStyle = "rgb(242, 242, 242)";
-  //     ctx.fillRect(0, 0, WIDTH, HEIGHT);
+        // peaks.on("player.timeupdate", function (time) {
+        //   setPlaybackTime(Math.round(time * 1000) / 1000);
+        //   console.log(playbackTime);
+        // });
 
-  //     for (var i = 0; i < bufferLength; i++) {
-  //       barHeight = dataArray[i];
-
-  //       var r = barHeight + 2 * (i / bufferLength);
-  //       var g = 5 * (i / bufferLength) + 80;
-  //       var b = 30;
-
-  //       ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
-  //       ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
-
-  //       x += barWidth + 1;
-  //     }
-  //   }
-
-  //   audio.play();
-  //   renderFrame();
-  // };
-
-  useEffect(() => {}, []);
+        // Do something when the waveform is displayed and ready
+      });
+    }
+  };
 
   return (
-    <div id="content" className=" flex w-full justify-center items-center flex-col gap-4">
-      <div className=" relative group w-full h-full mx-auto">
-        <canvas className=" rounded-2xl w-full" id="canvas" ref={canvasRef} height={175}></canvas>
+    <div>
+      <div id="content" className=" flex w-full justify-center items-center flex-col gap-4">
+        <div className=" relative group w-full h-full mx-auto">
+          <canvas className=" rounded-2xl w-full" id="canvas" ref={canvasRef} height={175}></canvas>
 
-        <div
-          className=" absolute inset-0"
-          style={{
-            background: "radial-gradient(circle,transparent 40%, rgba(244, 244, 245, 0.9) 80%)",
-          }}
-        ></div>
+          <div
+            className=" absolute inset-0"
+            style={{
+              background: "radial-gradient(circle,transparent 40%, rgba(244, 244, 245, 0.9) 80%)",
+            }}
+          ></div>
+        </div>
+        <input onChange={changeFileHandler} type="file" id="thefile" accept="audio/*" />
+        <audio ref={audioRef} id="audio" controls></audio>
       </div>
-      <input onChange={changeFileHandler} type="file" id="thefile" accept="audio/*" />
-      <audio ref={audioRef} id="audio" controls></audio>
+
+      <div>
+        <input onChange={changePeaksFileHandler} type="file" id="thefilePeaks" accept="audio/*" />
+
+        <div id="zoomview-container" className=" h-28 w-full"></div>
+        <div id="overview-container" className=" h-28 w-full"></div>
+        <audio ref={peaksAudioRef} id="peaksAudio" onEnded={endPeakSongHandler}>
+          {/* <source
+            src="https://s3.timeweb.cloud/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/GTSGameSong/Dio_-_Rainbow_In_The_Dark_47874705 (mp3cut.net).mp3"
+            type="audio/mpeg"
+          />
+          <source
+            src="https://s3.timeweb.cloud/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/GTSGameSong/Dio_-_Rainbow_In_The_Dark_47874705 (mp3cut.net).mp3"
+            type='audio/ogg codecs="vorbis"'
+          /> */}
+        </audio>
+        {peaksInstance && (
+          <div className=" flex justify-around items-stretch gap-6 py-5">
+            <div className=" flex justify-center items-center gap-6 py-5">
+              {editedSongIsPlaying ? (
+                <div onClick={onPause}>
+                  <FontAwesomeIcon icon={faPauseCircle} className="fa-fw fa-3x"></FontAwesomeIcon>
+                </div>
+              ) : (
+                <div onClick={onPlay}>
+                  <FontAwesomeIcon icon={faPlayCircle} className="fa-fw fa-3x"></FontAwesomeIcon>
+                </div>
+              )}
+            </div>
+
+            <div className=" flex justify-center items-center gap-6 py-5">
+              <div onClick={zoomInHandler}>
+                <FontAwesomeIcon icon={faPlusCircle} className="fa-fw fa-3x"></FontAwesomeIcon>
+              </div>
+              <div onClick={zoomOutHandler}>
+                <FontAwesomeIcon icon={faMinusCircle} className="fa-fw fa-3x"></FontAwesomeIcon>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

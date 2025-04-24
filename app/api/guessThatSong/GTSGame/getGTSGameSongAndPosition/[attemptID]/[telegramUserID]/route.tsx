@@ -36,6 +36,7 @@ export async function GET(req: NextRequest, segmentData: any) {
     const answerTime = currentAttempt[0].answerTime;
     const questionsStatus = currentAttempt[0].attemptQuestionStatus;
     const currentQuestion = currentAttempt[0].currentQuestion;
+    const GTSGameName = currentAttempt[0].GTSGameName;
 
     return NextResponse.json({
       message: "sucess",
@@ -47,6 +48,7 @@ export async function GET(req: NextRequest, segmentData: any) {
         answerTime: answerTime,
         questionsStatus: questionsStatus,
         currentQuestion: currentQuestion,
+        GTSGameName: GTSGameName,
       },
     });
   } catch (error: any) {

@@ -29,12 +29,12 @@ const GTSGameSectionMain = () => {
   }
   return (
     <>
-      <div className=" bg-zinc-100 py-7 rounded-sm shadow-smallShadow">
+      <div className=" bg-zinc-100 pt-7 rounded-sm shadow-smallShadow">
         {/* <AudioVisualiserMain></AudioVisualiserMain> */}
         {!startGameStatus && (
           <div>
             {/* <GTSGameAudioVisualiser></GTSGameAudioVisualiser> */}
-            <div className=" flex justify-center items-center h-[79vh] flex-col gap-7 ">
+            <div className=" flex justify-center items-center h-[80vh] flex-col gap-7 ">
               <CurrentAttemptQuestionStatusMain></CurrentAttemptQuestionStatusMain>
               <StartGameButton></StartGameButton>{" "}
               <CurrentAttemptTimeStatusMain></CurrentAttemptTimeStatusMain>

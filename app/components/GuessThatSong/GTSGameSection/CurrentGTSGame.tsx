@@ -13,7 +13,7 @@ const CurrentGTSGame = () => {
 
   return (
     <>
-      <div className="flex justify-center items-center h-[79vh] flex-col ">
+      <div className="flex justify-center items-center h-[80vh] flex-col ">
         {/* <AttemptQuestionStatusMain></AttemptQuestionStatusMain> */}
         <CurrentAttemptQuestionStatusMain></CurrentAttemptQuestionStatusMain>
         {/* <GTSGameAudioVisualiser audioRef={audioRef}></GTSGameAudioVisualiser> */}

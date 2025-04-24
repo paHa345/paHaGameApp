@@ -12,18 +12,19 @@ const AttemptRemainedTimer = () => {
   const percentage = (remainedTime / attemptFullTime) * 100;
 
   return (
-    <div className=" flex justify-center items-center flex-col w-full border-t-2 border-zinc-300 px-3">
-      <div className=" flex justify-center items-center flex-col text-2xl">
-        <h1>Времени осталось</h1>
-        <h1 className=" font-bold pb-2">{remainedTime} сек</h1>
-      </div>
-      <div
-        style={{
-          background: ` ${remainedTime && attemptFullTime ? `linear-gradient(to right, rgba(22, 128, 204, 0.5 ) ${(remainedTime * 100) / attemptFullTime}%, #ccc ${(remainedTime * 100) / attemptFullTime}%` : ""}`,
-        }}
-        className="progress w-full h-10 rounded-md"
-      >
-        {/* <input
+    <div className=" flex justify-center items-center flex-col w-full border-t-2 border-zinc-300 px-3  my-4">
+      <div className=" flex items-center justify-center flex-col">
+        <div className=" flex justify-center items-center flex-col text-2xl">
+          <h1>Времени осталось</h1>
+          <h1 className=" font-bold pb-2">{remainedTime} сек</h1>
+        </div>
+        <div
+          style={{
+            background: ` ${remainedTime && attemptFullTime ? `linear-gradient(to right, rgba(22, 128, 204, 0.5 ) ${(remainedTime * 100) / attemptFullTime}%, #ccc ${(remainedTime * 100) / attemptFullTime}%` : ""}`,
+          }}
+          className="progress w-full h-10 rounded-md"
+        >
+          {/* <input
           //   className=" w-full song-slider"
           // ref={progressBarRef}
           type="range"
@@ -33,6 +34,7 @@ const AttemptRemainedTimer = () => {
           max={attemptFullTime ? attemptFullTime * 100 : 0}
           // onChange={handleProgressChange}
         /> */}
+        </div>
       </div>
     </div>
   );
