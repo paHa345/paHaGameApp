@@ -158,17 +158,17 @@ const AudioVisualiserMain = () => {
           console.log(peaks?.player.getCurrentTime());
           console.log(peaks?.player.getDuration());
 
-          const segment = peaks?.segments.add({
-            startTime: 0,
-            endTime: peaks?.player.getDuration(),
-            editable: true,
-          });
+          // const segment = peaks?.segments.add({
+          //   startTime: 0,
+          //   endTime: peaks?.player.getDuration(),
+          //   editable: true,
+          // });
 
-          if (segment) {
-            setEditedSongIsPlaying(true);
+          // if (segment) {
+          //   setEditedSongIsPlaying(true);
 
-            peaks?.player.playSegment(segment, true);
-          }
+          //   peaks?.player.playSegment(segment, true);
+          // }
         }
 
         setPeaksInstance(peaks);
