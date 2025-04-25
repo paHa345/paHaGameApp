@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Peaks from "peaks.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPauseCircle, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
-import { faMinusCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCut, faEdit, faMinusCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 
 const AudioVisualiserMain = () => {
   const canvasRef = useRef(null) as any;
@@ -119,25 +119,26 @@ const AudioVisualiserMain = () => {
     peaksInstance.zoom?.zoomIn();
   };
 
+  const options = {
+    zoomview: {
+      container: document.getElementById("zoomview-container"),
+    },
+    overview: {
+      container: document.getElementById("overview-container"),
+    },
+    mediaElement: document.getElementById("peaksAudio"),
+    webAudio: {
+      audioContext: new AudioContext(),
+    },
+    waveformBuilderOptions: {
+      scale: 4,
+    },
+  } as any;
+
   useEffect(() => {
     if (document) {
       console.log(document.getElementById("zoomview-container"));
     }
-    const options = {
-      zoomview: {
-        container: document.getElementById("zoomview-container"),
-      },
-      overview: {
-        container: document.getElementById("overview-container"),
-      },
-      mediaElement: document.getElementById("peaksAudio"),
-      webAudio: {
-        audioContext: new AudioContext(),
-      },
-      waveformBuilderOptions: {
-        scale: 4,
-      },
-    } as any;
 
     console.log(navigator);
 
@@ -164,6 +165,8 @@ const AudioVisualiserMain = () => {
           });
 
           if (segment) {
+            setEditedSongIsPlaying(true);
+
             peaks?.player.playSegment(segment, true);
           }
         }
@@ -191,41 +194,43 @@ const AudioVisualiserMain = () => {
       var files = e.target.files;
       audioElement.src = URL.createObjectURL(files[0]);
 
-      // Peaks.init(options, function (err, peaks) {
-      //   if (err) {
-      //     console.error("Failed to initialize Peaks instance: " + err.message);
-      //     return;
-      //   }
-      //   if (!err) {
-      //     // peaks?.points.add({
-      //     //   time: 10,
-      //     //   labelText: "Start Point",
-      //     // });
+      Peaks.init(options, function (err, peaks) {
+        if (err) {
+          console.error("Failed to initialize Peaks instance: " + err.message);
+          return;
+        }
+        if (!err) {
+          // peaks?.points.add({
+          //   time: 10,
+          //   labelText: "Start Point",
+          // });
 
-      //     console.log("Podcast editor is ready");
-      //     console.log(peaks?.player.getCurrentTime());
-      //     console.log(peaks?.player.getDuration());
+          console.log("Podcast editor is ready");
+          console.log(peaks?.player.getCurrentTime());
+          console.log(peaks?.player.getDuration());
 
-      //     const segment = peaks?.segments.add({
-      //       startTime: 0,
-      //       endTime: peaks?.player.getDuration(),
-      //       editable: true,
-      //     });
+          const segment = peaks?.segments.add({
+            startTime: 0,
+            endTime: peaks?.player.getDuration(),
+            editable: true,
+          });
 
-      //     if (segment) {
-      //       peaks?.player.playSegment(segment, true);
-      //     }
-      //   }
+          if (segment) {
+            setEditedSongIsPlaying(true);
 
-      //   setPeaksInstance(peaks);
+            peaks?.player.playSegment(segment, true);
+          }
+        }
 
-      //   // peaks.on("player.timeupdate", function (time) {
-      //   //   setPlaybackTime(Math.round(time * 1000) / 1000);
-      //   //   console.log(playbackTime);
-      //   // });
+        setPeaksInstance(peaks);
 
-      //   // Do something when the waveform is displayed and ready
-      // });
+        // peaks.on("player.timeupdate", function (time) {
+        //   setPlaybackTime(Math.round(time * 1000) / 1000);
+        //   console.log(playbackTime);
+        // });
+
+        // Do something when the waveform is displayed and ready
+      });
     }
   };
 
@@ -281,6 +286,16 @@ const AudioVisualiserMain = () => {
               </div>
               <div onClick={zoomOutHandler}>
                 <FontAwesomeIcon icon={faMinusCircle} className="fa-fw fa-3x"></FontAwesomeIcon>
+              </div>
+            </div>
+            <div>
+              <div className=" flex justify-center items-center gap-6 py-5">
+                <div>
+                  <FontAwesomeIcon icon={faEdit} className="fa-fw fa-2x"></FontAwesomeIcon>
+                </div>
+                <div>
+                  <FontAwesomeIcon icon={faCut} className="fa-fw fa-2x"></FontAwesomeIcon>
+                </div>
               </div>
             </div>
           </div>
