@@ -119,28 +119,28 @@ const AudioVisualiserMain = () => {
     peaksInstance.zoom?.zoomIn();
   };
 
-  const options = {
-    zoomview: {
-      container: document.getElementById("zoomview-container"),
-    },
-    overview: {
-      container: document.getElementById("overview-container"),
-    },
-    mediaElement: document.getElementById("peaksAudio"),
-    webAudio: {
-      audioContext: new AudioContext(),
-    },
-    waveformBuilderOptions: {
-      scale: 4,
-    },
-  } as any;
-
   useEffect(() => {
     if (document) {
       console.log(document.getElementById("zoomview-container"));
     }
 
     console.log(navigator);
+
+    const options = {
+      zoomview: {
+        container: document.getElementById("zoomview-container"),
+      },
+      overview: {
+        container: document.getElementById("overview-container"),
+      },
+      mediaElement: document.getElementById("peaksAudio"),
+      webAudio: {
+        audioContext: new AudioContext(),
+      },
+      waveformBuilderOptions: {
+        scale: 4,
+      },
+    } as any;
 
     if (navigator) {
       Peaks.init(options, function (err, peaks) {
@@ -187,6 +187,7 @@ const AudioVisualiserMain = () => {
 
   const changePeaksFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files === null) return;
+    console.log(peaksInstance);
     const audioElement = peaksAudioRef.current;
     if (audioElement) {
       // audioElement.crossOrigin = "anonymous";
@@ -194,42 +195,18 @@ const AudioVisualiserMain = () => {
       var files = e.target.files;
       audioElement.src = URL.createObjectURL(files[0]);
 
-      Peaks.init(options, function (err, peaks) {
-        if (err) {
-          console.error("Failed to initialize Peaks instance: " + err.message);
-          return;
-        }
-        if (!err) {
-          // peaks?.points.add({
-          //   time: 10,
-          //   labelText: "Start Point",
-          // });
+      const options = {
+        mediaUrl: URL.createObjectURL(files[0]),
+        webAudio: {
+          audioContext: new AudioContext(),
+          multiChannel: true,
+        },
+      };
 
-          console.log("Podcast editor is ready");
-          console.log(peaks?.player.getCurrentTime());
-          console.log(peaks?.player.getDuration());
+      peaksInstance.setSource(options, function (error: Error) {
+        if (error) [console.log(error.message)];
 
-          const segment = peaks?.segments.add({
-            startTime: 0,
-            endTime: peaks?.player.getDuration(),
-            editable: true,
-          });
-
-          if (segment) {
-            setEditedSongIsPlaying(true);
-
-            peaks?.player.playSegment(segment, true);
-          }
-        }
-
-        setPeaksInstance(peaks);
-
-        // peaks.on("player.timeupdate", function (time) {
-        //   setPlaybackTime(Math.round(time * 1000) / 1000);
-        //   console.log(playbackTime);
-        // });
-
-        // Do something when the waveform is displayed and ready
+        // Waveform updated
       });
     }
   };
