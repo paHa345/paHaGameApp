@@ -119,6 +119,18 @@ const AudioVisualiserMain = () => {
     peaksInstance.zoom?.zoomIn();
   };
 
+  const editAudioFileHandler = (e: React.MouseEvent<SVGSVGElement>) => {
+    e.preventDefault();
+    console.log("add segment");
+    console.log(peaksInstance?.player.getCurrentTime());
+    console.log(peaksInstance?.player.getDuration());
+    const segment = peaksInstance?.segments.add({
+      startTime: peaksInstance?.player.getCurrentTime(),
+      endTime: peaksInstance?.player.getDuration(),
+      editable: true,
+    });
+  };
+
   useEffect(() => {
     if (document) {
       console.log(document.getElementById("zoomview-container"));
@@ -248,30 +260,49 @@ const AudioVisualiserMain = () => {
             <div className=" flex justify-center items-center gap-6 py-5">
               {editedSongIsPlaying ? (
                 <div onClick={onPause}>
-                  <FontAwesomeIcon icon={faPauseCircle} className="fa-fw fa-3x"></FontAwesomeIcon>
+                  <FontAwesomeIcon
+                    icon={faPauseCircle}
+                    className="fa-fw fa-3x cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
+                  ></FontAwesomeIcon>
                 </div>
               ) : (
-                <div onClick={onPlay}>
-                  <FontAwesomeIcon icon={faPlayCircle} className="fa-fw fa-3x"></FontAwesomeIcon>
+                <div className=" rounded-3xl" onClick={onPlay}>
+                  <FontAwesomeIcon
+                    icon={faPlayCircle}
+                    className="fa-fw fa-3x cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
+                  ></FontAwesomeIcon>
                 </div>
               )}
             </div>
 
             <div className=" flex justify-center items-center gap-6 py-5">
               <div onClick={zoomInHandler}>
-                <FontAwesomeIcon icon={faPlusCircle} className="fa-fw fa-3x"></FontAwesomeIcon>
+                <FontAwesomeIcon
+                  icon={faPlusCircle}
+                  className=" cursor-pointer fa-fw fa-3x rounded-full hover:shadow-exerciseCardHowerShadow"
+                ></FontAwesomeIcon>
               </div>
               <div onClick={zoomOutHandler}>
-                <FontAwesomeIcon icon={faMinusCircle} className="fa-fw fa-3x"></FontAwesomeIcon>
+                <FontAwesomeIcon
+                  icon={faMinusCircle}
+                  className=" cursor-pointer fa-fw fa-3x rounded-full hover:shadow-exerciseCardHowerShadow"
+                ></FontAwesomeIcon>
               </div>
             </div>
             <div>
               <div className=" flex justify-center items-center gap-6 py-5">
                 <div>
-                  <FontAwesomeIcon icon={faEdit} className="fa-fw fa-2x"></FontAwesomeIcon>
+                  <FontAwesomeIcon
+                    onClick={editAudioFileHandler}
+                    icon={faEdit}
+                    className=" cursor-pointer fa-fw fa-2x hover:shadow-exerciseCardHowerShadow"
+                  ></FontAwesomeIcon>
                 </div>
                 <div>
-                  <FontAwesomeIcon icon={faCut} className="fa-fw fa-2x"></FontAwesomeIcon>
+                  <FontAwesomeIcon
+                    icon={faCut}
+                    className=" cursor-pointer fa-fw fa-2x hover:shadow-exerciseCardHowerShadow"
+                  ></FontAwesomeIcon>
                 </div>
               </div>
             </div>
