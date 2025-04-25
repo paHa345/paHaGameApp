@@ -1,3 +1,4 @@
+"use client";
 import { div } from "framer-motion/client";
 import React, { useEffect, useRef, useState } from "react";
 import Peaks from "peaks.js";
@@ -89,21 +90,6 @@ const AudioVisualiserMain = () => {
       }
     }
   };
-  const options = {
-    zoomview: {
-      container: document.getElementById("zoomview-container"),
-    },
-    overview: {
-      container: document.getElementById("overview-container"),
-    },
-    mediaElement: document.getElementById("peaksAudio"),
-    webAudio: {
-      audioContext: new AudioContext(),
-    },
-    waveformBuilderOptions: {
-      scale: 4,
-    },
-  } as any;
 
   const onPlay = () => {
     if (!peaksInstance) return;
@@ -133,19 +119,29 @@ const AudioVisualiserMain = () => {
     peaksInstance.zoom?.zoomIn();
   };
 
-  useEffect(() => {});
+  useEffect(() => {
+    if (document) {
+      console.log(document.getElementById("zoomview-container"));
+    }
+    const options = {
+      zoomview: {
+        container: document.getElementById("zoomview-container"),
+      },
+      overview: {
+        container: document.getElementById("overview-container"),
+      },
+      mediaElement: document.getElementById("peaksAudio"),
+      webAudio: {
+        audioContext: new AudioContext(),
+      },
+      waveformBuilderOptions: {
+        scale: 4,
+      },
+    } as any;
 
-  const peaksAudioRef = useRef<HTMLMediaElement>(null);
+    console.log(navigator);
 
-  const changePeaksFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files === null) return;
-    const audioElement = peaksAudioRef.current;
-    if (audioElement) {
-      // audioElement.crossOrigin = "anonymous";
-
-      var files = e.target.files;
-      audioElement.src = URL.createObjectURL(files[0]);
-
+    if (navigator) {
       Peaks.init(options, function (err, peaks) {
         if (err) {
           console.error("Failed to initialize Peaks instance: " + err.message);
@@ -181,6 +177,55 @@ const AudioVisualiserMain = () => {
 
         // Do something when the waveform is displayed and ready
       });
+    }
+  }, []);
+
+  const peaksAudioRef = useRef<HTMLMediaElement>(null);
+
+  const changePeaksFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files === null) return;
+    const audioElement = peaksAudioRef.current;
+    if (audioElement) {
+      // audioElement.crossOrigin = "anonymous";
+
+      var files = e.target.files;
+      audioElement.src = URL.createObjectURL(files[0]);
+
+      // Peaks.init(options, function (err, peaks) {
+      //   if (err) {
+      //     console.error("Failed to initialize Peaks instance: " + err.message);
+      //     return;
+      //   }
+      //   if (!err) {
+      //     // peaks?.points.add({
+      //     //   time: 10,
+      //     //   labelText: "Start Point",
+      //     // });
+
+      //     console.log("Podcast editor is ready");
+      //     console.log(peaks?.player.getCurrentTime());
+      //     console.log(peaks?.player.getDuration());
+
+      //     const segment = peaks?.segments.add({
+      //       startTime: 0,
+      //       endTime: peaks?.player.getDuration(),
+      //       editable: true,
+      //     });
+
+      //     if (segment) {
+      //       peaks?.player.playSegment(segment, true);
+      //     }
+      //   }
+
+      //   setPeaksInstance(peaks);
+
+      //   // peaks.on("player.timeupdate", function (time) {
+      //   //   setPlaybackTime(Math.round(time * 1000) / 1000);
+      //   //   console.log(playbackTime);
+      //   // });
+
+      //   // Do something when the waveform is displayed and ready
+      // });
     }
   };
 
