@@ -4,7 +4,15 @@ import React, { useEffect, useRef, useState } from "react";
 import Peaks from "peaks.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPauseCircle, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
-import { faCut, faEdit, faMinusCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faA,
+  faB,
+  faCut,
+  faEdit,
+  faMinusCircle,
+  faPlusCircle,
+} from "@fortawesome/free-solid-svg-icons";
+// import Konva from "konva";
 
 const AudioVisualiserMain = () => {
   const canvasRef = useRef(null) as any;
@@ -124,10 +132,16 @@ const AudioVisualiserMain = () => {
     console.log("add segment");
     console.log(peaksInstance?.player.getCurrentTime());
     console.log(peaksInstance?.player.getDuration());
+    if (peaksInstance?.segments.getSegment("mainEditedSegment")) {
+      return;
+    }
     const segment = peaksInstance?.segments.add({
       startTime: peaksInstance?.player.getCurrentTime(),
       endTime: peaksInstance?.player.getDuration(),
       editable: true,
+      color: "#5019a8",
+      id: "mainEditedSegment",
+      labelText: "Оставляемый фрагмент",
     });
   };
 
@@ -152,7 +166,54 @@ const AudioVisualiserMain = () => {
       waveformBuilderOptions: {
         scale: 4,
       },
+      // createSegmentLabel: createSegmentLabel,
+      // createSegmentMarker: createSegmentMarker,
     } as any;
+
+    // function createSegmentLabel(options: any) {
+    //   if (options.view === "overview") {
+    //     return null;
+    //   }
+
+    //   return new Konva.Text({
+    //     text: options.segment.labelText,
+    //     fontSize: 24,
+    //     fontFamily: "Calibri",
+    //     fill: "black",
+    //   });
+    // }
+
+    // class CustomPointMarker {
+    //   constructor(options: any) {
+    //     this._options = options;
+    //   }
+
+    //   init(group: any) {
+    //     const layer = this._options.layer;
+    //     const height = layer.getHeight();
+
+    //     this._handle = new Konva.Rect({
+    //       x: 0,
+    //       y: 0,
+    //       width: 40,
+    //       height: 20,
+    //       fill: this._options.color,
+    //     });
+
+    //     this._line = new Konva.Line({
+    //       points: [0.5, 0, 0.5, height], // x1, y1, x2, y2
+    //       stroke: options.color,
+    //       strokeWidth: 1,
+    //     });
+
+    //     group.add(this._handle);
+    //     group.add(this._line);
+    //   }
+    // }
+
+    // function createSegmentMarker(options: any) {
+    //   return new CustomPointMarker(options);
+    // }
 
     if (navigator) {
       Peaks.init(options, function (err, peaks) {
@@ -215,12 +276,48 @@ const AudioVisualiserMain = () => {
         },
       };
 
+      if (peaksInstance?.player?.play()) {
+        peaksInstance.player?.pause();
+        setEditedSongIsPlaying(false);
+      }
+      if (peaksInstance.segments) {
+        peaksInstance.segments?.removeAll();
+      }
+
+      if (peaksInstance.points) {
+        peaksInstance.points?.removeAll();
+      }
+
       peaksInstance.setSource(options, function (error: Error) {
         if (error) [console.log(error.message)];
 
         // Waveform updated
       });
     }
+  };
+
+  const setAPointHandler = (e: React.MouseEvent<SVGSVGElement>) => {
+    e.preventDefault();
+
+    peaksInstance.points.add({
+      time: peaksInstance?.player.getCurrentTime(),
+      labelText: "A point",
+      color: "#e0491b",
+      id: "APoint",
+      editable: true,
+    });
+  };
+
+  const setBPointHandler = (e: React.MouseEvent<SVGSVGElement>) => {
+    e.preventDefault();
+
+    peaksInstance.points.add({
+      time: peaksInstance?.player.getCurrentTime(),
+      labelText: "B point",
+      color: "#259c08",
+      id: "BPoint",
+      editable: true,
+    });
   };
 
   return (
@@ -291,6 +388,20 @@ const AudioVisualiserMain = () => {
             </div>
             <div>
               <div className=" flex justify-center items-center gap-6 py-5">
+                <div>
+                  <FontAwesomeIcon
+                    onClick={setAPointHandler}
+                    icon={faA}
+                    className=" cursor-pointer fa-fw fa-2x hover:shadow-exerciseCardHowerShadow"
+                  ></FontAwesomeIcon>
+                </div>
+                <div>
+                  <FontAwesomeIcon
+                    onClick={setBPointHandler}
+                    icon={faB}
+                    className=" cursor-pointer fa-fw fa-2x hover:shadow-exerciseCardHowerShadow"
+                  ></FontAwesomeIcon>
+                </div>
                 <div>
                   <FontAwesomeIcon
                     onClick={editAudioFileHandler}
