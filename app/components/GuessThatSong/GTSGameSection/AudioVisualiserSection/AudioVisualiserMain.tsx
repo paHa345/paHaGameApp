@@ -8,8 +8,11 @@ import {
   faA,
   faB,
   faCut,
+  faDropletSlash,
   faEdit,
+  faLinkSlash,
   faMinusCircle,
+  faPlaneSlash,
   faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
 // import Konva from "konva";
@@ -24,6 +27,10 @@ const AudioVisualiserMain = () => {
   const [editedSongIsPlaying, setEditedSongIsPlaying] = useState(false);
 
   const [playbackTime, setPlaybackTime] = useState(0);
+
+  const [pointsStatus, setPointsStatus] = useState({ start: false, finish: false });
+
+  const [editedSegmantIsCreated, setEditedSegmantIsCreated] = useState(false);
 
   const changeFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files === null) return;
@@ -127,22 +134,130 @@ const AudioVisualiserMain = () => {
     peaksInstance.zoom?.zoomIn();
   };
 
+  const setAPointHandler = (e: React.MouseEvent<SVGSVGElement>) => {
+    e.preventDefault();
+    if (peaksInstance.points.getPoint("APoint")) {
+      return;
+    }
+
+    setPointsStatus((prev) => {
+      return {
+        start: true,
+        finish: prev.finish,
+      };
+    });
+
+    peaksInstance.points.add({
+      time: peaksInstance?.player.getCurrentTime(),
+      labelText: "Начало",
+      color: "#e0491b",
+      id: "APoint",
+      editable: true,
+    });
+  };
+
+  const setBPointHandler = (e: React.MouseEvent<SVGSVGElement>) => {
+    e.preventDefault();
+    if (peaksInstance.points.getPoint("BPoint")) {
+      return;
+    }
+
+    setPointsStatus((prev) => {
+      return {
+        start: prev.start,
+        finish: true,
+      };
+    });
+
+    peaksInstance.points.add({
+      time: peaksInstance?.player.getCurrentTime(),
+      labelText: "Конец",
+      color: "#259c08",
+      id: "BPoint",
+      editable: true,
+    });
+  };
+
   const editAudioFileHandler = (e: React.MouseEvent<SVGSVGElement>) => {
     e.preventDefault();
-    console.log("add segment");
-    console.log(peaksInstance?.player.getCurrentTime());
-    console.log(peaksInstance?.player.getDuration());
+
+    if (!peaksInstance?.points.getPoint("APoint") && !peaksInstance?.points.getPoint("BPoint")) {
+      return;
+    }
+
     if (peaksInstance?.segments.getSegment("mainEditedSegment")) {
       return;
     }
+
     const segment = peaksInstance?.segments.add({
-      startTime: peaksInstance?.player.getCurrentTime(),
-      endTime: peaksInstance?.player.getDuration(),
+      startTime: peaksInstance?.points.getPoint("APoint").time,
+      endTime: peaksInstance?.points.getPoint("BPoint").time,
       editable: true,
       color: "#5019a8",
       id: "mainEditedSegment",
       labelText: "Оставляемый фрагмент",
     });
+    peaksInstance?.points.removeAll();
+    setPointsStatus((prev) => {
+      return {
+        start: false,
+        finish: false,
+      };
+    });
+    setEditedSegmantIsCreated(true);
+  };
+
+  const deleteEditedSegmantHandler = (e: React.MouseEvent<SVGSVGElement>) => {
+    e.preventDefault();
+    peaksInstance?.segments.removeAll();
+    setEditedSegmantIsCreated(false);
+  };
+
+  const peaksAudioRef = useRef<HTMLMediaElement>(null);
+
+  const changePeaksFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files === null) return;
+    console.log(peaksInstance);
+    const audioElement = peaksAudioRef.current;
+    if (audioElement) {
+      // audioElement.crossOrigin = "anonymous";
+
+      var files = e.target.files;
+      audioElement.src = URL.createObjectURL(files[0]);
+
+      const options = {
+        mediaUrl: URL.createObjectURL(files[0]),
+        webAudio: {
+          audioContext: new AudioContext(),
+          multiChannel: true,
+        },
+      };
+      setPointsStatus((prev) => {
+        console.log(prev);
+        return {
+          start: false,
+          finish: false,
+        };
+      });
+
+      if (peaksInstance?.player?.play()) {
+        peaksInstance.player?.pause();
+        setEditedSongIsPlaying(false);
+      }
+      if (peaksInstance.segments) {
+        peaksInstance.segments?.removeAll();
+      }
+
+      if (peaksInstance.points) {
+        peaksInstance.points?.removeAll();
+      }
+
+      peaksInstance.setSource(options, function (error: Error) {
+        if (error) [console.log(error.message)];
+
+        // Waveform updated
+      });
+    }
   };
 
   useEffect(() => {
@@ -226,20 +341,16 @@ const AudioVisualiserMain = () => {
           //   time: 10,
           //   labelText: "Start Point",
           // });
-
-          console.log("Podcast editor is ready");
-          console.log(peaks?.player.getCurrentTime());
-          console.log(peaks?.player.getDuration());
-
+          // console.log("Podcast editor is ready");
+          // console.log(peaks?.player.getCurrentTime());
+          // console.log(peaks?.player.getDuration());
           // const segment = peaks?.segments.add({
           //   startTime: 0,
           //   endTime: peaks?.player.getDuration(),
           //   editable: true,
           // });
-
           // if (segment) {
           //   setEditedSongIsPlaying(true);
-
           //   peaks?.player.playSegment(segment, true);
           // }
         }
@@ -255,70 +366,6 @@ const AudioVisualiserMain = () => {
       });
     }
   }, []);
-
-  const peaksAudioRef = useRef<HTMLMediaElement>(null);
-
-  const changePeaksFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files === null) return;
-    console.log(peaksInstance);
-    const audioElement = peaksAudioRef.current;
-    if (audioElement) {
-      // audioElement.crossOrigin = "anonymous";
-
-      var files = e.target.files;
-      audioElement.src = URL.createObjectURL(files[0]);
-
-      const options = {
-        mediaUrl: URL.createObjectURL(files[0]),
-        webAudio: {
-          audioContext: new AudioContext(),
-          multiChannel: true,
-        },
-      };
-
-      if (peaksInstance?.player?.play()) {
-        peaksInstance.player?.pause();
-        setEditedSongIsPlaying(false);
-      }
-      if (peaksInstance.segments) {
-        peaksInstance.segments?.removeAll();
-      }
-
-      if (peaksInstance.points) {
-        peaksInstance.points?.removeAll();
-      }
-
-      peaksInstance.setSource(options, function (error: Error) {
-        if (error) [console.log(error.message)];
-
-        // Waveform updated
-      });
-    }
-  };
-
-  const setAPointHandler = (e: React.MouseEvent<SVGSVGElement>) => {
-    e.preventDefault();
-
-    peaksInstance.points.add({
-      time: peaksInstance?.player.getCurrentTime(),
-      labelText: "A point",
-      color: "#e0491b",
-      id: "APoint",
-      editable: true,
-    });
-  };
-
-  const setBPointHandler = (e: React.MouseEvent<SVGSVGElement>) => {
-    e.preventDefault();
-
-    peaksInstance.points.add({
-      time: peaksInstance?.player.getCurrentTime(),
-      labelText: "B point",
-      color: "#259c08",
-      id: "BPoint",
-      editable: true,
-    });
-  };
 
   return (
     <div>
@@ -402,13 +449,24 @@ const AudioVisualiserMain = () => {
                     className=" cursor-pointer fa-fw fa-2x hover:shadow-exerciseCardHowerShadow"
                   ></FontAwesomeIcon>
                 </div>
-                <div>
-                  <FontAwesomeIcon
-                    onClick={editAudioFileHandler}
-                    icon={faEdit}
-                    className=" cursor-pointer fa-fw fa-2x hover:shadow-exerciseCardHowerShadow"
-                  ></FontAwesomeIcon>
-                </div>
+                {!editedSegmantIsCreated && (
+                  <div>
+                    <FontAwesomeIcon
+                      onClick={editAudioFileHandler}
+                      icon={faEdit}
+                      className={` ${pointsStatus.finish && pointsStatus.start && "cursor-pointer text-zinc-900 hover:shadow-exerciseCardHowerShadow"}  text-zinc-200 fa-fw fa-2x `}
+                    ></FontAwesomeIcon>
+                  </div>
+                )}
+                {editedSegmantIsCreated && (
+                  <div>
+                    <FontAwesomeIcon
+                      onClick={deleteEditedSegmantHandler}
+                      icon={faLinkSlash}
+                      className={` cursor-pointer text-zinc-900 hover:shadow-exerciseCardHowerShadow fa-fw fa-2x `}
+                    ></FontAwesomeIcon>
+                  </div>
+                )}
                 <div>
                   <FontAwesomeIcon
                     icon={faCut}

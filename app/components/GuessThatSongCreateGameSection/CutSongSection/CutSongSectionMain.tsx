@@ -156,7 +156,7 @@ const CutSongSectionMain = () => {
     await ffmpeg.writeFile(
       "input.mp3",
       await fetchFile(
-        "https://rhjm8idplsgk4vxo.public.blob.vercel-storage.com/Black_Sabbath_-_Neon_Knights_47956657%20(mp3cut.net)%20(1)-nhJQzS1b82iivf0MP7Nnw1fNnPfe0l.mp3"
+        "https://rhjm8idplsgk4vxo.public.blob.vercel-storage.com/ACDC_-_Back_In_Black_47830042%20%28mp3cut.net%29-Or96zvlcb9iq1w7OlpvMVloOV8Zmag.mp3"
       )
     );
     await ffmpeg.exec([
