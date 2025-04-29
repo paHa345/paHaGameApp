@@ -153,6 +153,7 @@ const CutSongSectionMain = () => {
   const transcode = async () => {
     const ffmpeg = ffmpegRef.current;
     // u can use 'https://ffmpegwasm.netlify.app/video/video-15s.avi' to download the video to public folder for testing
+    console.log("transcode");
     await ffmpeg.writeFile(
       "input.mp3",
       await fetchFile(
@@ -172,7 +173,7 @@ const CutSongSectionMain = () => {
 
       "input.mp3",
       "-ss",
-      "1", // Start at 1 second
+      "5", // Start at 1 second
 
       "output.mp3",
     ]);
@@ -183,7 +184,6 @@ const CutSongSectionMain = () => {
 
   return (
     <div>
-      <h1 className=" text-center text-3xl py-8">Угадай мелодию</h1>
       <input name="file" onChange={changeImageHandler} ref={inputFileRef} type="file" required />
       {addedExerciseImage && (
         <div className=" sm:w-2/5 w-4/5 justify-self-center pt-5 pb-5">

@@ -15,6 +15,8 @@ import {
   faPlaneSlash,
   faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import { FFmpeg } from "@ffmpeg/ffmpeg";
+import { fetchFile, toBlobURL } from "@ffmpeg/util";
 // import Konva from "konva";
 
 const AudioVisualiserMain = () => {
@@ -22,6 +24,9 @@ const AudioVisualiserMain = () => {
   const audioRef = useRef<HTMLMediaElement>(null);
   const source = useRef(null) as any;
   const analyserRef = useRef(null) as any;
+  const ffmpegRef = useRef(new FFmpeg());
+  const videoRef = useRef<HTMLAudioElement | null>(null);
+
   const [peaksInstance, setPeaksInstance] = useState(null) as any;
 
   const [editedSongIsPlaying, setEditedSongIsPlaying] = useState(false);
@@ -218,6 +223,8 @@ const AudioVisualiserMain = () => {
   const changePeaksFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files === null) return;
     console.log(peaksInstance);
+    setEditedSegmantIsCreated(false);
+
     const audioElement = peaksAudioRef.current;
     if (audioElement) {
       // audioElement.crossOrigin = "anonymous";
@@ -258,6 +265,98 @@ const AudioVisualiserMain = () => {
         // Waveform updated
       });
     }
+  };
+
+  const cutSongHandler = async () => {
+    const segment = peaksInstance?.segments?.getSegment("mainEditedSegment");
+    console.log(segment.endTime);
+    const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
+    const ffmpeg = ffmpegRef.current;
+    ffmpeg.on("log", ({ message }) => {
+      // if (messageRef.current) messageRef.current.innerHTML = message;
+    });
+    // toBlobURL is used to bypass CORS issue, urls with the same
+    // domain can be used directly.
+    await ffmpeg.load({
+      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
+    });
+    console.log("cutSong");
+    // const ffmpeg = ffmpegRef.current;
+    await ffmpeg.writeFile(
+      "input.mp3",
+      await fetchFile(
+        peaksAudioRef?.current?.src
+        // "https://rhjm8idplsgk4vxo.public.blob.vercel-storage.com/ACDC_-_Back_In_Black_47830042%20%28mp3cut.net%29-Or96zvlcb9iq1w7OlpvMVloOV8Zmag.mp3"
+      )
+    );
+    console.log(ffmpeg);
+    console.log(segment.startTime);
+    console.log(segment.endTime - segment.startTime);
+
+    const output = await ffmpeg.exec([
+      "-i",
+      // "input.avi",
+      // "-vf",
+      // "scale=144:-1",
+      // "-c:a",
+      // "aac",
+      // "-strict",
+      // "-2",
+      // "output.mp4",
+
+      "input.mp3",
+      "-ss",
+      // "5",
+      `${segment.startTime}`, // Start at 5 second
+      "-t",
+      `${segment.endTime - segment.startTime}`,
+
+      "output.mp3",
+    ]);
+
+    const data = (await ffmpeg.readFile("output.mp3")) as any;
+    // console.log(output);
+    if (videoRef.current)
+      videoRef.current.src = URL.createObjectURL(new Blob([data.buffer], { type: "audio" }));
+
+    videoRef?.current?.play();
+    // console.log(URL.createObjectURL(new Blob([data.buffer], { type: "audio" })));
+
+    const options = {
+      mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio" })),
+      webAudio: {
+        audioContext: new AudioContext(),
+        multiChannel: true,
+      },
+    };
+    setPointsStatus((prev) => {
+      console.log(prev);
+      return {
+        start: false,
+        finish: false,
+      };
+    });
+
+    if (peaksInstance?.player?.play()) {
+      peaksInstance.player?.pause();
+      setEditedSongIsPlaying(false);
+    }
+    if (peaksInstance.segments) {
+      peaksInstance.segments?.removeAll();
+    }
+
+    if (peaksInstance.points) {
+      peaksInstance.points?.removeAll();
+    }
+
+    setEditedSegmantIsCreated(false);
+
+    peaksInstance.setSource(options, function (error: Error) {
+      if (error) [console.log(error.message)];
+
+      // Waveform updated
+    });
   };
 
   useEffect(() => {
@@ -469,6 +568,7 @@ const AudioVisualiserMain = () => {
                 )}
                 <div>
                   <FontAwesomeIcon
+                    onClick={cutSongHandler}
                     icon={faCut}
                     className=" cursor-pointer fa-fw fa-2x hover:shadow-exerciseCardHowerShadow"
                   ></FontAwesomeIcon>
@@ -477,6 +577,7 @@ const AudioVisualiserMain = () => {
             </div>
           </div>
         )}
+        <audio ref={videoRef} controls></audio>
       </div>
     </div>
   );
