@@ -320,10 +320,10 @@ const AudioVisualiserMain = () => {
 
     const data = (await ffmpeg.readFile("output.mp3")) as any;
     // console.log(output);
-    if (videoRef.current)
-      videoRef.current.src = URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" }));
+    // if (videoRef.current)
+    //   videoRef.current.src = URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" }));
 
-    videoRef?.current?.play();
+    // videoRef?.current?.play();
     // console.log(URL.createObjectURL(new Blob([data.buffer], { type: "audio" })));
 
     const options = {
@@ -372,7 +372,8 @@ const AudioVisualiserMain = () => {
     if (editedSongURL && editedSongName) {
       const a = document.createElement("a");
       a.href = editedSongURL;
-      a.download = editedSongName;
+      const nameString = `${editedSongName.split(".")[0]}_(paHaCutSongApp)${Date.now()}.mp3`;
+      a.download = nameString;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -597,7 +598,7 @@ const AudioVisualiserMain = () => {
             </div>
           </div>
         )}
-        <audio ref={videoRef} controls></audio>
+        {/* <audio ref={videoRef} controls></audio> */}
         <div className=" py-5">
           <div onClick={downloadEditedSongHandler} className=" buttonStandart w-1/5 cursor-pointer">
             <span>
