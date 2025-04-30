@@ -7,7 +7,9 @@ import { faPauseCircle, faPlayCircle } from "@fortawesome/free-regular-svg-icons
 import {
   faA,
   faB,
+  faChessBoard,
   faCut,
+  faDownload,
   faDropletSlash,
   faEdit,
   faLinkSlash,
@@ -17,6 +19,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
+import { Link } from "next-view-transitions";
 // import Konva from "konva";
 
 const AudioVisualiserMain = () => {
@@ -28,14 +31,12 @@ const AudioVisualiserMain = () => {
   const videoRef = useRef<HTMLAudioElement | null>(null);
 
   const [peaksInstance, setPeaksInstance] = useState(null) as any;
-
   const [editedSongIsPlaying, setEditedSongIsPlaying] = useState(false);
-
   const [playbackTime, setPlaybackTime] = useState(0);
-
   const [pointsStatus, setPointsStatus] = useState({ start: false, finish: false });
-
   const [editedSegmantIsCreated, setEditedSegmantIsCreated] = useState(false);
+  const [editedSongURL, setEditedSongURL] = useState<string>();
+  const [editedSongName, setEditedSongName] = useState<string>();
 
   const changeFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files === null) return;
@@ -232,6 +233,8 @@ const AudioVisualiserMain = () => {
       var files = e.target.files;
       audioElement.src = URL.createObjectURL(files[0]);
 
+      setEditedSongName(files[0].name);
+
       const options = {
         mediaUrl: URL.createObjectURL(files[0]),
         webAudio: {
@@ -318,13 +321,13 @@ const AudioVisualiserMain = () => {
     const data = (await ffmpeg.readFile("output.mp3")) as any;
     // console.log(output);
     if (videoRef.current)
-      videoRef.current.src = URL.createObjectURL(new Blob([data.buffer], { type: "audio" }));
+      videoRef.current.src = URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" }));
 
     videoRef?.current?.play();
     // console.log(URL.createObjectURL(new Blob([data.buffer], { type: "audio" })));
 
     const options = {
-      mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio" })),
+      mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" })),
       webAudio: {
         audioContext: new AudioContext(),
         multiChannel: true,
@@ -357,6 +360,23 @@ const AudioVisualiserMain = () => {
 
       // Waveform updated
     });
+
+    const editedSongData = new Blob([data], { type: "audio/mp3" });
+    const url = URL.createObjectURL(editedSongData);
+    setEditedSongURL(url);
+  };
+
+  const downloadEditedSongHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    // console.log("download");
+    if (editedSongURL && editedSongName) {
+      const a = document.createElement("a");
+      a.href = editedSongURL;
+      a.download = editedSongName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
   };
 
   useEffect(() => {
@@ -483,7 +503,7 @@ const AudioVisualiserMain = () => {
         <audio ref={audioRef} id="audio" controls></audio>
       </div>
 
-      <div>
+      <div className=" w-full">
         <input onChange={changePeaksFileHandler} type="file" id="thefilePeaks" accept="audio/*" />
 
         <div id="zoomview-container" className=" h-28 w-full"></div>
@@ -578,6 +598,14 @@ const AudioVisualiserMain = () => {
           </div>
         )}
         <audio ref={videoRef} controls></audio>
+        <div className=" py-5">
+          <div onClick={downloadEditedSongHandler} className=" buttonStandart w-1/5 cursor-pointer">
+            <span>
+              <FontAwesomeIcon className=" pr-3 fa-fw" icon={faDownload} />
+            </span>
+            Скачать песню
+          </div>
+        </div>
       </div>
     </div>
   );
