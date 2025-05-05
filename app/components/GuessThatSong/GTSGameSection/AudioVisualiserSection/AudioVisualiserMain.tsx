@@ -607,6 +607,16 @@ const AudioVisualiserMain = () => {
             Скачать песню
           </div>
         </div>
+        <div className=" py-5">
+          <div className=" buttonStandart w-1/5 cursor-pointer">
+            <a href="https://s3.twcstorage.ru/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/uploads/1742878015640-Iron_Maiden_-_The_Trooper_47955104 (mp3cut.net).mp3">
+              <span>
+                <FontAwesomeIcon className=" pr-3 fa-fw" icon={faDownload} />
+              </span>
+              Test download{" "}
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );
