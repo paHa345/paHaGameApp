@@ -21,6 +21,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@reduxjs/toolkit": "^2.3.0",
+    "@telegram-apps/sdk": "^3.9.2",
     "@telegram-apps/sdk-react": "^2.0.25",
     "@types/bcryptjs": "^2.4.6",
     "@types/fluent-ffmpeg": "^2.1.27",

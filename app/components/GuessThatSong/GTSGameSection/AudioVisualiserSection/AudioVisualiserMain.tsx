@@ -22,6 +22,8 @@ import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import { Link } from "next-view-transitions";
 // import Konva from "konva";
 
+import { postEvent } from "@telegram-apps/sdk";
+
 const AudioVisualiserMain = () => {
   const canvasRef = useRef(null) as any;
   const audioRef = useRef<HTMLMediaElement>(null);
@@ -382,6 +384,12 @@ const AudioVisualiserMain = () => {
 
   const testDownloadHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+
+    postEvent("web_app_request_file_download", {
+      url: "https://s3.twcstorage.ru/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/uploads/1742878015640-Iron_Maiden_-_The_Trooper_47955104 (mp3cut.net).mp3",
+      file_name: "test.mp3",
+    });
+
     if (editedSongURL && editedSongName) {
       window.location.href = editedSongURL;
     }
