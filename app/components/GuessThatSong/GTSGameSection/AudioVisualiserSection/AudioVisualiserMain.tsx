@@ -371,12 +371,14 @@ const AudioVisualiserMain = () => {
 
   const downloadEditedSongHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    console.log(editedSongURL);
+    console.log(
+      `${editedSongURL?.split(":")[1]}:${editedSongURL?.split(":")[2]}:${editedSongURL?.split(":")[3]}`
+    );
     if (editedSongURL && editedSongName) {
       const nameString = `${editedSongName.split(".")[0]}_(paHaCutSongApp)${Date.now()}.mp3`;
       if (isTelegramWebApp()) {
         postEvent("web_app_request_file_download", {
-          url: editedSongURL,
+          url: `${editedSongURL?.split(":")[1]}:${editedSongURL?.split(":")[2]}:${editedSongURL?.split(":")[3]}`,
           file_name: "test.mp3",
         });
       } else {
