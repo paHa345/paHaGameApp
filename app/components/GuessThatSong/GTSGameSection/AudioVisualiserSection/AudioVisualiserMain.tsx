@@ -23,6 +23,7 @@ import { Link } from "next-view-transitions";
 // import Konva from "konva";
 
 import { postEvent } from "@telegram-apps/sdk";
+import { isTelegramWebApp } from "@/app/components/Layout/MainLayout";
 
 const AudioVisualiserMain = () => {
   const canvasRef = useRef(null) as any;
@@ -370,36 +371,37 @@ const AudioVisualiserMain = () => {
 
   const downloadEditedSongHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    // console.log("download");
     if (editedSongURL && editedSongName) {
-      const a = document.createElement("a");
-      a.href = editedSongURL;
       const nameString = `${editedSongName.split(".")[0]}_(paHaCutSongApp)${Date.now()}.mp3`;
-      a.download = nameString;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      if (isTelegramWebApp()) {
+        postEvent("web_app_request_file_download", {
+          url: editedSongURL,
+          file_name: nameString,
+        });
+      } else {
+        const a = document.createElement("a");
+        a.href = editedSongURL;
+        a.download = nameString;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
     }
   };
 
-  const testDownloadHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
+  // const testDownloadHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  //   e.preventDefault();
 
-    postEvent("web_app_request_file_download", {
-      url: "https://s3.twcstorage.ru/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/uploads/1742878015640-Iron_Maiden_-_The_Trooper_47955104 (mp3cut.net).mp3",
-      file_name: "test.mp3",
-    });
+  //   if (editedSongURL && editedSongName) {
+  //     window.location.href = editedSongURL;
+  //   }
 
-    if (editedSongURL && editedSongName) {
-      window.location.href = editedSongURL;
-    }
-
-    // console.log("Test download");
-    // e.currentTarget.href =
-    //   "https://s3.twcstorage.ru/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/uploads/1742878015640-Iron_Maiden_-_The_Trooper_47955104 (mp3cut.net).mp3";
-    // e.currentTarget.download = "test.mp3";
-    // e.currentTarget.click();
-  };
+  //   // console.log("Test download");
+  //   // e.currentTarget.href =
+  //   //   "https://s3.twcstorage.ru/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/uploads/1742878015640-Iron_Maiden_-_The_Trooper_47955104 (mp3cut.net).mp3";
+  //   // e.currentTarget.download = "test.mp3";
+  //   // e.currentTarget.click();
+  // };
 
   useEffect(() => {
     if (document) {
@@ -628,7 +630,7 @@ const AudioVisualiserMain = () => {
             Скачать песню
           </div>
         </div>
-        <div className=" py-5">
+        {/* <div className=" py-5">
           <div className=" buttonStandart w-1/5 cursor-pointer">
             <a
               onClick={testDownloadHandler}
@@ -641,7 +643,7 @@ const AudioVisualiserMain = () => {
               Test download{" "}
             </a>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
