@@ -376,7 +376,7 @@ const AudioVisualiserMain = () => {
       if (isTelegramWebApp()) {
         postEvent("web_app_request_file_download", {
           url: editedSongURL,
-          file_name: nameString,
+          file_name: "test.mp3",
         });
       } else {
         const a = document.createElement("a");
