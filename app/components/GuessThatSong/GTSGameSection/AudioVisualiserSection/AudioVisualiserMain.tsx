@@ -371,6 +371,7 @@ const AudioVisualiserMain = () => {
 
   const downloadEditedSongHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
+    console.log(editedSongURL);
     if (editedSongURL && editedSongName) {
       const nameString = `${editedSongName.split(".")[0]}_(paHaCutSongApp)${Date.now()}.mp3`;
       if (isTelegramWebApp()) {
