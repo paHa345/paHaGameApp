@@ -21,12 +21,15 @@ import {
   faXmark,
   faChessBoard,
   faHeadphonesAlt,
+  faSliders,
 } from "@fortawesome/free-solid-svg-icons";
 
 import MyPageNotification from "./MyPageNotification";
 import { crosswordActions } from "@/app/store/crosswordSlice";
 import AudioVisualiserMain from "../GuessThatSong/GTSGameSection/AudioVisualiserSection/AudioVisualiserMain";
 import CutSongSectionMain from "../GuessThatSongCreateGameSection/CutSongSection/CutSongSectionMain";
+import { isTelegramWebApp } from "../Layout/MainLayout";
+import { postEvent } from "@telegram-apps/sdk-react";
 
 const MyPage = () => {
   const { data: session } = useSession();
@@ -72,6 +75,13 @@ const MyPage = () => {
       </h1>
     );
 
+  const goToAudioEditAppHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    postEvent("web_app_open_link", {
+      url: `https://paha-game-app.vercel.app/editSongApp`,
+    });
+  };
+
   useEffect(() => {
     const createdCrossword = localStorage.getItem("createdCrossword");
     const crosswordName = localStorage.getItem("crosswordName");
@@ -109,7 +119,6 @@ const MyPage = () => {
             Выйти
           </button>
         </div>
-
         <div className=" py-5">
           <Link className=" buttonStandart" rel="stylesheet" href="/createCrossword">
             <span>
@@ -118,7 +127,6 @@ const MyPage = () => {
             Создание кроссворда
           </Link>
         </div>
-
         <div className=" py-5">
           <Link className=" buttonStandart" rel="stylesheet" href="/createGuessThatSong">
             <span>
@@ -127,10 +135,22 @@ const MyPage = () => {
             Создание игры 'Угадай мелодию'
           </Link>
         </div>
+        {isTelegramWebApp() ? (
+          <div>
+            <div onClick={goToAudioEditAppHandler} className=" py-5">
+              <div className=" buttonStandart">
+                <span>
+                  <FontAwesomeIcon className=" pr-3 fa-fw" icon={faSliders} />
+                </span>
+                Приложение редактирования аудио
+              </div>
+            </div>
+          </div>
+        ) : (
+          <AudioVisualiserMain></AudioVisualiserMain>
+        )}
 
-        <AudioVisualiserMain></AudioVisualiserMain>
         {/* <CutSongSectionMain></CutSongSectionMain> */}
-
         {/* <form onSubmit={handleSubmit}>
           <input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} />
           <button type="submit">Upload</button>
