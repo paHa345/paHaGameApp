@@ -367,19 +367,22 @@ const AudioVisualiserMain = () => {
     const editedSongData = new Blob([data], { type: "audio/mp3" });
     const url = URL.createObjectURL(editedSongData);
     setEditedSongURL(url);
+    if (videoRef.current) {
+      videoRef.current.src = url;
+    }
   };
 
   const downloadEditedSongHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    console.log(
-      `${editedSongURL?.split(":")[1]}:${editedSongURL?.split(":")[2]}:${editedSongURL?.split(":")[3]}`
-    );
+    // console.log(
+    //   `${editedSongURL?.split(":")[1]}:${editedSongURL?.split(":")[2]}:${editedSongURL?.split(":")[3]}`
+    // );
     if (editedSongURL && editedSongName) {
       const nameString = `${editedSongName.split(".")[0]}_(paHaCutSongApp)${Date.now()}.mp3`;
       if (isTelegramWebApp()) {
         postEvent("web_app_request_file_download", {
           url: `${editedSongURL?.split(":")[1]}:${editedSongURL?.split(":")[2]}:${editedSongURL?.split(":")[3]}`,
-          file_name: "test.mp3",
+          file_name: nameString,
         });
       } else {
         const a = document.createElement("a");
@@ -625,7 +628,6 @@ const AudioVisualiserMain = () => {
             </div>
           </div>
         )}
-        {/* <audio ref={videoRef} controls></audio> */}
         <div className=" py-5">
           <div onClick={downloadEditedSongHandler} className=" buttonStandart w-1/5 cursor-pointer">
             <span>
@@ -634,7 +636,10 @@ const AudioVisualiserMain = () => {
             Скачать песню
           </div>
         </div>
-        <div className=" py-5">
+
+        <audio ref={videoRef} controls></audio>
+
+        {/* <div className=" py-5">
           <div className=" buttonStandart w-1/5 cursor-pointer">
             <a
               onClick={testDownloadHandler}
@@ -647,7 +652,7 @@ const AudioVisualiserMain = () => {
               Test download{" "}
             </a>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
