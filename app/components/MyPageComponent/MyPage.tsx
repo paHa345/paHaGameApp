@@ -137,12 +137,17 @@ const MyPage = () => {
         </div>
         {isTelegramWebApp() ? (
           <div>
-            <div onClick={goToAudioEditAppHandler} className=" py-5">
+            <div
+              // onClick={goToAudioEditAppHandler}
+              className=" py-5"
+            >
               <div className=" buttonStandart">
-                <span>
-                  <FontAwesomeIcon className=" pr-3 fa-fw" icon={faSliders} />
-                </span>
-                Приложение редактирования аудио
+                <Link href={"https://paha-game-app.vercel.app/editSongApp"}>
+                  <span>
+                    <FontAwesomeIcon className=" pr-3 fa-fw" icon={faSliders} />
+                  </span>
+                  Приложение редактирования аудио
+                </Link>
               </div>
             </div>
           </div>
