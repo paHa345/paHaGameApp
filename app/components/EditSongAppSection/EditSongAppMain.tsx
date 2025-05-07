@@ -311,7 +311,7 @@ const EditSongAppMain = () => {
       console.log(document.getElementById("zoomview-container"));
     }
 
-    console.log(navigator);
+    // console.log(navigator);
 
     const options = {
       zoomview: {
@@ -376,39 +376,39 @@ const EditSongAppMain = () => {
     //   return new CustomPointMarker(options);
     // }
 
-    if (navigator) {
-      Peaks.init(options, function (err, peaks) {
-        if (err) {
-          console.error("Failed to initialize Peaks instance: " + err.message);
-          return;
-        }
-        if (!err) {
-          // peaks?.points.add({
-          //   time: 10,
-          //   labelText: "Start Point",
-          // });
-          // console.log("Podcast editor is ready");
-          // console.log(peaks?.player.getCurrentTime());
-          // console.log(peaks?.player.getDuration());
-          // const segment = peaks?.segments.add({
-          //   startTime: 0,
-          //   endTime: peaks?.player.getDuration(),
-          //   editable: true,
-          // });
-          // if (segment) {
-          //   setEditedSongIsPlaying(true);
-          //   peaks?.player.playSegment(segment, true);
-          // }
-        }
-
-        setPeaksInstance(peaks);
-
-        // peaks.on("player.timeupdate", function (time) {
-        //   setPlaybackTime(Math.round(time * 1000) / 1000);
-        //   console.log(playbackTime);
+    // if (navigator) {
+    Peaks.init(options, function (err, peaks) {
+      if (err) {
+        console.error("Failed to initialize Peaks instance: " + err.message);
+        return;
+      }
+      if (!err) {
+        // peaks?.points.add({
+        //   time: 10,
+        //   labelText: "Start Point",
         // });
-      });
-    }
+        // console.log("Podcast editor is ready");
+        // console.log(peaks?.player.getCurrentTime());
+        // console.log(peaks?.player.getDuration());
+        // const segment = peaks?.segments.add({
+        //   startTime: 0,
+        //   endTime: peaks?.player.getDuration(),
+        //   editable: true,
+        // });
+        // if (segment) {
+        //   setEditedSongIsPlaying(true);
+        //   peaks?.player.playSegment(segment, true);
+        // }
+      }
+
+      setPeaksInstance(peaks);
+
+      // peaks.on("player.timeupdate", function (time) {
+      //   setPlaybackTime(Math.round(time * 1000) / 1000);
+      //   console.log(playbackTime);
+      // });
+    });
+    // }
   }, []);
 
   return (
