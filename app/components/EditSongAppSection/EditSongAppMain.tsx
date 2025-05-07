@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useRef, useState } from "react";
 import Peaks from "peaks.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
