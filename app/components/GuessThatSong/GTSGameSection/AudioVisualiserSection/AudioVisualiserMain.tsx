@@ -24,6 +24,7 @@ import { Link } from "next-view-transitions";
 
 import { postEvent } from "@telegram-apps/sdk";
 import { isTelegramWebApp } from "@/app/components/Layout/MainLayout";
+import { arrayBuffer } from "stream/consumers";
 
 const AudioVisualiserMain = () => {
   const canvasRef = useRef(null) as any;
@@ -224,9 +225,9 @@ const AudioVisualiserMain = () => {
 
   const peaksAudioRef = useRef<HTMLMediaElement>(null);
 
-  const changePeaksFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const changePeaksFileHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files === null) return;
-    console.log(peaksInstance);
+
     setEditedSegmantIsCreated(false);
 
     const audioElement = peaksAudioRef.current;
@@ -322,12 +323,22 @@ const AudioVisualiserMain = () => {
     ]);
 
     const data = (await ffmpeg.readFile("output.mp3")) as any;
+
+    // const ffmpegResult = new FFmpeg();
+    // await ffmpegResult.load();
+    // await ffmpegResult.writeFile("result.mp3", await fetchFile(data));
+    // console.log(ffmpegResult);
     // console.log(output);
     // if (videoRef.current)
     //   videoRef.current.src = URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" }));
 
     // videoRef?.current?.play();
     // console.log(URL.createObjectURL(new Blob([data.buffer], { type: "audio" })));
+
+    const aditSongReq = fetch("./../../api/editSongApp", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
 
     const options = {
       mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" })),
@@ -379,6 +390,7 @@ const AudioVisualiserMain = () => {
     // );
     if (editedSongURL && editedSongName) {
       const nameString = `${editedSongName.split(".")[0]}_(paHaCutSongApp)${Date.now()}.mp3`;
+
       if (isTelegramWebApp()) {
         postEvent("web_app_request_file_download", {
           url: `${editedSongURL?.split(":")[1]}:${editedSongURL?.split(":")[2]}:${editedSongURL?.split(":")[3]}`,
