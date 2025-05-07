@@ -291,19 +291,19 @@ const EditSongAppMain = () => {
         videoRef.current.src = editedSongURL;
       }
       const nameString = `${editedSongName.split(".")[0]}_(paHaCutSongApp)${Date.now()}.mp3`;
-      //   if (isTelegramWebApp()) {
-      //     postEvent("web_app_request_file_download", {
-      //       url: `${editedSongURL?.split(":")[1]}:${editedSongURL?.split(":")[2]}:${editedSongURL?.split(":")[3]}`,
-      //       file_name: nameString,
-      //     });
-      //   } else {
-      const a = document.createElement("a");
-      a.href = editedSongURL;
-      a.download = nameString;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      //   }
+      if (isTelegramWebApp()) {
+        postEvent("web_app_request_file_download", {
+          url: `${editedSongURL?.split(":")[1]}:${editedSongURL?.split(":")[2]}:${editedSongURL?.split(":")[3]}`,
+          file_name: nameString,
+        });
+      } else {
+        const a = document.createElement("a");
+        a.href = editedSongURL;
+        a.download = nameString;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
     }
   };
 
