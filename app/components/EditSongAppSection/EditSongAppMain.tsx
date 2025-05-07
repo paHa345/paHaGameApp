@@ -35,8 +35,6 @@ const EditSongAppMain = () => {
 
   const onPlay = () => {
     if (!peaksInstance) return;
-    // console.log(peaksInstance);
-    // console.log(peaksInstance?.player.getCurrentTime());
     setEditedSongIsPlaying(true);
 
     peaksInstance.player?.play();
@@ -289,20 +287,23 @@ const EditSongAppMain = () => {
     e.preventDefault();
 
     if (editedSongURL && editedSongName) {
-      const nameString = `${editedSongName.split(".")[0]}_(paHaCutSongApp)${Date.now()}.mp3`;
-      if (isTelegramWebApp()) {
-        postEvent("web_app_request_file_download", {
-          url: `${editedSongURL?.split(":")[1]}:${editedSongURL?.split(":")[2]}:${editedSongURL?.split(":")[3]}`,
-          file_name: nameString,
-        });
-      } else {
-        const a = document.createElement("a");
-        a.href = editedSongURL;
-        a.download = nameString;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+      if (videoRef.current) {
+        videoRef.current.src = editedSongURL;
       }
+      const nameString = `${editedSongName.split(".")[0]}_(paHaCutSongApp)${Date.now()}.mp3`;
+      //   if (isTelegramWebApp()) {
+      //     postEvent("web_app_request_file_download", {
+      //       url: `${editedSongURL?.split(":")[1]}:${editedSongURL?.split(":")[2]}:${editedSongURL?.split(":")[3]}`,
+      //       file_name: nameString,
+      //     });
+      //   } else {
+      const a = document.createElement("a");
+      a.href = editedSongURL;
+      a.download = nameString;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      //   }
     }
   };
 
@@ -515,7 +516,7 @@ const EditSongAppMain = () => {
           </div>
         )}
 
-        {/* <audio ref={videoRef} controls></audio> */}
+        <audio ref={videoRef} controls></audio>
       </div>
     </div>
   );
