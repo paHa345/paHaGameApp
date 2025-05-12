@@ -30,6 +30,7 @@ import AudioVisualiserMain from "../GuessThatSong/GTSGameSection/AudioVisualiser
 import CutSongSectionMain from "../GuessThatSongCreateGameSection/CutSongSection/CutSongSectionMain";
 import { isTelegramWebApp } from "../Layout/MainLayout";
 import { postEvent } from "@telegram-apps/sdk-react";
+import { openLink } from "@telegram-apps/sdk";
 
 const MyPage = () => {
   const { data: session } = useSession();
@@ -85,12 +86,19 @@ const MyPage = () => {
   const tgBrowserRedirectHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     console.log("click");
-    if (isTelegramWebApp()) {
-      postEvent("web_app_open_link", {
-        url: `https://paha-game-app.vercel.app/editSongApp`,
-        try_instant_view: false,
+
+    if (openLink.isAvailable()) {
+      openLink("https://paha-game-app.vercel.app/editSongApp", {
+        tryBrowser: "chrome",
+        tryInstantView: true,
       });
     }
+    // if (isTelegramWebApp()) {
+    //   postEvent("web_app_open_link", {
+    //     url: `https://paha-game-app.vercel.app/editSongApp`,
+    //     try_instant_view: false,
+    //   });
+    // }
   };
   // const tgOpenLocationHandler = (e: React.MouseEvent<HTMLDivElement>) => {
   //   e.preventDefault();
