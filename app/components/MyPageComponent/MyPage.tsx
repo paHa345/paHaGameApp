@@ -31,6 +31,7 @@ import CutSongSectionMain from "../GuessThatSongCreateGameSection/CutSongSection
 import { isTelegramWebApp } from "../Layout/MainLayout";
 import { postEvent } from "@telegram-apps/sdk-react";
 import { openLink } from "@telegram-apps/sdk";
+import { init } from "@telegram-apps/sdk";
 
 const MyPage = () => {
   const { data: session } = useSession();
@@ -89,12 +90,13 @@ const MyPage = () => {
     e.preventDefault();
     console.log("click");
     console.log(openLink.isAvailable());
-
-    setRedirectStatus("Redirect");
-    openLink("https://paha-game-app.vercel.app/editSongApp", {
-      tryBrowser: "chrome",
-      tryInstantView: false,
-    });
+    if (openLink.isAvailable()) {
+      setRedirectStatus("Redirect");
+      openLink("https://paha-game-app.vercel.app/editSongApp", {
+        tryBrowser: "chrome",
+        tryInstantView: false,
+      });
+    }
 
     openLink.ifAvailable("https://paha-game-app.vercel.app/editSongApp", {
       tryBrowser: "chrome",
@@ -132,6 +134,8 @@ const MyPage = () => {
       dispatch(crosswordActions.setCrosswordId(JSON.parse(crosswordId)));
       dispatch(crosswordActions.crosswordIsLoading(true));
     }
+    init();
+
     setLinkAvailableStatus(String(openLink.ifAvailable));
   });
 
