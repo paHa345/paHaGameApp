@@ -20,6 +20,7 @@ import { Link } from "next-view-transitions";
 
 import { postEvent } from "@telegram-apps/sdk";
 import { isTelegramWebApp } from "@/app/components/Layout/MainLayout";
+import FileSaver, { saveAs } from "file-saver";
 
 const EditSongAppMain = () => {
   const ffmpegRef = useRef(new FFmpeg());
@@ -33,6 +34,7 @@ const EditSongAppMain = () => {
   const [editedSongURL, setEditedSongURL] = useState<string>();
   const [editedSongName, setEditedSongName] = useState<string>();
   const [blobString, setBlobString] = useState<string>();
+  const [editedSongData, setEditedSongData] = useState<any>();
 
   const onPlay = () => {
     if (!peaksInstance) return;
@@ -243,6 +245,7 @@ const EditSongAppMain = () => {
 
     // videoRef?.current?.play();
     // console.log(URL.createObjectURL(new Blob([data.buffer], { type: "audio" })));
+    setEditedSongData(data);
 
     const options = {
       mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" })),
@@ -288,25 +291,31 @@ const EditSongAppMain = () => {
   const downloadEditedSongHandler = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
 
-    if (editedSongURL && editedSongName) {
-      if (videoRef.current) {
-        videoRef.current.src = editedSongURL;
-      }
+    if (editedSongName) {
       const nameString = `${editedSongName.split(".")[0]}_(paHaCutSongApp)${Date.now()}.mp3`;
-      // if (isTelegramWebApp()) {
-      //   postEvent("web_app_request_file_download", {
-      //     url: `${editedSongURL?.split(":")[1]}:${editedSongURL?.split(":")[2]}:${editedSongURL?.split(":")[3]}`,
-      //     file_name: nameString,
-      //   });
-      // } else {
-      const a = document.createElement("a");
-      a.href = editedSongURL;
-      a.download = nameString;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      // }
+
+      FileSaver.saveAs(new Blob([editedSongData.buffer], { type: "audio/mp3" }), nameString);
     }
+
+    // if (editedSongURL && editedSongName) {
+    //   if (videoRef.current) {
+    //     videoRef.current.src = editedSongURL;
+    //   }
+    //   const nameString = `${editedSongName.split(".")[0]}_(paHaCutSongApp)${Date.now()}.mp3`;
+    //   // if (isTelegramWebApp()) {
+    //   //   postEvent("web_app_request_file_download", {
+    //   //     url: `${editedSongURL?.split(":")[1]}:${editedSongURL?.split(":")[2]}:${editedSongURL?.split(":")[3]}`,
+    //   //     file_name: nameString,
+    //   //   });
+    //   // } else {
+    //   const a = document.createElement("a");
+    //   a.href = editedSongURL;
+    //   a.download = nameString;
+    //   document.body.appendChild(a);
+    //   a.click();
+    //   document.body.removeChild(a);
+    //   // }
+    // }
   };
 
   useEffect(() => {
