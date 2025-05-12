@@ -35,6 +35,7 @@ import { openLink } from "@telegram-apps/sdk";
 const MyPage = () => {
   const { data: session } = useSession();
   const dispatch = useDispatch<AppDispatch>();
+  const [redirectStatus, setRedirectStatus] = useState("Prepare");
 
   // useEffect(() => {
   //   dispatch(setCurrentUserWorkouts());
@@ -86,11 +87,13 @@ const MyPage = () => {
   const tgBrowserRedirectHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     console.log("click");
+    console.log(openLink.isAvailable());
 
     if (openLink.isAvailable()) {
+      setRedirectStatus("Redirect");
       openLink("https://paha-game-app.vercel.app/editSongApp", {
         tryBrowser: "chrome",
-        tryInstantView: true,
+        tryInstantView: false,
       });
     }
     // if (isTelegramWebApp()) {
@@ -185,6 +188,10 @@ const MyPage = () => {
           <div onClick={tgBrowserRedirectHandler}>
             <h1>Перейти на сайт</h1>
           </div>
+        </div>
+
+        <div>
+          <h1>Статус перехода: {redirectStatus}</h1>
         </div>
 
         {/* <CutSongSectionMain></CutSongSectionMain> */}
