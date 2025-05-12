@@ -90,13 +90,12 @@ const MyPage = () => {
     console.log("click");
     console.log(openLink.isAvailable());
 
-    if (openLink.isAvailable()) {
-      setRedirectStatus("Redirect");
-      openLink("https://paha-game-app.vercel.app/editSongApp", {
-        tryBrowser: "chrome",
-        tryInstantView: false,
-      });
-    }
+    setRedirectStatus("Redirect");
+    openLink("https://paha-game-app.vercel.app/editSongApp", {
+      tryBrowser: "chrome",
+      tryInstantView: false,
+    });
+
     openLink.ifAvailable("https://paha-game-app.vercel.app/editSongApp", {
       tryBrowser: "chrome",
       tryInstantView: false,
@@ -133,7 +132,7 @@ const MyPage = () => {
       dispatch(crosswordActions.setCrosswordId(JSON.parse(crosswordId)));
       dispatch(crosswordActions.crosswordIsLoading(true));
     }
-    setLinkAvailableStatus(String(openLink.isAvailable()));
+    setLinkAvailableStatus(String(openLink.ifAvailable));
   });
 
   return (
