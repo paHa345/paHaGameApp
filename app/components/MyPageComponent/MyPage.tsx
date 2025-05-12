@@ -36,8 +36,6 @@ import { init } from "@telegram-apps/sdk";
 const MyPage = () => {
   const { data: session } = useSession();
   const dispatch = useDispatch<AppDispatch>();
-  const [redirectStatus, setRedirectStatus] = useState("Prepare");
-  const [linkAvailableStatus, setLinkAvailableStatus] = useState("");
 
   // useEffect(() => {
   //   dispatch(setCurrentUserWorkouts());
@@ -79,43 +77,14 @@ const MyPage = () => {
       </h1>
     );
 
-  const goToAudioEditAppHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    postEvent("web_app_open_link", {
-      url: `https://paha-game-app.vercel.app/editSongApp`,
-    });
-  };
-
   const tgBrowserRedirectHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    console.log("click");
-    console.log(openLink.isAvailable());
     if (openLink.isAvailable()) {
-      setRedirectStatus("Redirect");
       openLink("https://paha-game-app.vercel.app/editSongApp", {
         tryBrowser: "chrome",
         tryInstantView: false,
       });
     }
-
-    openLink.ifAvailable("https://paha-game-app.vercel.app/editSongApp", {
-      tryBrowser: "chrome",
-      tryInstantView: false,
-    });
-    // if (isTelegramWebApp()) {
-    //   postEvent("web_app_open_link", {
-    //     url: `https://paha-game-app.vercel.app/editSongApp`,
-    //     try_instant_view: false,
-    //   });
-    // }
   };
-  // const tgOpenLocationHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-  //   e.preventDefault();
-  //   console.log("click");
-  //   if (isTelegramWebApp()) {
-  //     postEvent("web_app_open_invoice");
-  //   }
-  // };
 
   useEffect(() => {
     const createdCrossword = localStorage.getItem("createdCrossword");
@@ -135,8 +104,6 @@ const MyPage = () => {
       dispatch(crosswordActions.crosswordIsLoading(true));
     }
     init();
-
-    setLinkAvailableStatus(String(openLink.ifAvailable));
   });
 
   return (
@@ -180,29 +147,18 @@ const MyPage = () => {
               className=" py-5"
             >
               <div className=" buttonStandart">
-                <Link href={"https://paha-game-app.vercel.app/editSongApp"}>
+                <div onClick={tgBrowserRedirectHandler}>
                   <span>
                     <FontAwesomeIcon className=" pr-3 fa-fw" icon={faSliders} />
                   </span>
                   Приложение редактирования аудио
-                </Link>
+                </div>
               </div>
             </div>
           </div>
         ) : (
           <AudioVisualiserMain></AudioVisualiserMain>
         )}
-
-        <div>
-          <div onClick={tgBrowserRedirectHandler}>
-            <h1>Перейти на сайт</h1>
-          </div>
-        </div>
-
-        <div>
-          <h1>Статус перехода: {redirectStatus}</h1>
-          <h1>LinkAvailableStatus: {linkAvailableStatus}</h1>
-        </div>
 
         {/* <CutSongSectionMain></CutSongSectionMain> */}
         {/* <form onSubmit={handleSubmit}>
