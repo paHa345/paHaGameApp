@@ -88,6 +88,7 @@ const MyPage = () => {
     if (isTelegramWebApp()) {
       postEvent("web_app_open_link", {
         url: `https://paha-game-app.vercel.app/editSongApp`,
+        try_instant_view: false,
       });
     }
   };
