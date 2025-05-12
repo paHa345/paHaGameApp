@@ -87,7 +87,7 @@ const MyPage = () => {
     console.log("click");
     if (isTelegramWebApp()) {
       postEvent("web_app_open_link", {
-        url: `https://54.rosstat.gov.ru/`,
+        url: `https://paha-game-app.vercel.app/editSongApp`,
       });
     }
   };
