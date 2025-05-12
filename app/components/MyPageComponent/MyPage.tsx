@@ -96,6 +96,10 @@ const MyPage = () => {
         tryInstantView: false,
       });
     }
+    openLink.ifAvailable("https://paha-game-app.vercel.app/editSongApp", {
+      tryBrowser: "chrome",
+      tryInstantView: false,
+    });
     // if (isTelegramWebApp()) {
     //   postEvent("web_app_open_link", {
     //     url: `https://paha-game-app.vercel.app/editSongApp`,
