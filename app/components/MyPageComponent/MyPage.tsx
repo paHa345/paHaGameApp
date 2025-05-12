@@ -36,6 +36,7 @@ const MyPage = () => {
   const { data: session } = useSession();
   const dispatch = useDispatch<AppDispatch>();
   const [redirectStatus, setRedirectStatus] = useState("Prepare");
+  const [linkAvailableStatus, setLinkAvailableStatus] = useState("");
 
   // useEffect(() => {
   //   dispatch(setCurrentUserWorkouts());
@@ -132,6 +133,7 @@ const MyPage = () => {
       dispatch(crosswordActions.setCrosswordId(JSON.parse(crosswordId)));
       dispatch(crosswordActions.crosswordIsLoading(true));
     }
+    setLinkAvailableStatus(String(openLink.isAvailable()));
   });
 
   return (
@@ -196,6 +198,7 @@ const MyPage = () => {
 
         <div>
           <h1>Статус перехода: {redirectStatus}</h1>
+          <h1>LinkAvailableStatus: {linkAvailableStatus}</h1>
         </div>
 
         {/* <CutSongSectionMain></CutSongSectionMain> */}
