@@ -82,6 +82,23 @@ const MyPage = () => {
     });
   };
 
+  const tgBrowserRedirectHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    console.log("click");
+    if (isTelegramWebApp()) {
+      postEvent("web_app_open_link", {
+        url: `https://54.rosstat.gov.ru/`,
+      });
+    }
+  };
+  // const tgOpenLocationHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+  //   e.preventDefault();
+  //   console.log("click");
+  //   if (isTelegramWebApp()) {
+  //     postEvent("web_app_open_invoice");
+  //   }
+  // };
+
   useEffect(() => {
     const createdCrossword = localStorage.getItem("createdCrossword");
     const crosswordName = localStorage.getItem("crosswordName");
@@ -154,6 +171,12 @@ const MyPage = () => {
         ) : (
           <AudioVisualiserMain></AudioVisualiserMain>
         )}
+
+        <div>
+          <div onClick={tgBrowserRedirectHandler}>
+            <h1>Перейти на сайт</h1>
+          </div>
+        </div>
 
         {/* <CutSongSectionMain></CutSongSectionMain> */}
         {/* <form onSubmit={handleSubmit}>
