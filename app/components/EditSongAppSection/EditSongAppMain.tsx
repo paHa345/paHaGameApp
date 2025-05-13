@@ -9,9 +9,12 @@ import {
   faCut,
   faDownload,
   faEdit,
+  faFileExport,
   faLinkSlash,
   faMinusCircle,
   faPlusCircle,
+  faVolumeHigh,
+  faVolumeLow,
 } from "@fortawesome/free-solid-svg-icons";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
@@ -21,6 +24,7 @@ import { Link } from "next-view-transitions";
 import { postEvent } from "@telegram-apps/sdk";
 import { isTelegramWebApp } from "@/app/components/Layout/MainLayout";
 import FileSaver, { saveAs } from "file-saver";
+import { div } from "framer-motion/client";
 
 const EditSongAppMain = () => {
   const ffmpegRef = useRef(new FFmpeg());
@@ -192,7 +196,6 @@ const EditSongAppMain = () => {
 
   const cutSongHandler = async () => {
     const segment = peaksInstance?.segments?.getSegment("mainEditedSegment");
-    console.log(segment.endTime);
     const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
     const ffmpeg = ffmpegRef.current;
     ffmpeg.on("log", ({ message }) => {
@@ -204,7 +207,6 @@ const EditSongAppMain = () => {
       coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
       wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
     });
-    console.log("cutSong");
     // const ffmpeg = ffmpegRef.current;
     await ffmpeg.writeFile(
       "input.mp3",
@@ -213,9 +215,6 @@ const EditSongAppMain = () => {
         // "https://rhjm8idplsgk4vxo.public.blob.vercel-storage.com/ACDC_-_Back_In_Black_47830042%20%28mp3cut.net%29-Or96zvlcb9iq1w7OlpvMVloOV8Zmag.mp3"
       )
     );
-    console.log(ffmpeg);
-    console.log(segment.startTime);
-    console.log(segment.endTime - segment.startTime);
 
     const output = await ffmpeg.exec([
       "-i",
@@ -245,6 +244,198 @@ const EditSongAppMain = () => {
 
     // videoRef?.current?.play();
     // console.log(URL.createObjectURL(new Blob([data.buffer], { type: "audio" })));
+    setEditedSongData(data);
+
+    const options = {
+      mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" })),
+      webAudio: {
+        audioContext: new AudioContext(),
+        multiChannel: true,
+      },
+    };
+    setPointsStatus((prev) => {
+      console.log(prev);
+      return {
+        start: false,
+        finish: false,
+      };
+    });
+
+    if (peaksInstance?.player?.play()) {
+      peaksInstance.player?.pause();
+      setEditedSongIsPlaying(false);
+    }
+    if (peaksInstance.segments) {
+      peaksInstance.segments?.removeAll();
+    }
+
+    if (peaksInstance.points) {
+      peaksInstance.points?.removeAll();
+    }
+
+    setEditedSegmantIsCreated(false);
+
+    peaksInstance.setSource(options, function (error: Error) {
+      if (error) [console.log(error.message)];
+
+      // Waveform updated
+    });
+
+    const editedSongData = new Blob([data], { type: "audio/mp3" });
+    const url = URL.createObjectURL(editedSongData);
+    setEditedSongURL(url);
+    setBlobString(url);
+  };
+
+  const afadeAudioFromStartHandler = async (e: React.MouseEvent<SVGSVGElement>) => {
+    const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
+    const ffmpeg = ffmpegRef.current;
+    ffmpeg.on("log", ({ message }) => {
+      // if (messageRef.current) messageRef.current.innerHTML = message;
+    });
+
+    await ffmpeg.load({
+      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
+    });
+
+    await ffmpeg.writeFile("input.mp3", await fetchFile(peaksAudioRef?.current?.src));
+
+    const output = await ffmpeg.exec([
+      "-i",
+      "input.mp3",
+      "-af",
+      "afade=t=in:st=0:d=5",
+      "output.mp3",
+    ]);
+
+    const data = (await ffmpeg.readFile("output.mp3")) as any;
+    // console.log(output);
+    // if (videoRef.current)
+    //   videoRef.current.src = URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" }));
+
+    // videoRef?.current?.play();
+    // console.log(URL.createObjectURL(new Blob([data.buffer], { type: "audio" })));
+    setEditedSongData(data);
+
+    const options = {
+      mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" })),
+      webAudio: {
+        audioContext: new AudioContext(),
+        multiChannel: true,
+      },
+    };
+    setPointsStatus((prev) => {
+      console.log(prev);
+      return {
+        start: false,
+        finish: false,
+      };
+    });
+
+    if (peaksInstance?.player?.play()) {
+      peaksInstance.player?.pause();
+      setEditedSongIsPlaying(false);
+    }
+    if (peaksInstance.segments) {
+      peaksInstance.segments?.removeAll();
+    }
+
+    if (peaksInstance.points) {
+      peaksInstance.points?.removeAll();
+    }
+
+    setEditedSegmantIsCreated(false);
+
+    peaksInstance.setSource(options, function (error: Error) {
+      if (error) [console.log(error.message)];
+
+      // Waveform updated
+    });
+
+    const editedSongData = new Blob([data], { type: "audio/mp3" });
+    const url = URL.createObjectURL(editedSongData);
+    setEditedSongURL(url);
+    setBlobString(url);
+  };
+
+  const volumeHighHandler = async (e: React.MouseEvent<SVGSVGElement>) => {
+    const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
+    const ffmpeg = ffmpegRef.current;
+    ffmpeg.on("log", ({ message }) => {
+      // if (messageRef.current) messageRef.current.innerHTML = message;
+    });
+
+    await ffmpeg.load({
+      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
+    });
+
+    await ffmpeg.writeFile("input.mp3", await fetchFile(peaksAudioRef?.current?.src));
+
+    const output = await ffmpeg.exec(["-i", "input.mp3", "-af", "volume=1.5", "output.mp3"]);
+
+    const data = (await ffmpeg.readFile("output.mp3")) as any;
+    setEditedSongData(data);
+
+    const options = {
+      mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" })),
+      webAudio: {
+        audioContext: new AudioContext(),
+        multiChannel: true,
+      },
+    };
+    setPointsStatus((prev) => {
+      console.log(prev);
+      return {
+        start: false,
+        finish: false,
+      };
+    });
+
+    if (peaksInstance?.player?.play()) {
+      peaksInstance.player?.pause();
+      setEditedSongIsPlaying(false);
+    }
+    if (peaksInstance.segments) {
+      peaksInstance.segments?.removeAll();
+    }
+
+    if (peaksInstance.points) {
+      peaksInstance.points?.removeAll();
+    }
+
+    setEditedSegmantIsCreated(false);
+
+    peaksInstance.setSource(options, function (error: Error) {
+      if (error) [console.log(error.message)];
+
+      // Waveform updated
+    });
+
+    const editedSongData = new Blob([data], { type: "audio/mp3" });
+    const url = URL.createObjectURL(editedSongData);
+    setEditedSongURL(url);
+    setBlobString(url);
+  };
+
+  const volumeLowHandler = async (e: React.MouseEvent<SVGSVGElement>) => {
+    const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
+    const ffmpeg = ffmpegRef.current;
+    ffmpeg.on("log", ({ message }) => {
+      // if (messageRef.current) messageRef.current.innerHTML = message;
+    });
+
+    await ffmpeg.load({
+      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
+    });
+
+    await ffmpeg.writeFile("input.mp3", await fetchFile(peaksAudioRef?.current?.src));
+
+    const output = await ffmpeg.exec(["-i", "input.mp3", "-af", "volume=0.5", "output.mp3"]);
+
+    const data = (await ffmpeg.readFile("output.mp3")) as any;
     setEditedSongData(data);
 
     const options = {
@@ -429,86 +620,125 @@ const EditSongAppMain = () => {
         <h1>Приложение редактирования аудио</h1>
       </div>
       <div className=" w-full">
-        <input onChange={changePeaksFileHandler} type="file" id="thefilePeaks" accept="audio/*" />
+        <div className=" w-full flex items-center justify-center">
+          <input
+            className=" w-full hidden text-lg bg-slate-50 border-2 border-solid rounded-md border-cyan-900"
+            onChange={changePeaksFileHandler}
+            type="file"
+            id="thefilePeaks"
+            accept="audio/*"
+          />
+          <label
+            htmlFor="thefilePeaks"
+            className=" buttonStandart fa-fw cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
+          >
+            <span className=" py-2 px-3">
+              <FontAwesomeIcon icon={faFileExport}></FontAwesomeIcon>
+            </span>
+            Выберете аудио
+          </label>
+        </div>
+
+        <div className=" py-3">
+          <h1 className=" text-center">{editedSongName}</h1>
+        </div>
 
         <div id="zoomview-container" className=" h-28 w-full"></div>
         <div id="overview-container" className=" h-28 w-full"></div>
         <audio ref={peaksAudioRef} id="peaksAudio" onEnded={endPeakSongHandler}></audio>
         {peaksInstance && (
-          <div className=" flex justify-around items-stretch gap-6 py-5">
-            <div className=" flex justify-center items-center gap-6 py-5">
-              {editedSongIsPlaying ? (
-                <div onClick={onPause}>
-                  <FontAwesomeIcon
-                    icon={faPauseCircle}
-                    className="fa-fw fa-3x cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
-                  ></FontAwesomeIcon>
-                </div>
-              ) : (
-                <div className=" rounded-3xl" onClick={onPlay}>
-                  <FontAwesomeIcon
-                    icon={faPlayCircle}
-                    className="fa-fw fa-3x cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
-                  ></FontAwesomeIcon>
-                </div>
-              )}
-            </div>
-
-            <div className=" flex justify-center items-center gap-6 py-5">
-              <div onClick={zoomInHandler}>
-                <FontAwesomeIcon
-                  icon={faPlusCircle}
-                  className=" cursor-pointer fa-fw fa-3x rounded-full hover:shadow-exerciseCardHowerShadow"
-                ></FontAwesomeIcon>
-              </div>
-              <div onClick={zoomOutHandler}>
-                <FontAwesomeIcon
-                  icon={faMinusCircle}
-                  className=" cursor-pointer fa-fw fa-3x rounded-full hover:shadow-exerciseCardHowerShadow"
-                ></FontAwesomeIcon>
-              </div>
-            </div>
-            <div>
+          <div className=" flex items-center justify-center flex-col">
+            <div className=" flex justify-around items-stretch gap-6 pt-5">
               <div className=" flex justify-center items-center gap-6 py-5">
-                <div>
-                  <FontAwesomeIcon
-                    onClick={setAPointHandler}
-                    icon={faA}
-                    className=" cursor-pointer fa-fw fa-2x hover:shadow-exerciseCardHowerShadow"
-                  ></FontAwesomeIcon>
-                </div>
-                <div>
-                  <FontAwesomeIcon
-                    onClick={setBPointHandler}
-                    icon={faB}
-                    className=" cursor-pointer fa-fw fa-2x hover:shadow-exerciseCardHowerShadow"
-                  ></FontAwesomeIcon>
-                </div>
-                {!editedSegmantIsCreated && (
-                  <div>
+                {editedSongIsPlaying ? (
+                  <div onClick={onPause}>
                     <FontAwesomeIcon
-                      onClick={editAudioFileHandler}
-                      icon={faEdit}
-                      className={` ${pointsStatus.finish && pointsStatus.start && "cursor-pointer text-zinc-900 hover:shadow-exerciseCardHowerShadow"}  text-zinc-200 fa-fw fa-2x `}
+                      icon={faPauseCircle}
+                      className="fa-fw fa-2x cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
+                    ></FontAwesomeIcon>
+                  </div>
+                ) : (
+                  <div className=" rounded-3xl" onClick={onPlay}>
+                    <FontAwesomeIcon
+                      icon={faPlayCircle}
+                      className="fa-fw fa-2x cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
                     ></FontAwesomeIcon>
                   </div>
                 )}
-                {editedSegmantIsCreated && (
-                  <div>
-                    <FontAwesomeIcon
-                      onClick={deleteEditedSegmantHandler}
-                      icon={faLinkSlash}
-                      className={` cursor-pointer text-zinc-900 hover:shadow-exerciseCardHowerShadow fa-fw fa-2x `}
-                    ></FontAwesomeIcon>
-                  </div>
-                )}
-                <div>
+              </div>
+
+              <div className=" flex justify-center items-center gap-6 py-5">
+                <div onClick={zoomInHandler}>
                   <FontAwesomeIcon
-                    onClick={cutSongHandler}
-                    icon={faCut}
-                    className=" cursor-pointer fa-fw fa-2x hover:shadow-exerciseCardHowerShadow"
+                    icon={faPlusCircle}
+                    className=" cursor-pointer fa-fw fa-2x rounded-full hover:shadow-exerciseCardHowerShadow"
                   ></FontAwesomeIcon>
                 </div>
+                <div onClick={zoomOutHandler}>
+                  <FontAwesomeIcon
+                    icon={faMinusCircle}
+                    className=" cursor-pointer fa-fw fa-2x rounded-full hover:shadow-exerciseCardHowerShadow"
+                  ></FontAwesomeIcon>
+                </div>
+              </div>
+              <div>
+                <div className=" flex justify-center items-center gap-6 py-5">
+                  <div>
+                    <FontAwesomeIcon
+                      onClick={setAPointHandler}
+                      icon={faA}
+                      className=" cursor-pointer fa-fw hover:shadow-exerciseCardHowerShadow"
+                    ></FontAwesomeIcon>
+                  </div>
+                  <div>
+                    <FontAwesomeIcon
+                      onClick={setBPointHandler}
+                      icon={faB}
+                      className=" cursor-pointer fa-fw hover:shadow-exerciseCardHowerShadow"
+                    ></FontAwesomeIcon>
+                  </div>
+                  {!editedSegmantIsCreated && (
+                    <div>
+                      <FontAwesomeIcon
+                        onClick={editAudioFileHandler}
+                        icon={faEdit}
+                        className={` ${pointsStatus.finish && pointsStatus.start && "cursor-pointer text-zinc-900 hover:shadow-exerciseCardHowerShadow"}  text-zinc-200 fa-fw fa-2x `}
+                      ></FontAwesomeIcon>
+                    </div>
+                  )}
+                  {editedSegmantIsCreated && (
+                    <div>
+                      <FontAwesomeIcon
+                        onClick={deleteEditedSegmantHandler}
+                        icon={faLinkSlash}
+                        className={` cursor-pointer text-zinc-900 hover:shadow-exerciseCardHowerShadow fa-fw fa-2x `}
+                      ></FontAwesomeIcon>
+                    </div>
+                  )}
+                  <div>
+                    <FontAwesomeIcon
+                      onClick={cutSongHandler}
+                      icon={faCut}
+                      className=" cursor-pointer fa-fw fa-2x hover:shadow-exerciseCardHowerShadow"
+                    ></FontAwesomeIcon>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className=" flex justify-around items-stretch gap-6 pt-5">
+              <div>
+                <FontAwesomeIcon
+                  onClick={volumeLowHandler}
+                  icon={faVolumeLow}
+                  className=" cursor-pointer fa-fw fa-2x hover:shadow-exerciseCardHowerShadow"
+                ></FontAwesomeIcon>
+              </div>
+              <div>
+                <FontAwesomeIcon
+                  onClick={volumeHighHandler}
+                  icon={faVolumeHigh}
+                  className=" cursor-pointer fa-fw fa-2x hover:shadow-exerciseCardHowerShadow"
+                ></FontAwesomeIcon>
               </div>
             </div>
           </div>
@@ -526,12 +756,6 @@ const EditSongAppMain = () => {
             </div>
           </div>
         )}
-
-        <div>
-          <h1>{blobString}</h1>
-        </div>
-
-        <audio ref={videoRef} controls></audio>
       </div>
     </div>
   );

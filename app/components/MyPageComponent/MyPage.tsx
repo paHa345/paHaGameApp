@@ -22,6 +22,7 @@ import {
   faChessBoard,
   faHeadphonesAlt,
   faSliders,
+  faSlidersH,
 } from "@fortawesome/free-solid-svg-icons";
 
 import MyPageNotification from "./MyPageNotification";
@@ -32,6 +33,7 @@ import { isTelegramWebApp } from "../Layout/MainLayout";
 import { postEvent } from "@telegram-apps/sdk-react";
 import { openLink } from "@telegram-apps/sdk";
 import { init } from "@telegram-apps/sdk";
+import { div } from "framer-motion/client";
 
 const MyPage = () => {
   const { data: session } = useSession();
@@ -103,7 +105,9 @@ const MyPage = () => {
       dispatch(crosswordActions.setCrosswordId(JSON.parse(crosswordId)));
       dispatch(crosswordActions.crosswordIsLoading(true));
     }
-    init();
+    if (isTelegramWebApp()) {
+      init();
+    }
   });
 
   return (
@@ -157,7 +161,15 @@ const MyPage = () => {
             </div>
           </div>
         ) : (
-          <AudioVisualiserMain></AudioVisualiserMain>
+          // <AudioVisualiserMain></AudioVisualiserMain>
+          <div className=" py-5">
+            <Link className=" buttonStandart" rel="stylesheet" href={"/editSongApp"}>
+              <span>
+                <FontAwesomeIcon className=" pr-3 fa-fw" icon={faSlidersH} />
+              </span>{" "}
+              Приложение редактирования аудио
+            </Link>
+          </div>
         )}
 
         {/* <CutSongSectionMain></CutSongSectionMain> */}

@@ -385,9 +385,7 @@ const AudioVisualiserMain = () => {
 
   const downloadEditedSongHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    // console.log(
-    //   `${editedSongURL?.split(":")[1]}:${editedSongURL?.split(":")[2]}:${editedSongURL?.split(":")[3]}`
-    // );
+
     if (editedSongURL && editedSongName) {
       const nameString = `${editedSongName.split(".")[0]}_(paHaCutSongApp)${Date.now()}.mp3`;
 
@@ -405,21 +403,6 @@ const AudioVisualiserMain = () => {
         document.body.removeChild(a);
       }
     }
-  };
-
-  const testDownloadHandler = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-
-    postEvent("web_app_request_file_download", {
-      url: "https://s3.twcstorage.ru/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/uploads/1742878015640-Iron_Maiden_-_The_Trooper_47955104 (mp3cut.net).mp3",
-      file_name: "test.mp3",
-    });
-
-    // console.log("Test download");
-    // e.currentTarget.href =
-    //   "https://s3.twcstorage.ru/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/uploads/1742878015640-Iron_Maiden_-_The_Trooper_47955104 (mp3cut.net).mp3";
-    // e.currentTarget.download = "test.mp3";
-    // e.currentTarget.click();
   };
 
   useEffect(() => {
