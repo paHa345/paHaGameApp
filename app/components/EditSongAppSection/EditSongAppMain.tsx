@@ -25,6 +25,7 @@ import { postEvent } from "@telegram-apps/sdk";
 import { isTelegramWebApp } from "@/app/components/Layout/MainLayout";
 import FileSaver, { saveAs } from "file-saver";
 import { div } from "framer-motion/client";
+import NotificationEditSongMain from "./NotificationEditSongMain";
 
 const EditSongAppMain = () => {
   const ffmpegRef = useRef(new FFmpeg());
@@ -39,7 +40,9 @@ const EditSongAppMain = () => {
   const [editedSongName, setEditedSongName] = useState<string>();
   const [blobString, setBlobString] = useState<string>();
   const [editedSongData, setEditedSongData] = useState<any>();
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
 
+  NotificationEditSongMain;
   const onPlay = () => {
     if (!peaksInstance) return;
     setEditedSongIsPlaying(true);
@@ -147,10 +150,13 @@ const EditSongAppMain = () => {
 
   const changePeaksFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files === null) return;
+    console.log("Start Peaks Process");
+    setShowNotificationModal(true);
     setEditedSongURL(undefined);
     setEditedSegmantIsCreated(false);
 
     const audioElement = peaksAudioRef.current;
+
     if (audioElement) {
       // audioElement.crossOrigin = "anonymous";
 
@@ -167,7 +173,6 @@ const EditSongAppMain = () => {
         },
       };
       setPointsStatus((prev) => {
-        console.log(prev);
         return {
           start: false,
           finish: false,
@@ -178,20 +183,26 @@ const EditSongAppMain = () => {
         peaksInstance.player?.pause();
         setEditedSongIsPlaying(false);
       }
-      if (peaksInstance.segments) {
-        peaksInstance.segments?.removeAll();
+      if (peaksInstance?.segments) {
+        peaksInstance?.segments?.removeAll();
       }
 
-      if (peaksInstance.points) {
-        peaksInstance.points?.removeAll();
+      if (peaksInstance?.points) {
+        peaksInstance?.points?.removeAll();
       }
 
-      peaksInstance.setSource(options, function (error: Error) {
+      console.log(peaksInstance);
+
+      peaksInstance?.setSource(options, function (error: Error) {
+        setShowNotificationModal(false);
         if (error) [console.log(error.message)];
 
         // Waveform updated
+        console.log("Finish Peaks Process");
       });
+      console.log("Finish Peaks Process");
     }
+    // setShowNotificationModal(false);
   };
 
   const cutSongHandler = async () => {
@@ -514,8 +525,6 @@ const EditSongAppMain = () => {
       console.log(document.getElementById("zoomview-container"));
     }
 
-    console.log(navigator);
-
     const options = {
       zoomview: {
         container: document.getElementById("zoomview-container"),
@@ -618,6 +627,12 @@ const EditSongAppMain = () => {
     <div className=" py-4">
       <div className=" text-center text-3xl py-4">
         <h1>Приложение редактирования аудио</h1>
+      </div>
+
+      <div>
+        <NotificationEditSongMain
+          showNotificationModal={showNotificationModal}
+        ></NotificationEditSongMain>
       </div>
       <div className=" w-full">
         <div className=" w-full flex items-center justify-center">
