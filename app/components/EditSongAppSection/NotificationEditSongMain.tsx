@@ -15,7 +15,7 @@ const NotificationEditSongMain = ({ showNotificationModal }: INotificationProps)
     visible: {
       opacity: 1,
       transition: {
-        duration: 1,
+        duration: 0.3,
         delayChildren: 0.3,
       },
     },
@@ -46,23 +46,23 @@ const NotificationEditSongMain = ({ showNotificationModal }: INotificationProps)
         >
           <motion.div
             onClick={(e) => e.stopPropagation()}
-            className=" w-11/12 h-5/6 flex flex-col bg-modalMainColor rounded-lg"
+            className="flex flex-col bg-modalMainColor rounded-lg"
             variants={modalVariant}
             // initial="hidden"
             // animate="visible"
             // exit="exit"
           >
-            <div className="modal-header flex justify-start items-center w-full ">
-              <div className=" w-full flex justify-around items-center">
-                <FontAwesomeIcon icon={faGear}></FontAwesomeIcon>
+            <div className="modal-header flex justify-start items-center ">
+              <div className=" flex justify-around items-center px-5 py-5">
+                <FontAwesomeIcon icon={faGear} className=" animate-spin fa-2x"></FontAwesomeIcon>
               </div>
             </div>
 
-            <div className=" w-full rounded-lg my-3 flex flex-col justify-center items-center">
+            {/* <div className=" w-full rounded-lg my-3 flex flex-col justify-center items-center">
               <div className=" w-full flex flex-col justify-center items-center">
                 <div className="   w-full  flex  justify-around items-center"></div>
               </div>
-            </div>
+            </div> */}
           </motion.div>{" "}
         </motion.div>
       )}

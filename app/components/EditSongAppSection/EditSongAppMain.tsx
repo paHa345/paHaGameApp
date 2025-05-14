@@ -150,7 +150,6 @@ const EditSongAppMain = () => {
 
   const changePeaksFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files === null) return;
-    console.log("Start Peaks Process");
     setShowNotificationModal(true);
     setEditedSongURL(undefined);
     setEditedSegmantIsCreated(false);
@@ -191,22 +190,30 @@ const EditSongAppMain = () => {
         peaksInstance?.points?.removeAll();
       }
 
-      console.log(peaksInstance);
+      if (peaksInstance) {
+        peaksInstance?.setSource(options, function (error: Error) {
+          setShowNotificationModal(false);
+          if (error) [console.log(error.message)];
 
-      peaksInstance?.setSource(options, function (error: Error) {
-        setShowNotificationModal(false);
-        if (error) [console.log(error.message)];
-
-        // Waveform updated
-        console.log("Finish Peaks Process");
-      });
-      console.log("Finish Peaks Process");
+          // Waveform updated
+          console.log("Finish Peaks Process");
+          console.log(peaksInstance);
+        });
+      } else {
+        setTimeout(() => {
+          setShowNotificationModal(false);
+          console.log(peaksInstance);
+        }, 5000);
+      }
     }
-    // setShowNotificationModal(false);
   };
 
   const cutSongHandler = async () => {
     const segment = peaksInstance?.segments?.getSegment("mainEditedSegment");
+    if (!segment || !segment.startTime || !segment.endTime) {
+      return;
+    }
+    setShowNotificationModal(true);
     const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
     const ffmpeg = ffmpegRef.current;
     ffmpeg.on("log", ({ message }) => {
@@ -286,10 +293,11 @@ const EditSongAppMain = () => {
 
     setEditedSegmantIsCreated(false);
 
-    peaksInstance.setSource(options, function (error: Error) {
+    peaksInstance?.setSource(options, function (error: Error) {
       if (error) [console.log(error.message)];
 
       // Waveform updated
+      setShowNotificationModal(false);
     });
 
     const editedSongData = new Blob([data], { type: "audio/mp3" });
@@ -371,6 +379,11 @@ const EditSongAppMain = () => {
   };
 
   const volumeHighHandler = async (e: React.MouseEvent<SVGSVGElement>) => {
+    if (!peaksAudioRef?.current?.src) {
+      return;
+    }
+    setShowNotificationModal(true);
+
     const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
     const ffmpeg = ffmpegRef.current;
     ffmpeg.on("log", ({ message }) => {
@@ -396,30 +409,30 @@ const EditSongAppMain = () => {
         multiChannel: true,
       },
     };
-    setPointsStatus((prev) => {
-      console.log(prev);
-      return {
-        start: false,
-        finish: false,
-      };
-    });
+    // setPointsStatus((prev) => {
+    //   return {
+    //     start: false,
+    //     finish: false,
+    //   };
+    // });
 
     if (peaksInstance?.player?.play()) {
       peaksInstance.player?.pause();
       setEditedSongIsPlaying(false);
     }
-    if (peaksInstance.segments) {
-      peaksInstance.segments?.removeAll();
-    }
+    // if (peaksInstance.segments) {
+    //   peaksInstance.segments?.removeAll();
+    // }
 
-    if (peaksInstance.points) {
-      peaksInstance.points?.removeAll();
-    }
+    // if (peaksInstance.points) {
+    //   peaksInstance.points?.removeAll();
+    // }
 
-    setEditedSegmantIsCreated(false);
+    // setEditedSegmantIsCreated(false);
 
     peaksInstance.setSource(options, function (error: Error) {
       if (error) [console.log(error.message)];
+      setShowNotificationModal(false);
 
       // Waveform updated
     });
@@ -431,6 +444,10 @@ const EditSongAppMain = () => {
   };
 
   const volumeLowHandler = async (e: React.MouseEvent<SVGSVGElement>) => {
+    if (!peaksAudioRef?.current?.src) {
+      return;
+    }
+    setShowNotificationModal(true);
     const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
     const ffmpeg = ffmpegRef.current;
     ffmpeg.on("log", ({ message }) => {
@@ -456,30 +473,31 @@ const EditSongAppMain = () => {
         multiChannel: true,
       },
     };
-    setPointsStatus((prev) => {
-      console.log(prev);
-      return {
-        start: false,
-        finish: false,
-      };
-    });
+    // setPointsStatus((prev) => {
+    //   console.log(prev);
+    //   return {
+    //     start: false,
+    //     finish: false,
+    //   };
+    // });
 
     if (peaksInstance?.player?.play()) {
       peaksInstance.player?.pause();
       setEditedSongIsPlaying(false);
     }
-    if (peaksInstance.segments) {
-      peaksInstance.segments?.removeAll();
-    }
+    // if (peaksInstance.segments) {
+    //   peaksInstance.segments?.removeAll();
+    // }
 
-    if (peaksInstance.points) {
-      peaksInstance.points?.removeAll();
-    }
+    // if (peaksInstance.points) {
+    //   peaksInstance.points?.removeAll();
+    // }
 
-    setEditedSegmantIsCreated(false);
+    // setEditedSegmantIsCreated(false);
 
     peaksInstance.setSource(options, function (error: Error) {
       if (error) [console.log(error.message)];
+      setShowNotificationModal(false);
 
       // Waveform updated
     });
@@ -521,10 +539,6 @@ const EditSongAppMain = () => {
   };
 
   useEffect(() => {
-    if (document) {
-      console.log(document.getElementById("zoomview-container"));
-    }
-
     const options = {
       zoomview: {
         container: document.getElementById("zoomview-container"),
@@ -536,6 +550,7 @@ const EditSongAppMain = () => {
       webAudio: {
         audioContext: new AudioContext(),
       },
+
       waveformBuilderOptions: {
         scale: 4,
       },
@@ -615,9 +630,9 @@ const EditSongAppMain = () => {
 
         setPeaksInstance(peaks);
 
-        // peaks.on("player.timeupdate", function (time) {
-        //   setPlaybackTime(Math.round(time * 1000) / 1000);
-        //   console.log(playbackTime);
+        // peaks?.on("player.timeupdate", function (time) {
+        //   // setPlaybackTime(Math.round(time * 1000) / 1000);
+        //   console.log("playbackTime");
         // });
       });
     }
