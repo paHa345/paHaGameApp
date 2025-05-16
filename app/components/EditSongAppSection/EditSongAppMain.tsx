@@ -33,6 +33,7 @@ import { isTelegramWebApp } from "@/app/components/Layout/MainLayout";
 import FileSaver, { saveAs } from "file-saver";
 import { div } from "framer-motion/client";
 import NotificationEditSongMain from "./NotificationEditSongMain";
+import Add2SongMain from "./Add2SongMain";
 
 const EditSongAppMain = () => {
   const ffmpegRef = useRef(new FFmpeg());
@@ -40,6 +41,7 @@ const EditSongAppMain = () => {
   const peaksAudioRef = useRef<HTMLMediaElement>(null);
 
   const [peaksInstance, setPeaksInstance] = useState(null) as any;
+
   const [editedSongIsPlaying, setEditedSongIsPlaying] = useState(false);
   const [pointsStatus, setPointsStatus] = useState({ start: false, finish: false });
   const [editedSegmantIsCreated, setEditedSegmantIsCreated] = useState(false);
@@ -839,11 +841,11 @@ const EditSongAppMain = () => {
                 ></FontAwesomeIcon>
               </div>
             </div>
-            <div className="pt-5">
+            {/* <div className="pt-5">
               <div className=" w-full flex items-center justify-center">
                 <input
                   className=" w-full hidden text-lg bg-slate-50 border-2 border-solid rounded-md border-cyan-900"
-                  onChange={changePeaksFileHandler}
+                  onChange={changePeaks2FileHandler}
                   type="file"
                   id="thefilePeaks"
                   accept="audio/*"
@@ -858,11 +860,12 @@ const EditSongAppMain = () => {
                   Добавить второй аудио файл
                 </label>
               </div>
-            </div>
+            </div> */}
           </div>
         )}
-        <div id="zoomview-container2" className=" h-14 w-full"></div>
-        <div id="overview-container2" className=" h-14 w-full"></div>
+
+        <Add2SongMain></Add2SongMain>
+
         {editedSongURL && (
           <div className=" py-5">
             <div
