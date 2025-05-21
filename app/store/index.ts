@@ -7,6 +7,7 @@ import { crosswordGameSlice } from "./crosswordGameSlice";
 import { attemptsSlice } from "./attemptsSlice";
 import { guessThatSongSlice } from "./guessThatSongSlice";
 import { GTSCreateGameSlice } from "./GTSCreateGameSlice";
+import { EditSongAppSlice } from "./EditSongAppSlice";
 
 const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ const store = configureStore({
     attemptsState: attemptsSlice.reducer,
     guessThatSongState: guessThatSongSlice.reducer,
     GTSCreateGameState: GTSCreateGameSlice.reducer,
+    EditSongAppState: EditSongAppSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

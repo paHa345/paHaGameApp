@@ -3,7 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Peaks from "peaks.js";
 import React, { useEffect, useRef, useState } from "react";
 
-const Add2SongMain = () => {
+interface IAddOptionalAudioProps {
+  value: number;
+}
+
+const AddOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
   const [peaksInstance2, setPeaksInstance2] = useState(null) as any;
   const [showNotificationModal, setShowNotificationModal] = useState(false);
 
@@ -30,7 +34,7 @@ const Add2SongMain = () => {
   const changePeaks2FileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files === null) return;
 
-    console.log("2");
+    console.log(value);
 
     setShowNotificationModal(true);
     // setEditedSongURL(undefined);
@@ -88,14 +92,15 @@ const Add2SongMain = () => {
   };
 
   useEffect(() => {
+    console.log(value);
     const options2 = {
       zoomview: {
-        container: document.getElementById("zoomview-container2"),
+        container: document.getElementById(`zoomview-container${value}`),
       },
       overview: {
-        container: document.getElementById("overview-container2"),
+        container: document.getElementById(`overview-container${value}`),
       },
-      mediaElement: document.getElementById("peaksAudio2"),
+      mediaElement: document.getElementById(`peaksAudio${value}`),
       webAudio: {
         audioContext: new AudioContext(),
       },
@@ -125,25 +130,29 @@ const Add2SongMain = () => {
   }, []);
   return (
     <div>
-      <audio ref={peaksAudioRef2} id="peaksAudio2" onEnded={endPeakSongHandler}></audio>
+      <div>
+        <audio ref={peaksAudioRef2} id={`peaksAudio${value}`} onEnded={endPeakSongHandler}></audio>
 
-      <div id="zoomview-container2" className=" h-14 w-full"></div>
-      <div id="overview-container2" className=" h-14 w-full"></div>
+        <div id={`zoomview-container${value}`} className=" h-14 w-full"></div>
+        <div id={`overview-container${value}`} className=" h-14 w-full"></div>
 
-      <div className=" flex justify-center items-center gap-6 py-5">
-        {song2IsPlaying ? (
-          <div onClick={onPause}>
-            <FontAwesomeIcon
-              icon={faPauseCircle}
-              className="fa-fw fa-2x cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
-            ></FontAwesomeIcon>
-          </div>
-        ) : (
-          <div className=" rounded-3xl" onClick={onPlay}>
-            <FontAwesomeIcon
-              icon={faPlayCircle}
-              className="fa-fw fa-2x cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
-            ></FontAwesomeIcon>
+        {peaksAudioRef2?.current && (
+          <div className=" flex justify-center items-center gap-6 py-5">
+            {song2IsPlaying ? (
+              <div onClick={onPause}>
+                <FontAwesomeIcon
+                  icon={faPauseCircle}
+                  className="fa-fw fa-2x cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
+                ></FontAwesomeIcon>
+              </div>
+            ) : (
+              <div className=" rounded-3xl" onClick={onPlay}>
+                <FontAwesomeIcon
+                  icon={faPlayCircle}
+                  className="fa-fw fa-2x cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
+                ></FontAwesomeIcon>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -154,17 +163,17 @@ const Add2SongMain = () => {
             className=" w-full hidden text-lg bg-slate-50 border-2 border-solid rounded-md border-cyan-900"
             onChange={changePeaks2FileHandler}
             type="file"
-            id="thefilePeaks2"
+            id={`thefilePeaks${value}`}
             accept="audio/*"
           />
           <label
-            htmlFor="thefilePeaks2"
+            htmlFor={`thefilePeaks${value}`}
             className=" buttonStandart fa-fw cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
           >
             <span className=" py-2 px-3">
               <FontAwesomeIcon icon={faFileCirclePlus}></FontAwesomeIcon>
             </span>
-            Добавить второй аудио файл
+            Добавить аудио
           </label>
         </div>
       </div>
@@ -172,4 +181,4 @@ const Add2SongMain = () => {
   );
 };
 
-export default Add2SongMain;
+export default AddOptionalSongMain;

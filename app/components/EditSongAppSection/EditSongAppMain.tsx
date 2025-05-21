@@ -12,6 +12,7 @@ import {
   faArrowUpShortWide,
   faArrowUpWideShort,
   faB,
+  faCirclePlus,
   faCut,
   faDownload,
   faEdit,
@@ -19,9 +20,12 @@ import {
   faFileExport,
   faLinkSlash,
   faMinusCircle,
+  faMusic,
   faPlusCircle,
   faVolumeHigh,
   faVolumeLow,
+  faVolumeOff,
+  faVolumeXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
@@ -33,66 +37,113 @@ import { isTelegramWebApp } from "@/app/components/Layout/MainLayout";
 import FileSaver, { saveAs } from "file-saver";
 import { div } from "framer-motion/client";
 import NotificationEditSongMain from "./NotificationEditSongMain";
-import Add2SongMain from "./Add2SongMain";
+import AddOptionalSongMain from "./AddOptionalSongMain";
+import { useDispatch, useSelector } from "react-redux";
+import { guessThatSongActions, IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
+import { AppDispatch } from "@/app/store";
+import { EditSongAppStateActions, IEditSongAppSlice } from "@/app/store/EditSongAppSlice";
 
 const EditSongAppMain = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const ffmpegRef = useRef(new FFmpeg());
-  const videoRef = useRef<HTMLAudioElement | null>(null);
+  // const videoRef = useRef<HTMLAudioElement | null>(null);
   const peaksAudioRef = useRef<HTMLMediaElement>(null);
 
-  const [peaksInstance, setPeaksInstance] = useState(null) as any;
+  // const [peaksInstance, setPeaksInstance] = useState(null) as any;
+  const mainSongPeaksInstance = useSelector(
+    (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.peaksInstance
+  );
 
-  const [editedSongIsPlaying, setEditedSongIsPlaying] = useState(false);
-  const [pointsStatus, setPointsStatus] = useState({ start: false, finish: false });
-  const [editedSegmantIsCreated, setEditedSegmantIsCreated] = useState(false);
-  const [editedSongURL, setEditedSongURL] = useState<string>();
-  const [editedSongName, setEditedSongName] = useState<string>();
+  // const [editedSongIsPlaying, setEditedSongIsPlaying] = useState(false);
+
+  const mainEditedSongIsPlaying = useSelector(
+    (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.editedSongIsPlaying
+  );
+
+  const pointsStatus = useSelector(
+    (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.pointsStatus
+  );
+
+  const editedSegmantIsCreated = useSelector(
+    (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.editedSegmantIsCreated
+  );
+
+  const editedSongURL = useSelector(
+    (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.editedSongURL
+  );
+
+  // const [editedSongName, setEditedSongName] = useState<string>();
+
+  const editedSongName = useSelector(
+    (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.editedSongName
+  );
   const [blobString, setBlobString] = useState<string>();
   const [editedSongData, setEditedSongData] = useState<any>();
   const [showNotificationModal, setShowNotificationModal] = useState(false);
 
-  NotificationEditSongMain;
-  const onPlay = () => {
-    if (!peaksInstance) return;
-    setEditedSongIsPlaying(true);
+  const [isSongMuted, setIsSongMuted] = useState(false);
 
-    peaksInstance.player?.play();
+  const [addedptionalAudioValue, setAddedOptionalAudioValue] = useState<{ value: number }[]>([]);
+
+  const songVolume = useSelector(
+    (state: IGuessThatSongSlice) => state.guessThatSongState.songVolume
+  );
+
+  const testData = useSelector((state: IEditSongAppSlice) => state.EditSongAppState.test);
+
+  const onPlay = () => {
+    if (!mainSongPeaksInstance) return;
+    dispatch(EditSongAppStateActions.setMainSongIsPlayingStatus(true));
+
+    mainSongPeaksInstance.player?.play();
   };
   const onPause = () => {
-    if (!peaksInstance) return;
-    setEditedSongIsPlaying(false);
+    if (!mainSongPeaksInstance) return;
+    dispatch(EditSongAppStateActions.setMainSongIsPlayingStatus(false));
 
-    peaksInstance.player.pause();
+    mainSongPeaksInstance.player.pause();
   };
 
   const endPeakSongHandler = () => {
-    setEditedSongIsPlaying(false);
+    dispatch(EditSongAppStateActions.setMainSongIsPlayingStatus(false));
   };
 
   const zoomOutHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    peaksInstance.zoom?.zoomOut();
+    mainSongPeaksInstance.zoom?.zoomOut();
   };
   const zoomInHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    peaksInstance.zoom?.zoomIn();
+    mainSongPeaksInstance.zoom?.zoomIn();
+  };
+
+  const muteSongValueHandler = () => {
+    console.log("first");
+  };
+
+  const changeVolumeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (peaksAudioRef?.current?.volume === undefined) {
+      return;
+    }
+    dispatch(guessThatSongActions.setSongVolume(e.target.value));
   };
 
   const setAPointHandler = (e: React.MouseEvent<SVGSVGElement>) => {
     e.preventDefault();
-    if (peaksInstance.points.getPoint("APoint")) {
+    if (mainSongPeaksInstance.points.getPoint("APoint")) {
       return;
     }
 
-    setPointsStatus((prev) => {
-      return {
+    dispatch(
+      EditSongAppStateActions.setMainSongPointsStatus({
         start: true,
-        finish: prev.finish,
-      };
-    });
+        finish: pointsStatus.finish,
+      })
+    );
 
-    peaksInstance.points.add({
-      time: peaksInstance?.player.getCurrentTime(),
+    mainSongPeaksInstance.points.add({
+      time: mainSongPeaksInstance?.player.getCurrentTime(),
       labelText: "Начало",
       color: "#e0491b",
       id: "APoint",
@@ -102,19 +153,19 @@ const EditSongAppMain = () => {
 
   const setBPointHandler = (e: React.MouseEvent<SVGSVGElement>) => {
     e.preventDefault();
-    if (peaksInstance.points.getPoint("BPoint")) {
+    if (mainSongPeaksInstance.points.getPoint("BPoint")) {
       return;
     }
 
-    setPointsStatus((prev) => {
-      return {
-        start: prev.start,
+    dispatch(
+      EditSongAppStateActions.setMainSongPointsStatus({
+        start: pointsStatus.start,
         finish: true,
-      };
-    });
+      })
+    );
 
-    peaksInstance.points.add({
-      time: peaksInstance?.player.getCurrentTime(),
+    mainSongPeaksInstance.points.add({
+      time: mainSongPeaksInstance?.player.getCurrentTime(),
       labelText: "Конец",
       color: "#259c08",
       id: "BPoint",
@@ -125,43 +176,49 @@ const EditSongAppMain = () => {
   const editAudioFileHandler = (e: React.MouseEvent<SVGSVGElement>) => {
     e.preventDefault();
 
-    if (!peaksInstance?.points.getPoint("APoint") && !peaksInstance?.points.getPoint("BPoint")) {
+    if (
+      !mainSongPeaksInstance?.points.getPoint("APoint") &&
+      !mainSongPeaksInstance?.points.getPoint("BPoint")
+    ) {
       return;
     }
 
-    if (peaksInstance?.segments.getSegment("mainEditedSegment")) {
+    if (mainSongPeaksInstance?.segments.getSegment("mainEditedSegment")) {
       return;
     }
 
-    const segment = peaksInstance?.segments.add({
-      startTime: peaksInstance?.points.getPoint("APoint").time,
-      endTime: peaksInstance?.points.getPoint("BPoint").time,
+    const segment = mainSongPeaksInstance?.segments.add({
+      startTime: mainSongPeaksInstance?.points.getPoint("APoint").time,
+      endTime: mainSongPeaksInstance?.points.getPoint("BPoint").time,
       editable: true,
       color: "#5019a8",
       id: "mainEditedSegment",
       labelText: "Оставляемый фрагмент",
     });
-    peaksInstance?.points.removeAll();
-    setPointsStatus((prev) => {
-      return {
+    mainSongPeaksInstance?.points.removeAll();
+
+    dispatch(
+      EditSongAppStateActions.setMainSongPointsStatus({
         start: false,
         finish: false,
-      };
-    });
-    setEditedSegmantIsCreated(true);
+      })
+    );
+
+    dispatch(EditSongAppStateActions.setMainSongEditedSegmantIsCreatedStatus(true));
   };
 
   const deleteEditedSegmantHandler = (e: React.MouseEvent<SVGSVGElement>) => {
     e.preventDefault();
-    peaksInstance?.segments.removeAll();
-    setEditedSegmantIsCreated(false);
+    mainSongPeaksInstance?.segments.removeAll();
+
+    dispatch(EditSongAppStateActions.setMainSongEditedSegmantIsCreatedStatus(false));
   };
 
   const changePeaksFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files === null) return;
     setShowNotificationModal(true);
-    setEditedSongURL(undefined);
-    setEditedSegmantIsCreated(false);
+    dispatch(EditSongAppStateActions.setMainSongEditedSongURL(undefined));
+    dispatch(EditSongAppStateActions.setMainSongEditedSegmantIsCreatedStatus(false));
 
     const audioElement = peaksAudioRef.current;
 
@@ -171,7 +228,7 @@ const EditSongAppMain = () => {
       var files = e.target.files;
       audioElement.src = URL.createObjectURL(files[0]);
 
-      setEditedSongName(files[0].name);
+      dispatch(EditSongAppStateActions.setMainSongEditedSongName(files[0].name));
 
       const options = {
         mediaUrl: URL.createObjectURL(files[0]),
@@ -180,45 +237,46 @@ const EditSongAppMain = () => {
           multiChannel: true,
         },
       };
-      setPointsStatus((prev) => {
-        return {
+
+      dispatch(
+        EditSongAppStateActions.setMainSongPointsStatus({
           start: false,
           finish: false,
-        };
-      });
+        })
+      );
 
-      if (peaksInstance?.player?.play()) {
-        peaksInstance.player?.pause();
-        setEditedSongIsPlaying(false);
+      if (mainSongPeaksInstance?.player?.play()) {
+        mainSongPeaksInstance.player?.pause();
+        dispatch(EditSongAppStateActions.setMainSongIsPlayingStatus(false));
       }
-      if (peaksInstance?.segments) {
-        peaksInstance?.segments?.removeAll();
-      }
-
-      if (peaksInstance?.points) {
-        peaksInstance?.points?.removeAll();
+      if (mainSongPeaksInstance?.segments) {
+        mainSongPeaksInstance?.segments?.removeAll();
       }
 
-      if (peaksInstance) {
-        peaksInstance?.setSource(options, function (error: Error) {
+      if (mainSongPeaksInstance?.points) {
+        mainSongPeaksInstance?.points?.removeAll();
+      }
+
+      if (mainSongPeaksInstance) {
+        mainSongPeaksInstance?.setSource(options, function (error: Error) {
           setShowNotificationModal(false);
           if (error) [console.log(error.message)];
 
           // Waveform updated
           console.log("Finish Peaks Process");
-          console.log(peaksInstance);
+          console.log(mainSongPeaksInstance);
         });
       } else {
         setTimeout(() => {
           setShowNotificationModal(false);
-          console.log(peaksInstance);
+          console.log(mainSongPeaksInstance);
         }, 5000);
       }
     }
   };
 
   const cutSongHandler = async () => {
-    const segment = peaksInstance?.segments?.getSegment("mainEditedSegment");
+    const segment = mainSongPeaksInstance?.segments?.getSegment("mainEditedSegment");
     if (!segment || segment?.startTime === undefined || segment?.endTime === undefined) {
       return;
     }
@@ -280,29 +338,29 @@ const EditSongAppMain = () => {
         multiChannel: true,
       },
     };
-    setPointsStatus((prev) => {
-      console.log(prev);
-      return {
+
+    dispatch(
+      EditSongAppStateActions.setMainSongPointsStatus({
         start: false,
         finish: false,
-      };
-    });
+      })
+    );
 
-    if (peaksInstance?.player?.play()) {
-      peaksInstance.player?.pause();
-      setEditedSongIsPlaying(false);
+    if (mainSongPeaksInstance?.player?.play()) {
+      mainSongPeaksInstance.player?.pause();
+      dispatch(EditSongAppStateActions.setMainSongIsPlayingStatus(false));
     }
-    if (peaksInstance.segments) {
-      peaksInstance.segments?.removeAll();
-    }
-
-    if (peaksInstance.points) {
-      peaksInstance.points?.removeAll();
+    if (mainSongPeaksInstance.segments) {
+      mainSongPeaksInstance.segments?.removeAll();
     }
 
-    setEditedSegmantIsCreated(false);
+    if (mainSongPeaksInstance.points) {
+      mainSongPeaksInstance.points?.removeAll();
+    }
 
-    peaksInstance?.setSource(options, function (error: Error) {
+    dispatch(EditSongAppStateActions.setMainSongEditedSegmantIsCreatedStatus(false));
+
+    mainSongPeaksInstance?.setSource(options, function (error: Error) {
       if (error) [console.log(error.message)];
 
       // Waveform updated
@@ -311,12 +369,12 @@ const EditSongAppMain = () => {
 
     const editedSongData = new Blob([data], { type: "audio/mp3" });
     const url = URL.createObjectURL(editedSongData);
-    setEditedSongURL(url);
+    dispatch(EditSongAppStateActions.setMainSongEditedSongURL(url));
     setBlobString(url);
   };
 
   const afadeFromLowToHighHandler = async (e: React.MouseEvent<SVGSVGElement>) => {
-    const segment = peaksInstance?.segments?.getSegment("mainEditedSegment");
+    const segment = mainSongPeaksInstance?.segments?.getSegment("mainEditedSegment");
 
     if (!segment || segment?.startTime === undefined || segment?.endTime === undefined) {
       return;
@@ -356,29 +414,29 @@ const EditSongAppMain = () => {
         multiChannel: true,
       },
     };
-    setPointsStatus((prev) => {
-      console.log(prev);
-      return {
+
+    dispatch(
+      EditSongAppStateActions.setMainSongPointsStatus({
         start: false,
         finish: false,
-      };
-    });
+      })
+    );
 
-    if (peaksInstance?.player?.play()) {
-      peaksInstance.player?.pause();
-      setEditedSongIsPlaying(false);
+    if (mainSongPeaksInstance?.player?.play()) {
+      mainSongPeaksInstance.player?.pause();
+      dispatch(EditSongAppStateActions.setMainSongIsPlayingStatus(false));
     }
-    if (peaksInstance.segments) {
-      peaksInstance.segments?.removeAll();
-    }
-
-    if (peaksInstance.points) {
-      peaksInstance.points?.removeAll();
+    if (mainSongPeaksInstance.segments) {
+      mainSongPeaksInstance.segments?.removeAll();
     }
 
-    setEditedSegmantIsCreated(false);
+    if (mainSongPeaksInstance.points) {
+      mainSongPeaksInstance.points?.removeAll();
+    }
 
-    peaksInstance.setSource(options, function (error: Error) {
+    dispatch(EditSongAppStateActions.setMainSongEditedSegmantIsCreatedStatus(false));
+
+    mainSongPeaksInstance.setSource(options, function (error: Error) {
       if (error) [console.log(error.message)];
       setShowNotificationModal(false);
 
@@ -387,12 +445,12 @@ const EditSongAppMain = () => {
 
     const editedSongData = new Blob([data], { type: "audio/mp3" });
     const url = URL.createObjectURL(editedSongData);
-    setEditedSongURL(url);
+    dispatch(EditSongAppStateActions.setMainSongEditedSongURL(url));
     setBlobString(url);
   };
 
   const afadeFromHighToLowHandler = async (e: React.MouseEvent<SVGSVGElement>) => {
-    const segment = peaksInstance?.segments?.getSegment("mainEditedSegment");
+    const segment = mainSongPeaksInstance?.segments?.getSegment("mainEditedSegment");
     if (!segment || segment?.startTime === undefined || segment?.endTime === undefined) {
       return;
     }
@@ -429,29 +487,29 @@ const EditSongAppMain = () => {
         multiChannel: true,
       },
     };
-    setPointsStatus((prev) => {
-      console.log(prev);
-      return {
+
+    dispatch(
+      EditSongAppStateActions.setMainSongPointsStatus({
         start: false,
         finish: false,
-      };
-    });
+      })
+    );
 
-    if (peaksInstance?.player?.play()) {
-      peaksInstance.player?.pause();
-      setEditedSongIsPlaying(false);
+    if (mainSongPeaksInstance?.player?.play()) {
+      mainSongPeaksInstance.player?.pause();
+      dispatch(EditSongAppStateActions.setMainSongIsPlayingStatus(false));
     }
-    if (peaksInstance.segments) {
-      peaksInstance.segments?.removeAll();
-    }
-
-    if (peaksInstance.points) {
-      peaksInstance.points?.removeAll();
+    if (mainSongPeaksInstance.segments) {
+      mainSongPeaksInstance.segments?.removeAll();
     }
 
-    setEditedSegmantIsCreated(false);
+    if (mainSongPeaksInstance.points) {
+      mainSongPeaksInstance.points?.removeAll();
+    }
 
-    peaksInstance.setSource(options, function (error: Error) {
+    dispatch(EditSongAppStateActions.setMainSongEditedSegmantIsCreatedStatus(false));
+
+    mainSongPeaksInstance.setSource(options, function (error: Error) {
       if (error) [console.log(error.message)];
       setShowNotificationModal(false);
 
@@ -460,7 +518,7 @@ const EditSongAppMain = () => {
 
     const editedSongData = new Blob([data], { type: "audio/mp3" });
     const url = URL.createObjectURL(editedSongData);
-    setEditedSongURL(url);
+    dispatch(EditSongAppStateActions.setMainSongEditedSongURL(url));
     setBlobString(url);
   };
 
@@ -496,12 +554,12 @@ const EditSongAppMain = () => {
       },
     };
 
-    if (peaksInstance?.player?.play()) {
-      peaksInstance.player?.pause();
-      setEditedSongIsPlaying(false);
+    if (mainSongPeaksInstance?.player?.play()) {
+      mainSongPeaksInstance.player?.pause();
+      dispatch(EditSongAppStateActions.setMainSongIsPlayingStatus(false));
     }
 
-    peaksInstance.setSource(options, function (error: Error) {
+    mainSongPeaksInstance.setSource(options, function (error: Error) {
       if (error) [console.log(error.message)];
       setShowNotificationModal(false);
 
@@ -510,7 +568,7 @@ const EditSongAppMain = () => {
 
     const editedSongData = new Blob([data], { type: "audio/mp3" });
     const url = URL.createObjectURL(editedSongData);
-    setEditedSongURL(url);
+    dispatch(EditSongAppStateActions.setMainSongEditedSongURL(url));
     setBlobString(url);
   };
 
@@ -545,12 +603,12 @@ const EditSongAppMain = () => {
       },
     };
 
-    if (peaksInstance?.player?.play()) {
-      peaksInstance.player?.pause();
-      setEditedSongIsPlaying(false);
+    if (mainSongPeaksInstance?.player?.play()) {
+      mainSongPeaksInstance.player?.pause();
+      dispatch(EditSongAppStateActions.setMainSongIsPlayingStatus(false));
     }
 
-    peaksInstance.setSource(options, function (error: Error) {
+    mainSongPeaksInstance.setSource(options, function (error: Error) {
       if (error) [console.log(error.message)];
       setShowNotificationModal(false);
 
@@ -559,7 +617,7 @@ const EditSongAppMain = () => {
 
     const editedSongData = new Blob([data], { type: "audio/mp3" });
     const url = URL.createObjectURL(editedSongData);
-    setEditedSongURL(url);
+    dispatch(EditSongAppStateActions.setMainSongEditedSongURL(url));
     setBlobString(url);
   };
 
@@ -592,6 +650,33 @@ const EditSongAppMain = () => {
     //   // }
     // }
   };
+
+  const addOptionalAudioComponentHandler = () => {
+    setAddedOptionalAudioValue((prev) => {
+      // console.log(prev[prev.length - 1]);
+      if (prev.length) {
+        return [...prev, { value: prev[prev.length - 1].value + 1 }];
+      } else {
+        return [{ value: 1 }];
+      }
+    });
+  };
+
+  const addedOptionalAudioEl =
+    addedptionalAudioValue === undefined ? (
+      <div></div>
+    ) : (
+      addedptionalAudioValue.map((el) => {
+        return (
+          <div key={el.value}>
+            {" "}
+            <div className=" py-5 ">
+              <AddOptionalSongMain value={el.value}></AddOptionalSongMain>{" "}
+            </div>
+          </div>
+        );
+      })
+    );
 
   useEffect(() => {
     const options = {
@@ -683,7 +768,8 @@ const EditSongAppMain = () => {
           // }
         }
 
-        setPeaksInstance(peaks);
+        // setPeaksInstance(peaks);
+        dispatch(EditSongAppStateActions.setMainSongPeaksInstance(peaks));
 
         // peaks?.on("player.timeupdate", function (time) {
         //   // setPlaybackTime(Math.round(time * 1000) / 1000);
@@ -692,6 +778,15 @@ const EditSongAppMain = () => {
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (peaksAudioRef.current !== null) {
+      if (peaksAudioRef) {
+        peaksAudioRef.current.volume = songVolume / 100;
+        peaksAudioRef.current.muted = isSongMuted;
+      }
+    }
+  }, [songVolume, peaksAudioRef, isSongMuted]);
 
   return (
     <div className=" py-4">
@@ -731,11 +826,51 @@ const EditSongAppMain = () => {
         <div id="zoomview-container" className=" h-28 w-full"></div>
         <div id="overview-container" className=" h-28 w-full"></div>
         <audio ref={peaksAudioRef} id="peaksAudio" onEnded={endPeakSongHandler}></audio>
-        {peaksInstance && (
+        {mainSongPeaksInstance && (
           <div className=" flex items-center justify-center flex-col">
             <div className=" flex justify-around items-stretch gap-6 pt-5">
+              {peaksAudioRef?.current?.volume !== undefined && (
+                <div className=" flex justify-end items-center flex-row gap-5">
+                  <div
+                    style={{
+                      background: `linear-gradient(to top right, rgba(132, 204, 22, ${songVolume < 20 ? 0.2 : songVolume / 100} ),#E7F9FF )`,
+                    }}
+                    className=" py-1 px-1 flex-none cursor-pointer w-fit border-1 border-solid border-stone-200 rounded-xl bg-gradient-to-tr from-secoundaryColor to-cyan-100"
+                    // onClick={muteSongValueHandler}
+                  >
+                    {isSongMuted && (
+                      <FontAwesomeIcon className="fa-fw fa-2x" icon={faVolumeXmark} />
+                    )}
+                    {songVolume > 80 && !isSongMuted && (
+                      <FontAwesomeIcon className="fa-fw fa-2x" icon={faVolumeHigh} />
+                    )}
+                    {songVolume < 20 && !isSongMuted && (
+                      <FontAwesomeIcon className="fa-fw fa-2x" icon={faVolumeOff} />
+                    )}
+                    {songVolume >= 20 && songVolume <= 80 && !isSongMuted && (
+                      <FontAwesomeIcon className="fa-fw fa-2x" icon={faVolumeLow} />
+                    )}
+                  </div>
+                  <div className=" grow">
+                    <input
+                      style={{
+                        background: `linear-gradient(to right, rgba(132, 204, 22, ${songVolume < 20 ? 0.2 : songVolume / 100} ) ${songVolume}%, #ccc ${songVolume}%)`,
+                      }}
+                      className=" volume-slider cursor-pointer h-1 rounded-md w-full border-1 border-solid border-stone-600"
+                      type="range"
+                      min={0}
+                      max={100}
+                      value={songVolume}
+                      onChange={changeVolumeHandler}
+                    />
+                  </div>{" "}
+                </div>
+              )}
+            </div>
+
+            <div className=" flex justify-around items-stretch gap-6 pt-5">
               <div className=" flex justify-center items-center gap-6 py-5">
-                {editedSongIsPlaying ? (
+                {mainEditedSongIsPlaying ? (
                   <div onClick={onPause}>
                     <FontAwesomeIcon
                       icon={faPauseCircle}
@@ -840,31 +975,28 @@ const EditSongAppMain = () => {
                   className=" cursor-pointer fa-fw fa-2x hover:shadow-exerciseCardHowerShadow"
                 ></FontAwesomeIcon>
               </div>
-            </div>
-            {/* <div className="pt-5">
-              <div className=" w-full flex items-center justify-center">
-                <input
-                  className=" w-full hidden text-lg bg-slate-50 border-2 border-solid rounded-md border-cyan-900"
-                  onChange={changePeaks2FileHandler}
-                  type="file"
-                  id="thefilePeaks"
-                  accept="audio/*"
-                />
-                <label
-                  htmlFor="thefilePeaks"
-                  className=" buttonStandart fa-fw cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
-                >
-                  <span className=" py-2 px-3">
-                    <FontAwesomeIcon icon={faFileCirclePlus}></FontAwesomeIcon>
-                  </span>
-                  Добавить второй аудио файл
-                </label>
+              <div
+                onClick={addOptionalAudioComponentHandler}
+                className=" buttonStandart fa-fw cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
+              >
+                <FontAwesomeIcon
+                  // onClick={afadeFromHighToLowHandler}
+                  icon={faCirclePlus}
+                  // className=" cursor-pointer hover:shadow-exerciseCardHowerShadow"
+                ></FontAwesomeIcon>
+                <FontAwesomeIcon
+                  // onClick={afadeFromHighToLowHandler}
+                  icon={faMusic}
+                  className=" fa-fw"
+                ></FontAwesomeIcon>
               </div>
-            </div> */}
+            </div>
           </div>
         )}
 
-        <Add2SongMain></Add2SongMain>
+        <div>{addedOptionalAudioEl}</div>
+
+        {/* <Add2SongMain></Add2SongMain> */}
 
         {editedSongURL && (
           <div className=" py-5">
