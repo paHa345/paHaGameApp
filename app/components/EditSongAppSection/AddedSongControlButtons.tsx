@@ -1,4 +1,8 @@
+import { AppDispatch } from "@/app/store";
+import { EditSongAppStateActions, IEditSongAppSlice } from "@/app/store/EditSongAppSlice";
 import { IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
+import { FFmpeg } from "@ffmpeg/ffmpeg";
+import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import {
   faA,
   faArrowTrendDown,
@@ -18,51 +22,332 @@ import {
   faVolumeXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 interface IAddedSongControlsProps {
   peaksAudioRef: React.RefObject<HTMLMediaElement>;
+  value: number;
 }
 
-const AddedSongControlButtons = ({ peaksAudioRef }: IAddedSongControlsProps) => {
-  //   const songVolume = useSelector(
-  //     (state: IGuessThatSongSlice) => state.guessThatSongState.songVolume
-  //   )
+const AddedSongControlButtons = ({ peaksAudioRef, value }: IAddedSongControlsProps) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const ffmpegRef = useRef(new FFmpeg());
+
+  const optionalSongIsPlaying = useSelector(
+    (state: IEditSongAppSlice) =>
+      state.EditSongAppState.addeOptionalAudioValue[value].editedSongIsPlaying
+  );
+
+  const optionalSongVolume = useSelector(
+    (state: IEditSongAppSlice) => state.EditSongAppState.addeOptionalAudioValue[value].songVolume
+  );
+
+  const isSongMuted = useSelector(
+    (state: IEditSongAppSlice) => state.EditSongAppState.addeOptionalAudioValue[value].isSongMuted
+  );
+
+  const peaksInstanse = useSelector(
+    (state: IEditSongAppSlice) => state.EditSongAppState.addeOptionalAudioValue[value].peaksInstance
+  );
+
+  const pointsStatus = useSelector(
+    (state: IEditSongAppSlice) => state.EditSongAppState.addeOptionalAudioValue[value].pointsStatus
+  );
+
+  const editedSegmentIsCreated = useSelector(
+    (state: IEditSongAppSlice) =>
+      state.EditSongAppState.addeOptionalAudioValue[value].editedSegmentIsCreated
+  );
+
+  const onPlay = () => {
+    if (!peaksInstanse) return;
+    dispatch(
+      EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
+        value: value,
+        status: true,
+      })
+    );
+
+    peaksInstanse.player?.play();
+  };
+
+  const onPause = () => {
+    if (!peaksInstanse) return;
+    dispatch(
+      EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
+        value: value,
+        status: false,
+      })
+    );
+    peaksInstanse.player.pause();
+  };
+
+  const changeVolumeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (peaksAudioRef?.current?.volume === undefined) {
+      return;
+    }
+    dispatch(
+      EditSongAppStateActions.setOptionalSongVolume({
+        value: value,
+        songVolume: e.target.value,
+      })
+    );
+  };
+
+  const zoomOutHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    peaksInstanse.zoom?.zoomOut();
+  };
+  const zoomInHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    peaksInstanse.zoom?.zoomIn();
+  };
+
+  const setAPointHandler = (e: React.MouseEvent<SVGSVGElement>) => {
+    e.preventDefault();
+    if (peaksInstanse.points.getPoint("APoint")) {
+      return;
+    }
+
+    dispatch(
+      EditSongAppStateActions.setOptionalSongPointsStatus({
+        value: value,
+        pointsStatus: {
+          start: true,
+          finish: pointsStatus.finish,
+        },
+      })
+    );
+
+    peaksInstanse.points.add({
+      time: peaksInstanse?.player.getCurrentTime(),
+      labelText: "Начало",
+      color: "#e0491b",
+      id: "APoint",
+      editable: true,
+    });
+  };
+
+  const setBPointHandler = (e: React.MouseEvent<SVGSVGElement>) => {
+    e.preventDefault();
+    if (peaksInstanse.points.getPoint("BPoint")) {
+      return;
+    }
+
+    dispatch(
+      EditSongAppStateActions.setOptionalSongPointsStatus({
+        value: value,
+        pointsStatus: {
+          start: pointsStatus.start,
+          finish: true,
+        },
+      })
+    );
+
+    peaksInstanse.points.add({
+      time: peaksInstanse?.player.getCurrentTime(),
+      labelText: "Конец",
+      color: "#259c08",
+      id: "BPoint",
+      editable: true,
+    });
+  };
+
+  const editAudioFileHandler = (e: React.MouseEvent<SVGSVGElement>) => {
+    e.preventDefault();
+
+    if (!peaksInstanse?.points.getPoint("APoint") && !peaksInstanse?.points.getPoint("BPoint")) {
+      return;
+    }
+
+    if (peaksInstanse?.segments.getSegment("mainEditedSegment")) {
+      return;
+    }
+
+    const segment = peaksInstanse?.segments.add({
+      startTime: peaksInstanse?.points.getPoint("APoint").time,
+      endTime: peaksInstanse?.points.getPoint("BPoint").time,
+      editable: true,
+      color: "#5019a8",
+      id: "mainEditedSegment",
+      labelText: "Оставляемый фрагмент",
+    });
+    peaksInstanse?.points.removeAll();
+
+    dispatch(
+      EditSongAppStateActions.setOptionalSongPointsStatus({
+        value: value,
+        pointsStatus: {
+          start: false,
+          finish: false,
+        },
+      })
+    );
+
+    dispatch(
+      EditSongAppStateActions.setOptionalSongEditedSegmentIsCreatedStatus({
+        value: value,
+        status: true,
+      })
+    );
+  };
+
+  const deleteEditedSegmentHandler = (e: React.MouseEvent<SVGSVGElement>) => {
+    e.preventDefault();
+    peaksInstanse?.segments.removeAll();
+
+    dispatch(
+      EditSongAppStateActions.setOptionalSongEditedSegmentIsCreatedStatus({
+        value: value,
+        status: false,
+      })
+    );
+  };
+
+  const cutSongHandler = async () => {
+    const segment = peaksInstanse?.segments?.getSegment("mainEditedSegment");
+    if (!segment || segment?.startTime === undefined || segment?.endTime === undefined) {
+      return;
+    }
+    // это доделать
+    // dispatch(EditSongAppStateActions.setMainSongshowNotificationModalStatus(true));
+    const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
+    const ffmpeg = ffmpegRef.current;
+    ffmpeg.on("log", ({ message }) => {
+      // if (messageRef.current) messageRef.current.innerHTML = message;
+    });
+    // toBlobURL is used to bypass CORS issue, urls with the same
+    // domain can be used directly.
+    await ffmpeg.load({
+      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
+    });
+    // const ffmpeg = ffmpegRef.current;
+    await ffmpeg.writeFile(
+      "input.mp3",
+      await fetchFile(
+        peaksAudioRef?.current?.src
+        // "https://rhjm8idplsgk4vxo.public.blob.vercel-storage.com/ACDC_-_Back_In_Black_47830042%20%28mp3cut.net%29-Or96zvlcb9iq1w7OlpvMVloOV8Zmag.mp3"
+      )
+    );
+
+    const output = await ffmpeg.exec([
+      "-i",
+      // "input.avi",
+      // "-vf",
+      // "scale=144:-1",
+      // "-c:a",
+      // "aac",
+      // "-strict",
+      // "-2",
+      // "output.mp4",
+
+      "input.mp3",
+      "-ss",
+      // "5",
+      `${segment.startTime}`, // Start at 5 second
+      "-t",
+      `${segment.endTime - segment.startTime}`,
+
+      "output.mp3",
+    ]);
+
+    const data = (await ffmpeg.readFile("output.mp3")) as any;
+
+    dispatch(EditSongAppStateActions.setMainSongEditedSongData(data));
+
+    const options = {
+      mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" })),
+      webAudio: {
+        audioContext: new AudioContext(),
+        multiChannel: true,
+      },
+    };
+
+    dispatch(
+      EditSongAppStateActions.setOptionalSongPointsStatus({
+        value: value,
+        pointsStatus: {
+          start: false,
+          finish: false,
+        },
+      })
+    );
+
+    if (peaksInstanse?.player?.play()) {
+      peaksInstanse.player?.pause();
+      dispatch(
+        EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
+          value: value,
+          status: false,
+        })
+      );
+    }
+    if (peaksInstanse.segments) {
+      peaksInstanse.segments?.removeAll();
+    }
+
+    if (peaksInstanse.points) {
+      peaksInstanse.points?.removeAll();
+    }
+
+    dispatch(
+      EditSongAppStateActions.setOptionalSongEditedSegmentIsCreatedStatus({
+        value: value,
+        status: false,
+      })
+    );
+    peaksInstanse?.setSource(options, function (error: Error) {
+      if (error) [console.log(error.message)];
+
+      // Waveform updated
+      //   это доделать
+      //   dispatch(EditSongAppStateActions.setMainSongshowNotificationModalStatus(false));
+    });
+
+    const editedSongData = new Blob([data], { type: "audio/mp3" });
+    const url = URL.createObjectURL(editedSongData);
+    // это доделать
+    // dispatch(EditSongAppStateActions.setMainSongEditedSongURL(url));
+    // dispatch(EditSongAppStateActions.setMainSongEditedSongBlobString(url));
+  };
+
   return (
     <div>
-      {/* <div className=" flex items-center justify-center flex-col">
+      <div className=" flex items-center justify-center flex-col">
         <div className=" flex justify-around items-stretch gap-6 pt-5">
           {peaksAudioRef?.current?.volume !== undefined && (
             <div className=" flex justify-end items-center flex-row gap-5">
               <div
                 style={{
-                  background: `linear-gradient(to top right, rgba(132, 204, 22, ${songVolume < 20 ? 0.2 : songVolume / 100} ),#E7F9FF )`,
+                  background: `linear-gradient(to top right, rgba(132, 204, 22, ${optionalSongVolume < 20 ? 0.2 : optionalSongVolume / 100} ),#E7F9FF )`,
                 }}
                 className=" py-1 px-1 flex-none cursor-pointer w-fit border-1 border-solid border-stone-200 rounded-xl bg-gradient-to-tr from-secoundaryColor to-cyan-100"
                 // onClick={muteSongValueHandler}
               >
                 {isSongMuted && <FontAwesomeIcon className="fa-fw fa-2x" icon={faVolumeXmark} />}
-                {songVolume > 80 && !isSongMuted && (
+                {optionalSongVolume > 80 && !isSongMuted && (
                   <FontAwesomeIcon className="fa-fw fa-2x" icon={faVolumeHigh} />
                 )}
-                {songVolume < 20 && !isSongMuted && (
+                {optionalSongVolume < 20 && !isSongMuted && (
                   <FontAwesomeIcon className="fa-fw fa-2x" icon={faVolumeOff} />
                 )}
-                {songVolume >= 20 && songVolume <= 80 && !isSongMuted && (
+                {optionalSongVolume >= 20 && optionalSongVolume <= 80 && !isSongMuted && (
                   <FontAwesomeIcon className="fa-fw fa-2x" icon={faVolumeLow} />
                 )}
               </div>
               <div className=" grow">
                 <input
                   style={{
-                    background: `linear-gradient(to right, rgba(132, 204, 22, ${songVolume < 20 ? 0.2 : songVolume / 100} ) ${songVolume}%, #ccc ${songVolume}%)`,
+                    background: `linear-gradient(to right, rgba(132, 204, 22, ${optionalSongVolume < 20 ? 0.2 : optionalSongVolume / 100} ) ${optionalSongVolume}%, #ccc ${optionalSongVolume}%)`,
                   }}
                   className=" volume-slider cursor-pointer h-1 rounded-md w-full border-1 border-solid border-stone-600"
                   type="range"
                   min={0}
                   max={100}
-                  value={songVolume}
+                  value={optionalSongVolume}
                   onChange={changeVolumeHandler}
                 />
               </div>{" "}
@@ -72,7 +357,7 @@ const AddedSongControlButtons = ({ peaksAudioRef }: IAddedSongControlsProps) => 
 
         <div className=" flex justify-around items-stretch gap-6 pt-5">
           <div className=" flex justify-center items-center gap-6 py-5">
-            {editedSongIsPlaying ? (
+            {optionalSongIsPlaying ? (
               <div onClick={onPause}>
                 <FontAwesomeIcon
                   icon={faPauseCircle}
@@ -119,7 +404,7 @@ const AddedSongControlButtons = ({ peaksAudioRef }: IAddedSongControlsProps) => 
                   className=" cursor-pointer fa-fw hover:shadow-exerciseCardHowerShadow"
                 ></FontAwesomeIcon>
               </div>
-              {!editedSegmantIsCreated && (
+              {!editedSegmentIsCreated && (
                 <div>
                   <FontAwesomeIcon
                     onClick={editAudioFileHandler}
@@ -128,10 +413,10 @@ const AddedSongControlButtons = ({ peaksAudioRef }: IAddedSongControlsProps) => 
                   ></FontAwesomeIcon>
                 </div>
               )}
-              {editedSegmantIsCreated && (
+              {editedSegmentIsCreated && (
                 <div>
                   <FontAwesomeIcon
-                    onClick={deleteEditedSegmantHandler}
+                    onClick={deleteEditedSegmentHandler}
                     icon={faLinkSlash}
                     className={` cursor-pointer text-zinc-900 hover:shadow-exerciseCardHowerShadow fa-fw fa-2x `}
                   ></FontAwesomeIcon>
@@ -147,7 +432,8 @@ const AddedSongControlButtons = ({ peaksAudioRef }: IAddedSongControlsProps) => 
             </div>
           </div>
         </div>
-        <div className=" flex justify-around items-stretch gap-6 pt-5">
+
+        {/* <div className=" flex justify-around items-stretch gap-6 pt-5">
           <div>
             <FontAwesomeIcon
               onClick={volumeLowHandler}
@@ -192,8 +478,8 @@ const AddedSongControlButtons = ({ peaksAudioRef }: IAddedSongControlsProps) => 
               className=" fa-fw"
             ></FontAwesomeIcon>
           </div>
-        </div>
-      </div> */}
+        </div> */}
+      </div>
     </div>
   );
 };

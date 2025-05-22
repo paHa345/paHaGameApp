@@ -1,34 +1,50 @@
+import { AppDispatch } from "@/app/store";
+import {
+  EditSongAppSlice,
+  EditSongAppStateActions,
+  IEditSongAppSlice,
+} from "@/app/store/EditSongAppSlice";
 import { faFileCirclePlus, faPauseCircle, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Peaks from "peaks.js";
 import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import AddedSongControlButtons from "./AddedSongControlButtons";
 
 interface IAddOptionalAudioProps {
   value: number;
 }
 
-const AddOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
-  const [peaksInstance2, setPeaksInstance2] = useState(null) as any;
+const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const peaksAudioRef2 = useRef<HTMLMediaElement>(null);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
 
-  const [song2IsPlaying, setSong2IsPlaying] = useState(false);
-  const peaksAudioRef2 = useRef<HTMLMediaElement>(null);
+  const optionalSongIsPlaying = useSelector(
+    (state: IEditSongAppSlice) =>
+      state.EditSongAppState.addeOptionalAudioValue[value].editedSongIsPlaying
+  );
+
+  const peaksInstance = useSelector(
+    (state: IEditSongAppSlice) => state.EditSongAppState.addeOptionalAudioValue[value].peaksInstance
+  );
+
+  const songVolume = useSelector(
+    (state: IEditSongAppSlice) => state.EditSongAppState.addeOptionalAudioValue[value].songVolume
+  );
+
+  const isSongMuted = useSelector(
+    (state: IEditSongAppSlice) => state.EditSongAppState.addeOptionalAudioValue[value].isSongMuted
+  );
 
   const endPeakSongHandler = () => {
-    setSong2IsPlaying(false);
-  };
-
-  const onPlay = () => {
-    if (!peaksInstance2) return;
-    setSong2IsPlaying(true);
-
-    peaksInstance2.player?.play();
-  };
-  const onPause = () => {
-    if (!peaksInstance2) return;
-    setSong2IsPlaying(false);
-
-    peaksInstance2.player.pause();
+    // setSong2IsPlaying(false);
+    dispatch(
+      EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
+        value: value,
+        status: false,
+      })
+    );
   };
 
   const changePeaks2FileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,20 +80,26 @@ const AddOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
       //     };
       //   });
 
-      if (peaksInstance2?.player?.play()) {
-        peaksInstance2.player?.pause();
-        setSong2IsPlaying(false);
+      if (peaksInstance?.player?.play()) {
+        peaksInstance.player?.pause();
+        // setSong2IsPlaying(false);
+        dispatch(
+          EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
+            value: value,
+            status: false,
+          })
+        );
       }
-      if (peaksInstance2?.segments) {
-        peaksInstance2?.segments?.removeAll();
+      if (peaksInstance?.segments) {
+        peaksInstance?.segments?.removeAll();
       }
 
-      if (peaksInstance2?.points) {
-        peaksInstance2?.points?.removeAll();
+      if (peaksInstance?.points) {
+        peaksInstance?.points?.removeAll();
       }
 
-      if (peaksInstance2) {
-        peaksInstance2?.setSource(options2, function (error: Error) {
+      if (peaksInstance) {
+        peaksInstance?.setSource(options2, function (error: Error) {
           setShowNotificationModal(false);
           if (error) [console.log(error.message)];
 
@@ -111,7 +133,7 @@ const AddOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
     } as any;
 
     if (navigator) {
-      Peaks.init(options2, function (err, peaks2) {
+      Peaks.init(options2, function (err, optionalPeaks) {
         if (err) {
           console.error("Failed to initialize Peaks instance: " + err.message);
           return;
@@ -119,7 +141,13 @@ const AddOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
         if (!err) {
         }
 
-        setPeaksInstance2(peaks2);
+        // setPeaksInstance2(optionalPeaks);
+        dispatch(
+          EditSongAppStateActions.setOptionalSongPeaksInstance({
+            value: value,
+            peaksInstance: optionalPeaks,
+          })
+        );
 
         // peaks?.on("player.timeupdate", function (time) {
         //   // setPlaybackTime(Math.round(time * 1000) / 1000);
@@ -128,6 +156,15 @@ const AddOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (peaksAudioRef2.current !== null) {
+      if (peaksAudioRef2) {
+        peaksAudioRef2.current.volume = songVolume / 100;
+        peaksAudioRef2.current.muted = isSongMuted;
+      }
+    }
+  }, [songVolume, peaksAudioRef2, isSongMuted]);
   return (
     <div>
       <div>
@@ -137,23 +174,27 @@ const AddOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
         <div id={`overview-container${value}`} className=" h-14 w-full"></div>
 
         {peaksAudioRef2?.current && (
-          <div className=" flex justify-center items-center gap-6 py-5">
-            {song2IsPlaying ? (
-              <div onClick={onPause}>
-                <FontAwesomeIcon
-                  icon={faPauseCircle}
-                  className="fa-fw fa-2x cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
-                ></FontAwesomeIcon>
-              </div>
-            ) : (
-              <div className=" rounded-3xl" onClick={onPlay}>
-                <FontAwesomeIcon
-                  icon={faPlayCircle}
-                  className="fa-fw fa-2x cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
-                ></FontAwesomeIcon>
-              </div>
-            )}
-          </div>
+          <AddedSongControlButtons
+            value={value}
+            peaksAudioRef={peaksAudioRef2}
+          ></AddedSongControlButtons>
+          // <div className=" flex justify-center items-center gap-6 py-5">
+          //   {optionalSongIsPlaying ? (
+          //     <div onClick={onPause}>
+          //       <FontAwesomeIcon
+          //         icon={faPauseCircle}
+          //         className="fa-fw fa-2x cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
+          //       ></FontAwesomeIcon>
+          //     </div>
+          //   ) : (
+          //     <div className=" rounded-3xl" onClick={onPlay}>
+          //       <FontAwesomeIcon
+          //         icon={faPlayCircle}
+          //         className="fa-fw fa-2x cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
+          //       ></FontAwesomeIcon>
+          //     </div>
+          //   )}
+          // </div>
         )}
       </div>
 
@@ -181,4 +222,4 @@ const AddOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
   );
 };
 
-export default AddOptionalSongMain;
+export default AddedOptionalSongMain;
