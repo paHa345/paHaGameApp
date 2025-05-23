@@ -349,7 +349,14 @@ const EditSongAppMain = () => {
           <MainSongControlButtons peaksAudioRef={peaksAudioRef}></MainSongControlButtons>
         )}
 
-        <div>{addedOptionalAudioEl}</div>
+        <div>
+          {addedptionalAudioValue.length > 0 && (
+            <div className=" py-4 my-6 border-y-4 border-t-stone-400 ">
+              <h1 className=" text-3xl text-center">Дополнительные аудио</h1>
+            </div>
+          )}
+          {addedOptionalAudioEl}
+        </div>
 
         {editedSongURL && (
           <div className=" py-5">

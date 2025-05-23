@@ -10,6 +10,7 @@ import Peaks from "peaks.js";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddedSongControlButtons from "./AddedSongControlButtons";
+import NotificationEditSongMain from "./NotificationEditSongMain";
 
 interface IAddOptionalAudioProps {
   value: number;
@@ -18,7 +19,7 @@ interface IAddOptionalAudioProps {
 const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const peaksAudioRef2 = useRef<HTMLMediaElement>(null);
-  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  // const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   const optionalSongIsPlaying = useSelector(
     (state: IEditSongAppSlice) =>
@@ -37,12 +38,17 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
     (state: IEditSongAppSlice) => state.EditSongAppState.addeOptionalAudioValue[value].isSongMuted
   );
 
+  const showNotificationModal = useSelector(
+    (state: IEditSongAppSlice) =>
+      state.EditSongAppState.addeOptionalAudioValue[value].showNotificationModal
+  );
+
   const endPeakSongHandler = () => {
     // setSong2IsPlaying(false);
     dispatch(
       EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
         value: value,
-        status: false,
+        editedSongIsPlaying: false,
       })
     );
   };
@@ -50,9 +56,15 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
   const changePeaks2FileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files === null) return;
 
-    console.log(value);
+    console.log(showNotificationModal);
 
-    setShowNotificationModal(true);
+    // setShowNotificationModal(true);
+    dispatch(
+      EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
+        value: value,
+        status: true,
+      })
+    );
     // setEditedSongURL(undefined);
     // setEditedSegmantIsCreated(false);
 
@@ -86,7 +98,7 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
         dispatch(
           EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
             value: value,
-            status: false,
+            editedSongIsPlaying: false,
           })
         );
       }
@@ -100,14 +112,26 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
 
       if (peaksInstance) {
         peaksInstance?.setSource(options2, function (error: Error) {
-          setShowNotificationModal(false);
+          // setShowNotificationModal(false);
+          dispatch(
+            EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
+              value: value,
+              status: false,
+            })
+          );
           if (error) [console.log(error.message)];
 
           // Waveform updated
         });
       } else {
         setTimeout(() => {
-          setShowNotificationModal(false);
+          // setShowNotificationModal(false);
+          dispatch(
+            EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
+              value: value,
+              status: false,
+            })
+          );
         }, 5000);
       }
     }
@@ -166,7 +190,12 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
     }
   }, [songVolume, peaksAudioRef2, isSongMuted]);
   return (
-    <div>
+    <div className=" py-5  shadow-exerciseCardShadow">
+      <div>
+        <NotificationEditSongMain
+          showNotificationModal={showNotificationModal}
+        ></NotificationEditSongMain>
+      </div>
       <div>
         <audio ref={peaksAudioRef2} id={`peaksAudio${value}`} onEnded={endPeakSongHandler}></audio>
 
