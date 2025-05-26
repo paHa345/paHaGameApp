@@ -869,21 +869,6 @@ const AddedSongControlButtons = ({ peaksAudioRef, value }: IAddedSongControlsPro
               className=" cursor-pointer fa-fw fa-2x hover:shadow-exerciseCardHowerShadow"
             ></FontAwesomeIcon>
           </div>
-          {/* <div
-            onClick={addOptionalAudioComponentHandler}
-            className=" buttonStandart fa-fw cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
-          >
-            <FontAwesomeIcon
-              // onClick={afadeFromHighToLowHandler}
-              icon={faCirclePlus}
-              // className=" cursor-pointer hover:shadow-exerciseCardHowerShadow"
-            ></FontAwesomeIcon>
-            <FontAwesomeIcon
-              // onClick={afadeFromHighToLowHandler}
-              icon={faMusic}
-              className=" fa-fw"
-            ></FontAwesomeIcon>
-          </div> */}
         </div>
       </div>
     </div>

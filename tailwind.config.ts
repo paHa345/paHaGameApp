@@ -49,7 +49,8 @@ export default {
       boxShadow: {
         exerciseCardShadow: "0 10px 15px rgb(0 0 0/5%)",
         exerciseCardHowerShadow: "15px 10px 15px rgb(0 0 0/5%)",
-
+        optionalAudioElementShadow:
+          "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px",
         cardElementShadow: "0.3em 0.3em 1em rgba(0, 0, 0, 0.3)",
         cardElementStartShadow: "0.2em 0.2em 1em rgba(0, 0, 0, 0.2)",
         cardButtonShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",

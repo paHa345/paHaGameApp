@@ -100,6 +100,8 @@ const EditSongAppMain = () => {
       var files = e.target.files;
       audioElement.src = URL.createObjectURL(files[0]);
 
+      console.log(URL.createObjectURL(files[0]));
+
       dispatch(EditSongAppStateActions.setMainSongEditedSongName(files[0].name));
 
       const options = {
@@ -349,15 +351,6 @@ const EditSongAppMain = () => {
           <MainSongControlButtons peaksAudioRef={peaksAudioRef}></MainSongControlButtons>
         )}
 
-        <div>
-          {addedptionalAudioValue.length > 0 && (
-            <div className=" py-4 my-6 border-y-4 border-t-stone-400 ">
-              <h1 className=" text-3xl text-center">Дополнительные аудио</h1>
-            </div>
-          )}
-          {addedOptionalAudioEl}
-        </div>
-
         {editedSongURL && (
           <div className=" py-5">
             <div
@@ -371,6 +364,15 @@ const EditSongAppMain = () => {
             </div>
           </div>
         )}
+
+        <div>
+          {addedptionalAudioValue.length > 0 && (
+            <div className=" py-4 my-6 border-t-4 border-t-stone-400 ">
+              <h1 className=" text-3xl text-center">Дополнительные аудио</h1>
+            </div>
+          )}
+          {addedOptionalAudioEl}
+        </div>
       </div>
     </div>
   );

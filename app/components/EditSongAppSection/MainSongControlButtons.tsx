@@ -11,6 +11,7 @@ import {
   faCirclePlus,
   faCut,
   faEdit,
+  faLayerGroup,
   faLinkSlash,
   faMinusCircle,
   faMusic,
@@ -23,6 +24,7 @@ import {
   faVolumeXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import FileSaver from "file-saver";
 import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -34,6 +36,8 @@ const MainSongControlButtons = ({ peaksAudioRef }: IMainSongControlsProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const ffmpegRef = useRef(new FFmpeg());
+
+  const concatFfmpegRef = useRef(new FFmpeg());
 
   const mainSongPeaksInstance = useSelector(
     (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.peaksInstance
@@ -59,7 +63,7 @@ const MainSongControlButtons = ({ peaksAudioRef }: IMainSongControlsProps) => {
     (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.editedSongName
   );
 
-  const blobString = useSelector(
+  const mainAudiobBlobString = useSelector(
     (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.blobString
   );
 
@@ -610,6 +614,57 @@ const MainSongControlButtons = ({ peaksAudioRef }: IMainSongControlsProps) => {
     dispatch(EditSongAppStateActions.setAddedOptionalAudioValue());
   };
 
+  const joinAudioHandler = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    console.log("Blobs URLs");
+    console.log(mainAudiobBlobString);
+    console.log(editedSongURL);
+
+    const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
+    const ffmpeg = ffmpegRef.current;
+    ffmpeg.on("log", ({ message }) => {
+      // if (messageRef.current) messageRef.current.innerHTML = message;
+    });
+    // toBlobURL is used to bypass CORS issue, urls with the same
+    // domain can be used directly.
+    await ffmpeg.load({
+      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
+    });
+
+    await ffmpeg.writeFile("input.mp3", await fetchFile(peaksAudioRef?.current?.src));
+
+    const concatFfmpeg = concatFfmpegRef.current;
+    concatFfmpeg.on("log", ({ message }) => {
+      // if (messageRef.current) messageRef.current.innerHTML = message;
+    });
+
+    await concatFfmpeg.load({
+      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
+    });
+    await concatFfmpeg.writeFile("input2.mp3", await fetchFile(peaksAudioRef?.current?.src));
+
+    console.log(concatFfmpeg);
+
+    const output = await ffmpeg.exec([
+      "-i",
+      "input.mp3",
+      "-i",
+      "input.mp3",
+      "-filter_complex",
+      "[0:a][1:a]concat=n=2:v=0:a=1",
+      "output.mp3",
+    ]);
+
+    const data = (await ffmpeg.readFile("output.mp3")) as any;
+    if (editedSongName) {
+      const nameString = `${editedSongName.split(".")[0]}_(paHaCutSongApp)${Date.now()}.mp3`;
+
+      FileSaver.saveAs(new Blob([data.buffer], { type: "audio/mp3" }), nameString);
+    }
+  };
+
   return (
     <div>
       <div className=" flex items-center justify-center flex-col">
@@ -772,6 +827,19 @@ const MainSongControlButtons = ({ peaksAudioRef }: IMainSongControlsProps) => {
               icon={faMusic}
               className=" fa-fw"
             ></FontAwesomeIcon>
+          </div>
+        </div>
+        <div className=" flex justify-around items-stretch gap-6 pt-5">
+          <div
+            onClick={joinAudioHandler}
+            className="  flex items-center justify-center buttonStandart fa-fw cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
+          >
+            <FontAwesomeIcon
+              // onClick={afadeFromHighToLowHandler}
+              icon={faLayerGroup}
+              className=" fa-fw"
+            ></FontAwesomeIcon>
+            <h1>Склеить</h1>
           </div>
         </div>
       </div>
