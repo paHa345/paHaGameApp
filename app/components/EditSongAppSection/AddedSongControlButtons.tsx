@@ -262,6 +262,8 @@ const AddedSongControlButtons = ({ peaksAudioRef, value }: IAddedSongControlsPro
 
     const data = (await ffmpeg.readFile("output.mp3")) as any;
 
+    dispatch(EditSongAppStateActions.setOptionalFfmpeg({ value: value, ffmpeg: ffmpeg }));
+
     // dispatch(EditSongAppStateActions.setMainSongEditedSongData(data));
     dispatch(
       EditSongAppStateActions.setOptionalSongData({

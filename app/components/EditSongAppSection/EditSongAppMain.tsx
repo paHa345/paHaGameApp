@@ -100,7 +100,9 @@ const EditSongAppMain = () => {
       var files = e.target.files;
       audioElement.src = URL.createObjectURL(files[0]);
 
-      console.log(URL.createObjectURL(files[0]));
+      dispatch(
+        EditSongAppStateActions.setMainSongEditedSongBlobString(URL.createObjectURL(files[0]))
+      );
 
       dispatch(EditSongAppStateActions.setMainSongEditedSongName(files[0].name));
 

@@ -95,6 +95,12 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
       audioElement.src = URL.createObjectURL(files[0]);
 
       // setEditedSongName(files[0].name);
+      dispatch(
+        EditSongAppStateActions.setOptionalSongEditedSongBlobString({
+          value: value,
+          blobString: URL.createObjectURL(files[0]),
+        })
+      );
 
       dispatch(
         EditSongAppStateActions.setOptionalSongEditedSongName({

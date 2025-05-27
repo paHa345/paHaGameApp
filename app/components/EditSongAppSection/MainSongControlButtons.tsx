@@ -37,8 +37,6 @@ const MainSongControlButtons = ({ peaksAudioRef }: IMainSongControlsProps) => {
 
   const ffmpegRef = useRef(new FFmpeg());
 
-  const concatFfmpegRef = useRef(new FFmpeg());
-
   const mainSongPeaksInstance = useSelector(
     (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.peaksInstance
   );
@@ -85,6 +83,10 @@ const MainSongControlButtons = ({ peaksAudioRef }: IMainSongControlsProps) => {
 
   const songVolume = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.songVolume
+  );
+
+  const optionalAudioData = useSelector(
+    (state: IEditSongAppSlice) => state.EditSongAppState.addeOptionalAudioValue
   );
 
   const onPlay = () => {
@@ -616,9 +618,6 @@ const MainSongControlButtons = ({ peaksAudioRef }: IMainSongControlsProps) => {
 
   const joinAudioHandler = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    console.log("Blobs URLs");
-    console.log(mainAudiobBlobString);
-    console.log(editedSongURL);
 
     const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
     const ffmpeg = ffmpegRef.current;
@@ -632,30 +631,69 @@ const MainSongControlButtons = ({ peaksAudioRef }: IMainSongControlsProps) => {
       wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
     });
 
-    await ffmpeg.writeFile("input.mp3", await fetchFile(peaksAudioRef?.current?.src));
+    // await ffmpeg.writeFile("input.mp3", await fetchFile(peaksAudioRef?.current?.src));
 
-    const concatFfmpeg = concatFfmpegRef.current;
-    concatFfmpeg.on("log", ({ message }) => {
-      // if (messageRef.current) messageRef.current.innerHTML = message;
-    });
+    // try {
+    //   await ffmpeg.writeFile("concatInput.mp3", await fetchFile(optionalAudioData[0].blobString));
+    // } catch (error) {
+    //   console.log(error);
+    // }
 
-    await concatFfmpeg.load({
-      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
-      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
-    });
-    await concatFfmpeg.writeFile("input2.mp3", await fetchFile(peaksAudioRef?.current?.src));
+    // console.log(ffmpeg);
 
-    console.log(concatFfmpeg);
+    let resultURL = "";
 
-    const output = await ffmpeg.exec([
-      "-i",
-      "input.mp3",
-      "-i",
-      "input.mp3",
-      "-filter_complex",
-      "[0:a][1:a]concat=n=2:v=0:a=1",
-      "output.mp3",
-    ]);
+    for await (const optionalAudioEl of optionalAudioData) {
+      console.log(optionalAudioEl.value);
+      if (optionalAudioEl.value === 0) {
+        console.log("first");
+        await ffmpeg.writeFile("input.mp3", await fetchFile(peaksAudioRef?.current?.src));
+        await ffmpeg.writeFile(
+          "concatInput.mp3",
+          await fetchFile(optionalAudioData[optionalAudioEl.value].blobString)
+        );
+        await ffmpeg.exec([
+          "-i",
+          `input.mp3`,
+          "-i",
+          `concatInput.mp3`,
+          "-filter_complex",
+          "[0:a][1:a]concat=n=2:v=0:a=1",
+          "output.mp3",
+        ]);
+
+        const data = (await ffmpeg.readFile("output.mp3")) as any;
+        resultURL = URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" }));
+        // blob url
+        console.log(resultURL);
+      } else {
+        console.log("secound");
+        await ffmpeg.writeFile("input.mp3", await fetchFile(resultURL));
+        await ffmpeg.writeFile(
+          "concatInput.mp3",
+          await fetchFile(optionalAudioData[optionalAudioEl.value].blobString)
+        );
+        await ffmpeg.exec([
+          "-i",
+          `input.mp3`,
+          "-i",
+          `concatInput.mp3`,
+          "-filter_complex",
+          "[0:a][1:a]concat=n=2:v=0:a=1",
+          "output.mp3",
+        ]);
+      }
+    }
+
+    // const output = await ffmpeg.exec([
+    //   "-i",
+    //   `input.mp3`,
+    //   "-i",
+    //   `concatInput.mp3`,
+    //   "-filter_complex",
+    //   "[0:a][1:a]concat=n=2:v=0:a=1",
+    //   "output.mp3",
+    // ]);
 
     const data = (await ffmpeg.readFile("output.mp3")) as any;
     if (editedSongName) {
@@ -817,30 +855,22 @@ const MainSongControlButtons = ({ peaksAudioRef }: IMainSongControlsProps) => {
             onClick={addOptionalAudioComponentHandler}
             className=" buttonStandart fa-fw cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
           >
-            <FontAwesomeIcon
-              // onClick={afadeFromHighToLowHandler}
-              icon={faCirclePlus}
-              // className=" cursor-pointer hover:shadow-exerciseCardHowerShadow"
-            ></FontAwesomeIcon>
-            <FontAwesomeIcon
-              // onClick={afadeFromHighToLowHandler}
-              icon={faMusic}
-              className=" fa-fw"
-            ></FontAwesomeIcon>
+            <FontAwesomeIcon icon={faCirclePlus}></FontAwesomeIcon>
+            <FontAwesomeIcon icon={faMusic} className=" fa-fw"></FontAwesomeIcon>
           </div>
         </div>
         <div className=" flex justify-around items-stretch gap-6 pt-5">
-          <div
-            onClick={joinAudioHandler}
-            className="  flex items-center justify-center buttonStandart fa-fw cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
-          >
-            <FontAwesomeIcon
-              // onClick={afadeFromHighToLowHandler}
-              icon={faLayerGroup}
-              className=" fa-fw"
-            ></FontAwesomeIcon>
-            <h1>Склеить</h1>
-          </div>
+          {optionalAudioData.length > 0 &&
+            optionalAudioData.length < 3 &&
+            optionalAudioData[0].blobString && (
+              <div
+                onClick={joinAudioHandler}
+                className="  flex items-center justify-center buttonStandart fa-fw cursor-pointer rounded-full hover:shadow-exerciseCardHowerShadow"
+              >
+                <FontAwesomeIcon icon={faLayerGroup} className=" fa-fw"></FontAwesomeIcon>
+                <h1>Склеить</h1>
+              </div>
+            )}
         </div>
       </div>
     </div>

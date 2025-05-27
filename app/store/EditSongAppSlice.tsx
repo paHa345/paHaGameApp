@@ -1,3 +1,4 @@
+import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { createSlice } from "@reduxjs/toolkit";
 import { RefObject, useRef } from "react";
 
@@ -41,6 +42,7 @@ export interface IEditSongAppSlice {
       editedSongName?: string;
       blobString?: string;
       editedSongData?: any;
+      optionalFfmpeg?: FFmpeg;
     }[];
   };
 }
@@ -79,6 +81,7 @@ interface IEditSongAppState {
     editedSongName?: string;
     blobString?: string;
     editedSongData?: any;
+    optionalFfmpeg?: FFmpeg;
   }[];
 }
 
@@ -227,6 +230,9 @@ export const EditSongAppSlice = createSlice({
     },
     setOptionalSongData(state, action: ISongActions<{ value: number; songData: any }>) {
       state.addeOptionalAudioValue[action.payload.value].editedSongData = action.payload.songData;
+    },
+    setOptionalFfmpeg(state, action: ISongActions<{ value: number; ffmpeg: FFmpeg }>) {
+      state.addeOptionalAudioValue[action.payload.value].optionalFfmpeg = action.payload.ffmpeg;
     },
   },
   extraReducers: (builder) => {},

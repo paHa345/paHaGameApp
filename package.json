@@ -32,6 +32,7 @@
     "@types/telegram-web-app": "^7.10.1",
     "@types/ws": "^8.5.13",
     "@vercel/blob": "^0.26.0",
+    "audioconcat": "^0.1.4",
     "bcryptjs": "^2.4.3",
     "components": "^0.1.0",
     "eslint-plugin-prettier": "^5.2.1",
