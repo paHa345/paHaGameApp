@@ -5,6 +5,8 @@ import {
   IEditSongAppSlice,
 } from "@/app/store/EditSongAppSlice";
 import {
+  faCircleXmark,
+  faCross,
   faDownload,
   faFileCirclePlus,
   faPauseCircle,
@@ -17,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AddedSongControlButtons from "./AddedSongControlButtons";
 import NotificationEditSongMain from "./NotificationEditSongMain";
 import FileSaver from "file-saver";
+import NotificationDeleteOptionalSongModal from "./NotificationDeleteOptionalSongModal";
 
 interface IAddOptionalAudioProps {
   value: number;
@@ -25,12 +28,6 @@ interface IAddOptionalAudioProps {
 const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const peaksAudioRef2 = useRef<HTMLMediaElement>(null);
-  // const [showNotificationModal, setShowNotificationModal] = useState(false);
-
-  const optionalSongIsPlaying = useSelector(
-    (state: IEditSongAppSlice) =>
-      state.EditSongAppState.addeOptionalAudioValue[value].editedSongIsPlaying
-  );
 
   const peaksInstance = useSelector(
     (state: IEditSongAppSlice) => state.EditSongAppState.addeOptionalAudioValue[value].peaksInstance
@@ -62,7 +59,6 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
   );
 
   const endPeakSongHandler = () => {
-    // setSong2IsPlaying(false);
     dispatch(
       EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
         value: value,
@@ -74,97 +70,98 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
   const changePeaks2FileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files === null) return;
 
-    console.log(showNotificationModal);
-
-    // setShowNotificationModal(true);
-    dispatch(
-      EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
-        value: value,
-        status: true,
-      })
-    );
-    // setEditedSongURL(undefined);
-    // setEditedSegmantIsCreated(false);
-
-    const audioElement = peaksAudioRef2.current;
-
-    if (audioElement) {
-      // audioElement.crossOrigin = "anonymous";
-
-      var files = e.target.files;
-      audioElement.src = URL.createObjectURL(files[0]);
-
-      // setEditedSongName(files[0].name);
+    try {
       dispatch(
-        EditSongAppStateActions.setOptionalSongEditedSongBlobString({
+        EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
           value: value,
-          blobString: URL.createObjectURL(files[0]),
+          status: true,
         })
       );
 
-      dispatch(
-        EditSongAppStateActions.setOptionalSongEditedSongName({
-          value: value,
-          editedSongName: files[0].name,
-        })
-      );
+      const audioElement = peaksAudioRef2.current;
 
-      const options2 = {
-        mediaUrl: URL.createObjectURL(files[0]),
-        webAudio: {
-          audioContext: new AudioContext(),
-          multiChannel: true,
-        },
-      };
-      //   setPointsStatus((prev) => {
-      //     return {
-      //       start: false,
-      //       finish: false,
-      //     };
-      //   });
+      if (audioElement) {
+        // audioElement.crossOrigin = "anonymous";
 
-      if (peaksInstance?.player?.play()) {
-        peaksInstance.player?.pause();
-        // setSong2IsPlaying(false);
+        var files = e.target.files;
+        audioElement.src = URL.createObjectURL(files[0]);
+
         dispatch(
-          EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
+          EditSongAppStateActions.setOptionalSongEditedSongBlobString({
             value: value,
-            editedSongIsPlaying: false,
+            blobString: URL.createObjectURL(files[0]),
+          })
+        );
+
+        dispatch(
+          EditSongAppStateActions.setOptionalSongEditedSongName({
+            value: value,
+            editedSongName: files[0].name,
+          })
+        );
+
+        const options2 = {
+          mediaUrl: URL.createObjectURL(files[0]),
+          webAudio: {
+            audioContext: new AudioContext(),
+            multiChannel: true,
+          },
+        };
+
+        if (peaksInstance?.player?.play()) {
+          peaksInstance.player?.pause();
+          dispatch(
+            EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
+              value: value,
+              editedSongIsPlaying: false,
+            })
+          );
+        }
+        if (peaksInstance?.segments) {
+          peaksInstance?.segments?.removeAll();
+        }
+
+        if (peaksInstance?.points) {
+          peaksInstance?.points?.removeAll();
+        }
+
+        if (peaksInstance) {
+          peaksInstance?.setSource(options2, function (error: Error) {
+            dispatch(
+              EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
+                value: value,
+                status: false,
+              })
+            );
+            if (error) [console.log(error.message)];
+
+            // Waveform updated
+          });
+        } else {
+          setTimeout(() => {
+            dispatch(
+              EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
+                value: value,
+                status: false,
+              })
+            );
+          }, 5000);
+        }
+        dispatch(
+          EditSongAppStateActions.setOptionalSongEditedSongName({
+            value: value,
+            editedSongName: files[0].name,
           })
         );
       }
-      if (peaksInstance?.segments) {
-        peaksInstance?.segments?.removeAll();
-      }
-
-      if (peaksInstance?.points) {
-        peaksInstance?.points?.removeAll();
-      }
-
-      if (peaksInstance) {
-        peaksInstance?.setSource(options2, function (error: Error) {
-          // setShowNotificationModal(false);
-          dispatch(
-            EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
-              value: value,
-              status: false,
-            })
-          );
-          if (error) [console.log(error.message)];
-
-          // Waveform updated
-        });
-      } else {
-        setTimeout(() => {
-          // setShowNotificationModal(false);
-          dispatch(
-            EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
-              value: value,
-              status: false,
-            })
-          );
-        }, 5000);
-      }
+    } catch (error) {
+      dispatch(
+        EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
+          value: value,
+          status: false,
+        })
+      );
+      alert("Ошибка. Повторите попытку позднее");
     }
   };
 
@@ -178,26 +175,11 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
 
       FileSaver.saveAs(new Blob([editedSongData.buffer], { type: "audio/mp3" }), nameString);
     }
+  };
 
-    // if (editedSongURL && editedSongName) {
-    //   if (videoRef.current) {
-    //     videoRef.current.src = editedSongURL;
-    //   }
-    //   const nameString = `${editedSongName.split(".")[0]}_(paHaCutSongApp)${Date.now()}.mp3`;
-    //   // if (isTelegramWebApp()) {
-    //   //   postEvent("web_app_request_file_download", {
-    //   //     url: `${editedSongURL?.split(":")[1]}:${editedSongURL?.split(":")[2]}:${editedSongURL?.split(":")[3]}`,
-    //   //     file_name: nameString,
-    //   //   });
-    //   // } else {
-    //   const a = document.createElement("a");
-    //   a.href = editedSongURL;
-    //   a.download = nameString;
-    //   document.body.appendChild(a);
-    //   a.click();
-    //   document.body.removeChild(a);
-    //   // }
-    // }
+  const deleteOptionalSongHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    dispatch(EditSongAppStateActions.setShowDeleteOptionalSongNotificationModal(true));
   };
 
   useEffect(() => {
@@ -254,6 +236,20 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
   }, [songVolume, peaksAudioRef2, isSongMuted]);
   return (
     <div className="px-2 py-5 shadow-optionalAudioElementShadow">
+      <div>
+        <NotificationDeleteOptionalSongModal value={value}></NotificationDeleteOptionalSongModal>
+      </div>
+      <div className=" w-full flex justify-end px-2">
+        <div
+          onClick={deleteOptionalSongHandler}
+          className=" h-8 w-8 flex items-center justify-center rounded-full"
+        >
+          <FontAwesomeIcon
+            className="fa-fw fa-2x cursor-pointer hover:text-sky-700  hover:shadow-timeBarShadow rounded-full"
+            icon={faCircleXmark}
+          ></FontAwesomeIcon>
+        </div>
+      </div>
       <div className="py-5">
         <div className=" w-full flex items-center justify-center">
           <input
@@ -278,6 +274,9 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
         <NotificationEditSongMain
           showNotificationModal={showNotificationModal}
         ></NotificationEditSongMain>
+      </div>
+      <div className=" py-3">
+        <h1 className=" text-center">{editedSongName}</h1>
       </div>
       <div>
         <audio ref={peaksAudioRef2} id={`peaksAudio${value}`} onEnded={endPeakSongHandler}></audio>

@@ -10,6 +10,7 @@ interface ISongActions<ParametersObj> {
 export interface IEditSongAppSlice {
   EditSongAppState: {
     test: string;
+    showDeleteOptionalSongNotificationModal: boolean;
     mainSong: {
       peaksInstance: any;
       editedSongIsPlaying: boolean;
@@ -49,6 +50,8 @@ export interface IEditSongAppSlice {
 
 interface IEditSongAppState {
   test: string;
+  showDeleteOptionalSongNotificationModal: boolean;
+
   mainSong: {
     peaksInstance: any;
     editedSongIsPlaying: boolean;
@@ -87,6 +90,8 @@ interface IEditSongAppState {
 
 export const EditSongAppState: IEditSongAppState = {
   test: "editSongApp",
+  showDeleteOptionalSongNotificationModal: false,
+
   mainSong: {
     peaksInstance: null,
     editedSongIsPlaying: false,
@@ -233,6 +238,15 @@ export const EditSongAppSlice = createSlice({
     },
     setOptionalFfmpeg(state, action: ISongActions<{ value: number; ffmpeg: FFmpeg }>) {
       state.addeOptionalAudioValue[action.payload.value].optionalFfmpeg = action.payload.ffmpeg;
+    },
+    deleteOptionalSong(state, action: ISongActions<number>) {
+      if (!state.addeOptionalAudioValue) {
+        return;
+      }
+      state.addeOptionalAudioValue.splice(action.payload, 1);
+    },
+    setShowDeleteOptionalSongNotificationModal(state, action) {
+      state.showDeleteOptionalSongNotificationModal = action.payload;
     },
   },
   extraReducers: (builder) => {},

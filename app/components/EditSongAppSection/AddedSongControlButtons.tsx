@@ -167,32 +167,42 @@ const AddedSongControlButtons = ({ peaksAudioRef, value }: IAddedSongControlsPro
       return;
     }
 
-    const segment = peaksInstanse?.segments.add({
-      startTime: peaksInstanse?.points.getPoint("APoint").time,
-      endTime: peaksInstanse?.points.getPoint("BPoint").time,
-      editable: true,
-      color: "#5019a8",
-      id: "mainEditedSegment",
-      labelText: "Оставляемый фрагмент",
-    });
-    peaksInstanse?.points.removeAll();
+    try {
+      const segment = peaksInstanse?.segments.add({
+        startTime: peaksInstanse?.points.getPoint("APoint").time,
+        endTime: peaksInstanse?.points.getPoint("BPoint").time,
+        editable: true,
+        color: "#5019a8",
+        id: "mainEditedSegment",
+        labelText: "Оставляемый фрагмент",
+      });
+      peaksInstanse?.points.removeAll();
 
-    dispatch(
-      EditSongAppStateActions.setOptionalSongPointsStatus({
-        value: value,
-        pointsStatus: {
-          start: false,
-          finish: false,
-        },
-      })
-    );
+      dispatch(
+        EditSongAppStateActions.setOptionalSongPointsStatus({
+          value: value,
+          pointsStatus: {
+            start: false,
+            finish: false,
+          },
+        })
+      );
 
-    dispatch(
-      EditSongAppStateActions.setOptionalSongEditedSegmentIsCreatedStatus({
-        value: value,
-        status: true,
-      })
-    );
+      dispatch(
+        EditSongAppStateActions.setOptionalSongEditedSegmentIsCreatedStatus({
+          value: value,
+          status: true,
+        })
+      );
+    } catch (error) {
+      dispatch(
+        EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
+          value: value,
+          status: false,
+        })
+      );
+      alert("Ошибка. Повторите попытку позднее");
+    }
   };
 
   const deleteEditedSegmentHandler = (e: React.MouseEvent<SVGSVGElement>) => {
@@ -213,291 +223,305 @@ const AddedSongControlButtons = ({ peaksAudioRef, value }: IAddedSongControlsPro
       return;
     }
 
-    dispatch(
-      EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
-        value: value,
-        status: true,
-      })
-    );
-    const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
-    const ffmpeg = ffmpegRef.current;
-    ffmpeg.on("log", ({ message }) => {
-      // if (messageRef.current) messageRef.current.innerHTML = message;
-    });
-    // toBlobURL is used to bypass CORS issue, urls with the same
-    // domain can be used directly.
-    await ffmpeg.load({
-      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
-      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
-    });
-    // const ffmpeg = ffmpegRef.current;
-    await ffmpeg.writeFile(
-      "input.mp3",
-      await fetchFile(
-        peaksAudioRef?.current?.src
-        // "https://rhjm8idplsgk4vxo.public.blob.vercel-storage.com/ACDC_-_Back_In_Black_47830042%20%28mp3cut.net%29-Or96zvlcb9iq1w7OlpvMVloOV8Zmag.mp3"
-      )
-    );
-
-    const output = await ffmpeg.exec([
-      "-i",
-      // "input.avi",
-      // "-vf",
-      // "scale=144:-1",
-      // "-c:a",
-      // "aac",
-      // "-strict",
-      // "-2",
-      // "output.mp4",
-
-      "input.mp3",
-      "-ss",
-      // "5",
-      `${segment.startTime}`, // Start at 5 second
-      "-t",
-      `${segment.endTime - segment.startTime}`,
-
-      "output.mp3",
-    ]);
-
-    const data = (await ffmpeg.readFile("output.mp3")) as any;
-
-    dispatch(EditSongAppStateActions.setOptionalFfmpeg({ value: value, ffmpeg: ffmpeg }));
-
-    // dispatch(EditSongAppStateActions.setMainSongEditedSongData(data));
-    dispatch(
-      EditSongAppStateActions.setOptionalSongData({
-        value: value,
-        songData: data,
-      })
-    );
-
-    const options = {
-      mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" })),
-      webAudio: {
-        audioContext: new AudioContext(),
-        multiChannel: true,
-      },
-    };
-
-    dispatch(
-      EditSongAppStateActions.setOptionalSongPointsStatus({
-        value: value,
-        pointsStatus: {
-          start: false,
-          finish: false,
-        },
-      })
-    );
-
-    if (peaksInstanse?.player?.play()) {
-      peaksInstanse.player?.pause();
+    try {
       dispatch(
-        EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
+        EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
           value: value,
-          editedSongIsPlaying: false,
+          status: true,
         })
       );
-    }
-    if (peaksInstanse.segments) {
-      peaksInstanse.segments?.removeAll();
-    }
+      const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
+      const ffmpeg = ffmpegRef.current;
+      ffmpeg.on("log", ({ message }) => {
+        // if (messageRef.current) messageRef.current.innerHTML = message;
+      });
+      // toBlobURL is used to bypass CORS issue, urls with the same
+      // domain can be used directly.
+      await ffmpeg.load({
+        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
+      });
+      // const ffmpeg = ffmpegRef.current;
+      await ffmpeg.writeFile("input.mp3", await fetchFile(peaksAudioRef?.current?.src));
 
-    if (peaksInstanse.points) {
-      peaksInstanse.points?.removeAll();
-    }
+      const output = await ffmpeg.exec([
+        "-i",
+        "input.mp3",
+        "-ss",
+        `${segment.startTime}`,
+        "-t",
+        `${segment.endTime - segment.startTime}`,
+        "output.mp3",
+      ]);
 
-    dispatch(
-      EditSongAppStateActions.setOptionalSongEditedSegmentIsCreatedStatus({
-        value: value,
-        status: false,
-      })
-    );
-    peaksInstanse?.setSource(options, function (error: Error) {
-      if (error) [console.log(error.message)];
+      const data = (await ffmpeg.readFile("output.mp3")) as any;
 
-      // Waveform updated
+      dispatch(EditSongAppStateActions.setOptionalFfmpeg({ value: value, ffmpeg: ffmpeg }));
 
+      dispatch(
+        EditSongAppStateActions.setOptionalSongData({
+          value: value,
+          songData: data,
+        })
+      );
+
+      const options = {
+        mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" })),
+        webAudio: {
+          audioContext: new AudioContext(),
+          multiChannel: true,
+        },
+      };
+
+      dispatch(
+        EditSongAppStateActions.setOptionalSongPointsStatus({
+          value: value,
+          pointsStatus: {
+            start: false,
+            finish: false,
+          },
+        })
+      );
+
+      if (peaksInstanse?.player?.play()) {
+        peaksInstanse.player?.pause();
+        dispatch(
+          EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
+            value: value,
+            editedSongIsPlaying: false,
+          })
+        );
+      }
+      if (peaksInstanse.segments) {
+        peaksInstanse.segments?.removeAll();
+      }
+
+      if (peaksInstanse.points) {
+        peaksInstanse.points?.removeAll();
+      }
+
+      dispatch(
+        EditSongAppStateActions.setOptionalSongEditedSegmentIsCreatedStatus({
+          value: value,
+          status: false,
+        })
+      );
+      peaksInstanse?.setSource(options, function (error: Error) {
+        if (error) [console.log(error.message)];
+
+        // Waveform updated
+
+        dispatch(
+          EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
+            value: value,
+            status: false,
+          })
+        );
+      });
+
+      const editedSongData = new Blob([data], { type: "audio/mp3" });
+      const url = URL.createObjectURL(editedSongData);
+
+      dispatch(
+        EditSongAppStateActions.setOptionalSongEditedSongURL({
+          value: value,
+          editedSongURL: url,
+        })
+      );
+      dispatch(
+        EditSongAppStateActions.setOptionalSongEditedSongBlobString({
+          value: value,
+          blobString: url,
+        })
+      );
+    } catch (error) {
       dispatch(
         EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
           value: value,
           status: false,
         })
       );
-    });
-
-    const editedSongData = new Blob([data], { type: "audio/mp3" });
-    const url = URL.createObjectURL(editedSongData);
-
-    dispatch(
-      EditSongAppStateActions.setOptionalSongEditedSongURL({
-        value: value,
-        editedSongURL: url,
-      })
-    );
-    dispatch(
-      EditSongAppStateActions.setOptionalSongEditedSongBlobString({
-        value: value,
-        blobString: url,
-      })
-    );
+      alert("Ошибка. Повторите попытку позднее");
+    }
   };
 
   const volumeHighHandler = async (e: React.MouseEvent<SVGSVGElement>) => {
     if (!peaksAudioRef?.current?.src) {
       return;
     }
-    dispatch(
-      EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
-        value: value,
-        status: true,
-      })
-    );
-    const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
-    const ffmpeg = ffmpegRef.current;
-    ffmpeg.on("log", ({ message }) => {
-      // if (messageRef.current) messageRef.current.innerHTML = message;
-    });
 
-    await ffmpeg.load({
-      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
-      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
-    });
-
-    await ffmpeg.writeFile("input.mp3", await fetchFile(peaksAudioRef?.current?.src));
-
-    const output = await ffmpeg.exec(["-i", "input.mp3", "-af", "volume=1.2", "output.mp3"]);
-
-    const data = (await ffmpeg.readFile("output.mp3")) as any;
-    dispatch(
-      EditSongAppStateActions.setOptionalSongData({
-        value: value,
-        songData: data,
-      })
-    );
-
-    const options = {
-      mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" })),
-      webAudio: {
-        audioContext: new AudioContext(),
-        multiChannel: true,
-      },
-    };
-
-    if (peaksInstanse?.player?.play()) {
-      peaksInstanse.player?.pause();
-      //   dispatch(EditSongAppStateActions.setMainSongIsPlayingStatus(false));
+    try {
       dispatch(
-        EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
+        EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
           value: value,
-          editedSongIsPlaying: false,
+          status: true,
         })
       );
-    }
+      const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
+      const ffmpeg = ffmpegRef.current;
+      ffmpeg.on("log", ({ message }) => {
+        // if (messageRef.current) messageRef.current.innerHTML = message;
+      });
 
-    peaksInstanse.setSource(options, function (error: Error) {
-      if (error) [console.log(error.message)];
+      await ffmpeg.load({
+        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
+      });
+
+      await ffmpeg.writeFile("input.mp3", await fetchFile(peaksAudioRef?.current?.src));
+
+      const output = await ffmpeg.exec(["-i", "input.mp3", "-af", "volume=1.2", "output.mp3"]);
+
+      const data = (await ffmpeg.readFile("output.mp3")) as any;
+      dispatch(
+        EditSongAppStateActions.setOptionalSongData({
+          value: value,
+          songData: data,
+        })
+      );
+
+      const options = {
+        mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" })),
+        webAudio: {
+          audioContext: new AudioContext(),
+          multiChannel: true,
+        },
+      };
+
+      if (peaksInstanse?.player?.play()) {
+        peaksInstanse.player?.pause();
+        //   dispatch(EditSongAppStateActions.setMainSongIsPlayingStatus(false));
+        dispatch(
+          EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
+            value: value,
+            editedSongIsPlaying: false,
+          })
+        );
+      }
+
+      peaksInstanse.setSource(options, function (error: Error) {
+        if (error) [console.log(error.message)];
+        dispatch(
+          EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
+            value: value,
+            status: false,
+          })
+        );
+        // Waveform updated
+      });
+
+      const editedSongData = new Blob([data], { type: "audio/mp3" });
+      const url = URL.createObjectURL(editedSongData);
+      dispatch(
+        EditSongAppStateActions.setOptionalSongEditedSongURL({
+          value: value,
+          editedSongURL: url,
+        })
+      );
+      dispatch(
+        EditSongAppStateActions.setOptionalSongEditedSongBlobString({
+          value: value,
+          blobString: url,
+        })
+      );
+    } catch (error) {
       dispatch(
         EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
           value: value,
           status: false,
         })
       );
-      // Waveform updated
-    });
-
-    const editedSongData = new Blob([data], { type: "audio/mp3" });
-    const url = URL.createObjectURL(editedSongData);
-    dispatch(
-      EditSongAppStateActions.setOptionalSongEditedSongURL({
-        value: value,
-        editedSongURL: url,
-      })
-    );
-    dispatch(
-      EditSongAppStateActions.setOptionalSongEditedSongBlobString({
-        value: value,
-        blobString: url,
-      })
-    );
+      alert("Ошибка. Повторите попытку позднее");
+    }
   };
 
   const volumeLowHandler = async (e: React.MouseEvent<SVGSVGElement>) => {
     if (!peaksAudioRef?.current?.src) {
       return;
     }
-    dispatch(
-      EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
-        value: value,
-        status: true,
-      })
-    );
-    const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
-    const ffmpeg = ffmpegRef.current;
-    ffmpeg.on("log", ({ message }) => {
-      // if (messageRef.current) messageRef.current.innerHTML = message;
-    });
 
-    await ffmpeg.load({
-      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
-      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
-    });
-
-    await ffmpeg.writeFile("input.mp3", await fetchFile(peaksAudioRef?.current?.src));
-
-    const output = await ffmpeg.exec(["-i", "input.mp3", "-af", "volume=0.8", "output.mp3"]);
-
-    const data = (await ffmpeg.readFile("output.mp3")) as any;
-    dispatch(
-      EditSongAppStateActions.setOptionalSongData({
-        value: value,
-        songData: data,
-      })
-    );
-
-    const options = {
-      mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" })),
-      webAudio: {
-        audioContext: new AudioContext(),
-        multiChannel: true,
-      },
-    };
-
-    if (peaksInstanse?.player?.play()) {
-      peaksInstanse.player?.pause();
+    try {
       dispatch(
-        EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
+        EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
           value: value,
-          editedSongIsPlaying: false,
+          status: true,
         })
       );
-    }
+      const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
+      const ffmpeg = ffmpegRef.current;
+      ffmpeg.on("log", ({ message }) => {
+        // if (messageRef.current) messageRef.current.innerHTML = message;
+      });
 
-    peaksInstanse.setSource(options, function (error: Error) {
-      if (error) [console.log(error.message)];
+      await ffmpeg.load({
+        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
+      });
+
+      await ffmpeg.writeFile("input.mp3", await fetchFile(peaksAudioRef?.current?.src));
+
+      const output = await ffmpeg.exec(["-i", "input.mp3", "-af", "volume=0.8", "output.mp3"]);
+
+      const data = (await ffmpeg.readFile("output.mp3")) as any;
+      dispatch(
+        EditSongAppStateActions.setOptionalSongData({
+          value: value,
+          songData: data,
+        })
+      );
+
+      const options = {
+        mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" })),
+        webAudio: {
+          audioContext: new AudioContext(),
+          multiChannel: true,
+        },
+      };
+
+      if (peaksInstanse?.player?.play()) {
+        peaksInstanse.player?.pause();
+        dispatch(
+          EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
+            value: value,
+            editedSongIsPlaying: false,
+          })
+        );
+      }
+
+      peaksInstanse.setSource(options, function (error: Error) {
+        if (error) [console.log(error.message)];
+        dispatch(
+          EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
+            value: value,
+            status: false,
+          })
+        );
+        // Waveform updated
+      });
+
+      const editedSongData = new Blob([data], { type: "audio/mp3" });
+      const url = URL.createObjectURL(editedSongData);
+      dispatch(
+        EditSongAppStateActions.setOptionalSongEditedSongURL({
+          value: value,
+          editedSongURL: url,
+        })
+      );
+      dispatch(
+        EditSongAppStateActions.setOptionalSongEditedSongBlobString({
+          value: value,
+          blobString: url,
+        })
+      );
+    } catch (error) {
       dispatch(
         EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
           value: value,
           status: false,
         })
       );
-      // Waveform updated
-    });
-
-    const editedSongData = new Blob([data], { type: "audio/mp3" });
-    const url = URL.createObjectURL(editedSongData);
-    dispatch(
-      EditSongAppStateActions.setOptionalSongEditedSongURL({
-        value: value,
-        editedSongURL: url,
-      })
-    );
-    dispatch(
-      EditSongAppStateActions.setOptionalSongEditedSongBlobString({
-        value: value,
-        blobString: url,
-      })
-    );
+      alert("Ошибка. Повторите попытку позднее");
+    }
   };
 
   const afadeFromLowToHighHandler = async (e: React.MouseEvent<SVGSVGElement>) => {
@@ -507,109 +531,119 @@ const AddedSongControlButtons = ({ peaksAudioRef, value }: IAddedSongControlsPro
       return;
     }
 
-    dispatch(
-      EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
-        value: value,
-        status: true,
-      })
-    );
-
-    const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
-    const ffmpeg = ffmpegRef.current;
-    ffmpeg.on("log", ({ message }) => {
-      // if (messageRef.current) messageRef.current.innerHTML = message;
-    });
-
-    await ffmpeg.load({
-      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
-      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
-    });
-
-    await ffmpeg.writeFile("input.mp3", await fetchFile(peaksAudioRef?.current?.src));
-
-    const output = await ffmpeg.exec([
-      "-i",
-      "input.mp3",
-      "-af",
-      `afade=t=in:st=${segment.startTime}:d=${segment.endTime}`,
-      "output.mp3",
-    ]);
-
-    const data = (await ffmpeg.readFile("output.mp3")) as any;
-    dispatch(
-      EditSongAppStateActions.setOptionalSongData({
-        value: value,
-        songData: data,
-      })
-    );
-
-    const options = {
-      mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" })),
-      webAudio: {
-        audioContext: new AudioContext(),
-        multiChannel: true,
-      },
-    };
-
-    dispatch(
-      EditSongAppStateActions.setOptionalSongPointsStatus({
-        value: value,
-        pointsStatus: {
-          start: false,
-          finish: false,
-        },
-      })
-    );
-
-    if (peaksInstanse?.player?.play()) {
-      peaksInstanse.player?.pause();
+    try {
       dispatch(
-        EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
+        EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
           value: value,
-          editedSongIsPlaying: false,
+          status: true,
         })
       );
-    }
-    if (peaksInstanse.segments) {
-      peaksInstanse.segments?.removeAll();
-    }
 
-    if (peaksInstanse.points) {
-      peaksInstanse.points?.removeAll();
-    }
+      const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
+      const ffmpeg = ffmpegRef.current;
+      ffmpeg.on("log", ({ message }) => {
+        // if (messageRef.current) messageRef.current.innerHTML = message;
+      });
 
-    dispatch(
-      EditSongAppStateActions.setOptionalSongEditedSegmentIsCreatedStatus({
-        value: value,
-        status: false,
-      })
-    );
-    peaksInstanse.setSource(options, function (error: Error) {
-      if (error) [console.log(error.message)];
+      await ffmpeg.load({
+        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
+      });
+
+      await ffmpeg.writeFile("input.mp3", await fetchFile(peaksAudioRef?.current?.src));
+
+      const output = await ffmpeg.exec([
+        "-i",
+        "input.mp3",
+        "-af",
+        `afade=t=in:st=${segment.startTime}:d=${segment.endTime}`,
+        "output.mp3",
+      ]);
+
+      const data = (await ffmpeg.readFile("output.mp3")) as any;
+      dispatch(
+        EditSongAppStateActions.setOptionalSongData({
+          value: value,
+          songData: data,
+        })
+      );
+
+      const options = {
+        mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" })),
+        webAudio: {
+          audioContext: new AudioContext(),
+          multiChannel: true,
+        },
+      };
+
+      dispatch(
+        EditSongAppStateActions.setOptionalSongPointsStatus({
+          value: value,
+          pointsStatus: {
+            start: false,
+            finish: false,
+          },
+        })
+      );
+
+      if (peaksInstanse?.player?.play()) {
+        peaksInstanse.player?.pause();
+        dispatch(
+          EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
+            value: value,
+            editedSongIsPlaying: false,
+          })
+        );
+      }
+      if (peaksInstanse.segments) {
+        peaksInstanse.segments?.removeAll();
+      }
+
+      if (peaksInstanse.points) {
+        peaksInstanse.points?.removeAll();
+      }
+
+      dispatch(
+        EditSongAppStateActions.setOptionalSongEditedSegmentIsCreatedStatus({
+          value: value,
+          status: false,
+        })
+      );
+      peaksInstanse.setSource(options, function (error: Error) {
+        if (error) [console.log(error.message)];
+        dispatch(
+          EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
+            value: value,
+            status: false,
+          })
+        );
+
+        // Waveform updated
+      });
+
+      const editedSongData = new Blob([data], { type: "audio/mp3" });
+      const url = URL.createObjectURL(editedSongData);
+      dispatch(
+        EditSongAppStateActions.setOptionalSongEditedSongURL({
+          value: value,
+          editedSongURL: url,
+        })
+      );
+      dispatch(
+        EditSongAppStateActions.setOptionalSongEditedSongBlobString({
+          value: value,
+          blobString: url,
+        })
+      );
+    } catch (error) {
       dispatch(
         EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
           value: value,
           status: false,
         })
       );
-
-      // Waveform updated
-    });
-
-    const editedSongData = new Blob([data], { type: "audio/mp3" });
-    const url = URL.createObjectURL(editedSongData);
-    dispatch(
-      EditSongAppStateActions.setOptionalSongEditedSongURL({
-        value: value,
-        editedSongURL: url,
-      })
-    );
-    dispatch(
-      EditSongAppStateActions.setOptionalSongEditedSongBlobString({
-        value: value,
-        blobString: url,
-      })
-    );
+      alert("Ошибка. Повторите попытку позднее");
+    }
   };
 
   const afadeFromHighToLowHandler = async (e: React.MouseEvent<SVGSVGElement>) => {
@@ -617,109 +651,120 @@ const AddedSongControlButtons = ({ peaksAudioRef, value }: IAddedSongControlsPro
     if (!segment || segment?.startTime === undefined || segment?.endTime === undefined) {
       return;
     }
-    dispatch(
-      EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
-        value: value,
-        status: true,
-      })
-    );
 
-    const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
-    const ffmpeg = ffmpegRef.current;
-    ffmpeg.on("log", ({ message }) => {
-      // if (messageRef.current) messageRef.current.innerHTML = message;
-    });
-
-    await ffmpeg.load({
-      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
-      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
-    });
-
-    await ffmpeg.writeFile("input.mp3", await fetchFile(peaksAudioRef?.current?.src));
-
-    const output = await ffmpeg.exec([
-      "-i",
-      "input.mp3",
-      "-af",
-      `afade=t=out:st=${segment.startTime}:d=${segment.endTime - segment.startTime}`,
-      "output.mp3",
-    ]);
-
-    const data = (await ffmpeg.readFile("output.mp3")) as any;
-    dispatch(
-      EditSongAppStateActions.setOptionalSongData({
-        value: value,
-        songData: data,
-      })
-    );
-
-    const options = {
-      mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" })),
-      webAudio: {
-        audioContext: new AudioContext(),
-        multiChannel: true,
-      },
-    };
-
-    dispatch(
-      EditSongAppStateActions.setOptionalSongPointsStatus({
-        value: value,
-        pointsStatus: {
-          start: false,
-          finish: false,
-        },
-      })
-    );
-
-    if (peaksInstanse?.player?.play()) {
-      peaksInstanse.player?.pause();
+    try {
       dispatch(
-        EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
+        EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
           value: value,
-          editedSongIsPlaying: false,
+          status: true,
         })
       );
-    }
-    if (peaksInstanse.segments) {
-      peaksInstanse.segments?.removeAll();
-    }
 
-    if (peaksInstanse.points) {
-      peaksInstanse.points?.removeAll();
-    }
+      const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
+      const ffmpeg = ffmpegRef.current;
+      ffmpeg.on("log", ({ message }) => {
+        // if (messageRef.current) messageRef.current.innerHTML = message;
+      });
 
-    dispatch(
-      EditSongAppStateActions.setOptionalSongEditedSegmentIsCreatedStatus({
-        value: value,
-        status: false,
-      })
-    );
-    peaksInstanse.setSource(options, function (error: Error) {
-      if (error) [console.log(error.message)];
+      await ffmpeg.load({
+        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
+      });
+
+      await ffmpeg.writeFile("input.mp3", await fetchFile(peaksAudioRef?.current?.src));
+
+      const output = await ffmpeg.exec([
+        "-i",
+        "input.mp3",
+        "-af",
+        `afade=t=out:st=${segment.startTime}:d=${segment.endTime - segment.startTime}`,
+        "output.mp3",
+      ]);
+
+      const data = (await ffmpeg.readFile("output.mp3")) as any;
+      dispatch(
+        EditSongAppStateActions.setOptionalSongData({
+          value: value,
+          songData: data,
+        })
+      );
+
+      const options = {
+        mediaUrl: URL.createObjectURL(new Blob([data.buffer], { type: "audio/mp3" })),
+        webAudio: {
+          audioContext: new AudioContext(),
+          multiChannel: true,
+        },
+      };
+
+      dispatch(
+        EditSongAppStateActions.setOptionalSongPointsStatus({
+          value: value,
+          pointsStatus: {
+            start: false,
+            finish: false,
+          },
+        })
+      );
+
+      if (peaksInstanse?.player?.play()) {
+        peaksInstanse.player?.pause();
+        dispatch(
+          EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
+            value: value,
+            editedSongIsPlaying: false,
+          })
+        );
+      }
+      if (peaksInstanse.segments) {
+        peaksInstanse.segments?.removeAll();
+      }
+
+      if (peaksInstanse.points) {
+        peaksInstanse.points?.removeAll();
+      }
+
+      dispatch(
+        EditSongAppStateActions.setOptionalSongEditedSegmentIsCreatedStatus({
+          value: value,
+          status: false,
+        })
+      );
+      peaksInstanse.setSource(options, function (error: Error) {
+        if (error) [console.log(error.message)];
+        dispatch(
+          EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
+            value: value,
+            status: false,
+          })
+        );
+
+        // Waveform updated
+      });
+
+      const editedSongData = new Blob([data], { type: "audio/mp3" });
+      const url = URL.createObjectURL(editedSongData);
+      dispatch(
+        EditSongAppStateActions.setOptionalSongEditedSongURL({
+          value: value,
+          editedSongURL: url,
+        })
+      );
+      dispatch(
+        EditSongAppStateActions.setOptionalSongEditedSongBlobString({
+          value: value,
+          blobString: url,
+        })
+      );
+    } catch (error) {
       dispatch(
         EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
           value: value,
           status: false,
         })
       );
-
-      // Waveform updated
-    });
-
-    const editedSongData = new Blob([data], { type: "audio/mp3" });
-    const url = URL.createObjectURL(editedSongData);
-    dispatch(
-      EditSongAppStateActions.setOptionalSongEditedSongURL({
-        value: value,
-        editedSongURL: url,
-      })
-    );
-    dispatch(
-      EditSongAppStateActions.setOptionalSongEditedSongBlobString({
-        value: value,
-        blobString: url,
-      })
-    );
+      alert("Ошибка. Повторите попытку позднее");
+    }
   };
 
   return (

@@ -2,51 +2,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import Peaks from "peaks.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPauseCircle, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
-import {
-  faA,
-  faArrowDownWideShort,
-  faArrowTrendDown,
-  faArrowTrendUp,
-  faArrowUpRightDots,
-  faArrowUpShortWide,
-  faArrowUpWideShort,
-  faB,
-  faCirclePlus,
-  faCut,
-  faDownload,
-  faEdit,
-  faFileCirclePlus,
-  faFileExport,
-  faLinkSlash,
-  faMinusCircle,
-  faMusic,
-  faPlusCircle,
-  faVolumeHigh,
-  faVolumeLow,
-  faVolumeOff,
-  faVolumeXmark,
-} from "@fortawesome/free-solid-svg-icons";
-import { FFmpeg } from "@ffmpeg/ffmpeg";
-import { fetchFile, toBlobURL } from "@ffmpeg/util";
-import { Link } from "next-view-transitions";
-// import Konva from "konva";
+import { faDownload, faFileExport } from "@fortawesome/free-solid-svg-icons";
 
 import { postEvent } from "@telegram-apps/sdk";
 import { isTelegramWebApp } from "@/app/components/Layout/MainLayout";
-import FileSaver, { saveAs } from "file-saver";
-import { div } from "framer-motion/client";
+import FileSaver from "file-saver";
 import NotificationEditSongMain from "./NotificationEditSongMain";
 import AddedOptionalSongMain from "./AddedOptionalSongMain";
 import { useDispatch, useSelector } from "react-redux";
-import { guessThatSongActions, IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
+import { IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
 import { AppDispatch } from "@/app/store";
 import { EditSongAppStateActions, IEditSongAppSlice } from "@/app/store/EditSongAppSlice";
 import MainSongControlButtons from "./MainSongControlButtons";
+import NotificationDeleteOptionalSongModal from "./NotificationDeleteOptionalSongModal";
 
 const EditSongAppMain = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const ffmpegRef = useRef(new FFmpeg());
 
   const peaksAudioRef = useRef<HTMLMediaElement>(null);
 
@@ -88,66 +59,65 @@ const EditSongAppMain = () => {
 
   const changePeaksFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files === null) return;
-    dispatch(EditSongAppStateActions.setMainSongshowNotificationModalStatus(true));
-    dispatch(EditSongAppStateActions.setMainSongEditedSongURL(undefined));
-    dispatch(EditSongAppStateActions.setMainSongEditedSegmantIsCreatedStatus(false));
 
-    const audioElement = peaksAudioRef.current;
+    try {
+      dispatch(EditSongAppStateActions.setMainSongshowNotificationModalStatus(true));
+      dispatch(EditSongAppStateActions.setMainSongEditedSongURL(undefined));
+      dispatch(EditSongAppStateActions.setMainSongEditedSegmantIsCreatedStatus(false));
 
-    if (audioElement) {
-      // audioElement.crossOrigin = "anonymous";
+      const audioElement = peaksAudioRef.current;
 
-      var files = e.target.files;
-      audioElement.src = URL.createObjectURL(files[0]);
+      if (audioElement) {
+        // audioElement.crossOrigin = "anonymous";
+        var files = e.target.files;
+        audioElement.src = URL.createObjectURL(files[0]);
+        dispatch(
+          EditSongAppStateActions.setMainSongEditedSongBlobString(URL.createObjectURL(files[0]))
+        );
+        dispatch(EditSongAppStateActions.setMainSongEditedSongName(files[0].name));
 
-      dispatch(
-        EditSongAppStateActions.setMainSongEditedSongBlobString(URL.createObjectURL(files[0]))
-      );
+        const options = {
+          mediaUrl: URL.createObjectURL(files[0]),
+          webAudio: {
+            audioContext: new AudioContext(),
+            multiChannel: true,
+          },
+        };
 
-      dispatch(EditSongAppStateActions.setMainSongEditedSongName(files[0].name));
+        dispatch(
+          EditSongAppStateActions.setMainSongPointsStatus({
+            start: false,
+            finish: false,
+          })
+        );
 
-      const options = {
-        mediaUrl: URL.createObjectURL(files[0]),
-        webAudio: {
-          audioContext: new AudioContext(),
-          multiChannel: true,
-        },
-      };
+        if (mainSongPeaksInstance?.player?.play()) {
+          mainSongPeaksInstance.player?.pause();
+          dispatch(EditSongAppStateActions.setMainSongIsPlayingStatus(false));
+        }
+        if (mainSongPeaksInstance?.segments) {
+          mainSongPeaksInstance?.segments?.removeAll();
+        }
 
-      dispatch(
-        EditSongAppStateActions.setMainSongPointsStatus({
-          start: false,
-          finish: false,
-        })
-      );
+        if (mainSongPeaksInstance?.points) {
+          mainSongPeaksInstance?.points?.removeAll();
+        }
 
-      if (mainSongPeaksInstance?.player?.play()) {
-        mainSongPeaksInstance.player?.pause();
-        dispatch(EditSongAppStateActions.setMainSongIsPlayingStatus(false));
+        if (mainSongPeaksInstance) {
+          mainSongPeaksInstance?.setSource(options, function (error: Error) {
+            dispatch(EditSongAppStateActions.setMainSongshowNotificationModalStatus(false));
+            if (error) [console.log(error.message)];
+          });
+        } else {
+          setTimeout(() => {
+            dispatch(EditSongAppStateActions.setMainSongshowNotificationModalStatus(false));
+            console.log(mainSongPeaksInstance);
+          }, 5000);
+        }
       }
-      if (mainSongPeaksInstance?.segments) {
-        mainSongPeaksInstance?.segments?.removeAll();
-      }
-
-      if (mainSongPeaksInstance?.points) {
-        mainSongPeaksInstance?.points?.removeAll();
-      }
-
-      if (mainSongPeaksInstance) {
-        mainSongPeaksInstance?.setSource(options, function (error: Error) {
-          dispatch(EditSongAppStateActions.setMainSongshowNotificationModalStatus(false));
-          if (error) [console.log(error.message)];
-
-          // Waveform updated
-          console.log("Finish Peaks Process");
-          console.log(mainSongPeaksInstance);
-        });
-      } else {
-        setTimeout(() => {
-          dispatch(EditSongAppStateActions.setMainSongshowNotificationModalStatus(false));
-          console.log(mainSongPeaksInstance);
-        }, 5000);
-      }
+    } catch (error) {
+      dispatch(EditSongAppStateActions.setMainSongshowNotificationModalStatus(false));
+      alert("Ошибка. Повторите попытку позднее");
     }
   };
 
@@ -159,30 +129,6 @@ const EditSongAppMain = () => {
 
       FileSaver.saveAs(new Blob([editedSongData.buffer], { type: "audio/mp3" }), nameString);
     }
-
-    // if (editedSongURL && editedSongName) {
-    //   if (videoRef.current) {
-    //     videoRef.current.src = editedSongURL;
-    //   }
-    //   const nameString = `${editedSongName.split(".")[0]}_(paHaCutSongApp)${Date.now()}.mp3`;
-    //   // if (isTelegramWebApp()) {
-    //   //   postEvent("web_app_request_file_download", {
-    //   //     url: `${editedSongURL?.split(":")[1]}:${editedSongURL?.split(":")[2]}:${editedSongURL?.split(":")[3]}`,
-    //   //     file_name: nameString,
-    //   //   });
-    //   // } else {
-    //   const a = document.createElement("a");
-    //   a.href = editedSongURL;
-    //   a.download = nameString;
-    //   document.body.appendChild(a);
-    //   a.click();
-    //   document.body.removeChild(a);
-    //   // }
-    // }
-  };
-
-  const addOptionalAudioComponentHandler = () => {
-    dispatch(EditSongAppStateActions.setAddedOptionalAudioValue());
   };
 
   const addedOptionalAudioEl =
@@ -322,6 +268,7 @@ const EditSongAppMain = () => {
           showNotificationModal={showNotificationModal}
         ></NotificationEditSongMain>
       </div>
+
       <div className=" w-full">
         <div className=" w-full flex items-center justify-center">
           <input
