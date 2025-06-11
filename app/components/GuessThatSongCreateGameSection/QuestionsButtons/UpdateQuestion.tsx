@@ -29,6 +29,12 @@ const UpdateQuestion = () => {
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.updatedQuestionNumber
   );
 
+  if (currentUpdatedQuestion !== undefined) {
+    console.log(currentAddedGame[currentUpdatedQuestion].secoundStep);
+  }
+
+  console.log(currentUpdatedQuestion);
+
   const updateQuestionNumberHandler = function (this: number, e: React.MouseEvent<HTMLDivElement>) {
     e.preventDefault();
     setQuestionNumber(this);
@@ -71,15 +77,15 @@ const UpdateQuestion = () => {
     currentAddedGame !== undefined &&
     updatedQuestionNumber !== undefined &&
     updatedQuestionNumber > -1 ? (
-      currentAddedGame[updatedQuestionNumber].artist?.artistAnswerArr.map((artist, index) => {
+      currentAddedGame[updatedQuestionNumber].secoundStep?.secoundStepAnswerArr.map((el, index) => {
         // console.log(answer.text);
         return (
           <div key={index}>
             {" "}
             <UpdateQuestionArtistAnswer
-              text={artist.text}
+              text={el.text}
               index={index}
-              isCorrect={artist.isCorrect}
+              isCorrect={el.isCorrect}
             ></UpdateQuestionArtistAnswer>
           </div>
         );
@@ -92,6 +98,9 @@ const UpdateQuestion = () => {
     dispatch(GTSCreateGameActions.setGameIsBeingUpdated(false));
     dispatch(GTSCreateGameActions.setUpdatedQuestionNumber(undefined));
   };
+
+  console.log(currentUpdatedQuestion);
+  console.log(currentAddedGame);
 
   return (
     <div className=" flex justify-center items-center flex-col w-11/12">
@@ -150,17 +159,29 @@ const UpdateQuestion = () => {
             {updatedAnswersEls}
           </div>
 
-          {currentUpdatedQuestion &&
-          currentAddedGame[currentUpdatedQuestion].artist.correctAnswerIndex === undefined ? (
+          <AddArtistToAnswerMain></AddArtistToAnswerMain>
+
+          {currentUpdatedQuestion !== undefined &&
+            currentAddedGame[currentUpdatedQuestion].secoundStep !== undefined && (
+              <div>
+                <h1 className=" py-4 text-center text-2xl">Варианты ответов 2 этап</h1>
+                <div className=" grid gap-2 justify-center items-center sm:grid-cols-2">
+                  {updatedArtistListEls}
+                </div>
+              </div>
+            )}
+
+          {/* {currentUpdatedQuestion !== undefined &&
+          currentAddedGame[currentUpdatedQuestion].secoundStep === undefined ? (
             <AddArtistToAnswerMain></AddArtistToAnswerMain>
           ) : (
             <div>
-              <h1 className=" py-4 text-center text-2xl">Название исполнителя</h1>
+              <h1 className=" py-4 text-center text-2xl">Варианты ответов 2 этап</h1>
               <div className=" grid gap-2 justify-center items-center sm:grid-cols-2">
                 {updatedArtistListEls}
               </div>
             </div>
-          )}
+          )} */}
 
           <div>
             <div className=" py-5 flex justify-center items-center">

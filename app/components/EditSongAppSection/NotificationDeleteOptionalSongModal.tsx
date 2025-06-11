@@ -75,21 +75,24 @@ const NotificationDeleteOptionalSongModal = ({ value }: INotificationDeleteOptio
             // animate="visible"
             // exit="exit"
           >
-            <div className="modal-header flex justify-start items-center w-11/12">
+            <div className=" w-full modal-header flex flex-col sm:flex-row justify-cennter items-center gap-3">
               <div
                 onClick={dleteOptionalSongHandler}
-                className=" flex justify-center items-center pt-10 h-10"
+                className=" buttonStandart cursor-pointer w-full flex justify-center items-center "
               >
                 <div>
-                  <h1 className=" font-light text-4xl text-center grow pl-1 py-2 my-2">
+                  <h1 className=" font-light text-2xl text-center grow pl-1 py-2 px-2 my-2">
                     Удалить песню
                   </h1>
                 </div>
               </div>
 
-              <div onClick={hideDeleteSongNotificationHandler}>
-                <div className=" flex flex-col justify-center items-center">
-                  <div className=" flex justify-center items-center pt-5 h-6 w-6">
+              <div
+                className="  cursor-pointer w-full flex flex-row justify-center items-center h-full rounded-md bg-red-300 hover:bg-red-400"
+                onClick={hideDeleteSongNotificationHandler}
+              >
+                <div className=" sm:px-3 flex flex-row justify-center items-center">
+                  <div className=" flex justify-center items-center">
                     <FontAwesomeIcon className="fa-fw fa-2x" icon={faClose} />
                   </div>
                   <h1 className=" text-2xl text-center grow font-bold pl-1 py-2 my-2 ">Назад</h1>

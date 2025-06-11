@@ -3,23 +3,29 @@
 import { AppDispatch } from "@/app/store";
 import {
   GTSCreatedGameComplexity,
+  GTSCreatedGameType,
   GTSCreateGameActions,
   IGTSCreateGameSlice,
 } from "@/app/store/GTSCreateGameSlice";
 import {
+  faCarOn,
   faChessKnight,
   faChessPawn,
   faChessQueen,
   faCirclePlus,
+  faHeadphonesAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import QuestionsButtons from "./QuestionsButtons/QuestionsButtons";
 import AddQuestion from "./GTSAddSongQuectionSection/AddQuestion";
+import { GTSGameTemplates } from "@/app/types";
+import { AnyBulkWriteOperation } from "mongodb";
 
 const CrateGTSQuestion = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const [setGameComplexityWorker, setSetGameComplexityWorker] = useState<Worker>();
   const gameValue = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.createdGgameValue
   );
@@ -33,12 +39,24 @@ const CrateGTSQuestion = () => {
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.GTSAddedGameComplexity
   );
 
+  const currentGameType = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.GTSAddedGameType
+  );
+
   const currentGameID = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.updatedGameID
   );
 
   const addQuestionStatus = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.addQuestionStatus
+  );
+
+  const gameIsBeingCreated = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.gameIsBeingCreated
+  );
+
+  const gameIsBeingUpdated = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.gameIsBeingUpdated
   );
 
   const changeGameValue = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,6 +73,8 @@ const CrateGTSQuestion = () => {
     dispatch(GTSCreateGameActions.setCurrentAddedSong(1));
     dispatch(GTSCreateGameActions.initCreatedGTSGame());
     dispatch(GTSCreateGameActions.setAddQuestionStatus(true));
+    const index = GTSGameTemplates.findIndex((el) => el.GTSGameType === currentGameType);
+    dispatch(GTSCreateGameActions.setGTSGameData(GTSGameTemplates[index]));
   };
 
   const addedQuestionsButtonsEl = currentGameAdded?.map((question, index) => {
@@ -70,13 +90,73 @@ const CrateGTSQuestion = () => {
     e.preventDefault();
     dispatch(GTSCreateGameActions.setAddQuestionStatus(true));
   };
+
   const setGameComplexity = function (
     this: GTSCreatedGameComplexity,
     e: React.MouseEvent<HTMLDivElement>
   ) {
     console.log(this);
     dispatch(GTSCreateGameActions.setGTSAddedGameComplexity(this));
+    console.log(setGameComplexityWorker);
+
+    // if (!setGameComplexityWorker) {
+    //   setSetGameComplexityWorker(new Worker(new URL("/public/worker.js", import.meta.url)));
+    // }
+
+    if (!setGameComplexityWorker) {
+      return;
+    }
+
+    setGameComplexityWorker?.postMessage({
+      type: "setGameComplexity",
+      message: this,
+    });
+
+    setGameComplexityWorker.onmessage = function (e: any) {
+      console.log("setGameComplexityWorker said: ", e.data);
+    };
   };
+  const setGameType = function (this: string, e: React.MouseEvent<HTMLDivElement>) {
+    console.log(this);
+    dispatch(GTSCreateGameActions.setGTSAddedGameType(this));
+  };
+
+  useEffect(() => {
+    // if ("serviceWorker" in navigator) {
+    //   navigator.serviceWorker
+    //     .register("/worker.js")
+    //     .then((registration) => console.log("scope is: ", registration.scope));
+    // }
+
+    // worker = new Worker(new URL("/public/worker.js", import.meta.url));
+
+    // worker.onmessage = function (e) {
+    //   console.log("Worker said: ", e.data);
+    // };
+
+    // // Send data to the Web Worker
+    // worker.postMessage({
+    //   type: "Some input data",
+    //   message: "Some input data",
+    // });
+
+    if (!setGameComplexityWorker) {
+      setSetGameComplexityWorker(new Worker(new URL("/public/worker.js", import.meta.url)));
+    }
+
+    return () => {
+      console.log("cleanup");
+      // worker.terminate();
+      setGameComplexityWorker?.terminate();
+      setGameComplexityWorker?.postMessage({
+        type: "close",
+        message: "close Worker",
+      });
+
+      setSetGameComplexityWorker(undefined);
+    };
+  }, []);
+
   return (
     <div>
       <div>
@@ -129,6 +209,29 @@ const CrateGTSQuestion = () => {
             </div>
           </div>
         </div>
+
+        {!gameIsBeingCreated && !currentGameID && (
+          <div>
+            <h1>Тип игры</h1>
+            <div className=" py-3 flex justify-center items-center">
+              <div
+                className={` ${currentGameType === GTSCreatedGameType.GuessThatSong ? "  scale-110 shadow-audioControlsButtonHoverShadow " : "shadow-exerciseCardShadow "} cursor-pointer py-2 px-4 mx-4 transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-cyan-300 hover:scale-110 hover:bg-gradient-to-tl `}
+                onClick={setGameType.bind("GuessThatSong")}
+              >
+                <FontAwesomeIcon className=" pr-2" icon={faHeadphonesAlt} />
+                <h1 className=" text-base">Угадай мелодию</h1>
+              </div>
+              <div
+                className={`  ${currentGameType === GTSCreatedGameType.CarAudioFinancial ? " scale-110 shadow-audioControlsButtonHoverShadow " : "shadow-exerciseCardShadow "} cursor-pointer py-2 px-4 mx-4  transition-all rounded-lg ease-in-out delay-50  bg-gradient-to-tr from-secoundaryColor to-violet-300 hover:scale-110 hover:bg-gradient-to-tl `}
+                onClick={setGameType.bind("CarAudioFinancial")}
+              >
+                <FontAwesomeIcon className=" pr-2" icon={faCarOn} />
+                <h1 className=" text-base"> Авто аудио финансовая игра</h1>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className=" py-5">
           <button
             // disabled

@@ -1,5 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
+interface IAddUpdateSecoundStepActions<Parameters> {
+  payload: Parameters;
+  type: string;
+}
+
 export const uploadGTSGameAndUpdateStore = createAsyncThunk(
   "GTSCreateGameState/uploadGTSGameAndUpdateStore",
   async function (GTSCreatedGameObj: any, { rejectWithValue, dispatch }) {
@@ -89,6 +94,11 @@ export enum GTSCreatedGameComplexity {
   hard = 8,
 }
 
+export enum GTSCreatedGameType {
+  GuessThatSong = "GuessThatSong",
+  CarAudioFinancial = "CarAudioFinancial",
+}
+
 export interface IGTSCreateGameSlice {
   GTSCreateGameState: {
     updatedGameID?: string;
@@ -122,22 +132,40 @@ export interface IGTSCreateGameSlice {
       correctAnswerIndex?: number;
       songURL?: string;
       imageURL?: string;
+      secoundStep?: {
+        correctAnswerIndex?: number;
+        secoundStepAnswerArr: {
+          text: string;
+          isCorrect: boolean;
+        }[];
+      };
     };
     GTSAddedGameComplexity: GTSCreatedGameComplexity;
+    GTSAddedGameType: GTSCreatedGameType;
 
     createdGTSGame: {
       answersArr: { text: string }[];
       correctAnswerIndex: number;
       songURL: string;
       imageURL?: string;
-      artist: {
+      secoundStep: {
         correctAnswerIndex: number;
-        artistAnswerArr: {
+        secoundStepAnswerArr: {
           text: string;
           isCorrect: boolean;
         }[];
       };
     }[];
+    GTSGameData?: {
+      GTSGameType: GTSCreatedGameType;
+      backgroundColor: string;
+      description: string;
+      imageName: string;
+      title: string;
+      descriptionSecoundary: string;
+      descriptionNextTask: string;
+      description2Step: string;
+    };
   };
 }
 
@@ -176,22 +204,40 @@ interface IGTSCreateGameState {
     correctAnswerIndex?: number;
     songURL?: string;
     imageURL?: string;
+    secoundStep?: {
+      correctAnswerIndex?: number;
+      secoundStepAnswerArr: {
+        text: string;
+        isCorrect: boolean;
+      }[];
+    };
   };
   GTSAddedGameComplexity: GTSCreatedGameComplexity;
+  GTSAddedGameType: GTSCreatedGameType;
 
   createdGTSGame: {
     answersArr: { text: string }[];
     correctAnswerIndex: number;
     songURL: string;
     imageURL?: string;
-    artist: {
+    secoundStep: {
       correctAnswerIndex?: number;
-      artistAnswerArr?: {
+      secoundStepAnswerArr?: {
         text: string;
         isCorrect: boolean;
       }[];
     };
   }[];
+  GTSGameData?: {
+    GTSGameType: GTSCreatedGameType;
+    backgroundColor: string;
+    description: string;
+    imageName: string;
+    title: string;
+    descriptionSecoundary: string;
+    descriptionNextTask: string;
+    description2Step: string;
+  };
 }
 
 export const initGuessThatSongState: IGTSCreateGameState = {
@@ -218,6 +264,7 @@ export const initGuessThatSongState: IGTSCreateGameState = {
   //   correctAnswerIndex: -1,
   // },
   GTSAddedGameComplexity: GTSCreatedGameComplexity.medium,
+  GTSAddedGameType: GTSCreatedGameType.GuessThatSong,
 
   createdGTSGame: [
     // {
@@ -292,11 +339,34 @@ export const GTSCreateGameSlice = createSlice({
         state.currentQuestion.answersArr[action.payload.index] = data;
       }
     },
+
+    setCurrentQuestionSecoundStepAnswer(state, action) {
+      console.log(action.payload);
+      if (state.currentQuestion && state.currentQuestion.secoundStep) {
+        state.currentQuestion.secoundStep.secoundStepAnswerArr[action.payload.index] = {
+          text: action.payload.text,
+          isCorrect: action.payload.isCorrect,
+        };
+      }
+    },
+    deleteCurrentQuestionSecoundStepAnswer(state) {
+      if (state.currentQuestion && state.currentQuestion.secoundStep) {
+        state.currentQuestion.secoundStep = undefined;
+      }
+    },
+
     setCorrectAnswerIndex(state, action) {
       if (state.currentQuestion) {
         state.currentQuestion.correctAnswerIndex = action.payload;
       }
     },
+
+    setSecoundStepCorrectAnswerIndex(state, action) {
+      if (state.currentQuestion?.secoundStep) {
+        state.currentQuestion.secoundStep.correctAnswerIndex = action.payload;
+      }
+    },
+
     setSongURL(state, action) {
       if (state.currentQuestion) {
         state.currentQuestion.songURL = action.payload;
@@ -351,8 +421,12 @@ export const GTSCreateGameSlice = createSlice({
       state.createdGTSGame[action.payload.updatedAnswer].correctAnswerIndex =
         action.payload.correctAnswerIndex;
     },
-    addArtistsVariantsArr(state, action) {
-      const artistsVariants = Array.from(Array(4)).map((el, index) => {
+
+    addUpdateSecoundStepQuestionAnswer(
+      state,
+      action: IAddUpdateSecoundStepActions<string | number>
+    ) {
+      const secoundStepVariants = Array.from(Array(4)).map((el, index) => {
         if (index === 0) {
           return {
             text: "",
@@ -365,47 +439,60 @@ export const GTSCreateGameSlice = createSlice({
           };
         }
       });
-      state.createdGTSGame[action.payload].artist = {
-        correctAnswerIndex: 0,
-        artistAnswerArr: artistsVariants,
-      };
+      console.log(typeof action.payload);
+      if (typeof action.payload === "string") {
+        if (state.currentQuestion) {
+          state.currentQuestion.secoundStep = {
+            correctAnswerIndex: 0,
+            secoundStepAnswerArr: secoundStepVariants,
+          };
+        }
+      }
+      if (typeof action.payload === "number") {
+        if (state.createdGTSGame && state.createdGTSGame[action.payload]) {
+          state.createdGTSGame[action.payload].secoundStep = {
+            correctAnswerIndex: 0,
+            secoundStepAnswerArr: secoundStepVariants,
+          };
+        }
+      }
     },
-    updateAnswerArtistText(state, action) {
+    updateAnswerSecoundStepText(state, action) {
       console.log(action.payload);
-      const data = state.createdGTSGame[action.payload.updatedAnswer].artist.artistAnswerArr;
+      const data =
+        state.createdGTSGame[action.payload.updatedAnswer].secoundStep.secoundStepAnswerArr;
       if (data) {
-        state.createdGTSGame[action.payload.updatedAnswer].artist.artistAnswerArr = data.map(
-          (artist, index) => {
+        state.createdGTSGame[action.payload.updatedAnswer].secoundStep.secoundStepAnswerArr =
+          data.map((answer, index) => {
             if (index === action.payload.updatedArtistIndex) {
               return {
                 text: action.payload.text,
-                isCorrect: artist.isCorrect,
+                isCorrect: answer.isCorrect,
               };
             } else {
               return {
-                text: artist.text,
-                isCorrect: artist.isCorrect,
+                text: answer.text,
+                isCorrect: answer.isCorrect,
               };
             }
-          }
-        );
+          });
       }
     },
-    updateArtistCorrectVariant(state, action) {
-      if (state.createdGTSGame[action.payload.updatedAnswer].artist !== undefined) {
-        state.createdGTSGame[action.payload.updatedAnswer].artist.correctAnswerIndex =
+    updateSecoundStepCorrectVariant(state, action) {
+      if (state.createdGTSGame[action.payload.updatedAnswer].secoundStep !== undefined) {
+        state.createdGTSGame[action.payload.updatedAnswer].secoundStep.correctAnswerIndex =
           action.payload.correctAnswerIndex;
-        state.createdGTSGame[action.payload.updatedAnswer].artist.artistAnswerArr =
-          state.createdGTSGame[action.payload.updatedAnswer].artist.artistAnswerArr?.map(
-            (artist, index) => {
+        state.createdGTSGame[action.payload.updatedAnswer].secoundStep.secoundStepAnswerArr =
+          state.createdGTSGame[action.payload.updatedAnswer].secoundStep.secoundStepAnswerArr?.map(
+            (secoundStep, index) => {
               if (index === action.payload.correctAnswerIndex) {
                 return {
-                  text: artist.text,
+                  text: secoundStep.text,
                   isCorrect: true,
                 };
               } else {
                 return {
-                  text: artist.text,
+                  text: secoundStep.text,
                   isCorrect: false,
                 };
               }
@@ -494,9 +581,9 @@ export const GTSCreateGameSlice = createSlice({
             correctAnswerIndex: number;
             songURL: string;
             _id: string;
-            artist: {
+            secoundStep: {
               correctAnswerIndex?: number;
-              artistAnswerArr?: {
+              secoundStepAnswerArr?: {
                 text: string;
                 isCorrect: boolean;
               }[];
@@ -525,6 +612,12 @@ export const GTSCreateGameSlice = createSlice({
     },
     setGTSAddedGameComplexity(state, action) {
       state.GTSAddedGameComplexity = action.payload;
+    },
+    setGTSAddedGameType(state, action) {
+      state.GTSAddedGameType = action.payload;
+    },
+    setGTSGameData(state, action) {
+      state.GTSGameData = action.payload;
     },
   },
   extraReducers(builder) {

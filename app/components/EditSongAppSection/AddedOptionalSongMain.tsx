@@ -245,7 +245,7 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
           className=" h-8 w-8 flex items-center justify-center rounded-full"
         >
           <FontAwesomeIcon
-            className="fa-fw fa-2x cursor-pointer hover:text-sky-700  hover:shadow-timeBarShadow rounded-full"
+            className="fa-fw fa-2x cursor-pointer hover:text-buttonColor  hover:shadow-timeBarShadow rounded-full"
             icon={faCircleXmark}
           ></FontAwesomeIcon>
         </div>

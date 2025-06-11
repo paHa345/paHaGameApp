@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { IGTSGameSchema } from "../types";
-import { GTSCreatedGameComplexity } from "../store/GTSCreateGameSlice";
+import { GTSCreatedGameComplexity, GTSCreatedGameType } from "../store/GTSCreateGameSlice";
 
 const GTSGameSchema = new mongoose.Schema<IGTSGameSchema>({
   name: { type: String, required: true },
@@ -15,9 +15,9 @@ const GTSGameSchema = new mongoose.Schema<IGTSGameSchema>({
       imageURL: { type: String, required: false },
       correctAnswerIndex: { type: Number, required: true },
       answersArr: [{ text: { type: String, required: true } }],
-      artist: {
+      secoundStep: {
         correctAnswerIndex: { type: Number, required: false },
-        artistAnswerArr: [
+        secoundStepAnswerArr: [
           {
             text: { type: String, required: false },
             isCorrect: { type: Boolean, required: false },
@@ -26,6 +26,7 @@ const GTSGameSchema = new mongoose.Schema<IGTSGameSchema>({
       },
     },
   ],
+  GTSGameType: { type: String, required: true },
 });
 
 //уникальное имя, проверяет все документы в коллекции

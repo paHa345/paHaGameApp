@@ -28,6 +28,9 @@ const AddGTSGameButtonMain = () => {
   const gameIsCompletedStatus = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.createdGameIsCompleted
   );
+  const GTSGameData = useSelector(
+    (state: IGTSCreateGameSlice) => state.GTSCreateGameState.GTSGameData
+  );
   const addGTSGameHandler = () => {
     console.log(gameID);
     dispatch(
@@ -38,6 +41,7 @@ const AddGTSGameButtonMain = () => {
           name: addedCurrentGTSGameName,
           GTSGameObj: currentGTSGame,
           isCompleted: gameIsCompletedStatus,
+          GTSGameType: GTSGameData?.GTSGameType,
         },
       })
     );

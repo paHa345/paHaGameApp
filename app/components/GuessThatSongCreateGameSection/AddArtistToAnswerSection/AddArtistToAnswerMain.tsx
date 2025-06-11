@@ -14,7 +14,11 @@ const AddArtistToAnswerMain = () => {
   const addArtistListHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     //addArtistListHandler logic here
     console.log(currentUpdatedQuestionIndex);
-    dispatch(GTSCreateGameActions.addArtistsVariantsArr(currentUpdatedQuestionIndex));
+    if (currentUpdatedQuestionIndex !== undefined) {
+      dispatch(
+        GTSCreateGameActions.addUpdateSecoundStepQuestionAnswer(currentUpdatedQuestionIndex)
+      );
+    }
   };
 
   return (
@@ -25,7 +29,7 @@ const AddArtistToAnswerMain = () => {
           onClick={addArtistListHandler}
         >
           <FontAwesomeIcon className=" pr-2" icon={faPlus} />
-          Добавить список вариантов исполнителей
+          Добавить 2 этап вопроса
         </div>
       </div>
     </div>

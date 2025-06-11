@@ -1,5 +1,5 @@
 import { AddedWordDirection } from "./store/crosswordSlice";
-import { GTSCreatedGameComplexity } from "./store/GTSCreateGameSlice";
+import { GTSCreatedGameComplexity, GTSCreatedGameType } from "./store/GTSCreateGameSlice";
 
 export const mainMuscleGrourArr = [
   { nameRu: "Бицепс", nameEn: "biceps" },
@@ -395,15 +395,39 @@ export interface IGTSGameSchema {
     imageURL?: string;
     correctAnswerIndex: number;
     answersArr: { text: string }[];
-    artist?: {
+    secoundStep?: {
       correctAnswerIndex: number;
-      artistAnswerArr: {
+      secoundStepAnswerArr: {
         text: string;
         isCorrect: boolean;
       }[];
     };
   }[];
+  GTSGameType: string;
 }
+
+export const GTSGameTemplates = [
+  {
+    GTSGameType: GTSCreatedGameType.GuessThatSong,
+    backgroundColor: "cyan",
+    description: "Получится разгадать все мелодии за указанное время?",
+    imageName: "faHeadphonesAlt",
+    title: "Угадай мелодию",
+    descriptionSecoundary: `Выберете игру 'Угадай мелодию'`,
+    descriptionNextTask: `Следующая песня`,
+    description2Step: `Угадайте группу`,
+  },
+  {
+    GTSGameType: GTSCreatedGameType.CarAudioFinancial,
+    backgroundColor: "indigo",
+    description: "Определи по звуку авто, угадай его цену",
+    imageName: "faCarOn",
+    title: "Авто аудио визуальная викторрина",
+    descriptionSecoundary: `Выберете игру 'Авто аудио визуальная викторрина'`,
+    descriptionNextTask: `Следующее задание`,
+    description2Step: `Это авто мы можем доставить, угадайте цену с доставкой`,
+  },
+];
 
 export interface IOneExerciseTypes {
   nameRu: string;

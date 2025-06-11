@@ -21,7 +21,7 @@ const GamesSectionMain = () => {
       <div className=" py-5">
         <h1 className=" text-center text-3xl font-bold">Список Игр</h1>
       </div>
-      <div className=" px-4  grid lg:grid-cols-3 sm:grid-cols-2 gap-9 justify-center items-center py-5">
+      <div className=" px-4  grid lg:grid-cols-3 sm:grid-cols-2 gap-9 justify-center items-center py-5 ">
         <GameSectionCard
           gameData={{
             title: "Кроссворды",
@@ -39,6 +39,16 @@ const GamesSectionMain = () => {
             image: "headphones",
 
             backgroundColor: "cyan",
+          }}
+        ></GameSectionCard>
+        <GameSectionCard
+          gameData={{
+            title: "Авто аудио викторина",
+            link: "carAudioGame",
+            description: "Автомобильная аудио-визуальная игра",
+            image: "car",
+
+            backgroundColor: "indigo",
           }}
         ></GameSectionCard>
 
