@@ -120,6 +120,8 @@ export interface IGTSCreateGameSlice {
       isCompleted: boolean;
     }[];
 
+    showDeleteEditedQuestionSecoundStapModalStatus: boolean;
+
     downloadCurrentUserAllGTSGameStatus: GTSCreateGameFetchStatus;
     downloadCurrentUserAllGTSGameErrorMessage: string;
     downloadCurrentUserGTSGameAndAddInStateStatus: GTSCreateGameFetchStatus;
@@ -192,6 +194,8 @@ interface IGTSCreateGameState {
     isCompleted: boolean;
   }[];
 
+  showDeleteEditedQuestionSecoundStapModalStatus: boolean;
+
   downloadCurrentUserAllGTSGameStatus: GTSCreateGameFetchStatus;
   downloadCurrentUserAllGTSGameErrorMessage: string;
   downloadCurrentUserGTSGameAndAddInStateStatus: GTSCreateGameFetchStatus;
@@ -252,6 +256,7 @@ export const initGuessThatSongState: IGTSCreateGameState = {
   uploadCurrentGTSGameErrorMessage: "",
   createdGameIsCompleted: false,
   addQuestionStatus: false,
+  showDeleteEditedQuestionSecoundStapModalStatus: false,
 
   downloadCurrentUserAllGTSGameStatus: GTSCreateGameFetchStatus.Ready,
   downloadCurrentUserAllGTSGameErrorMessage: "",
@@ -352,6 +357,11 @@ export const GTSCreateGameSlice = createSlice({
     deleteCurrentQuestionSecoundStepAnswer(state) {
       if (state.currentQuestion && state.currentQuestion.secoundStep) {
         state.currentQuestion.secoundStep = undefined;
+      }
+    },
+    deleteEditedQuestionSecoundStepAnswer(state) {
+      if (state.createdGTSGame && state.updatedQuestionNumber !== undefined) {
+        state.createdGTSGame[state.updatedQuestionNumber].secoundStep = {};
       }
     },
 
@@ -618,6 +628,9 @@ export const GTSCreateGameSlice = createSlice({
     },
     setGTSGameData(state, action) {
       state.GTSGameData = action.payload;
+    },
+    setDeleteEditedQuestionSecoundStapModalStatus(state, action) {
+      state.showDeleteEditedQuestionSecoundStapModalStatus = action.payload;
     },
   },
   extraReducers(builder) {

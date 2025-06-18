@@ -1,6 +1,6 @@
 import { AppDispatch } from "@/app/store";
 import { GTSCreateGameActions, IGTSCreateGameSlice } from "@/app/store/GTSCreateGameSlice";
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import GTSAnswer from "./GTSAnswer";
 import { div } from "framer-motion/client";
@@ -12,7 +12,7 @@ import AddMainQuestion from "./AddMainQuestion";
 import FirstStepQuestionAnswers from "./FirstStepQuestionAnswers";
 import SecoundStepQuestionAnswer from "./SecoundStepQuestionAnswer";
 
-const AddQuestion = () => {
+const AddQuestion = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
   const currentQuestion = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.currentQuestion
@@ -130,6 +130,6 @@ const AddQuestion = () => {
       </div>
     </div>
   );
-};
+});
 
 export default AddQuestion;

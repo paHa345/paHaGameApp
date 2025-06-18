@@ -16,29 +16,32 @@ const UpdateQuestionArtistAnswer = ({ text, index, isCorrect }: IArtistAnswerPro
   const currentUpdatedQuestion = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.updatedQuestionNumber
   );
-  const updateAnswerIsCorrectHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+  const updateSecoundStepAnswerIsCorrectHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    dispatch(
-      GTSCreateGameActions.updateArtistCorrectVariant({
-        updatedAnswer: currentUpdatedQuestion,
-        correctAnswerIndex: index,
-      })
-    );
+    // dispatch(
+    //   GTSCreateGameActions.updateArtistCorrectVariant({
+    //     updatedAnswer: currentUpdatedQuestion,
+    //     correctAnswerIndex: index,
+    //   })
+    // );
   };
-  const updateAnswerHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const updateSecoundStepAnswerHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    dispatch(
-      GTSCreateGameActions.updateAnswerArtistText({
-        updatedAnswer: currentUpdatedQuestion,
-        updatedArtistIndex: index,
-        text: e.currentTarget.value,
-      })
-    );
+    // dispatch(
+    //   GTSCreateGameActions.updateAnswerArtistText({
+    //     updatedAnswer: currentUpdatedQuestion,
+    //     updatedArtistIndex: index,
+    //     text: e.currentTarget.value,
+    //   })
+    // );
   };
 
   return (
     <div className=" py-3 flex justify-center items-center">
-      <div onClick={updateAnswerIsCorrectHandler} className=" cursor-pointer hover:scale-110">
+      <div
+        onClick={updateSecoundStepAnswerIsCorrectHandler}
+        className=" cursor-pointer hover:scale-110"
+      >
         {isCorrect ? (
           <FontAwesomeIcon className=" pr-2" icon={faCircleCheck} />
         ) : (
@@ -54,7 +57,7 @@ const UpdateQuestionArtistAnswer = ({ text, index, isCorrect }: IArtistAnswerPro
             // defaultValue={"Введите название"}
             placeholder={`Введите ответ ${index + 1}`}
             value={text}
-            onChange={updateAnswerHandler}
+            onChange={updateSecoundStepAnswerHandler}
           />
         </div>
       </div>

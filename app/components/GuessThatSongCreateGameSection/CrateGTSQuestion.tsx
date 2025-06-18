@@ -16,14 +16,17 @@ import {
   faHeadphonesAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import QuestionsButtons from "./QuestionsButtons/QuestionsButtons";
 import AddQuestion from "./GTSAddSongQuectionSection/AddQuestion";
 import { GTSGameTemplates } from "@/app/types";
 import { AnyBulkWriteOperation } from "mongodb";
+import { resolve } from "path";
+import { rejects } from "assert";
+import DeleteEditedSecoundStepModalMain from "./AddArtistToAnswerSection/DeleteEditedSecoundStepModalMain";
 
-const CrateGTSQuestion = () => {
+const CrateGTSQuestion = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
   const [setGameComplexityWorker, setSetGameComplexityWorker] = useState<Worker>();
   const gameValue = useSelector(
@@ -57,6 +60,11 @@ const CrateGTSQuestion = () => {
 
   const gameIsBeingUpdated = useSelector(
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.gameIsBeingUpdated
+  );
+
+  const showDeleteEditedSecoundStepQuestionModal = useSelector(
+    (state: IGTSCreateGameSlice) =>
+      state.GTSCreateGameState.showDeleteEditedQuestionSecoundStapModalStatus
   );
 
   const changeGameValue = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,18 +111,18 @@ const CrateGTSQuestion = () => {
     //   setSetGameComplexityWorker(new Worker(new URL("/public/worker.js", import.meta.url)));
     // }
 
-    if (!setGameComplexityWorker) {
-      return;
-    }
+    // if (!setGameComplexityWorker) {
+    //   return;
+    // }
 
-    setGameComplexityWorker?.postMessage({
-      type: "setGameComplexity",
-      message: this,
-    });
+    // setGameComplexityWorker?.postMessage({
+    //   type: "setGameComplexity",
+    //   message: this,
+    // });
 
-    setGameComplexityWorker.onmessage = function (e: any) {
-      console.log("setGameComplexityWorker said: ", e.data);
-    };
+    // setGameComplexityWorker.onmessage = function (e: any) {
+    //   console.log("setGameComplexityWorker said: ", e.data);
+    // };
   };
   const setGameType = function (this: string, e: React.MouseEvent<HTMLDivElement>) {
     console.log(this);
@@ -156,6 +164,61 @@ const CrateGTSQuestion = () => {
       setSetGameComplexityWorker(undefined);
     };
   }, []);
+
+  // const timeout = (ms, callback) => {
+  //   if (ms < 0) {
+  //     callback("Errr");
+  //   } else {
+  //     setTimeout(() => {
+  //       callback(null, "RRRR");
+  //     }, ms);
+  //   }
+  // };
+
+  // const promisify =
+  //   (fn) =>
+  //   (...args) =>
+  //     new Promise((resolve, reject) => {
+  //       console.log(...args);
+  //       fn(...args, (error, result) => {
+  //         if (error) {
+  //           reject(error);
+  //         } else {
+  //           resolve(result);
+  //         }
+  //       });
+  //     });
+
+  // const promisifyTimeout = promisify(timeout);
+
+  // promisifyTimeout(2000).then((value) => console.log(value));
+  // promisifyTimeout(-1).catch((error) => console.log(error));
+
+  // queueMicrotask(() => {
+  //   console.log("4");
+  // });
+
+  // console.log("1");
+
+  // setTimeout(() => {
+  //   console.log("8");
+  // }, 0);
+
+  // const promise = new Promise((resolve) => {
+  //   resolve("asdasd");
+  //   console.log("2");
+  // })
+  //   .then(() => {
+  //     console.log("5");
+  //     queueMicrotask(() => {
+  //       console.log("6");
+  //     });
+  //   })
+  //   .then(() => {
+  //     console.log("7");
+  //   });
+
+  // console.log("3");
 
   return (
     <div>
@@ -264,8 +327,11 @@ const CrateGTSQuestion = () => {
           )}
         </div>
       </div>
+      {showDeleteEditedSecoundStepQuestionModal && (
+        <DeleteEditedSecoundStepModalMain></DeleteEditedSecoundStepModalMain>
+      )}
     </div>
   );
-};
+});
 
 export default CrateGTSQuestion;

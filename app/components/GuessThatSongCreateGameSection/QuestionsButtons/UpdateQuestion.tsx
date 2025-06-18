@@ -76,6 +76,7 @@ const UpdateQuestion = () => {
   const updatedArtistListEls =
     currentAddedGame !== undefined &&
     updatedQuestionNumber !== undefined &&
+    currentAddedGame[updatedQuestionNumber].secoundStep?.correctAnswerIndex !== undefined &&
     updatedQuestionNumber > -1 ? (
       currentAddedGame[updatedQuestionNumber].secoundStep?.secoundStepAnswerArr.map((el, index) => {
         // console.log(answer.text);
@@ -166,7 +167,10 @@ const UpdateQuestion = () => {
               <div>
                 <h1 className=" py-4 text-center text-2xl">Варианты ответов 2 этап</h1>
                 <div className=" grid gap-2 justify-center items-center sm:grid-cols-2">
-                  {updatedArtistListEls}
+                  {updatedQuestionNumber !== undefined &&
+                    currentAddedGame[updatedQuestionNumber].secoundStep.correctAnswerIndex !==
+                      undefined &&
+                    updatedArtistListEls}
                 </div>
               </div>
             )}
