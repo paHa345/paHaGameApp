@@ -26,8 +26,6 @@ const UpdateQuestionMain = () => {
       <div>rrr</div>
     );
 
-  console.log(currentAddedGame);
-
   return (
     <div>
       <div>sdsfsd</div>

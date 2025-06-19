@@ -32,8 +32,7 @@ const AddGTSGameButtonMain = () => {
     (state: IGTSCreateGameSlice) => state.GTSCreateGameState.GTSGameData
   );
   const addGTSGameHandler = () => {
-    console.log(gameID);
-    console.log(currentGTSGame);
+    console.log("er");
     dispatch(
       uploadGTSGameAndUpdateStore({
         gameID: gameID,
