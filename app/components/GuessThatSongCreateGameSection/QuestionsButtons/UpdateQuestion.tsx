@@ -33,8 +33,6 @@ const UpdateQuestion = () => {
     console.log(currentAddedGame[currentUpdatedQuestion].secoundStep);
   }
 
-  console.log(currentUpdatedQuestion);
-
   const updateQuestionNumberHandler = function (this: number, e: React.MouseEvent<HTMLDivElement>) {
     e.preventDefault();
     setQuestionNumber(this);

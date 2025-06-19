@@ -18,6 +18,12 @@ const UpdateQuestionArtistAnswer = ({ text, index, isCorrect }: IArtistAnswerPro
   );
   const updateSecoundStepAnswerIsCorrectHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
+    dispatch(
+      GTSCreateGameActions.updateSecoundStepCorrectVariant({
+        updatedAnswer: currentUpdatedQuestion,
+        correctAnswerIndex: index,
+      })
+    );
     // dispatch(
     //   GTSCreateGameActions.updateArtistCorrectVariant({
     //     updatedAnswer: currentUpdatedQuestion,
@@ -27,13 +33,13 @@ const UpdateQuestionArtistAnswer = ({ text, index, isCorrect }: IArtistAnswerPro
   };
   const updateSecoundStepAnswerHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    // dispatch(
-    //   GTSCreateGameActions.updateAnswerArtistText({
-    //     updatedAnswer: currentUpdatedQuestion,
-    //     updatedArtistIndex: index,
-    //     text: e.currentTarget.value,
-    //   })
-    // );
+    dispatch(
+      GTSCreateGameActions.updateAnswerSecoundStepText({
+        updatedAnswer: currentUpdatedQuestion,
+        updatedArtistIndex: index,
+        text: e.currentTarget.value,
+      })
+    );
   };
 
   return (

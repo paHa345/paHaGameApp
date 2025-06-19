@@ -24,13 +24,14 @@ const GTSSecoundAnswer = ({ index }: IGTSSecoundAnswerProps) => {
   };
 
   const changeSecoundStepAnswerHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.currentTarget.value);
     dispatch(
       GTSCreateGameActions.setCurrentQuestionSecoundStepAnswer({
         text: e.currentTarget.value,
         index: index,
+        isCorrect: currentQuestion?.secoundStep?.secoundStepAnswerArr[index].isCorrect,
       })
     );
+    console.log(currentQuestion);
   };
 
   return (

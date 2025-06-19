@@ -19,7 +19,6 @@ const SecoundStepQuestionAnswer = () => {
       console.log("Delete");
       dispatch(GTSCreateGameActions.deleteCurrentQuestionSecoundStepAnswer());
     }
-    console.log(addedGame);
   };
   return (
     <div>

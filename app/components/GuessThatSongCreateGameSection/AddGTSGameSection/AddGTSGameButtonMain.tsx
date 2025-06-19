@@ -33,6 +33,7 @@ const AddGTSGameButtonMain = () => {
   );
   const addGTSGameHandler = () => {
     console.log(gameID);
+    console.log(currentGTSGame);
     dispatch(
       uploadGTSGameAndUpdateStore({
         gameID: gameID,

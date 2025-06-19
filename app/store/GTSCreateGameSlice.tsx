@@ -346,7 +346,6 @@ export const GTSCreateGameSlice = createSlice({
     },
 
     setCurrentQuestionSecoundStepAnswer(state, action) {
-      console.log(action.payload);
       if (state.currentQuestion && state.currentQuestion.secoundStep) {
         state.currentQuestion.secoundStep.secoundStepAnswerArr[action.payload.index] = {
           text: action.payload.text,
@@ -372,9 +371,24 @@ export const GTSCreateGameSlice = createSlice({
     },
 
     setSecoundStepCorrectAnswerIndex(state, action) {
+      if (
+        !state.currentQuestion?.secoundStep &&
+        !state.currentQuestion?.secoundStep?.secoundStepAnswerArr
+      ) {
+        return;
+      }
       if (state.currentQuestion?.secoundStep) {
         state.currentQuestion.secoundStep.correctAnswerIndex = action.payload;
       }
+      const updatedSecouneStepAnswersArr =
+        state.currentQuestion?.secoundStep?.secoundStepAnswerArr.map((answer, index) => {
+          return {
+            text: answer.text,
+            isCorrect:
+              state.currentQuestion?.secoundStep?.correctAnswerIndex === index ? true : false,
+          };
+        });
+      state.currentQuestion.secoundStep.secoundStepAnswerArr = updatedSecouneStepAnswersArr;
     },
 
     setSongURL(state, action) {
@@ -468,7 +482,6 @@ export const GTSCreateGameSlice = createSlice({
       }
     },
     updateAnswerSecoundStepText(state, action) {
-      console.log(action.payload);
       const data =
         state.createdGTSGame[action.payload.updatedAnswer].secoundStep.secoundStepAnswerArr;
       if (data) {
