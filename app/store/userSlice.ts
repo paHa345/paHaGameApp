@@ -130,6 +130,35 @@ export const deleteExerciseAndUpdateState = createAsyncThunk(
   }
 );
 
+export const setGamesData = createAsyncThunk(
+  "appState/setGamesdata",
+  async function (_, { rejectWithValue, dispatch }) {
+    try {
+      const getGameDataReq = await fetch("/api/games/getChooseGameButtonData");
+      const gamesData = await getGameDataReq.json();
+
+      let gamesDataObj: {
+        [index: string]: {
+          color: string;
+          description: string;
+          pathname: string;
+          title: string;
+          gameType: string;
+          _id: string;
+        };
+      } = {};
+      gamesData.result.forEach((gameData: any) => {
+        return (gamesDataObj[gameData.pathname] = gameData);
+      });
+
+      console.log(gamesDataObj);
+      dispatch(userActions.setGamesData(gamesDataObj));
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export enum fetchCurrentUserWorkoutsStatus {
   Ready = "ready",
   Loading = "loading",
@@ -175,6 +204,19 @@ export interface IUserSlice {
     deletingByUserRequest: IReqToCoach | null;
     rejectingOrDeletingByCoachRequest: IReqToCoach | null;
     rejectingOrDeletingByCoachStudentId: string;
+    gamesData?: {
+      [key: string]: {
+        color: string;
+        description: string;
+        pathname: string;
+        title: string;
+        gameType: string;
+        textSecoundStep: string;
+
+        _id: string;
+      };
+    };
+    currentGameType?: string;
   };
 }
 
@@ -203,6 +245,19 @@ interface userState {
   deletingByUserRequest: IReqToCoach | null;
   rejectingOrDeletingByCoachRequest: IReqToCoach | null;
   rejectingOrDeletingByCoachStudentId: string;
+  gamesData?: {
+    [key: string]: {
+      color: string;
+      description: string;
+      pathname: string;
+      title: string;
+      gameType: string;
+      textSecoundStep: string;
+
+      _id: string;
+    };
+  };
+  currentGameType?: string;
 }
 
 export const initUserState: userState = {
@@ -518,6 +573,12 @@ export const userSlice = createSlice({
       //   currentEditedExercisesIndex
       // ].isCompletedArr = !action.payload.isComplete;
     },
+    setGamesData(state, action) {
+      state.gamesData = action.payload;
+    },
+    setCurrentGameType(state, action) {
+      state.currentGameType = action.payload;
+    },
   },
   extraReducers(builder) {
     builder.addCase(getUserWorkouts.pending, (state, action) => {
@@ -532,6 +593,9 @@ export const userSlice = createSlice({
     builder.addCase(deleteExerciseAndUpdateState.pending, (state, action) => {
       state.deleteExerciseStatus = fetchCurrentUserWorkoutsStatus.Loading;
     });
+    builder.addCase(setGamesData.pending, (state, action) => {
+      state.deleteExerciseStatus = fetchCurrentUserWorkoutsStatus.Loading;
+    });
     builder.addCase(getUserWorkouts.fulfilled, (state, action) => {
       state.getWorkoutsStatus = fetchCurrentUserWorkoutsStatus.Resolve;
     });
@@ -544,6 +608,9 @@ export const userSlice = createSlice({
     builder.addCase(deleteExerciseAndUpdateState.fulfilled, (state, action) => {
       state.deleteExerciseStatus = fetchCurrentUserWorkoutsStatus.Loading;
     });
+    builder.addCase(setGamesData.fulfilled, (state, action) => {
+      state.deleteExerciseStatus = fetchCurrentUserWorkoutsStatus.Loading;
+    });
     builder.addCase(getUserWorkouts.rejected, (state, action) => {
       state.getWorkoutsStatus = fetchCurrentUserWorkoutsStatus.Error;
     });
@@ -554,6 +621,9 @@ export const userSlice = createSlice({
       state.deleteWorkoutStatus = fetchCurrentUserWorkoutsStatus.Error;
     });
     builder.addCase(deleteExerciseAndUpdateState.rejected, (state, action) => {
+      state.deleteExerciseStatus = fetchCurrentUserWorkoutsStatus.Loading;
+    });
+    builder.addCase(setGamesData.rejected, (state, action) => {
       state.deleteExerciseStatus = fetchCurrentUserWorkoutsStatus.Loading;
     });
   },

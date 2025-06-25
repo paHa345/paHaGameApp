@@ -37,6 +37,7 @@ const GTSGameAnswer = ({ answerText, id }: IGTSGameAnswerProps) => {
       console.log("Stop");
       return;
     }
+
     dispatch(guessThatSongActions.setChosenGTSGameAnswerID(id));
     stopAnswerTimeController?.abort();
     dispatch(checkGTSGameAnswerAndSetQuestion({ answerID: id, attemptID: attemptID }));

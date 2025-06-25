@@ -6,12 +6,15 @@ import { redirect } from "next/navigation";
 
 export const getAvailableGTSGames = createAsyncThunk(
   "GTSGameState/getAvailableGTSGames",
-  async function (getGTSGamesData: { page?: number }, { rejectWithValue, dispatch }) {
+  async function (
+    getGTSGamesData: { page?: number; gameType: string | undefined },
+    { rejectWithValue, dispatch }
+  ) {
     try {
       dispatch(guessThatSongActions.setShowHideGTSGamesList(false));
 
       const getAvailableGTSGamesReq = await fetch(
-        `/api/guessThatSong/GTSGame/getAvailableGTSGames?page=${getGTSGamesData?.page ? getGTSGamesData?.page : 1}`
+        `/api/guessThatSong/GTSGame/getAvailableGTSGames/${getGTSGamesData.gameType}?page=${getGTSGamesData?.page ? getGTSGamesData?.page : 1}`
       );
 
       const availableGTSGames = await getAvailableGTSGamesReq.json();
@@ -131,6 +134,10 @@ export const checkArtistAnswerAndSetNextQuestion = createAsyncThunk(
           artist: false,
         })
       );
+
+      console.log(userArtistAnserText);
+      console.log(answerID);
+      console.log(attemptID);
 
       const checkArtistAnswerReq = await fetch(`/api/guessThatSong/GTSGame/checkArtistAnswer`, {
         method: "PATCH",
@@ -285,7 +292,7 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
 
       const getArtistsList = await getArtistsListReq.json();
 
-      dispatch(guessThatSongActions.setArtistAnswerArr(getArtistsList.result.artistAnswerArr));
+      dispatch(guessThatSongActions.setArtistAnswerArr(getArtistsList.result));
 
       const checkAnswerReq = await fetch(`/api/guessThatSong/GTSGame/checkAnswer/`, {
         method: "PATCH",

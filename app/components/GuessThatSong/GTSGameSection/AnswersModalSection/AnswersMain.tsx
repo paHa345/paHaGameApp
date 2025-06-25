@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import GTSGameAnswer from "./GTSGameAnswer";
 import ArtistAnswer from "./ArtistAnswer";
 import { div } from "framer-motion/client";
+import { IUserSlice } from "@/app/store/userSlice";
 
 const AnswerMain = () => {
   const imageURL = useSelector(
@@ -38,6 +39,9 @@ const AnswerMain = () => {
   const chosenArtistAnswerID = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.chosenArtistAnswerID
   );
+
+  const currentGameType = useSelector((state: IUserSlice) => state.userState.currentGameType);
+  const gamesData = useSelector((state: IUserSlice) => state.userState.gamesData);
 
   const answersEls = currentGTSAnswers.map((answer, index) => {
     return (
@@ -87,7 +91,9 @@ const AnswerMain = () => {
             </h1>
           </div>
           <div>
-            <h1 className="text-2xl">Угадайте исполнителя</h1>
+            <h1 className="text-2xl">
+              {gamesData && currentGameType && gamesData[currentGameType]?.textSecoundStep}
+            </h1>
           </div>
           {artistAnswerEl}
         </div>

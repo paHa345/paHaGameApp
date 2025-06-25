@@ -2,19 +2,30 @@
 import { Container } from "postcss";
 import React, { useEffect } from "react";
 import GameSectionCard from "./GameSectionCard";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/app/store";
 import { crossworGamedActions } from "@/app/store/crosswordGameSlice";
 import { guessThatSongActions } from "@/app/store/guessThatSongSlice";
+import { IUserSlice, setGamesData, userActions } from "@/app/store/userSlice";
+import { IGTSCreateGameSlice } from "@/app/store/GTSCreateGameSlice";
+import { IEditSongAppSlice } from "@/app/store/EditSongAppSlice";
 
 const GamesSectionMain = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const getData = async () => {
+    const gameDataReq = await fetch("./../../api/games/getChooseGameButtonData");
+    const gameData = await gameDataReq.json();
+    console.log(gameData);
+  };
+  const gamesData = useSelector((state: IUserSlice) => state.userState.gamesData);
+
   useEffect(() => {
     // console.log("clear attempt data");
     dispatch(guessThatSongActions.setCurrentUserCompletedGTSAttempt(undefined));
     dispatch(crossworGamedActions.clearCurrentUserCompletedAttempt());
     dispatch(crossworGamedActions.setEndAttempt(false));
-  });
+    dispatch(setGamesData());
+  }, []);
 
   return (
     <section className=" container mx-auto">

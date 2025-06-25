@@ -5,11 +5,18 @@ import { MongoClient } from "mongodb";
 
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest, segmentData: any) {
   try {
     await connectMongoDB();
 
-    const value = await GTSGame.find({ isCompleted: true }).countDocuments();
+    const params = await segmentData.params;
+
+    console.log(params.gameType);
+
+    const value = await GTSGame.find({
+      isCompleted: true,
+      GTSGameType: params.gameType,
+    }).countDocuments();
 
     const page = parseInt(req.nextUrl.searchParams?.get("page") || "1", 10);
     const limit = parseInt(req.nextUrl.searchParams?.get("limit") || "3", 10);
@@ -25,6 +32,7 @@ export async function GET(req: NextRequest) {
       {
         $match: {
           isCompleted: true,
+          GTSGameType: params.gameType,
         },
       },
       { $skip: skip },

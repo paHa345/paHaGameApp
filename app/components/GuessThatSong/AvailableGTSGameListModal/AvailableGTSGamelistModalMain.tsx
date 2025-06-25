@@ -18,6 +18,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import LoadingAvailableGTSGameCards from "./LoadingAvailableGTSGameCards";
 import LoadGTSGameNotification from "./LoadGTSGameNotification";
 import CreateAttemptNotification from "./CreateAttemptNotification";
+import { IUserSlice, userActions } from "@/app/store/userSlice";
 
 const AvailableGTSGamelistModalMain = () => {
   const [touchStart, setTouchStart] = useState(0);
@@ -47,13 +48,26 @@ const AvailableGTSGamelistModalMain = () => {
     const isLeftSwipe = distance > minSwipeDistance;
     const isRightSwipe = distance < -minSwipeDistance;
     if (isLeftSwipe || isRightSwipe) {
-      if (isLeftSwipe && !isGTSListLastPage) {
+      console.log(gameData);
+      if (isLeftSwipe && !isGTSListLastPage && gameData) {
         dispatch(crossworGamedActions.setCrosswordsListTransitionClasses("games-list-left"));
-        dispatch(getAvailableGTSGames({ page: GTSGamesListCurrentPage + 1 }));
+
+        console.log(gameData[window.location.pathname].gameType);
+        dispatch(
+          getAvailableGTSGames({
+            page: GTSGamesListCurrentPage + 1,
+            gameType: gameData[window.location.pathname].gameType,
+          })
+        );
       }
-      if (isRightSwipe && GTSGamesListCurrentPage > 1) {
+      if (isRightSwipe && GTSGamesListCurrentPage > 1 && gameData) {
         dispatch(crossworGamedActions.setCrosswordsListTransitionClasses("games-list-right"));
-        dispatch(getAvailableGTSGames({ page: GTSGamesListCurrentPage - 1 }));
+        dispatch(
+          getAvailableGTSGames({
+            page: GTSGamesListCurrentPage - 1,
+            gameType: gameData[window.location.pathname].gameType,
+          })
+        );
       }
     }
   };
@@ -92,6 +106,10 @@ const AvailableGTSGamelistModalMain = () => {
   const showGTSGamesList = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.showHideGTSGamesList
   );
+
+  const gameData = useSelector((state: IUserSlice) => state.userState.gamesData);
+
+  const currentGameType = useSelector((state: IUserSlice) => state.userState.currentGameType);
 
   const GTSGameCardsEl = availableGTSGamesArr.map((el, index) => {
     return (
@@ -135,7 +153,15 @@ const AvailableGTSGamelistModalMain = () => {
   };
 
   useEffect(() => {
-    dispatch(getAvailableGTSGames({ page: 1 }));
+    if (gameData) {
+      dispatch(userActions.setCurrentGameType(gameData[window.location.pathname].gameType));
+    } else {
+      return;
+    }
+
+    dispatch(
+      getAvailableGTSGames({ page: 1, gameType: gameData[window.location.pathname].gameType })
+    );
   }, []);
 
   return (

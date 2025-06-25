@@ -406,6 +406,16 @@ export interface IGTSGameSchema {
   GTSGameType: string;
 }
 
+export interface IGameDataSchema {
+  chooseGameButtonData: {
+    pathname: string;
+    title: string;
+    description: string;
+    color: string;
+    textSecoundStep: string;
+  }[];
+}
+
 export const GTSGameTemplates = [
   {
     GTSGameType: GTSCreatedGameType.GuessThatSong,

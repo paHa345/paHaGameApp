@@ -27,7 +27,7 @@ export async function GET(req: NextRequest, segmentData: any) {
     }
 
     const currentGame = await GTSGame.findById(currentAttempt[0].GTSGameID).select(
-      "GTSGameObj.artist.artistAnswerArr.text GTSGameObj.artist.artistAnswerArr._id"
+      "GTSGameObj.secoundStep.secoundStepAnswerArr.text GTSGameObj.secoundStep.secoundStepAnswerArr._id"
     );
 
     if (!currentGame) {
@@ -45,7 +45,12 @@ export async function GET(req: NextRequest, segmentData: any) {
     //      },
     //   ]
     // }
-    const artistsListVariants = currentGame.GTSGameObj[currentAttempt[0].currentQuestion].artist;
+    const artistsListVariants =
+      currentGame.GTSGameObj[currentAttempt[0].currentQuestion].secoundStep.secoundStepAnswerArr;
+
+    console.log(
+      currentGame.GTSGameObj[currentAttempt[0].currentQuestion].secoundStep.secoundStepAnswerArr
+    );
 
     return NextResponse.json({
       message: "sucess",

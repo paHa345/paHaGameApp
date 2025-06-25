@@ -1,6 +1,7 @@
 import { AppDispatch } from "@/app/store";
 import { crossworGamedActions } from "@/app/store/crosswordGameSlice";
 import { getAvailableGTSGames, IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
+import { IUserSlice } from "@/app/store/userSlice";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
@@ -17,6 +18,8 @@ const AvailableGRSGamePaginationMain = () => {
     (state: IGuessThatSongSlice) => state.guessThatSongState.isLastGTSGamesListPage
   );
 
+  const gameData = useSelector((state: IUserSlice) => state.userState.gamesData);
+
   const showPrevNextPageCrosswordsHandler = function (
     this: {
       transition: string;
@@ -24,13 +27,23 @@ const AvailableGRSGamePaginationMain = () => {
     e: React.MouseEvent<HTMLDivElement>
   ) {
     e.preventDefault();
-    if (this.transition === "next" && !isGTSGamesListLastPage) {
+    if (this.transition === "next" && !isGTSGamesListLastPage && gameData) {
       dispatch(crossworGamedActions.setCrosswordsListTransitionClasses("games-list-left"));
-      dispatch(getAvailableGTSGames({ page: GTSGameListCurrentPage + 1 }));
+      dispatch(
+        getAvailableGTSGames({
+          page: GTSGameListCurrentPage + 1,
+          gameType: gameData[window.location.pathname].gameType,
+        })
+      );
     }
-    if (this.transition === "prev" && GTSGameListCurrentPage > 1) {
+    if (this.transition === "prev" && GTSGameListCurrentPage > 1 && gameData) {
       dispatch(crossworGamedActions.setCrosswordsListTransitionClasses("games-list-right"));
-      dispatch(getAvailableGTSGames({ page: GTSGameListCurrentPage - 1 }));
+      dispatch(
+        getAvailableGTSGames({
+          page: GTSGameListCurrentPage - 1,
+          gameType: gameData[window.location.pathname].gameType,
+        })
+      );
     }
   };
   return (

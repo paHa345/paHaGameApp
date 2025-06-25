@@ -28,7 +28,7 @@ export async function PATCH(req: NextRequest) {
     console.log(
       currentGameQuestions.GTSGameObj[
         currentAttempt[0].currentQuestion
-      ].artist.artistAnswerArr.find((artist: any) => {
+      ].secoundStep.secoundStepAnswerArr.find((artist: any) => {
         return String(artist._id) === body.answerID;
       })
     );
@@ -43,7 +43,7 @@ export async function PATCH(req: NextRequest) {
     if (
       !currentGameQuestions.GTSGameObj[
         currentAttempt[0].currentQuestion
-      ].artist.artistAnswerArr.find((artist: any) => {
+      ].secoundStep.secoundStepAnswerArr.find((artist: any) => {
         return String(artist._id) === body.answerID;
       })
     ) {

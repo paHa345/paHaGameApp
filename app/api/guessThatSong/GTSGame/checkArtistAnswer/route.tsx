@@ -34,7 +34,7 @@ export async function PATCH(req: NextRequest) {
 
     const answerIDHasInArr = currentGameQuestions.GTSGameObj[
       currentAttempt[0].currentQuestion
-    ].artist.artistAnswerArr.find((artist: any) => {
+    ].secoundStep.secoundStepAnswerArr.find((artist: any) => {
       return String(artist._id) === body.answerID;
     });
 
@@ -50,7 +50,7 @@ export async function PATCH(req: NextRequest) {
 
     currentGameQuestions.GTSGameObj[
       currentAttempt[0].currentQuestion
-    ].artist.artistAnswerArr.forEach(
+    ].secoundStep.secoundStepAnswerArr.forEach(
       (artist: { text: string; isCorrect: boolean; _id: string }, index: number) => {
         if (String(artist._id) === body.answerID) {
           answerIsTrue = artist.isCorrect;
