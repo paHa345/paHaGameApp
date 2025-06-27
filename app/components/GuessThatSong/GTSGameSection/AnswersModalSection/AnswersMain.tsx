@@ -69,6 +69,13 @@ const AnswerMain = () => {
   // useEffect(() => {
   //   const path = `/${window.location.pathname.split("/")[1]}`;
   //   console.log(path);
+  //   if (gamesData) {
+  //     console.log(
+  //       Object.values(gamesData).find((el) => {
+  //         return el.gameType === currentGameType;
+  //       })?.textSecoundStep
+  //     );
+  //   }
   // });
 
   return (
@@ -99,7 +106,9 @@ const AnswerMain = () => {
             <h1 className="text-2xl">
               {gamesData &&
                 currentGameType &&
-                gamesData[`/${window.location.pathname.split("/")[1]}`]?.textSecoundStep}
+                Object.values(gamesData).find((el) => {
+                  return el.gameType === currentGameType;
+                })?.textSecoundStep}
             </h1>
           </div>
           {artistAnswerEl}
