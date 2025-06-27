@@ -1,6 +1,6 @@
 import { IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import GTSGameAnswer from "./GTSGameAnswer";
 import ArtistAnswer from "./ArtistAnswer";
@@ -66,6 +66,11 @@ const AnswerMain = () => {
     );
   });
 
+  // useEffect(() => {
+  //   const path = `/${window.location.pathname.split("/")[1]}`;
+  //   console.log(path);
+  // });
+
   return (
     <div>
       {imageURL ? (
@@ -92,7 +97,9 @@ const AnswerMain = () => {
           </div>
           <div>
             <h1 className="text-2xl">
-              {gamesData && currentGameType && gamesData[currentGameType]?.textSecoundStep}
+              {gamesData &&
+                currentGameType &&
+                gamesData[`/${window.location.pathname.split("/")[1]}`]?.textSecoundStep}
             </h1>
           </div>
           {artistAnswerEl}

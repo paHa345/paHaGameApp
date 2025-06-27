@@ -22,11 +22,9 @@ export const getAllGamesList = createAsyncThunk(
         }
         dispatch(attemptsActions.setGamesList(allCrosswordGamesList.result.games));
         dispatch(attemptsActions.setIsLastGamesListPage(allCrosswordGamesList.result.isLastPage));
-      }
-
-      if (getGamesFata.gamesName === "GTS") {
+      } else {
         const getAllGTSGamesListReq = await fetch(
-          `/api/guessThatSong/GTSGame/getAvailableGTSGames?page=${getGamesFata?.page ? getGamesFata?.page : 1}`
+          `/api/guessThatSong/GTSGame/getAvailableGTSGames/${getGamesFata.gamesName}?page=${getGamesFata?.page ? getGamesFata?.page : 1}`
         );
         const allGTSGamesList = await getAllGTSGamesListReq.json();
         if (!getAllGTSGamesListReq.ok) {
@@ -76,9 +74,7 @@ export const getGameAllAttempts = createAsyncThunk(
 
         dispatch(attemptsActions.setGameAllAttempts(gameAllAttempts.result.allGameAttempts));
         dispatch(attemptsActions.setIsLastAttemptsListPage(gameAllAttempts.result.isLastPage));
-      }
-
-      if (gameUserData.gamesName === "GTS") {
+      } else {
         const getGameAllAttemptsReq = await fetch(
           `/api/attempts/getGTSGameAttempts/${[gameUserData.gameID]}/${[gameUserData.telegramUserID]}?page=${gameUserData?.page ? gameUserData?.page : 1}${gameUserData?.limit ? `&limit=${gameUserData.limit}` : ""}`
         );

@@ -212,6 +212,7 @@ export interface IUserSlice {
         title: string;
         gameType: string;
         textSecoundStep: string;
+        showFirstStepAnswer: boolean;
 
         _id: string;
       };
@@ -253,6 +254,7 @@ interface userState {
       title: string;
       gameType: string;
       textSecoundStep: string;
+      showFirstStepAnswer: boolean;
 
       _id: string;
     };

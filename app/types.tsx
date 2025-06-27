@@ -413,6 +413,7 @@ export interface IGameDataSchema {
     description: string;
     color: string;
     textSecoundStep: string;
+    showFirstStepAnswer: boolean;
   }[];
 }
 

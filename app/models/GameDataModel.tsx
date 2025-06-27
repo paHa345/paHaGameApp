@@ -9,6 +9,7 @@ const gameDataSchema = new mongoose.Schema<IGameDataSchema>({
       description: { type: String, required: true },
       color: { type: String, required: true },
       textSecoundStep: { type: String, required: true },
+      showFirstStepAnswer: { type: Boolean, required: true },
     },
   ],
 });

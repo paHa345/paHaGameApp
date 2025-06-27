@@ -11,7 +11,12 @@ const SelectGameButtonsMain = () => {
     {
       name: "Угадай мелодию",
       color: "cyan-200",
-      nameEn: "GTS",
+      nameEn: "GuessThatSong",
+    },
+    {
+      name: "Авто викторина",
+      color: "indigo-200",
+      nameEn: "CarAudioFinancial",
     },
   ];
 

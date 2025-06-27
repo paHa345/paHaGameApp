@@ -86,21 +86,20 @@ const Attempt = ({ attempt, numberInLeaderBoard }: IAttemptProps) => {
               </div>
             )}
 
-            {gameName === "Crossword" && (
+            {gameName === "Crossword" ? (
               <div className=" flex flex-row justify-center items-center  gap-1">
                 {" "}
                 <h1>Времени затрачено</h1>
                 <h1>{attempt?.duration}</h1>
               </div>
-            )}
-
-            {gameName === "GTS" && (
+            ) : (
               <div className=" flex flex-row justify-center items-center  gap-1">
                 {" "}
                 <h1>Баллов набрано</h1>
                 <h1>{attempt?.timeRemained}</h1>
               </div>
             )}
+
             {/* <div>{attempt.startDate.toLocaleString()}</div>
      <div>{attempt.finishDate?.toLocaleString()}</div> */}
           </div>

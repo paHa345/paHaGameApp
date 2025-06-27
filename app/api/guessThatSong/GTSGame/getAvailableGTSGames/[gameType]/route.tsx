@@ -18,6 +18,8 @@ export async function GET(req: NextRequest, segmentData: any) {
       GTSGameType: params.gameType,
     }).countDocuments();
 
+    console.log(value);
+
     const page = parseInt(req.nextUrl.searchParams?.get("page") || "1", 10);
     const limit = parseInt(req.nextUrl.searchParams?.get("limit") || "3", 10);
     const skip = (page - 1) * limit;
