@@ -155,6 +155,11 @@ const AvailableGTSGamelistModalMain = () => {
   useEffect(() => {
     if (gameData) {
       dispatch(userActions.setCurrentGameType(gameData[window.location.pathname].gameType));
+      dispatch(
+        userActions.setCurrentGameShowAnswerStatus(
+          gameData[window.location.pathname].showFirstStepAnswer
+        )
+      );
     } else {
       return;
     }

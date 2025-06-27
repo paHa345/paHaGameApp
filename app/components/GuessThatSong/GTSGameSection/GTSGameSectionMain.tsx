@@ -11,6 +11,7 @@ import CurrentAttemptTimeStatusMain from "../GameSection/CurrentAttemptTimeStatu
 import AudioVisualiserMain from "./AudioVisualiserSection/AudioVisualiserMain";
 import GTSGameAudioVisualiser from "./AudioVisualiserSection/GTSGameAudioVisualiser";
 import { div } from "framer-motion/client";
+import { IUserSlice } from "@/app/store/userSlice";
 
 const GTSGameSectionMain = () => {
   const currentAttemptID = useSelector(
@@ -23,6 +24,11 @@ const GTSGameSectionMain = () => {
   const currentAttempt = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData
   );
+
+  const currentGameShowAnswer = useSelector(
+    (state: IUserSlice) => state.userState.currentGameShowAnswerStatus
+  );
+  console.log(currentGameShowAnswer);
 
   if (!currentAttemptID) {
     redirect("/guessThatSongGame");

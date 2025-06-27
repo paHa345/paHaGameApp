@@ -218,6 +218,7 @@ export interface IUserSlice {
       };
     };
     currentGameType?: string;
+    currentGameShowAnswerStatus?: string;
   };
 }
 
@@ -260,6 +261,7 @@ interface userState {
     };
   };
   currentGameType?: string;
+  currentGameShowAnswerStatus?: string;
 }
 
 export const initUserState: userState = {
@@ -580,6 +582,9 @@ export const userSlice = createSlice({
     },
     setCurrentGameType(state, action) {
       state.currentGameType = action.payload;
+    },
+    setCurrentGameShowAnswerStatus(state, action) {
+      state.currentGameShowAnswerStatus = action.payload;
     },
   },
   extraReducers(builder) {
