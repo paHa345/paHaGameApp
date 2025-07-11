@@ -16,7 +16,7 @@ const pages = () => {
       {isVisible && (
         <div className=" hover:bg-stone-400 bg-stone-200 rounded-2xl">
           <h1
-            className=" hover:text-violet-500 hover:underline text-9xl text-center pt-11 pb-11 text-pink-400
+            className=" hover:text-violet-500 hover:underline text-5xl font-bold md:text-9xl text-center pt-11 pb-11 text-pink-400
          "
           >
             Tanda2
@@ -26,15 +26,16 @@ const pages = () => {
       <div>
         {isVisible && (
           <h1
-            className=" animate-pulse hover:text-violet-500 text-9xl text-center pt-11 pb-11 text-violet-600
+            className=" animate-pulse hover:text-violet-500 text-5xl font-bold   md:text-9xl text-center pt-11 pb-11 text-violet-600
          "
           >
             {" "}
-            AK__9000
+            AK__
+            <span>9000</span>
           </h1>
         )}
       </div>
-      <div className=" flex flex-col md:flex-row gap-3 justify-center items-center animate-pulse cursor-crosshair">
+      <div className=" my-10  flex flex-col md:flex-row gap-3 justify-center items-center animate-pulse cursor-crosshair">
         <img
           className="rounded-full animate-bounce"
           src="https://i.pinimg.com/736x/21/b1/ad/21b1adea8aa7c78eb34bf76b5610052b.jpg"
