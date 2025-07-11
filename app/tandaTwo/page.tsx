@@ -34,28 +34,28 @@ const pages = () => {
           </h1>
         )}
       </div>
-      <div className=" flex justify-center items-center animate-pulse cursor-crosshair">
+      <div className=" flex flex-col md:flex-row gap-3 justify-center items-center animate-pulse cursor-crosshair">
         <img
           className="rounded-full animate-bounce"
           src="https://i.pinimg.com/736x/21/b1/ad/21b1adea8aa7c78eb34bf76b5610052b.jpg"
           alt=""
-          width={400}
-          height={400}
+          width={300}
+          height={300}
         />
         <img
           onClick={setIsVisibleStatus}
           className="rounded-full animate-bounce"
           src="https://i.pinimg.com/originals/f1/5f/46/f15f462d4c0ce9a7283a4e9beb5a50a0.jpg"
           alt=""
-          width={400}
-          height={400}
+          width={300}
+          height={300}
         />
         <img
           className="rounded-full animate-bounce"
           src="https://avatars.mds.yandex.net/i?id=f4312d0ac87120a197ecb446d858f100_l-4236582-images-thumbs&n=13"
           alt=""
-          width={400}
-          height={400}
+          width={300}
+          height={300}
         />
         {/* <Image
           src={
