@@ -5,9 +5,16 @@ import React, { useState } from "react";
 
 const pages = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [showStatsStatus, setShowStatsStatus] = useState(false);
 
   const setIsVisibleStatus = () => {
     setIsVisible((prev) => {
+      return !prev;
+    });
+  };
+
+  const showStars = () => {
+    setShowStatsStatus((prev) => {
       return !prev;
     });
   };
@@ -33,6 +40,94 @@ const pages = () => {
             AK__
             <span>9000</span>
           </h1>
+        )}
+      </div>
+
+      <div>
+        {isVisible && (
+          <div
+            onClick={showStars}
+            className=" flex flex-row justify-center items-center gap-20 hover:gap-0 transition-all
+ delay-50 duration-1000 ease-in-out"
+          >
+            <img
+              className="rounded-lg"
+              src="https://avatars.mds.yandex.net/i?id=f16de7b9d390408b510c8d8f578d13ba_l-5659646-images-thumbs&n=13"
+              alt=""
+              width={100}
+              height={100}
+            />
+
+            {showStatsStatus && (
+              <div>
+                <img
+                  className="rounded-lg animate-ping"
+                  src="https://avatars.mds.yandex.net/i?id=83e0a9c797dc95ae6ec99935d3500b1884637f66-5231720-images-thumbs&n=13
+"
+                  alt=""
+                  width={30}
+                  height={30}
+                />
+
+                <img
+                  className="rounded-lg animate-spin"
+                  src="https://avatars.mds.yandex.net/i?id=83e0a9c797dc95ae6ec99935d3500b1884637f66-5231720-images-thumbs&n=13
+"
+                  alt=""
+                  width={30}
+                  height={30}
+                />
+
+                <img
+                  className="rounded-lg animate-bounce"
+                  src="https://avatars.mds.yandex.net/i?id=83e0a9c797dc95ae6ec99935d3500b1884637f66-5231720-images-thumbs&n=13
+"
+                  alt=""
+                  width={30}
+                  height={30}
+                />
+              </div>
+            )}
+
+            {showStatsStatus && (
+              <div>
+                <img
+                  className="rounded-lg animate-pulse"
+                  src="https://avatars.mds.yandex.net/i?id=83e0a9c797dc95ae6ec99935d3500b1884637f66-5231720-images-thumbs&n=13
+"
+                  alt=""
+                  width={30}
+                  height={30}
+                />
+
+                <img
+                  className="rounded-lg animate-bounce"
+                  src="https://avatars.mds.yandex.net/i?id=83e0a9c797dc95ae6ec99935d3500b1884637f66-5231720-images-thumbs&n=13
+"
+                  alt=""
+                  width={30}
+                  height={30}
+                />
+
+                <img
+                  className="rounded-lg animate-ping"
+                  src="https://avatars.mds.yandex.net/i?id=83e0a9c797dc95ae6ec99935d3500b1884637f66-5231720-images-thumbs&n=13
+"
+                  alt=""
+                  width={30}
+                  height={30}
+                />
+              </div>
+            )}
+
+            <img
+              className="rounded-lg -scale-x-100"
+              src="https://avatars.mds.yandex.net/i?id=f16de7b9d390408b510c8d8f578d13ba_l-5659646-images-thumbs&n=13"
+              alt=""
+              width={100}
+              height={100}
+            />
+          </div>
         )}
       </div>
       <div className=" my-10  flex flex-col md:flex-row gap-3 justify-center items-center animate-pulse cursor-crosshair">
