@@ -1,5 +1,8 @@
 import { AppDispatch } from "@/app/store";
-import { guessThatSongActions, IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
+import {
+  guessThatSongActions,
+  IGuessThatSongSlice,
+} from "@/app/store/guessThatSongSlice";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -7,10 +10,12 @@ const FetchAnswerTimeStream = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const currentAttempt = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSGameAttemptID
+    (state: IGuessThatSongSlice) =>
+      state.guessThatSongState.currentGTSGameAttemptID
   );
   const stopAnswerTimeController = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.stopAnswerTimerController
+    (state: IGuessThatSongSlice) =>
+      state.guessThatSongState.stopAnswerTimerController
   );
 
   useEffect(() => {
@@ -25,12 +30,14 @@ const FetchAnswerTimeStream = () => {
 
             const time = new TextDecoder().decode(chunk).split(" ");
             if (time[0] === "answerTimeRemained:") {
-              dispatch(guessThatSongActions.setCurrentAnswerTimeRemained(time[1]));
+              dispatch(
+                guessThatSongActions.setCurrentAnswerTimeRemained(time[1])
+              );
             }
           }
         }
       }
-      readData(`${process.env.NEXT_PUBLIC_EXPRESS_SERVER_HOST}answerTime/${currentAttempt}`, {
+      readData(`http://localhost:3000/answerTime/${currentAttempt}`, {
         signal: stopAnswerTimeController?.signal,
       });
     }

@@ -33,6 +33,10 @@ const GTSGameAttemptSchema = new mongoose.Schema<IGTSAttemptSchema>({
 
 const GTSGameAttempt =
   mongoose.models.GTSAttempt ||
-  mongoose.model<IGTSAttemptSchema>("GTSAttempt", GTSGameAttemptSchema, "GTSAttempts");
+  mongoose.model<IGTSAttemptSchema>(
+    "GTSAttempt",
+    GTSGameAttemptSchema,
+    "GTSAttempts"
+  );
 
 export default GTSGameAttempt;

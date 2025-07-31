@@ -1,7 +1,10 @@
 import { connectMongoDB } from "@/app/libs/MongoConnect";
 import AttemptCrosswordGame from "@/app/models/AttemptCrosswordGameModel";
 import Crossword from "@/app/models/CrosswordModel";
+import GameData from "@/app/models/GameDataModel";
+import GTSGame from "@/app/models/GTSGameModel";
 import { NextRequest, NextResponse } from "next/server";
+import GTSGameAttempt from "../../../../models/GTSGameAttemptModel";
 
 export async function GET(req: NextRequest, segmentData: any) {
   const params = await segmentData.params;
@@ -32,6 +35,8 @@ export async function GET(req: NextRequest, segmentData: any) {
 
     const isLastPage = value <= skip + limit;
 
+    const GTSGames = await GTSGame.find();
+
     const games = await Crossword.aggregate([
       {
         $match: {
@@ -59,9 +64,12 @@ export async function GET(req: NextRequest, segmentData: any) {
 
     return NextResponse.json({
       status: "Success",
-      result: { games: games, isLastPage: isLastPage },
+      result: { games: GTSGames, isLastPage: isLastPage },
     });
   } catch (error: any) {
-    return NextResponse.json({ message: error?.message, status: "Error" }, { status: 400 });
+    return NextResponse.json(
+      { message: error?.message, status: "Error" },
+      { status: 400 }
+    );
   }
 }
