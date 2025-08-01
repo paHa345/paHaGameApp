@@ -1,8 +1,5 @@
 import { AppDispatch } from "@/app/store";
-import {
-  guessThatSongActions,
-  IGuessThatSongSlice,
-} from "@/app/store/guessThatSongSlice";
+import { guessThatSongActions, IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -13,13 +10,11 @@ const FetchConyroller = ({ audioRef }: any) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const currentAttemptData = useSelector(
-    (state: IGuessThatSongSlice) =>
-      state.guessThatSongState.currentGTSAttemptData
+    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData
   );
 
   const currentAttempt = useSelector(
-    (state: IGuessThatSongSlice) =>
-      state.guessThatSongState.currentGTSGameAttemptID
+    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSGameAttemptID
   );
 
   useEffect(() => {
@@ -37,28 +32,20 @@ const FetchConyroller = ({ audioRef }: any) => {
             // console.log(time[1]);
             if (time[0] === "AttemptTimeIsUp:") {
               audioRef.current?.pause();
-              dispatch(
-                guessThatSongActions.setCurrentAttemptSongIsPlaying(false)
-              );
+              dispatch(guessThatSongActions.setCurrentAttemptSongIsPlaying(false));
 
               abortController?.abort();
               dispatch(guessThatSongActions.setAbortController(undefined));
               console.log("Stop song");
               dispatch(guessThatSongActions.setShowGTSAnswersModal(true));
-              dispatch(
-                guessThatSongActions.setStopAnswerTimerController(
-                  new AbortController()
-                )
-              );
+              dispatch(guessThatSongActions.setStopAnswerTimerController(new AbortController()));
               break;
             }
-            dispatch(
-              guessThatSongActions.setCurrentAttemptTimeRemained(time[1])
-            );
+            dispatch(guessThatSongActions.setCurrentAttemptTimeRemained(time[1]));
           }
         }
       }
-      readData(`http://localhost:3000/GTSAttempts/${currentAttempt}`, {
+      readData(`${process.env.NEXT_PUBLIC_EXPRESS_SERVER_HOST}GTSAttempts/${currentAttempt}`, {
         signal: abortController?.signal,
       });
       audioRef.current?.play();
