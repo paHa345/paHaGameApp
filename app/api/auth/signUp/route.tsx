@@ -7,6 +7,7 @@ import { UserType } from "@/app/types";
 
 export async function POST(req: NextRequest) {
   try {
+    console.log("user cretaed");
     const body = await req.json();
 
     await connectMongoDB();

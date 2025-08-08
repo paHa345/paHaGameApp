@@ -9,6 +9,8 @@ export async function GET(req: NextRequest) {
     await connectMongoDB();
     const gamesData = await GameData.find();
 
+    console.log(gamesData);
+
     return NextResponse.json({ status: "Success", result: gamesData[0].chooseGameButtonData });
   } catch (error: any) {
     return NextResponse.json({ message: error?.message, status: "Error" }, { status: 400 });

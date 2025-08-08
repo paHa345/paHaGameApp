@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 export const connectMongoDB = async () => {
+  console.log("connection");
   if (mongoose.connection.readyState === 1) {
     return mongoose.connection.asPromise();
   }

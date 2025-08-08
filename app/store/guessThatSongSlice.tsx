@@ -56,7 +56,6 @@ export const createAttemptAndAddInSlice = createAsyncThunk(
       }
       const createdGTSGameAttempt = await createGTSGameAttemptReq.json();
 
-      console.log(createdGTSGameAttempt);
       if (createdGTSGameAttempt.result.length) {
         dispatch(
           guessThatSongActions.setCurrentGTSGameAttemptID(createdGTSGameAttempt.result[0]._id)
@@ -134,10 +133,6 @@ export const checkArtistAnswerAndSetNextQuestion = createAsyncThunk(
           artist: false,
         })
       );
-
-      console.log(userArtistAnserText);
-      console.log(answerID);
-      console.log(attemptID);
 
       const checkArtistAnswerReq = await fetch(`/api/guessThatSong/GTSGame/checkArtistAnswer`, {
         method: "PATCH",
@@ -348,7 +343,6 @@ export const checkGTSGameAnswerAndSetQuestion = createAsyncThunk(
       dispatch(
         guessThatSongActions.setAttemptCurrentQuestion(getCurrentAttempt.result.currentQuestion)
       );
-      console.log(getCurrentAttempt.result);
       dispatch(
         guessThatSongActions.setAttemptQuestionStatus(
           getCurrentAttempt.result.attemptQuestionStatus
@@ -470,6 +464,7 @@ export interface IGuessThatSongSlice {
       userPhoto?: string;
     };
     nextQuestionNotification?: string;
+    showCurrentGameFirstStepAnswer?: boolean;
   };
 }
 
@@ -575,6 +570,7 @@ interface IGuessThatSongState {
   checkArtistAnswerStatus: GTSGameFetchStatus;
   checkArtistAnswerErrorMessage?: string;
   nextQuestionNotification?: string;
+  showCurrentGameFirstStepAnswer?: boolean;
 }
 
 export const initGuessThatSongState: IGuessThatSongState = {
@@ -762,6 +758,9 @@ export const guessThatSongSlice = createSlice({
     },
     setAudioSource(state, action) {
       state.audioSource = action.payload;
+    },
+    setShowCurrentGameFirstStepAnswer(state, action) {
+      state.showCurrentGameFirstStepAnswer = action.payload;
     },
   },
   extraReducers(builder) {

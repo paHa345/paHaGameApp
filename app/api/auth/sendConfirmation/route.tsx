@@ -27,8 +27,8 @@ export async function POST(req: NextRequest) {
       port: 465,
       host: "smtp.mail.ru",
       auth: {
-        user: "pav.345@mail.ru",
-        pass: "LJ1YPtKcVshZxGuE9cgB",
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
       },
       secure: true,
     });
