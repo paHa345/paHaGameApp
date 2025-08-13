@@ -143,7 +143,7 @@ const AnswerShowFirstStepMain = ({ audioRef }: IAnswerMainProps) => {
           {artistAnswerEl}
         </div>
       ) : (
-        <div className=" h-full flex flex-col justify-center items-center">{answersEls}</div>
+        <div className=" flex flex-col justify-center items-center">{answersEls}</div>
       )}
     </>
   );

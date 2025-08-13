@@ -37,7 +37,7 @@ const CurrentGTSGame = () => {
   });
   return (
     <>
-      <div className="flex justify-center items-center h-[80vh] flex-col ">
+      <div className="flex justify-center items-center h-[100vh] flex-col ">
         {/* <AttemptQuestionStatusMain></AttemptQuestionStatusMain> */}
         {Boolean(currentGameShowAnswerStatus) === false && (
           <CurrentAttemptQuestionStatusMain></CurrentAttemptQuestionStatusMain>
@@ -49,11 +49,15 @@ const CurrentGTSGame = () => {
           <SongStartStopButton audioRef={audioRef}></SongStartStopButton>
         )}
 
-        {Boolean(currentGameShowAnswerStatus) === true && (
-          <AnswerShowFirstStepMain audioRef={audioRef}></AnswerShowFirstStepMain>
-        )}
+        <div className="">
+          {Boolean(currentGameShowAnswerStatus) === true && (
+            <AnswerShowFirstStepMain audioRef={audioRef}></AnswerShowFirstStepMain>
+          )}
+        </div>
 
+        {/* <div className=" basis-1/5"> */}
         <AttemptRemainedTimer></AttemptRemainedTimer>
+        {/* </div> */}
         {Boolean(currentGameShowAnswerStatus) === false && <AnswersModalMain></AnswersModalMain>}
         {/* {Boolean(currentGameShowAnswerStatus) === true && <div>{answersEls} </div>} */}
       </div>
