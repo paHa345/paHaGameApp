@@ -7,6 +7,7 @@ import Image from "next/image";
 import { IUserSlice } from "@/app/store/userSlice";
 import ArtistAnswer from "../AnswersModalSection/ArtistAnswer";
 import AnswerStatus from "../AnswersModalSection/AnswerStatus";
+import GTSGameAudioVisualiser from "../AudioVisualiserSection/GTSGameAudioVisualiser";
 
 interface IAnswerMainProps {
   audioRef: React.RefObject<HTMLAudioElement>;
@@ -143,7 +144,12 @@ const AnswerShowFirstStepMain = ({ audioRef }: IAnswerMainProps) => {
           {artistAnswerEl}
         </div>
       ) : (
-        <div className=" flex flex-col justify-center items-center">{answersEls}</div>
+        <div className=" flex justify-center items-center flex-col relative w-full h-full ">
+          <div className=" z-10 rounded-xl">
+            <GTSGameAudioVisualiser audioRef={audioRef}></GTSGameAudioVisualiser>
+          </div>
+          <div className=" z-20">{answersEls}</div>
+        </div>
       )}
     </>
   );

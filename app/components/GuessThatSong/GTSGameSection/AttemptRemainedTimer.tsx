@@ -12,7 +12,7 @@ const AttemptRemainedTimer = () => {
   const percentage = (remainedTime / attemptFullTime) * 100;
 
   return (
-    <div className=" flex justify-center items-center flex-col w-full border-t-2 border-zinc-300 px-3  my-4">
+    <div className=" flex justify-center items-center flex-col w-full border-t-2 border-zinc-300 px-3  pt-2 ">
       <div className=" flex items-center justify-center flex-col">
         <div className=" flex justify-center items-center flex-col text-2xl">
           <h1>Времени осталось</h1>

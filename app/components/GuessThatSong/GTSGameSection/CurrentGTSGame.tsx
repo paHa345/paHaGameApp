@@ -49,7 +49,7 @@ const CurrentGTSGame = () => {
           <SongStartStopButton audioRef={audioRef}></SongStartStopButton>
         )}
 
-        <div className="">
+        <div className=" flex flex-col w-full h-full justify-center items-center">
           {Boolean(currentGameShowAnswerStatus) === true && (
             <AnswerShowFirstStepMain audioRef={audioRef}></AnswerShowFirstStepMain>
           )}
