@@ -16,6 +16,7 @@ import { CSSTransition } from "react-transition-group";
 import GamesListPaginationMain from "./GamesListPaginationMain";
 import { IAppSlice } from "@/app/store/appStateSlice";
 import { IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
+import { IUserSlice } from "@/app/store/userSlice";
 
 const AllGamesList = () => {
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
@@ -33,6 +34,8 @@ const AllGamesList = () => {
   const showHideGamesList = useSelector(
     (state: IAttemptsSlice) => state.attemptsState.showHideGamesList
   );
+
+  const gameData = useSelector((state: IUserSlice) => state.userState.currentGameType);
 
   const nodeRef = useRef(null);
 
@@ -75,7 +78,7 @@ const AllGamesList = () => {
   );
 
   useEffect(() => {
-    dispatch(getAllGamesList({ telegramID: telegramUser?.id, page: 1, gamesName: gamesName }));
+    dispatch(getAllGamesList({ telegramID: telegramUser?.id, page: 1, gamesName: gameData }));
 
     // if (!user?.id) {
     //   dispatch(getAllGamesList({ telegramID: 777777, page: 1 }));
@@ -98,8 +101,6 @@ const AllGamesList = () => {
       );
     }
 
-    // console.log(currentUserCompletedGTSGameAttempt);
-
     if (currentUserCompletedGTSGameAttempt) {
       dispatch(
         getGameAllAttempts({
@@ -107,11 +108,14 @@ const AllGamesList = () => {
           telegramUserID: telegramUser?.id,
           page: 1,
           limit: attemptsLimitOnPage,
-          gamesName: gamesName,
+          gamesName: gameData,
         })
       );
     }
   }, [currentUserCompletedCrosswordAttempt, currentUserCompletedGTSGameAttempt]);
+  useEffect(() => {
+    console.log(gameData);
+  }, []);
 
   const gamesListCurrentPage = useSelector(
     (state: IAttemptsSlice) => state.attemptsState.gamesListCurrentPage

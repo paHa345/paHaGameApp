@@ -33,7 +33,7 @@ const CurrentUserCompletedGTSGameAttempt = () => {
         key={answers._id}
       >
         <div className=" py-3">
-          <h1 className=" text-center pb-2">Песня</h1>
+          <h1 className=" text-center pb-2">Вопрос</h1>
           <div>
             <h1>
               Ваш ответ:
@@ -50,7 +50,7 @@ const CurrentUserCompletedGTSGameAttempt = () => {
           </div>
         </div>
         <div className=" py-3">
-          <h1 className=" text-center pb-2">Исполнитель</h1>
+          <h1 className=" text-center pb-2">Доп. вопрос</h1>
           <div>
             <h1>
               Ваш ответ:

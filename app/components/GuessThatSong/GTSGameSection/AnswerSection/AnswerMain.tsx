@@ -94,7 +94,7 @@ const AnswerShowFirstStepMain = ({ audioRef }: IAnswerMainProps) => {
 
   const artistAnswerEl = artistAnswersArr.map((answer, index) => {
     return (
-      <div key={answer._id} className="w-full">
+      <div key={answer._id} className="w-10/12">
         {(!answerStatus?.artist || chosenArtistAnswerID === answer._id) && (
           <ArtistAnswer
             isCorrect={artistAnswerIsCorrect}
