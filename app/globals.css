@@ -75,6 +75,10 @@ textarea {
 .buttonStandart {
   @apply shadow-exerciseCardHowerShadow text-slate-50 font-bold min-w-max py-2 px-6 rounded bg-buttonColor hover:bg-buttonHoverColor;
 }
+
+.buttonCoopRoom {
+  @apply text-slate-50 text-xl font-bold min-w-max py-2 px-6 rounded-md shadow-audioControlsButtonShadow bg-orange-800 hover:shadow-audioControlsButtonHoverShadow hover:bg-orange-700;
+}
 .buttonStandartDesabled {
   @apply text-buttonColor font-bold shadow-exerciseCardHowerShadow min-w-max py-2 px-6 rounded bg-buttonColor hover:bg-buttonHoverColor hover:text-buttonHoverColor;
 }

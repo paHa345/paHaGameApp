@@ -417,6 +417,11 @@ export interface IGameDataSchema {
   }[];
 }
 
+export interface IGameRoomSchema {
+  name: String;
+  isStarted: string;
+}
+
 export const GTSGameTemplates = [
   {
     GTSGameType: GTSCreatedGameType.GuessThatSong,
