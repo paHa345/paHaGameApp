@@ -9,8 +9,12 @@ import {
 import { div } from "framer-motion/client";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import CoopGameRoom from "./CoopGameRoom";
 import * as io from "socket.io-client";
+import { IAppSlice } from "@/app/store/appStateSlice";
+import { isTelegramWebApp } from "../Layout/MainLayout";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import CoopGameRoomButton from "./CoopGameRoomButton";
 
 const RoomsListMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -25,6 +29,8 @@ const RoomsListMain = () => {
 
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
 
+  const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
+
   //   const [socket, setSocket] = useState<io.Socket>();
   const [message, setMessage] = useState("");
 
@@ -32,6 +38,28 @@ const RoomsListMain = () => {
 
   //   const socket = io.connect("http://localhost:3111");
   //   let socket: io.Socket<DefaultEventsMap, DefaultEventsMap>;
+
+  const setCoopGameHandler = () => {
+    console.log("SetCoopName");
+  };
+
+  console.log(telegramUser);
+  console.log(isTelegramWebApp());
+
+  const setNameEl = isTelegramWebApp() ? (
+    <div></div>
+  ) : (
+    <div className=" sm:w-1/2 px-3 py-3 border-2 border-spacing-1 border-slate-500 border-solid flex flex-col justify-center items-center gap-4">
+      <input
+        className=" border-2 border-spacing-1 border-slate-300 border-solid"
+        type="text"
+        placeholder="Укажите ваше имя"
+      />
+      <button className="buttonStudent" onClick={setCoopGameHandler}>
+        Подтвердить
+      </button>
+    </div>
+  );
 
   useEffect(() => {
     dispatch(
@@ -79,7 +107,11 @@ const RoomsListMain = () => {
   const roomsEl = allGamesRoomsList.map((room) => {
     return (
       <div key={room._id} onClick={roomChooseHandler.bind(room._id)}>
-        <CoopGameRoom id={room._id} name={room.name} isStarted={room.isStarted}></CoopGameRoom>
+        <CoopGameRoomButton
+          id={room._id}
+          name={room.name}
+          isStarted={room.isStarted}
+        ></CoopGameRoomButton>
       </div>
     );
   });
@@ -119,13 +151,13 @@ const RoomsListMain = () => {
         <h1 className=" text-2xl text-center px-3 py-3">Список игровых серверов</h1>
       </div>
 
-      <div>
+      {/* <div>
         <button className="delete-buttonStandart" onClick={disconnectedFromSocketHandler}>
           {socket?.connect ? "Отключиться" : "Подключиться"}
         </button>
-      </div>
+      </div> */}
 
-      <div>{messagesEl}</div>
+      {/* <div>{messagesEl}</div>
 
       <div className=" flex justify-center items-center gap-4 flex-col py-5">
         <div className=" px-3 py-3 border-2 border-spacing-1 border-slate-500 border-solid flex justify-center items-center gap-4">
@@ -143,13 +175,30 @@ const RoomsListMain = () => {
         <button className="buttonStudent" onClick={sendGTSGameRoomMessage}>
           Send to GTSGame room Message
         </button>
-      </div>
+      </div> */}
 
-      <div>
-        {fetchAllGamesRoomsList === CoopGamesFetchStatus.Loading && <div>Loading</div>}
-        {fetchAllGamesRoomsList === CoopGamesFetchStatus.Resolve &&
-          allGamesRoomsList.length > 0 && <div>{roomsEl}</div>}
-      </div>
+      {/* <div className=" py-5 flex justify-center items-center">{setNameEl}</div> */}
+
+      {telegramUser?.id && (
+        <div>
+          {fetchAllGamesRoomsList === CoopGamesFetchStatus.Loading && (
+            <div className=" py-6 text-center">
+              <FontAwesomeIcon className=" animate-spin fa-fw fa-2x" icon={faSpinner} />
+            </div>
+          )}
+          {fetchAllGamesRoomsList === CoopGamesFetchStatus.Resolve &&
+            allGamesRoomsList.length > 0 && <div>{roomsEl}</div>}
+          {fetchAllGamesRoomsList === CoopGamesFetchStatus.Error && (
+            <div className=" text-center bg-red-200 rounded-xl shadow-smallShadow">
+              {" "}
+              <h1 className=" text-2xl py-2 px-2">
+                {" "}
+                Не удалось получить список серверов. Повторите попытку позже
+              </h1>{" "}
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 };
