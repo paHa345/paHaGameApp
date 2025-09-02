@@ -62,13 +62,16 @@ const RoomsListMain = () => {
   );
 
   useEffect(() => {
-    dispatch(
-      CoopGamesActions.setSocket(
-        io.connect(process.env.NEXT_PUBLIC_WEB_SOCKET_SERVER_URL, {
-          transports: ["websocket"],
-        })
-      )
-    );
+    if (!socket) {
+      console.log("Create socket");
+      dispatch(
+        CoopGamesActions.setSocket(
+          io.connect(process.env.NEXT_PUBLIC_WEB_SOCKET_SERVER_URL, {
+            transports: ["websocket"],
+          })
+        )
+      );
+    }
   }, []);
 
   const sendMessageHandler = function (this: string) {
@@ -79,13 +82,13 @@ const RoomsListMain = () => {
     // socket.emit("test_action", { message: "wieuyrwieuyr" });
   };
 
-  const roomChooseHandler = function (this: string) {
-    console.log(this);
-    if (socket) {
-      socket.emit("join_room", this);
-    }
-    console.log("emitted");
-  };
+  //   const roomChooseHandler = function (this: string) {
+  //     console.log(this);
+  //     if (socket) {
+  //       socket.emit("join_room", this);
+  //     }
+  //     console.log("emitted");
+  //   };
 
   const disconnectedFromSocketHandler = () => {
     console.log(socket?.connected);
@@ -106,7 +109,10 @@ const RoomsListMain = () => {
 
   const roomsEl = allGamesRoomsList.map((room) => {
     return (
-      <div key={room._id} onClick={roomChooseHandler.bind(room._id)}>
+      <div
+        key={room._id}
+        //   onClick={roomChooseHandler.bind(room._id)}
+      >
         <CoopGameRoomButton
           id={room._id}
           name={room.name}
@@ -128,15 +134,15 @@ const RoomsListMain = () => {
     dispatch(getAllRoomsList());
   }, []);
 
-  useEffect(() => {
-    socket?.on("send-message", (message) => {
-      dispatch(CoopGamesActions.addMessageInArr(message));
-    });
+  //   useEffect(() => {
+  //     socket?.on("send-message", (message) => {
+  //       dispatch(CoopGamesActions.addMessageInArr(message));
+  //     });
 
-    socket?.on("roomGTSGameMessage", (message: string) => {
-      console.log(message);
-    });
-  }, [socket]);
+  //     socket?.on("roomGTSGameMessage", (message: string) => {
+  //       console.log(message);
+  //     });
+  //   }, [socket]);
 
   //   useEffect(() => {
   //     socket.on("chatroom_users", (data: any) => {

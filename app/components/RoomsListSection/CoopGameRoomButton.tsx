@@ -1,5 +1,7 @@
+import { ICoopGamesSlice } from "@/app/store/CoopGamesSlice";
 import Link from "next/link";
 import React from "react";
+import { useSelector } from "react-redux";
 
 interface ICoopGameRoomProps {
   id: string;
@@ -8,6 +10,11 @@ interface ICoopGameRoomProps {
 }
 
 const CoopGameRoomButton = ({ id, name, isStarted }: ICoopGameRoomProps) => {
+  const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
+
+  // const joinRoomHandler = () => {
+  //   socket?.emit("join_room", id);
+  // };
   return (
     <>
       <Link href={`/wsGamesRoomList/${id}`}>

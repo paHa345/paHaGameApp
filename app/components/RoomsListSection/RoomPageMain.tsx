@@ -3,7 +3,10 @@
 import { AppDispatch } from "@/app/store";
 import { IAppSlice } from "@/app/store/appStateSlice";
 import { CoopGamesActions, ICoopGamesSlice } from "@/app/store/CoopGamesSlice";
-import { usePathname } from "next/navigation";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
+import { redirect, usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as io from "socket.io-client";
@@ -26,11 +29,10 @@ const RoomPageMain = () => {
 
   const messagesArr = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.messagesArr);
 
-  const sendMessageHandler = () => {
+  const sendRoomMessageHandler = () => {
     if (socket) {
-      socket.emit("send-message", message);
+      socket.emit("GTSGameRoomMessage", { message, roomID });
     }
-    console.log(socket);
   };
 
   const messagesEl = messagesArr.map((message, index) => {
@@ -42,8 +44,24 @@ const RoomPageMain = () => {
   });
 
   useEffect(() => {
-    socket?.emit("join_room", roomID);
+    // dispatch(
+    //   CoopGamesActions.setSocket(
+    //     io.connect(process.env.NEXT_PUBLIC_WEB_SOCKET_SERVER_URL, {
+    //       transports: ["websocket"],
+    //     })
+    //   )
+    // );
+
+    if (socket) {
+      socket.emit("join_room", roomID);
+    } else {
+      redirect("/wsGamesRoomList");
+    }
+
+    console.log("Join room emitted");
   }, []);
+
+  useEffect(() => {}, []);
 
   useEffect(() => {
     socket?.on("send-message", (message) => {
@@ -52,11 +70,19 @@ const RoomPageMain = () => {
 
     socket?.on("roomGTSGameMessage", (message: string) => {
       console.log(message);
+      dispatch(CoopGamesActions.addMessageInArr(message));
     });
   }, [socket]);
 
   return (
     <>
+      <div className="py-5">
+        <Link className=" buttonCoopRoom" href={"/wsGamesRoomList"}>
+          {" "}
+          <FontAwesomeIcon className=" fa-fw" icon={faArrowLeft} />К списку cерверов
+        </Link>
+      </div>
+
       <h1 className=" px-3 py-3 text-2xl text-center"> Вы зашли на сервер с ID {roomID} </h1>
       {/* <div>{roomID}</div> */}
       <div>{/* <button onClick={sendMessageHandler}>Send Message</button> */}</div>
@@ -76,7 +102,7 @@ const RoomPageMain = () => {
             value={message}
             onChange={changeMessageHandler}
           />
-          <button className="buttonStudent" onClick={sendMessageHandler}>
+          <button className="buttonStudent" onClick={sendRoomMessageHandler}>
             Send Message
           </button>
         </div>
