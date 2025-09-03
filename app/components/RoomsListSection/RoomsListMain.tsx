@@ -43,8 +43,8 @@ const RoomsListMain = () => {
     console.log("SetCoopName");
   };
 
-  console.log(telegramUser);
-  console.log(isTelegramWebApp());
+  //   console.log(telegramUser);
+  //   console.log(isTelegramWebApp());
 
   const setNameEl = isTelegramWebApp() ? (
     <div></div>
@@ -91,7 +91,7 @@ const RoomsListMain = () => {
   //   };
 
   const disconnectedFromSocketHandler = () => {
-    console.log(socket?.connected);
+    // console.log(socket?.connected);
     if (socket?.connected) {
       socket.disconnect();
     } else {

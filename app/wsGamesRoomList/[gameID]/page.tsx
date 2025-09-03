@@ -1,6 +1,8 @@
 "use client";
+
 import RoomPageMain from "@/app/components/RoomsListSection/RoomPageMain";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
 
 const page = () => {
   return (

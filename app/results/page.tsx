@@ -3,6 +3,7 @@ import ResultsSectionMain from "../components/ResultsSection/ResultsSectionMain"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import TransitionTemplate from "@/app/components/TransitionTemplate";
+import Link from "next/link";
 
 const page = () => {
   return (
@@ -23,6 +24,9 @@ const page = () => {
         }
       >
         <TransitionTemplate>
+          <div className=" text-xl py-3 font-semibold">
+            <Link href={"/wsGamesRoomList"}>Список игровых серверов</Link>
+          </div>
           <ResultsSectionMain></ResultsSectionMain>
         </TransitionTemplate>
       </Suspense>{" "}

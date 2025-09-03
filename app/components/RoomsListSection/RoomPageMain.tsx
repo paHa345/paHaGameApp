@@ -6,7 +6,8 @@ import { CoopGamesActions, ICoopGamesSlice } from "@/app/store/CoopGamesSlice";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import { redirect, usePathname } from "next/navigation";
+import { redirect, useParams, usePathname, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as io from "socket.io-client";
@@ -15,6 +16,8 @@ const RoomPageMain = () => {
   const pathname = usePathname();
   const pathsArr = pathname.split("/");
   const roomID = pathsArr[pathsArr.length - 1];
+  const router = useRouter();
+  const params = useParams();
 
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
   const dispatch = useDispatch<AppDispatch>();
@@ -43,6 +46,14 @@ const RoomPageMain = () => {
     );
   });
 
+  //   useEffect(() => {
+  //     return () => {
+  //       //   socket?.emit("disconnectServer");
+  //       console.log("Params changed");
+  //       socket?.disconnect();
+  //     };
+  //   }, [pathname, params]);
+
   useEffect(() => {
     // dispatch(
     //   CoopGamesActions.setSocket(
@@ -58,10 +69,10 @@ const RoomPageMain = () => {
       redirect("/wsGamesRoomList");
     }
 
-    console.log("Join room emitted");
+    // return function () {
+    //   socket?.emit("disconnectServer");
+    // };
   }, []);
-
-  useEffect(() => {}, []);
 
   useEffect(() => {
     socket?.on("send-message", (message) => {
