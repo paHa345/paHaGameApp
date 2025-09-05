@@ -72,7 +72,7 @@ const RoomPageMain = () => {
     // return function () {
     //   socket?.emit("disconnectServer");
     // };
-  }, []);
+  });
 
   useEffect(() => {
     socket?.on("send-message", (message) => {

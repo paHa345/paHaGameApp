@@ -30,6 +30,8 @@ export interface ICoopGamesSlice {
   CoopGamesState: {
     messagesArr: String[];
     socket?: io.Socket;
+    showRoomStatus: boolean;
+    currentJoinedRoomID?: string;
     allGamesRoomsList: { _id: string; name: string; isStarted: boolean }[];
     fetchAllGameRoomsStatus: CoopGamesFetchStatus;
   };
@@ -38,6 +40,8 @@ export interface ICoopGamesSlice {
 interface ICoopGamesState {
   messagesArr: String[];
   socket?: io.Socket;
+  showRoomStatus: boolean;
+  currentJoinedRoomID?: string;
 
   allGamesRoomsList: { _id: string; name: string; isStarted: boolean }[];
   fetchAllGameRoomsStatus: CoopGamesFetchStatus;
@@ -46,6 +50,7 @@ interface ICoopGamesState {
 export const CoopGamesState: ICoopGamesState = {
   messagesArr: [],
   allGamesRoomsList: [],
+  showRoomStatus: false,
   fetchAllGameRoomsStatus: CoopGamesFetchStatus.Ready,
 };
 
@@ -61,6 +66,12 @@ export const CoopGamesSlice = createSlice({
     },
     addMessageInArr(state, action: { payload: string }) {
       state.messagesArr.push(action.payload);
+    },
+    setShowRoomStatus(state, action) {
+      state.showRoomStatus = action.payload;
+    },
+    setCurrentJoinedRoomID(state, action) {
+      state.currentJoinedRoomID = action.payload;
     },
   },
   extraReducers: (builder) => {

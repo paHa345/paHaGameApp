@@ -15,6 +15,8 @@ import { isTelegramWebApp } from "../Layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import CoopGameRoomButton from "./CoopGameRoomButton";
+import RoomComponentMain from "./RoomComponentMain";
+import { useParams } from "next/navigation";
 
 const RoomsListMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -24,12 +26,17 @@ const RoomsListMain = () => {
   const allGamesRoomsList = useSelector(
     (state: ICoopGamesSlice) => state.CoopGamesState.allGamesRoomsList
   );
+  const params = useParams();
 
   const messagesArr = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.messagesArr);
 
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
 
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
+
+  const showRoomStatus = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.showRoomStatus
+  );
 
   //   const [socket, setSocket] = useState<io.Socket>();
   const [message, setMessage] = useState("");
@@ -74,6 +81,34 @@ const RoomsListMain = () => {
     }
   }, []);
 
+  window.onpopstate = function (event) {
+    console.log("URL change 222");
+    socket?.emit("disconnectServer");
+    dispatch(CoopGamesActions.setSocket(undefined));
+    dispatch(
+      CoopGamesActions.setSocket(
+        io.connect(process.env.NEXT_PUBLIC_WEB_SOCKET_SERVER_URL, {
+          transports: ["websocket"],
+        })
+      )
+    );
+    dispatch(CoopGamesActions.setShowRoomStatus(false));
+  };
+
+  useEffect(() => {
+    if (!socket?.connected) {
+      console.log("Create socket");
+
+      dispatch(
+        CoopGamesActions.setSocket(
+          io.connect(process.env.NEXT_PUBLIC_WEB_SOCKET_SERVER_URL, {
+            transports: ["websocket"],
+          })
+        )
+      );
+    }
+  }, [socket?.connected]);
+
   const sendMessageHandler = function (this: string) {
     if (socket) {
       socket.emit("send-message", message);
@@ -89,15 +124,6 @@ const RoomsListMain = () => {
   //     }
   //     console.log("emitted");
   //   };
-
-  const disconnectedFromSocketHandler = () => {
-    // console.log(socket?.connected);
-    if (socket?.connected) {
-      socket.disconnect();
-    } else {
-      socket?.connect();
-    }
-  };
 
   const sendGTSGameRoomMessage = () => {
     socket?.emit("GTSGameRoomMessage", "GTSGameRoomMessage");
@@ -185,7 +211,7 @@ const RoomsListMain = () => {
 
       {/* <div className=" py-5 flex justify-center items-center">{setNameEl}</div> */}
 
-      {telegramUser?.id && (
+      {telegramUser?.id && !showRoomStatus && (
         <div>
           {fetchAllGamesRoomsList === CoopGamesFetchStatus.Loading && (
             <div className=" py-6 text-center">
@@ -205,6 +231,8 @@ const RoomsListMain = () => {
           )}
         </div>
       )}
+
+      {showRoomStatus && <RoomComponentMain></RoomComponentMain>}
     </>
   );
 };
