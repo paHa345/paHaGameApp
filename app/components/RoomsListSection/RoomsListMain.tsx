@@ -81,19 +81,23 @@ const RoomsListMain = () => {
     }
   }, []);
 
-  window.onpopstate = function (event) {
-    console.log("URL change 222");
-    socket?.emit("disconnectServer");
-    dispatch(CoopGamesActions.setSocket(undefined));
-    dispatch(
-      CoopGamesActions.setSocket(
-        io.connect(process.env.NEXT_PUBLIC_WEB_SOCKET_SERVER_URL, {
-          transports: ["websocket"],
-        })
-      )
-    );
-    dispatch(CoopGamesActions.setShowRoomStatus(false));
-  };
+  useEffect(() => {
+    if (window) {
+      window.onpopstate = function (event) {
+        console.log("URL change 222");
+        socket?.emit("disconnectServer");
+        dispatch(CoopGamesActions.setSocket(undefined));
+        dispatch(
+          CoopGamesActions.setSocket(
+            io.connect(process.env.NEXT_PUBLIC_WEB_SOCKET_SERVER_URL, {
+              transports: ["websocket"],
+            })
+          )
+        );
+        dispatch(CoopGamesActions.setShowRoomStatus(false));
+      };
+    }
+  });
 
   useEffect(() => {
     if (!socket?.connected) {
