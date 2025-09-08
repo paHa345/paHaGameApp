@@ -85,7 +85,8 @@ const RoomsListMain = () => {
     if (window) {
       window.onpopstate = function (event) {
         console.log("URL change 222");
-        socket?.emit("disconnectServer");
+        // socket?.emit("disconnectServer");
+        socket?.disconnect();
         dispatch(CoopGamesActions.setSocket(undefined));
         dispatch(
           CoopGamesActions.setSocket(
