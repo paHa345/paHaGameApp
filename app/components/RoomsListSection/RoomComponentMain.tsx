@@ -20,8 +20,10 @@ const RoomComponentMain = () => {
     socket?.emit("leave_room", currentJoinedRoomID);
     dispatch(CoopGamesActions.setShowRoomStatus(false));
     dispatch(CoopGamesActions.setCurrentJoinedRoomID(undefined));
-    socket?.emit("disconnectServer");
-    dispatch(CoopGamesActions.setSocket(undefined));
+    // socket?.emit("disconnectServer");
+    // console.log(socket?.id);
+    // socket?.close();
+    // dispatch(CoopGamesActions.setSocket(undefined));
   };
 
   const messagesEl = messagesArr.map((message, index) => {
@@ -37,21 +39,27 @@ const RoomComponentMain = () => {
   };
 
   const sendRoomMessageHandler = () => {
-    console.log(socket);
     if (socket) {
       socket.emit("GTSGameRoomMessage", { message, currentJoinedRoomID });
+      socket.emit("getSocketID");
+      setMessage("");
     }
   };
 
   useEffect(() => {
     socket?.on("send-message", (message) => {
-      dispatch(CoopGamesActions.addMessageInArr(message));
+      dispatch(CoopGamesActions.addMessageInArr({ message: message, roomID: currentJoinedRoomID }));
     });
 
     socket?.on("roomGTSGameMessage", (message: string) => {
       console.log(message);
-      dispatch(CoopGamesActions.addMessageInArr(message));
+      dispatch(CoopGamesActions.addMessageInArr({ message: message, roomID: currentJoinedRoomID }));
     });
+
+    return () => {
+      socket?.off("roomGTSGameMessage");
+      socket?.off("send-message");
+    };
   }, [socket]);
 
   return (

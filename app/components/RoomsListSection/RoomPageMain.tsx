@@ -21,7 +21,9 @@ const RoomPageMain = () => {
 
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
   const dispatch = useDispatch<AppDispatch>();
-
+  const currentJoinedRoomID = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.currentJoinedRoomID
+  );
   const [message, setMessage] = useState("");
 
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
@@ -76,12 +78,12 @@ const RoomPageMain = () => {
 
   useEffect(() => {
     socket?.on("send-message", (message) => {
-      dispatch(CoopGamesActions.addMessageInArr(message));
+      dispatch(CoopGamesActions.addMessageInArr({ message: message, roomID: currentJoinedRoomID }));
     });
 
     socket?.on("roomGTSGameMessage", (message: string) => {
       console.log(message);
-      dispatch(CoopGamesActions.addMessageInArr(message));
+      dispatch(CoopGamesActions.addMessageInArr({ message: message, roomID: currentJoinedRoomID }));
     });
   }, [socket]);
 

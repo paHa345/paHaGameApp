@@ -69,6 +69,7 @@ const RoomsListMain = () => {
   );
 
   useEffect(() => {
+    console.log(`Socket ${socket}`);
     if (!socket) {
       console.log("Create socket");
       dispatch(
@@ -81,38 +82,38 @@ const RoomsListMain = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (window) {
-      window.onpopstate = function (event) {
-        console.log("URL change 222");
-        // socket?.emit("disconnectServer");
-        socket?.disconnect();
-        dispatch(CoopGamesActions.setSocket(undefined));
-        dispatch(
-          CoopGamesActions.setSocket(
-            io.connect(process.env.NEXT_PUBLIC_WEB_SOCKET_SERVER_URL, {
-              transports: ["websocket"],
-            })
-          )
-        );
-        dispatch(CoopGamesActions.setShowRoomStatus(false));
-      };
-    }
-  });
+  //   useEffect(() => {
+  //     if (window) {
+  //       window.onpopstate = function (event) {
+  //         console.log("URL change 222");
+  //         // socket?.emit("disconnectServer");
+  //         socket?.emit("disconnectServer");
+  //         dispatch(CoopGamesActions.setSocket(undefined));
+  //         dispatch(
+  //           CoopGamesActions.setSocket(
+  //             io.connect(process.env.NEXT_PUBLIC_WEB_SOCKET_SERVER_URL, {
+  //               transports: ["websocket"],
+  //             })
+  //           )
+  //         );
+  //         dispatch(CoopGamesActions.setShowRoomStatus(false));
+  //       };
+  //     }
+  //   });
 
-  useEffect(() => {
-    if (!socket?.connected) {
-      console.log("Create socket");
+  //   useEffect(() => {
+  //     if (!socket?.connected) {
+  //       console.log("Create socket");
 
-      dispatch(
-        CoopGamesActions.setSocket(
-          io.connect(process.env.NEXT_PUBLIC_WEB_SOCKET_SERVER_URL, {
-            transports: ["websocket"],
-          })
-        )
-      );
-    }
-  }, [socket?.connected]);
+  //       dispatch(
+  //         CoopGamesActions.setSocket(
+  //           io.connect(process.env.NEXT_PUBLIC_WEB_SOCKET_SERVER_URL, {
+  //             transports: ["websocket"],
+  //           })
+  //         )
+  //       );
+  //     }
+  //   }, [socket?.connected]);
 
   const sendMessageHandler = function (this: string) {
     if (socket) {

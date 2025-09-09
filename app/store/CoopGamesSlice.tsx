@@ -64,8 +64,16 @@ export const CoopGamesSlice = createSlice({
     setSocket(state, action) {
       state.socket = action.payload;
     },
-    addMessageInArr(state, action: { payload: string }) {
-      state.messagesArr.push(action.payload);
+    addMessageInArr(
+      state,
+      action: {
+        payload: {
+          message: string;
+          roomID: string | undefined;
+        };
+      }
+    ) {
+      state.messagesArr.push(action.payload.message);
     },
     setShowRoomStatus(state, action) {
       state.showRoomStatus = action.payload;
