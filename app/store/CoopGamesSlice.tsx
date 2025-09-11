@@ -28,7 +28,17 @@ export enum CoopGamesFetchStatus {
 
 export interface ICoopGamesSlice {
   CoopGamesState: {
-    messagesArr: String[];
+    messagesArr: {
+      [name: string]: [
+        {
+          message: string;
+          roomID: string | undefined;
+          telegramUserID: string;
+          telegramUserName: string;
+          messageDate: number;
+        },
+      ];
+    };
     socket?: io.Socket;
     showRoomStatus: boolean;
     currentJoinedRoomID?: string;
@@ -38,7 +48,17 @@ export interface ICoopGamesSlice {
 }
 
 interface ICoopGamesState {
-  messagesArr: String[];
+  messagesArr: {
+    [name: string]: [
+      {
+        message: string;
+        roomID: string | undefined;
+        telegramUserID: string;
+        telegramUserName: string;
+        messageDate: number;
+      },
+    ];
+  };
   socket?: io.Socket;
   showRoomStatus: boolean;
   currentJoinedRoomID?: string;
@@ -48,7 +68,7 @@ interface ICoopGamesState {
 }
 
 export const CoopGamesState: ICoopGamesState = {
-  messagesArr: [],
+  messagesArr: {},
   allGamesRoomsList: [],
   showRoomStatus: false,
   fetchAllGameRoomsStatus: CoopGamesFetchStatus.Ready,
@@ -70,10 +90,43 @@ export const CoopGamesSlice = createSlice({
         payload: {
           message: string;
           roomID: string | undefined;
+          telegramUserID: string;
+          telegramUserName: string;
+          messageDate: number;
         };
       }
     ) {
-      state.messagesArr.push(action.payload.message);
+      if (action.payload.roomID === undefined) return;
+      if (state.messagesArr[action.payload.roomID]) {
+        console.log(state.messagesArr[action.payload.roomID]);
+        state.messagesArr[action.payload.roomID].push({
+          message: action.payload.message,
+          roomID: action.payload.roomID,
+          telegramUserID: action.payload.telegramUserID,
+          telegramUserName: action.payload.telegramUserName,
+          messageDate: action.payload.messageDate,
+        });
+      } else {
+        state.messagesArr[action.payload.roomID] = [
+          {
+            message: action.payload.message,
+            roomID: action.payload.roomID,
+            telegramUserID: action.payload.telegramUserID,
+            telegramUserName: action.payload.telegramUserName,
+            messageDate: action.payload.messageDate,
+          },
+        ];
+        // state.messagesArr[action.payload.roomID].push(action.payload.message);
+      }
+      //   console.log(state.messagesArr["first"]);
+
+      //   console.log(state.messagesArr.length);
+      //   const roomIndex
+      //   state.messagesArr[
+      //     state.messagesArr.findIndex((el) => {
+      //       return el.roomID === action.payload.roomID;
+      //     })
+      //   ].messagesArr.push(action.payload.message);
     },
     setShowRoomStatus(state, action) {
       state.showRoomStatus = action.payload;

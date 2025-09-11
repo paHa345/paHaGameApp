@@ -28,6 +28,10 @@ const RoomsListMain = () => {
   );
   const params = useParams();
 
+  const currentJoinedRoomID = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.currentJoinedRoomID
+  );
+
   const messagesArr = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.messagesArr);
 
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
@@ -154,13 +158,17 @@ const RoomsListMain = () => {
     );
   });
 
-  const messagesEl = messagesArr.map((message, index) => {
-    return (
-      <div key={`${index}_${message}`}>
-        <h1>{message}</h1>
-      </div>
-    );
-  });
+  //   const messagesEl = messagesArr[
+  //     messagesArr.findIndex((el) => {
+  //       return el.roomID === currentJoinedRoomID;
+  //     })
+  //   ]?.messagesArr.map((message, index) => {
+  //     return (
+  //       <div key={`${index}_${message}`}>
+  //         <h1>{message}</h1>
+  //       </div>
+  //     );
+  //   });
 
   useEffect(() => {
     dispatch(getAllRoomsList());
@@ -185,40 +193,11 @@ const RoomsListMain = () => {
 
   return (
     <>
-      <div>
-        <h1 className=" text-2xl text-center px-3 py-3">Список игровых серверов</h1>
-      </div>
-
-      {/* <div>
-        <button className="delete-buttonStandart" onClick={disconnectedFromSocketHandler}>
-          {socket?.connect ? "Отключиться" : "Подключиться"}
-        </button>
-      </div> */}
-
-      {/* <div>{messagesEl}</div>
-
-      <div className=" flex justify-center items-center gap-4 flex-col py-5">
-        <div className=" px-3 py-3 border-2 border-spacing-1 border-slate-500 border-solid flex justify-center items-center gap-4">
-          <input
-            className=" border-2 border-spacing-1 border-slate-300 border-solid"
-            type="text"
-            placeholder="Text here"
-            value={message}
-            onChange={changeMessageHandler}
-          />
-          <button className="buttonStudent" onClick={sendMessageHandler.bind("asdasdasd")}>
-            Send Message
-          </button>
-        </div>
-        <button className="buttonStudent" onClick={sendGTSGameRoomMessage}>
-          Send to GTSGame room Message
-        </button>
-      </div> */}
-
-      {/* <div className=" py-5 flex justify-center items-center">{setNameEl}</div> */}
-
       {telegramUser?.id && !showRoomStatus && (
         <div>
+          <div>
+            <h1 className=" text-2xl text-center px-3 py-3">Список игровых серверов</h1>
+          </div>
           {fetchAllGamesRoomsList === CoopGamesFetchStatus.Loading && (
             <div className=" py-6 text-center">
               <FontAwesomeIcon className=" animate-spin fa-fw fa-2x" icon={faSpinner} />

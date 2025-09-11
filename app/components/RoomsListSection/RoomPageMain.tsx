@@ -40,13 +40,17 @@ const RoomPageMain = () => {
     }
   };
 
-  const messagesEl = messagesArr.map((message, index) => {
-    return (
-      <div key={`${index}_${message}`}>
-        <h1>{message}</h1>
-      </div>
-    );
-  });
+  //   const messagesEl = messagesArr[
+  //     messagesArr.findIndex((el) => {
+  //       return el.roomID === currentJoinedRoomID;
+  //     })
+  //   ]?.messagesArr.map((message, index) => {
+  //     return (
+  //       <div key={`${index}_${message}`}>
+  //         <h1>{message}</h1>
+  //       </div>
+  //     );
+  //   });
 
   //   useEffect(() => {
   //     return () => {
@@ -76,16 +80,16 @@ const RoomPageMain = () => {
     // };
   });
 
-  useEffect(() => {
-    socket?.on("send-message", (message) => {
-      dispatch(CoopGamesActions.addMessageInArr({ message: message, roomID: currentJoinedRoomID }));
-    });
+  // useEffect(() => {
+  //   socket?.on("send-message", (message) => {
+  //     dispatch(CoopGamesActions.addMessageInArr({ message: message, roomID: currentJoinedRoomID }));
+  //   });
 
-    socket?.on("roomGTSGameMessage", (message: string) => {
-      console.log(message);
-      dispatch(CoopGamesActions.addMessageInArr({ message: message, roomID: currentJoinedRoomID }));
-    });
-  }, [socket]);
+  //   socket?.on("roomGTSGameMessage", (message: string) => {
+  //     console.log(message);
+  //     dispatch(CoopGamesActions.addMessageInArr({ message: message, roomID: currentJoinedRoomID }));
+  //   });
+  // }, [socket]);
 
   return (
     <>
@@ -104,7 +108,7 @@ const RoomPageMain = () => {
         <h1>Имя: {telegramUser?.username}</h1>
       </div>
 
-      <div className=" py-5">{messagesEl}</div>
+      {/* <div className=" py-5">{messagesEl}</div> */}
 
       <div className=" flex justify-center items-center gap-4 flex-col py-5">
         <div className=" px-3 py-3 border-2 border-spacing-1 border-slate-500 border-solid flex justify-center items-center gap-4">
