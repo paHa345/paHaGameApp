@@ -1,9 +1,10 @@
 import { AppDispatch } from "@/app/store";
 import { IAppSlice } from "@/app/store/appStateSlice";
-import { CoopGamesActions, ICoopGamesSlice } from "@/app/store/CoopGamesSlice";
+import { CoopGameMessageType, CoopGamesActions, ICoopGamesSlice } from "@/app/store/CoopGamesSlice";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { div, h1 } from "framer-motion/client";
+import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -31,31 +32,33 @@ const RoomComponentMain = () => {
     // dispatch(CoopGamesActions.setSocket(undefined));
   };
 
-  //   const messagesEl = messagesArr[
-  //     messagesArr.findIndex((el) => {
-  //       return el.roomID === currentJoinedRoomID;
-  //     })
-  //   ]?.messagesArr.map((message, index) => {
-  //     return (
-  //       <div key={`${index}_${message}`}>
-  //         <h1>{message}</h1>
-  //       </div>
-  //     );
-  //   });
-
   const messagesEl =
     currentJoinedRoomID && messagesArr[currentJoinedRoomID] ? (
       messagesArr[currentJoinedRoomID].map((messageObj, index) => {
+        const name =
+          messageObj.type === CoopGameMessageType.notification ? (
+            <div></div>
+          ) : messageObj.telegramUserName ? (
+            <h1>{messageObj.telegramUserName} : </h1>
+          ) : (
+            <h1> {messageObj.telegramUserID} : </h1>
+          );
+
         return (
           <div className=" py-2 border-b-2" key={`${index}_${message}`}>
-            <div className=" flex justify-start items-baseline flex-row">
-              <div className=" pr-7">
-                {messageObj.telegramUserName ? (
-                  <h1>{messageObj.telegramUserName} : </h1>
-                ) : (
-                  <h1> {messageObj.telegramUserID} : </h1>
-                )}
-              </div>
+            <div className=" flex justify-start items-center flex-row">
+              {messageObj.type === CoopGameMessageType.message && messageObj.photo_url && (
+                <div className=" h-14 w-14 mr-3 flex justify-center items-center">
+                  <img
+                    className=" h-14 w-14 rounded-full"
+                    alt="userImage"
+                    src={
+                      "https://avatars.mds.yandex.net/i?id=0c280188904bfb74a3717423e06cc798_l-5236855-images-thumbs&n=13"
+                    }
+                  ></img>
+                </div>
+              )}
+              <div className=" pr-7">{name}</div>
               <div>
                 <h1>{messageObj.message}</h1>
               </div>
@@ -74,16 +77,22 @@ const RoomComponentMain = () => {
   const sendRoomMessageHandler = (e: any) => {
     e.preventDefault();
     if (socket && telegramUser) {
-      socket.emit("GTSGameRoomMessage", { message, currentJoinedRoomID, telegramUser });
+      socket.emit("GTSGameRoomMessage", {
+        message,
+        currentJoinedRoomID,
+        telegramUser,
+        type: CoopGameMessageType.message,
+      });
       socket.emit("getSocketID");
       setMessage("");
     }
   };
 
   useEffect(() => {
-    // socket?.on("send-message", (message) => {
-    //   dispatch(CoopGamesActions.addMessageInArr({ message: message, roomID: currentJoinedRoomID }));
-    // });
+    socket?.on("joinRoomUserMessage", (data) => {
+      console.log(data);
+      dispatch(CoopGamesActions.addJoinedRoomMessage(data));
+    });
 
     socket?.on(
       "roomGTSGameMessage",
@@ -92,6 +101,8 @@ const RoomComponentMain = () => {
         telegramUserID: string;
         telegramUserName: string;
         messageDate: number;
+        photo_url: string | undefined;
+        type: CoopGameMessageType;
       }) => {
         dispatch(
           CoopGamesActions.addMessageInArr({
@@ -100,6 +111,8 @@ const RoomComponentMain = () => {
             telegramUserID: messageData.telegramUserID,
             telegramUserName: messageData.telegramUserName,
             messageDate: messageData.messageDate,
+            photo_url: messageData.photo_url,
+            type: messageData.type,
           })
         );
       }
@@ -108,6 +121,7 @@ const RoomComponentMain = () => {
     return () => {
       socket?.off("roomGTSGameMessage");
       socket?.off("send-message");
+      socket?.off("joinRoomUserMessage");
     };
   }, [socket]);
 

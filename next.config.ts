@@ -22,6 +22,13 @@ const nextConfig: NextConfig = {
         pathname: "/f1525e96-2c5a759f-3888-4bd2-a52f-dbb62685b4bb/uploads/**",
         search: "",
       },
+      {
+        protocol: "https",
+        hostname: "avatars.mds.yandex.net",
+        port: "",
+        pathname: "**",
+        search: "",
+      },
     ],
   },
 };

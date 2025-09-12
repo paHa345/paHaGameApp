@@ -26,16 +26,23 @@ export enum CoopGamesFetchStatus {
   Error = "error",
 }
 
+export enum CoopGameMessageType {
+  message = "message",
+  notification = "notification",
+}
+
 export interface ICoopGamesSlice {
   CoopGamesState: {
     messagesArr: {
       [name: string]: [
         {
           message: string;
-          roomID: string | undefined;
-          telegramUserID: string;
-          telegramUserName: string;
-          messageDate: number;
+          roomID?: string | undefined;
+          telegramUserID?: string;
+          telegramUserName?: string;
+          messageDate?: number;
+          type: CoopGameMessageType;
+          photo_url?: string | undefined;
         },
       ];
     };
@@ -52,10 +59,12 @@ interface ICoopGamesState {
     [name: string]: [
       {
         message: string;
-        roomID: string | undefined;
-        telegramUserID: string;
-        telegramUserName: string;
-        messageDate: number;
+        roomID?: string | undefined;
+        telegramUserID?: string;
+        telegramUserName?: string;
+        messageDate?: number;
+        type: CoopGameMessageType;
+        photo_url?: string | undefined;
       },
     ];
   };
@@ -93,6 +102,8 @@ export const CoopGamesSlice = createSlice({
           telegramUserID: string;
           telegramUserName: string;
           messageDate: number;
+          photo_url: string | undefined;
+          type: CoopGameMessageType;
         };
       }
     ) {
@@ -105,6 +116,8 @@ export const CoopGamesSlice = createSlice({
           telegramUserID: action.payload.telegramUserID,
           telegramUserName: action.payload.telegramUserName,
           messageDate: action.payload.messageDate,
+          photo_url: action.payload.photo_url,
+          type: action.payload.type,
         });
       } else {
         state.messagesArr[action.payload.roomID] = [
@@ -114,19 +127,40 @@ export const CoopGamesSlice = createSlice({
             telegramUserID: action.payload.telegramUserID,
             telegramUserName: action.payload.telegramUserName,
             messageDate: action.payload.messageDate,
+            photo_url: action.payload.photo_url,
+            type: action.payload.type,
           },
         ];
-        // state.messagesArr[action.payload.roomID].push(action.payload.message);
       }
-      //   console.log(state.messagesArr["first"]);
-
-      //   console.log(state.messagesArr.length);
-      //   const roomIndex
-      //   state.messagesArr[
-      //     state.messagesArr.findIndex((el) => {
-      //       return el.roomID === action.payload.roomID;
-      //     })
-      //   ].messagesArr.push(action.payload.message);
+    },
+    addJoinedRoomMessage(
+      state,
+      action: {
+        payload: {
+          message: string;
+          roomID: string | undefined;
+          type: CoopGameMessageType;
+        };
+      }
+    ) {
+      console.log(action.payload);
+      if (action.payload.roomID === undefined) return;
+      if (state.messagesArr[action.payload.roomID]) {
+        console.log(state.messagesArr[action.payload.roomID]);
+        state.messagesArr[action.payload.roomID].push({
+          message: action.payload.message,
+          roomID: action.payload.roomID,
+          type: action.payload.type,
+        });
+      } else {
+        state.messagesArr[action.payload.roomID] = [
+          {
+            message: action.payload.message,
+            roomID: action.payload.roomID,
+            type: action.payload.type,
+          },
+        ];
+      }
     },
     setShowRoomStatus(state, action) {
       state.showRoomStatus = action.payload;

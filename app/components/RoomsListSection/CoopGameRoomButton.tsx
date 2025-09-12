@@ -1,5 +1,6 @@
 import { AppDispatch } from "@/app/store";
-import { CoopGamesActions, ICoopGamesSlice } from "@/app/store/CoopGamesSlice";
+import { IAppSlice } from "@/app/store/appStateSlice";
+import { CoopGameMessageType, CoopGamesActions, ICoopGamesSlice } from "@/app/store/CoopGamesSlice";
 import Link from "next/link";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,11 +12,13 @@ interface ICoopGameRoomProps {
 }
 
 const CoopGameRoomButton = ({ id, name, isStarted }: ICoopGameRoomProps) => {
+  const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
+
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
   const dispatch = useDispatch<AppDispatch>();
 
   const joinRoomHandler = () => {
-    socket?.emit("join_room", id);
+    socket?.emit("join_room", { roomID: id, telegramUser, type: CoopGameMessageType.notification });
     dispatch(CoopGamesActions.setShowRoomStatus(true));
     dispatch(CoopGamesActions.setCurrentJoinedRoomID(id));
   };
