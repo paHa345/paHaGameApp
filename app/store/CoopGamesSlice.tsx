@@ -10,8 +10,6 @@ export const getAllRoomsList = createAsyncThunk(
       if (!allRoomsListReq.ok) {
         throw new Error(allRoomsList.message);
       }
-
-      console.log(allRoomsList);
       dispatch(CoopGamesActions.setAllGamesRoomsList(allRoomsList.result.allGamesRoomList));
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -109,7 +107,6 @@ export const CoopGamesSlice = createSlice({
     ) {
       if (action.payload.roomID === undefined) return;
       if (state.messagesArr[action.payload.roomID]) {
-        console.log(state.messagesArr[action.payload.roomID]);
         state.messagesArr[action.payload.roomID].push({
           message: action.payload.message,
           roomID: action.payload.roomID,
@@ -143,10 +140,8 @@ export const CoopGamesSlice = createSlice({
         };
       }
     ) {
-      console.log(action.payload);
       if (action.payload.roomID === undefined) return;
       if (state.messagesArr[action.payload.roomID]) {
-        console.log(state.messagesArr[action.payload.roomID]);
         state.messagesArr[action.payload.roomID].push({
           message: action.payload.message,
           roomID: action.payload.roomID,

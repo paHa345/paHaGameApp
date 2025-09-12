@@ -23,7 +23,11 @@ const RoomComponentMain = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const leaveRoomHandler = () => {
-    socket?.emit("leave_room", currentJoinedRoomID);
+    socket?.emit("leave_room", {
+      roomID: currentJoinedRoomID,
+      telegramUser,
+      type: CoopGameMessageType.notification,
+    });
     dispatch(CoopGamesActions.setShowRoomStatus(false));
     dispatch(CoopGamesActions.setCurrentJoinedRoomID(undefined));
     // socket?.emit("disconnectServer");
@@ -91,6 +95,10 @@ const RoomComponentMain = () => {
       console.log(data);
       dispatch(CoopGamesActions.addJoinedRoomMessage(data));
     });
+    socket?.on("leaveRoomUserMessage", (data) => {
+      console.log(data);
+      dispatch(CoopGamesActions.addJoinedRoomMessage(data));
+    });
 
     socket?.on(
       "roomGTSGameMessage",
@@ -120,6 +128,7 @@ const RoomComponentMain = () => {
       socket?.off("roomGTSGameMessage");
       socket?.off("send-message");
       socket?.off("joinRoomUserMessage");
+      socket?.off("leaveRoomUserMessage");
     };
   }, [socket]);
 
