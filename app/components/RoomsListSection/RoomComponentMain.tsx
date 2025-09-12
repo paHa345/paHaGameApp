@@ -52,9 +52,7 @@ const RoomComponentMain = () => {
                   <img
                     className=" h-14 w-14 rounded-full"
                     alt="userImage"
-                    src={
-                      "https://avatars.mds.yandex.net/i?id=0c280188904bfb74a3717423e06cc798_l-5236855-images-thumbs&n=13"
-                    }
+                    src={messageObj.photo_url}
                   ></img>
                 </div>
               )}
