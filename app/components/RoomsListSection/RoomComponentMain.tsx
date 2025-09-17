@@ -51,7 +51,13 @@ const RoomComponentMain = () => {
               : "https://cdn.vectorstock.com/i/500p/20/92/user-icon-man-silhouette-vector-25482092.jpg"
           }
         ></img>
-        {user.username ? <h1>{user.username}</h1> : <h1>{user.userID}</h1>}
+        {user.socketID === socket?.id ? (
+          <h1 className=" text-lg font-bold">Вы</h1>
+        ) : user.username ? (
+          <h1>{user.username}</h1>
+        ) : (
+          <h1>{user.userID}</h1>
+        )}
       </div>
     );
   });
@@ -59,6 +65,7 @@ const RoomComponentMain = () => {
   const messagesEl =
     currentJoinedRoomID && messagesArr[currentJoinedRoomID] ? (
       messagesArr[currentJoinedRoomID].map((messageObj, index) => {
+        const self = telegramUser?.id === messageObj.telegramUserID;
         const name =
           messageObj.type === CoopGameMessageType.notification ? (
             <div></div>
@@ -69,7 +76,7 @@ const RoomComponentMain = () => {
           );
 
         return (
-          <div className=" py-2 border-b-2" key={`${index}_${message}`}>
+          <div className={`py-2 border-b-2 ${self && "bg-teal-50"} `} key={`${index}_${message}`}>
             <div className=" flex justify-start items-center flex-row">
               {messageObj.type === CoopGameMessageType.message && messageObj.photo_url && (
                 <div className=" h-14 w-14 mr-3 flex justify-center items-center">
@@ -80,7 +87,7 @@ const RoomComponentMain = () => {
                   ></img>
                 </div>
               )}
-              <div className=" pr-7">{name}</div>
+              {self ? <div className=" pr-7">Вы : </div> : <div className=" pr-7">{name}</div>}
               <div>
                 <h1>{messageObj.message}</h1>
               </div>
@@ -187,12 +194,12 @@ const RoomComponentMain = () => {
         </div>
       </div>
       <div className=" min-h-[70vh]">
-        <div>
+        {/* <div>
           <h1 className=" px-3 py-3 text-xl text-center">
             {" "}
             Вы зашли на сервер с ID {currentJoinedRoomID}{" "}
           </h1>
-        </div>
+        </div> */}
 
         <div className="h-[20vh] overflow-x-scroll  w-full flex justify-center items-center flex-wrap  gap-6">
           {currentRoomJoinedUsersEl}
