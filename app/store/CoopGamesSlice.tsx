@@ -44,6 +44,13 @@ export interface ICoopGamesSlice {
         },
       ];
     };
+    currentRoomUsersArr: {
+      username: string;
+      userID: number;
+      photoURL: string | undefined;
+      socketID: string;
+    }[];
+
     socket?: io.Socket;
     showRoomStatus: boolean;
     currentJoinedRoomID?: string;
@@ -66,6 +73,12 @@ interface ICoopGamesState {
       },
     ];
   };
+  currentRoomUsersArr: {
+    username: string;
+    userID: number;
+    photoURL: string | undefined;
+    socketID: string;
+  }[];
   socket?: io.Socket;
   showRoomStatus: boolean;
   currentJoinedRoomID?: string;
@@ -75,6 +88,7 @@ interface ICoopGamesState {
 }
 
 export const CoopGamesState: ICoopGamesState = {
+  currentRoomUsersArr: [],
   messagesArr: {},
   allGamesRoomsList: [],
   showRoomStatus: false,
@@ -156,6 +170,10 @@ export const CoopGamesSlice = createSlice({
           },
         ];
       }
+    },
+
+    setCurrentRoomUsersArr(state, action) {
+      state.currentRoomUsersArr = action.payload;
     },
     setShowRoomStatus(state, action) {
       state.showRoomStatus = action.payload;

@@ -13,6 +13,9 @@ const RoomComponentMain = () => {
   const currentJoinedRoomID = useSelector(
     (state: ICoopGamesSlice) => state.CoopGamesState.currentJoinedRoomID
   );
+  const currentRoomUsers = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.currentRoomUsersArr
+  );
   const messagesArr = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.messagesArr);
   const [message, setMessage] = useState("");
 
@@ -35,6 +38,23 @@ const RoomComponentMain = () => {
     // socket?.close();
     // dispatch(CoopGamesActions.setSocket(undefined));
   };
+
+  const currentRoomJoinedUsersEl = currentRoomUsers.map((user) => {
+    return (
+      <div className=" flex flex-col justify-center items-center" key={user.socketID}>
+        <img
+          className=" h-14 w-14 rounded-full"
+          alt="userImage"
+          src={
+            user.photoURL
+              ? user.photoURL
+              : "https://cdn.vectorstock.com/i/500p/20/92/user-icon-man-silhouette-vector-25482092.jpg"
+          }
+        ></img>
+        {user.username ? <h1>{user.username}</h1> : <h1>{user.userID}</h1>}
+      </div>
+    );
+  });
 
   const messagesEl =
     currentJoinedRoomID && messagesArr[currentJoinedRoomID] ? (
@@ -100,6 +120,19 @@ const RoomComponentMain = () => {
       dispatch(CoopGamesActions.addJoinedRoomMessage(data));
     });
 
+    socket?.on("addUserInRoom", (currentRoomJoinedUsers) => {
+      console.log("add user in room");
+      dispatch(CoopGamesActions.setCurrentRoomUsersArr(currentRoomJoinedUsers));
+      // if (currentJoinedRoomID) {
+      //   const usersObj = data[currentJoinedRoomID].users;
+      //   console.log(usersObj);
+      // }
+    });
+
+    socket?.on("deleteUserFromRoom", (currentRoomJoinedUsers) => {
+      dispatch(CoopGamesActions.setCurrentRoomUsersArr(currentRoomJoinedUsers));
+    });
+
     socket?.on(
       "roomGTSGameMessage",
       (messageData: {
@@ -129,6 +162,8 @@ const RoomComponentMain = () => {
       socket?.off("send-message");
       socket?.off("joinRoomUserMessage");
       socket?.off("leaveRoomUserMessage");
+      socket?.off("addUserInRoom");
+      socket?.off("deleteUserFromRoom");
     };
   }, [socket]);
 
@@ -159,9 +194,8 @@ const RoomComponentMain = () => {
           </h1>
         </div>
 
-        <div>
-          <h1>ID: {telegramUser?.id}</h1>
-          <h1>Имя: {telegramUser?.username}</h1>
+        <div className="h-[20vh] overflow-x-scroll  w-full flex justify-center items-center flex-wrap  gap-6">
+          {currentRoomJoinedUsersEl}
         </div>
 
         <div className=" h-[50vh] overflow-x-scroll">
