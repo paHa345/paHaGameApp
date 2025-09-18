@@ -56,6 +56,7 @@ export interface ICoopGamesSlice {
     currentJoinedRoomID?: string;
     allGamesRoomsList: { _id: string; name: string; isStarted: boolean }[];
     fetchAllGameRoomsStatus: CoopGamesFetchStatus;
+    squareCoordinates?: { x: number; y: number };
   };
 }
 
@@ -85,6 +86,7 @@ interface ICoopGamesState {
 
   allGamesRoomsList: { _id: string; name: string; isStarted: boolean }[];
   fetchAllGameRoomsStatus: CoopGamesFetchStatus;
+  squareCoordinates?: { x: number; y: number };
 }
 
 export const CoopGamesState: ICoopGamesState = {
@@ -180,6 +182,11 @@ export const CoopGamesSlice = createSlice({
     },
     setCurrentJoinedRoomID(state, action) {
       state.currentJoinedRoomID = action.payload;
+    },
+
+    setSquareCoordinates(state, action) {
+      console.log(action.payload);
+      state.squareCoordinates = action.payload;
     },
   },
   extraReducers: (builder) => {

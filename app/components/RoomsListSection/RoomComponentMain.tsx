@@ -7,6 +7,7 @@ import { div, h1 } from "framer-motion/client";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import RoomGameField from "./RoomGameField";
 
 const RoomComponentMain = () => {
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
@@ -117,6 +118,11 @@ const RoomComponentMain = () => {
     }
   };
 
+  const startGameHandler = () => {
+    console.log("Start game");
+    socket?.emit("startGame", currentJoinedRoomID);
+  };
+
   useEffect(() => {
     socket?.on("joinRoomUserMessage", (data) => {
       console.log(data);
@@ -164,6 +170,11 @@ const RoomComponentMain = () => {
       }
     );
 
+    socket?.on("startGameInRoom", (gameData) => {
+      console.log(gameData.square);
+      dispatch(CoopGamesActions.setSquareCoordinates(gameData.square));
+    });
+
     return () => {
       socket?.off("roomGTSGameMessage");
       socket?.off("send-message");
@@ -171,6 +182,7 @@ const RoomComponentMain = () => {
       socket?.off("leaveRoomUserMessage");
       socket?.off("addUserInRoom");
       socket?.off("deleteUserFromRoom");
+      socket?.off("startGameInRoom");
     };
   }, [socket]);
 
@@ -226,6 +238,14 @@ const RoomComponentMain = () => {
             </div>
           </div>
         </form>
+      </div>
+      <div>
+        <div onClick={startGameHandler} className=" buttonStudent">
+          Начать игру
+        </div>
+      </div>
+      <div className=" h-80 w-80">
+        <RoomGameField></RoomGameField>
       </div>
     </>
   );
