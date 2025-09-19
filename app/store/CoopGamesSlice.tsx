@@ -56,7 +56,20 @@ export interface ICoopGamesSlice {
     currentJoinedRoomID?: string;
     allGamesRoomsList: { _id: string; name: string; isStarted: boolean }[];
     fetchAllGameRoomsStatus: CoopGamesFetchStatus;
-    squareCoordinates?: { x: number; y: number };
+    squareCoordinates?: {
+      [socketID: string]: {
+        square: {
+          prevCoord: {
+            x: number;
+            y: number;
+          };
+          currentCoord: {
+            x: number;
+            y: number;
+          };
+        };
+      };
+    };
   };
 }
 
@@ -86,7 +99,20 @@ interface ICoopGamesState {
 
   allGamesRoomsList: { _id: string; name: string; isStarted: boolean }[];
   fetchAllGameRoomsStatus: CoopGamesFetchStatus;
-  squareCoordinates?: { x: number; y: number };
+  squareCoordinates?: {
+    [socketID: string]: {
+      square: {
+        prevCoord: {
+          x: number;
+          y: number;
+        };
+        currentCoord: {
+          x: number;
+          y: number;
+        };
+      };
+    };
+  };
 }
 
 export const CoopGamesState: ICoopGamesState = {

@@ -4,17 +4,46 @@ import { useSelector } from "react-redux";
 
 const RoomGameField = () => {
   const canvasRef = useRef(null) as any;
+  const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
 
-  const squareCoord = useSelector(
-    (state: ICoopGamesSlice) => state.CoopGamesState.squareCoordinates
-  );
+  const gameData = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.squareCoordinates);
 
   useEffect(() => {
     var ctx = canvasRef.current.getContext("2d");
-    if (squareCoord) {
-      ctx.fillRect(squareCoord.x, squareCoord.y, 20, 20);
+    if (gameData) {
+      for (let userData in gameData) {
+        console.log(userData);
+        console.log(socket?.id);
+        if (userData === socket?.id) {
+          ctx.fillStyle = "green";
+        } else {
+          ctx.fillStyle = "red";
+        }
+
+        ctx.clearRect(
+          gameData[userData].square.prevCoord.x,
+          gameData[userData].square.prevCoord.y,
+          10,
+          5
+        );
+
+        ctx.fillRect(
+          gameData[userData].square.currentCoord.x,
+          gameData[userData].square.currentCoord.y,
+          10,
+          5
+        );
+      }
     }
-  }, [squareCoord]);
+  }, [gameData]);
+
+  useEffect(() => {
+    var ctx = canvasRef.current.getContext("2d");
+
+    ctx.fillStyle = "#f2f7bc";
+
+    ctx.fillRect(0, 0, 256, 128);
+  }, []);
 
   return (
     <div>

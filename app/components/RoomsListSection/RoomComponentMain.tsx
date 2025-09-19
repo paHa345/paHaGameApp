@@ -1,7 +1,12 @@
 import { AppDispatch } from "@/app/store";
 import { IAppSlice } from "@/app/store/appStateSlice";
 import { CoopGameMessageType, CoopGamesActions, ICoopGamesSlice } from "@/app/store/CoopGamesSlice";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowDown,
+  faArrowLeft,
+  faArrowRight,
+  faArrowUp,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { div, h1 } from "framer-motion/client";
 import Image from "next/image";
@@ -123,6 +128,23 @@ const RoomComponentMain = () => {
     socket?.emit("startGame", currentJoinedRoomID);
   };
 
+  const moveDownHandler = () => {
+    console.log("Move down");
+    socket?.emit("clientMoveDown", currentJoinedRoomID);
+  };
+  const moveUpHandler = () => {
+    console.log("Move up");
+    socket?.emit("clientMoveUp", currentJoinedRoomID);
+  };
+  const moveLeftHandler = () => {
+    console.log("Move left");
+    socket?.emit("clientMoveLeft", currentJoinedRoomID);
+  };
+  const moveRightHandler = () => {
+    console.log("Move right");
+    socket?.emit("clientMoveRight", currentJoinedRoomID);
+  };
+
   useEffect(() => {
     socket?.on("joinRoomUserMessage", (data) => {
       console.log(data);
@@ -171,8 +193,24 @@ const RoomComponentMain = () => {
     );
 
     socket?.on("startGameInRoom", (gameData) => {
-      console.log(gameData.square);
-      dispatch(CoopGamesActions.setSquareCoordinates(gameData.square));
+      console.log(gameData);
+      dispatch(CoopGamesActions.setSquareCoordinates(gameData));
+    });
+    socket?.on("serverMoveDown", (gameData) => {
+      console.log(gameData);
+      dispatch(CoopGamesActions.setSquareCoordinates(gameData));
+    });
+    socket?.on("serverMoveUp", (gameData) => {
+      console.log(gameData);
+      dispatch(CoopGamesActions.setSquareCoordinates(gameData));
+    });
+    socket?.on("serverMoveLeft", (gameData) => {
+      console.log(gameData);
+      dispatch(CoopGamesActions.setSquareCoordinates(gameData));
+    });
+    socket?.on("serverMoveRight", (gameData) => {
+      console.log(gameData);
+      dispatch(CoopGamesActions.setSquareCoordinates(gameData));
     });
 
     return () => {
@@ -183,6 +221,10 @@ const RoomComponentMain = () => {
       socket?.off("addUserInRoom");
       socket?.off("deleteUserFromRoom");
       socket?.off("startGameInRoom");
+      socket?.off("serverMoveDown");
+      socket?.off("serverMoveUp");
+      socket?.off("serverMoveLeft");
+      socket?.off("serverMoveRight");
     };
   }, [socket]);
 
@@ -242,6 +284,22 @@ const RoomComponentMain = () => {
       <div>
         <div onClick={startGameHandler} className=" buttonStudent">
           Начать игру
+        </div>
+      </div>
+      <div className=" py-3 my-3 flex justify-center items-center gap-2 border-2 border-solid border-orange-500 rounded-full ">
+        <div onClick={moveLeftHandler}>
+          <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowLeft} />
+        </div>
+        <div>
+          <div onClick={moveUpHandler}>
+            <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowUp} />
+          </div>
+          <div onClick={moveDownHandler}>
+            <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowDown} />
+          </div>
+        </div>
+        <div onClick={moveRightHandler}>
+          <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowRight} />
         </div>
       </div>
       <div className=" h-80 w-80">
