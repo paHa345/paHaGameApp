@@ -145,6 +145,14 @@ const RoomComponentMain = () => {
     socket?.emit("clientMoveRight", currentJoinedRoomID);
   };
 
+  const clientMoveHandler = function (this: { direction: string }) {
+    socket?.emit("clientStartMove", { direction: this.direction, roomID: currentJoinedRoomID });
+  };
+
+  const stopMoveHandler = () => {
+    socket?.emit("clientStopMove", currentJoinedRoomID);
+  };
+
   useEffect(() => {
     socket?.on("joinRoomUserMessage", (data) => {
       console.log(data);
@@ -193,23 +201,9 @@ const RoomComponentMain = () => {
     );
 
     socket?.on("startGameInRoom", (gameData) => {
-      console.log(gameData);
       dispatch(CoopGamesActions.setSquareCoordinates(gameData));
     });
-    socket?.on("serverMoveDown", (gameData) => {
-      console.log(gameData);
-      dispatch(CoopGamesActions.setSquareCoordinates(gameData));
-    });
-    socket?.on("serverMoveUp", (gameData) => {
-      console.log(gameData);
-      dispatch(CoopGamesActions.setSquareCoordinates(gameData));
-    });
-    socket?.on("serverMoveLeft", (gameData) => {
-      console.log(gameData);
-      dispatch(CoopGamesActions.setSquareCoordinates(gameData));
-    });
-    socket?.on("serverMoveRight", (gameData) => {
-      console.log(gameData);
+    socket?.on("serverMove", (gameData) => {
       dispatch(CoopGamesActions.setSquareCoordinates(gameData));
     });
 
@@ -221,10 +215,11 @@ const RoomComponentMain = () => {
       socket?.off("addUserInRoom");
       socket?.off("deleteUserFromRoom");
       socket?.off("startGameInRoom");
-      socket?.off("serverMoveDown");
-      socket?.off("serverMoveUp");
-      socket?.off("serverMoveLeft");
-      socket?.off("serverMoveRight");
+      // socket?.off("serverMoveDown");
+      // socket?.off("serverMoveUp");
+      // socket?.off("serverMoveLeft");
+      // socket?.off("serverMoveRight");
+      socket?.off("serverMove");
     };
   }, [socket]);
 
@@ -287,18 +282,30 @@ const RoomComponentMain = () => {
         </div>
       </div>
       <div className=" py-3 my-3 flex justify-center items-center gap-2 border-2 border-solid border-orange-500 rounded-full ">
-        <div onClick={moveLeftHandler}>
+        <div
+          onMouseDown={clientMoveHandler.bind({ direction: "left" })}
+          onMouseUp={stopMoveHandler}
+        >
           <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowLeft} />
         </div>
         <div>
-          <div onClick={moveUpHandler}>
+          <div
+            onMouseDown={clientMoveHandler.bind({ direction: "up" })}
+            onMouseUp={stopMoveHandler}
+          >
             <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowUp} />
           </div>
-          <div onClick={moveDownHandler}>
+          <div
+            onMouseDown={clientMoveHandler.bind({ direction: "down" })}
+            onMouseUp={stopMoveHandler}
+          >
             <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowDown} />
           </div>
         </div>
-        <div onClick={moveRightHandler}>
+        <div
+          onMouseDown={clientMoveHandler.bind({ direction: "right" })}
+          onMouseUp={stopMoveHandler}
+        >
           <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowRight} />
         </div>
       </div>

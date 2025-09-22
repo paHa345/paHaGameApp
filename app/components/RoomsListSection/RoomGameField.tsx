@@ -12,46 +12,89 @@ const RoomGameField = () => {
     var ctx = canvasRef.current.getContext("2d");
     if (gameData) {
       for (let userData in gameData) {
-        console.log(userData);
-        console.log(socket?.id);
         if (userData === socket?.id) {
-          ctx.fillStyle = "green";
+          ctx.fillStyle = "#ffbcad";
         } else {
           ctx.fillStyle = "red";
         }
 
+        // var img = new Image();
+        // img.onload = function () {
+        //   ctx.clearRect(
+        //     gameData[userData].square.prevCoord.x,
+        //     gameData[userData].square.prevCoord.y,
+        //     40,
+        //     40
+        //   );
+        //   ctx.drawImage(
+        //     img,
+        //     gameData[userData].square.prevCoord.x,
+        //     gameData[userData].square.prevCoord.y
+        //   );
+        // };
+        // img.src = "https://s.namemc.com/2d/skin/face.png?id=db1ae8323676a9c7&scale=4";
+
         ctx.clearRect(
           gameData[userData].square.prevCoord.x,
           gameData[userData].square.prevCoord.y,
-          10,
-          5
+          20,
+          20
         );
 
         ctx.fillRect(
           gameData[userData].square.currentCoord.x,
           gameData[userData].square.currentCoord.y,
-          10,
-          5
+          20,
+          20
+        );
+        ctx.clearRect(
+          gameData[userData].square.currentCoord.x + 2,
+          gameData[userData].square.currentCoord.y + 4,
+          4,
+          3
+        );
+        ctx.clearRect(
+          gameData[userData].square.currentCoord.x + 14,
+          gameData[userData].square.currentCoord.y + 4,
+          4,
+          3
+        );
+        ctx.fillStyle = "violet";
+        ctx.fillRect(
+          gameData[userData].square.currentCoord.x + 4,
+          gameData[userData].square.currentCoord.y + 4,
+          2,
+          3
+        );
+        ctx.fillRect(
+          gameData[userData].square.currentCoord.x + 14,
+          gameData[userData].square.currentCoord.y + 4,
+          2,
+          3
         );
       }
     }
   }, [gameData]);
 
   useEffect(() => {
-    var ctx = canvasRef.current.getContext("2d");
+    if (window) {
+      var ctx = canvasRef.current.getContext("2d");
 
-    ctx.fillStyle = "#f2f7bc";
+      ctx.fillStyle = "#f2f7bc";
 
-    ctx.fillRect(0, 0, 256, 128);
+      ctx.fillRect(0, 0, 300, 300);
+    }
   }, []);
 
   return (
     <div>
       <canvas
         id="canvas"
+        width={300}
+        height={300}
         ref={canvasRef}
         // height={170}
-        className=" h-80 w-80"
+        // className=" h-80 w-80"
       ></canvas>
     </div>
   );
