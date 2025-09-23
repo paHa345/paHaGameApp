@@ -285,6 +285,8 @@ const RoomComponentMain = () => {
         <div
           onMouseDown={clientMoveHandler.bind({ direction: "left" })}
           onMouseUp={stopMoveHandler}
+          onTouchStart={clientMoveHandler.bind({ direction: "left" })}
+          onTouchEnd={stopMoveHandler}
         >
           <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowLeft} />
         </div>
@@ -292,12 +294,16 @@ const RoomComponentMain = () => {
           <div
             onMouseDown={clientMoveHandler.bind({ direction: "up" })}
             onMouseUp={stopMoveHandler}
+            onTouchStart={clientMoveHandler.bind({ direction: "up" })}
+            onTouchEnd={stopMoveHandler}
           >
             <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowUp} />
           </div>
           <div
             onMouseDown={clientMoveHandler.bind({ direction: "down" })}
             onMouseUp={stopMoveHandler}
+            onTouchStart={clientMoveHandler.bind({ direction: "down" })}
+            onTouchEnd={stopMoveHandler}
           >
             <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowDown} />
           </div>
@@ -305,6 +311,8 @@ const RoomComponentMain = () => {
         <div
           onMouseDown={clientMoveHandler.bind({ direction: "right" })}
           onMouseUp={stopMoveHandler}
+          onTouchStart={clientMoveHandler.bind({ direction: "right" })}
+          onTouchEnd={stopMoveHandler}
         >
           <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowRight} />
         </div>

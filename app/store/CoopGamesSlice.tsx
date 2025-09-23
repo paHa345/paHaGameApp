@@ -60,14 +60,19 @@ export interface ICoopGamesSlice {
       [socketID: string]: {
         square: {
           prevCoord: {
-            x: number;
-            y: number;
+            x1: number;
+            x2: number;
+            y1: number;
+            y2: number;
           };
           currentCoord: {
-            x: number;
-            y: number;
+            x1: number;
+            x2: number;
+            y1: number;
+            y2: number;
           };
         };
+        userRole: string;
       };
     };
   };
@@ -103,14 +108,19 @@ interface ICoopGamesState {
     [socketID: string]: {
       square: {
         prevCoord: {
-          x: number;
-          y: number;
+          x1: number;
+          x2: number;
+          y1: number;
+          y2: number;
         };
         currentCoord: {
-          x: number;
-          y: number;
+          x1: number;
+          x2: number;
+          y1: number;
+          y2: number;
         };
       };
+      userRole: string;
     };
   };
 }

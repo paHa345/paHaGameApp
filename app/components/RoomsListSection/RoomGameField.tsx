@@ -12,66 +12,160 @@ const RoomGameField = () => {
     var ctx = canvasRef.current.getContext("2d");
     if (gameData) {
       for (let userData in gameData) {
-        if (userData === socket?.id) {
-          ctx.fillStyle = "#ffbcad";
+        if (gameData[userData].userRole === "steve") {
+          ctx.fillStyle = "#9f8b5b";
+
+          ctx.fillRect(
+            gameData[userData].square.prevCoord.x1,
+            gameData[userData].square.prevCoord.y1,
+            20,
+            20
+          );
+
+          ctx.fillStyle = "#dec6ab";
+
+          ctx.fillRect(
+            gameData[userData].square.currentCoord.x1,
+            gameData[userData].square.currentCoord.y1,
+            20,
+            20
+          );
+
+          ctx.fillStyle = "#6e0808";
+
+          ctx.fillRect(
+            gameData[userData].square.currentCoord.x1,
+            gameData[userData].square.currentCoord.y1,
+            20,
+            4
+          );
+          ctx.fillRect(
+            gameData[userData].square.currentCoord.x1,
+            gameData[userData].square.currentCoord.y1 + 4,
+            2,
+            2
+          );
+
+          ctx.fillRect(
+            gameData[userData].square.currentCoord.x1 + 18,
+            gameData[userData].square.currentCoord.y1 + 4,
+            2,
+            2
+          );
+
+          ctx.clearRect(
+            gameData[userData].square.currentCoord.x1 + 2,
+            gameData[userData].square.currentCoord.y1 + 9,
+            6,
+            3
+          );
+          ctx.clearRect(
+            gameData[userData].square.currentCoord.x1 + 13,
+            gameData[userData].square.currentCoord.y1 + 9,
+            6,
+            3
+          );
+          ctx.fillStyle = "#38188b";
+          ctx.fillRect(
+            gameData[userData].square.currentCoord.x1 + 5,
+            gameData[userData].square.currentCoord.y1 + 9,
+            3,
+            3
+          );
+          ctx.fillRect(
+            gameData[userData].square.currentCoord.x1 + 13,
+            gameData[userData].square.currentCoord.y1 + 9,
+            3,
+            3
+          );
+          ctx.fillStyle = "#812222";
+          ctx.fillRect(
+            gameData[userData].square.currentCoord.x1 + 9,
+            gameData[userData].square.currentCoord.y1 + 13,
+            4,
+            2
+          );
+          ctx.fillRect(
+            gameData[userData].square.currentCoord.x1 + 7,
+            gameData[userData].square.currentCoord.y1 + 15,
+            8,
+            2
+          );
         } else {
-          ctx.fillStyle = "red";
+          ctx.fillStyle = "#9f8b5b";
+
+          ctx.fillRect(
+            gameData[userData].square.prevCoord.x1,
+            gameData[userData].square.prevCoord.y1,
+            20,
+            20
+          );
+
+          ctx.fillStyle = "#547d57";
+
+          ctx.fillRect(
+            gameData[userData].square.currentCoord.x1,
+            gameData[userData].square.currentCoord.y1,
+            20,
+            20
+          );
+
+          ctx.fillStyle = "#204622";
+
+          ctx.fillRect(
+            gameData[userData].square.currentCoord.x1 + 4,
+            gameData[userData].square.currentCoord.y1 + 4,
+            4,
+            4
+          );
+          ctx.fillRect(
+            gameData[userData].square.currentCoord.x1 + 12,
+            gameData[userData].square.currentCoord.y1 + 4,
+            4,
+            4
+          );
+          ctx.fillStyle = "#161d17";
+
+          ctx.fillRect(
+            gameData[userData].square.currentCoord.x1 + 6,
+            gameData[userData].square.currentCoord.y1 + 6,
+            2,
+            2
+          );
+          ctx.fillRect(
+            gameData[userData].square.currentCoord.x1 + 14,
+            gameData[userData].square.currentCoord.y1 + 6,
+            2,
+            2
+          );
+
+          ctx.fillStyle = "#204622";
+
+          ctx.fillRect(
+            gameData[userData].square.currentCoord.x1 + 8,
+            gameData[userData].square.currentCoord.y1 + 9,
+            4,
+            2
+          );
+          ctx.fillRect(
+            gameData[userData].square.currentCoord.x1 + 6,
+            gameData[userData].square.currentCoord.y1 + 11,
+            8,
+            2
+          );
+          ctx.fillRect(
+            gameData[userData].square.currentCoord.x1 + 6,
+            gameData[userData].square.currentCoord.y1 + 13,
+            2,
+            2
+          );
+          ctx.fillRect(
+            gameData[userData].square.currentCoord.x1 + 12,
+            gameData[userData].square.currentCoord.y1 + 13,
+            2,
+            2
+          );
         }
-
-        // var img = new Image();
-        // img.onload = function () {
-        //   ctx.clearRect(
-        //     gameData[userData].square.prevCoord.x,
-        //     gameData[userData].square.prevCoord.y,
-        //     40,
-        //     40
-        //   );
-        //   ctx.drawImage(
-        //     img,
-        //     gameData[userData].square.prevCoord.x,
-        //     gameData[userData].square.prevCoord.y
-        //   );
-        // };
-        // img.src = "https://s.namemc.com/2d/skin/face.png?id=db1ae8323676a9c7&scale=4";
-
-        ctx.clearRect(
-          gameData[userData].square.prevCoord.x,
-          gameData[userData].square.prevCoord.y,
-          20,
-          20
-        );
-
-        ctx.fillRect(
-          gameData[userData].square.currentCoord.x,
-          gameData[userData].square.currentCoord.y,
-          20,
-          20
-        );
-        ctx.clearRect(
-          gameData[userData].square.currentCoord.x + 2,
-          gameData[userData].square.currentCoord.y + 4,
-          4,
-          3
-        );
-        ctx.clearRect(
-          gameData[userData].square.currentCoord.x + 14,
-          gameData[userData].square.currentCoord.y + 4,
-          4,
-          3
-        );
-        ctx.fillStyle = "violet";
-        ctx.fillRect(
-          gameData[userData].square.currentCoord.x + 4,
-          gameData[userData].square.currentCoord.y + 4,
-          2,
-          3
-        );
-        ctx.fillRect(
-          gameData[userData].square.currentCoord.x + 14,
-          gameData[userData].square.currentCoord.y + 4,
-          2,
-          3
-        );
       }
     }
   }, [gameData]);
@@ -80,7 +174,7 @@ const RoomGameField = () => {
     if (window) {
       var ctx = canvasRef.current.getContext("2d");
 
-      ctx.fillStyle = "#f2f7bc";
+      ctx.fillStyle = "#9f8b5b";
 
       ctx.fillRect(0, 0, 300, 300);
     }
