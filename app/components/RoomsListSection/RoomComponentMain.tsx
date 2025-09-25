@@ -215,7 +215,7 @@ const RoomComponentMain = () => {
   };
 
   const stopMoveHandler = () => {
-    // console.log("Stop Move");
+    console.log("Stop Move");
     socket?.emit("clientStopMove", currentJoinedRoomID);
     setmoveDitection(null);
   };
@@ -352,10 +352,9 @@ const RoomComponentMain = () => {
           <div
             onMouseMove={hoverMouseHandler}
             onMouseLeave={stopMoveHandler}
-            // onTouchStart={touchStartHandler}
-            onTouchCancel={stopMoveHandler}
+            onTouchStart={touchStartHandler}
             onTouchEnd={stopMoveHandler}
-            onTouchMove={touchStartHandler}
+            // onTouchMove={touchStartHandler}
             className=" flex items-center justify-center flex-col"
           >
             <div data-direction={"up"}>
