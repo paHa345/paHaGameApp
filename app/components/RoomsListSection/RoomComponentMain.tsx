@@ -29,6 +29,8 @@ const RoomComponentMain = () => {
   const messagesArr = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.messagesArr);
   const [message, setMessage] = useState("");
 
+  const [touchEl, setTouchEl] = useState<any>();
+
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
 
   const messagesContainerEnd = useRef<HTMLDivElement>(null);
@@ -186,7 +188,6 @@ const RoomComponentMain = () => {
       return;
     }
     if (moveDitection !== target.closest("div").dataset.direction) {
-      // console.log(target.closest("div").dataset.direction);
       setmoveDitection(target.closest("div").dataset.direction);
       socket?.emit("clientStartMove", {
         direction: target.closest("div").dataset.direction,
@@ -201,13 +202,20 @@ const RoomComponentMain = () => {
       return;
     }
     if (moveDitection !== target.closest("div").dataset.direction) {
-      // console.log(target.closest("div").dataset.direction);
       setmoveDitection(target.closest("div").dataset.direction);
       socket?.emit("clientStartMove", {
         direction: target.closest("div").dataset.direction,
         roomID: currentJoinedRoomID,
       });
     }
+  };
+
+  const touchMoveHandler = (e: React.TouchEvent<HTMLDivElement>) => {
+    const target = e.target as any;
+    if (!target.closest("div").dataset.direction) {
+      return;
+    }
+    setTouchEl(target.closest("div").dataset.direction);
   };
 
   const clientMoveHandler = function (this: { direction: string }) {
@@ -354,6 +362,7 @@ const RoomComponentMain = () => {
             onMouseLeave={stopMoveHandler}
             onTouchStart={touchStartHandler}
             onTouchEnd={stopMoveHandler}
+            onTouchMove={touchMoveHandler}
             // onTouchMove={touchStartHandler}
             className=" flex items-center justify-center flex-col"
           >
@@ -377,6 +386,8 @@ const RoomComponentMain = () => {
           </div>
         </div>
       </div>
+
+      <div>{touchEl}</div>
     </>
   );
 };
