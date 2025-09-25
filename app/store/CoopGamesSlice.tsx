@@ -60,16 +60,40 @@ export interface ICoopGamesSlice {
       [socketID: string]: {
         square: {
           prevCoord: {
-            x1: number;
-            x2: number;
-            y1: number;
-            y2: number;
+            topLeft: {
+              x: number;
+              y: number;
+            };
+            topRight: {
+              x: number;
+              y: number;
+            };
+            bottomLeft: {
+              x: number;
+              y: number;
+            };
+            bottomRight: {
+              x: number;
+              y: number;
+            };
           };
           currentCoord: {
-            x1: number;
-            x2: number;
-            y1: number;
-            y2: number;
+            topLeft: {
+              x: number;
+              y: number;
+            };
+            topRight: {
+              x: number;
+              y: number;
+            };
+            bottomLeft: {
+              x: number;
+              y: number;
+            };
+            bottomRight: {
+              x: number;
+              y: number;
+            };
           };
         };
         userRole: string;
@@ -108,16 +132,40 @@ interface ICoopGamesState {
     [socketID: string]: {
       square: {
         prevCoord: {
-          x1: number;
-          x2: number;
-          y1: number;
-          y2: number;
+          topLeft: {
+            x: number;
+            y: number;
+          };
+          topRight: {
+            x: number;
+            y: number;
+          };
+          bottomLeft: {
+            x: number;
+            y: number;
+          };
+          bottomRight: {
+            x: number;
+            y: number;
+          };
         };
         currentCoord: {
-          x1: number;
-          x2: number;
-          y1: number;
-          y2: number;
+          topLeft: {
+            x: number;
+            y: number;
+          };
+          topRight: {
+            x: number;
+            y: number;
+          };
+          bottomLeft: {
+            x: number;
+            y: number;
+          };
+          bottomRight: {
+            x: number;
+            y: number;
+          };
         };
       };
       userRole: string;
@@ -221,7 +269,6 @@ export const CoopGamesSlice = createSlice({
     },
 
     setSquareCoordinates(state, action) {
-      console.log(action.payload);
       state.squareCoordinates = action.payload;
     },
   },

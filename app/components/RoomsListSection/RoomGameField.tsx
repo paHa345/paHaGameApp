@@ -16,8 +16,8 @@ const RoomGameField = () => {
           ctx.fillStyle = "#9f8b5b";
 
           ctx.fillRect(
-            gameData[userData].square.prevCoord.x1,
-            gameData[userData].square.prevCoord.y1,
+            gameData[userData].square.prevCoord.topLeft.x,
+            gameData[userData].square.prevCoord.topLeft.y,
             20,
             20
           );
@@ -25,8 +25,8 @@ const RoomGameField = () => {
           ctx.fillStyle = "#dec6ab";
 
           ctx.fillRect(
-            gameData[userData].square.currentCoord.x1,
-            gameData[userData].square.currentCoord.y1,
+            gameData[userData].square.currentCoord.topLeft.x,
+            gameData[userData].square.currentCoord.topLeft.y,
             20,
             20
           );
@@ -34,60 +34,62 @@ const RoomGameField = () => {
           ctx.fillStyle = "#6e0808";
 
           ctx.fillRect(
-            gameData[userData].square.currentCoord.x1,
-            gameData[userData].square.currentCoord.y1,
+            gameData[userData].square.currentCoord.topLeft.x,
+            gameData[userData].square.currentCoord.topLeft.y,
             20,
             4
           );
           ctx.fillRect(
-            gameData[userData].square.currentCoord.x1,
-            gameData[userData].square.currentCoord.y1 + 4,
+            gameData[userData].square.currentCoord.topLeft.x,
+            gameData[userData].square.currentCoord.topLeft.y + 4,
             2,
             2
           );
 
           ctx.fillRect(
-            gameData[userData].square.currentCoord.x1 + 18,
-            gameData[userData].square.currentCoord.y1 + 4,
+            gameData[userData].square.currentCoord.topLeft.x + 18,
+            gameData[userData].square.currentCoord.topLeft.y + 4,
             2,
             2
           );
 
           ctx.clearRect(
-            gameData[userData].square.currentCoord.x1 + 2,
-            gameData[userData].square.currentCoord.y1 + 9,
+            gameData[userData].square.currentCoord.topLeft.x + 2,
+            gameData[userData].square.currentCoord.topLeft.y + 9,
+
             6,
             3
           );
           ctx.clearRect(
-            gameData[userData].square.currentCoord.x1 + 13,
-            gameData[userData].square.currentCoord.y1 + 9,
+            gameData[userData].square.currentCoord.topLeft.x + 13,
+            gameData[userData].square.currentCoord.topLeft.y + 9,
+
             6,
             3
           );
           ctx.fillStyle = "#38188b";
           ctx.fillRect(
-            gameData[userData].square.currentCoord.x1 + 5,
-            gameData[userData].square.currentCoord.y1 + 9,
+            gameData[userData].square.currentCoord.topLeft.x + 5,
+            gameData[userData].square.currentCoord.topLeft.y + 9,
             3,
             3
           );
           ctx.fillRect(
-            gameData[userData].square.currentCoord.x1 + 13,
-            gameData[userData].square.currentCoord.y1 + 9,
+            gameData[userData].square.currentCoord.topLeft.x + 13,
+            gameData[userData].square.currentCoord.topLeft.y + 9,
             3,
             3
           );
           ctx.fillStyle = "#812222";
           ctx.fillRect(
-            gameData[userData].square.currentCoord.x1 + 9,
-            gameData[userData].square.currentCoord.y1 + 13,
+            gameData[userData].square.currentCoord.topLeft.x + 9,
+            gameData[userData].square.currentCoord.topLeft.y + 13,
             4,
             2
           );
           ctx.fillRect(
-            gameData[userData].square.currentCoord.x1 + 7,
-            gameData[userData].square.currentCoord.y1 + 15,
+            gameData[userData].square.currentCoord.topLeft.x + 7,
+            gameData[userData].square.currentCoord.topLeft.y + 15,
             8,
             2
           );
@@ -95,8 +97,8 @@ const RoomGameField = () => {
           ctx.fillStyle = "#9f8b5b";
 
           ctx.fillRect(
-            gameData[userData].square.prevCoord.x1,
-            gameData[userData].square.prevCoord.y1,
+            gameData[userData].square.prevCoord.topLeft.x,
+            gameData[userData].square.prevCoord.topLeft.y,
             20,
             20
           );
@@ -104,8 +106,8 @@ const RoomGameField = () => {
           ctx.fillStyle = "#547d57";
 
           ctx.fillRect(
-            gameData[userData].square.currentCoord.x1,
-            gameData[userData].square.currentCoord.y1,
+            gameData[userData].square.currentCoord.topLeft.x,
+            gameData[userData].square.currentCoord.topLeft.y,
             20,
             20
           );
@@ -113,28 +115,28 @@ const RoomGameField = () => {
           ctx.fillStyle = "#204622";
 
           ctx.fillRect(
-            gameData[userData].square.currentCoord.x1 + 4,
-            gameData[userData].square.currentCoord.y1 + 4,
+            gameData[userData].square.currentCoord.topLeft.x + 4,
+            gameData[userData].square.currentCoord.topLeft.y + 4,
             4,
             4
           );
           ctx.fillRect(
-            gameData[userData].square.currentCoord.x1 + 12,
-            gameData[userData].square.currentCoord.y1 + 4,
+            gameData[userData].square.currentCoord.topLeft.x + 12,
+            gameData[userData].square.currentCoord.topLeft.y + 4,
             4,
             4
           );
           ctx.fillStyle = "#161d17";
 
           ctx.fillRect(
-            gameData[userData].square.currentCoord.x1 + 6,
-            gameData[userData].square.currentCoord.y1 + 6,
+            gameData[userData].square.currentCoord.topLeft.x + 6,
+            gameData[userData].square.currentCoord.topLeft.y + 6,
             2,
             2
           );
           ctx.fillRect(
-            gameData[userData].square.currentCoord.x1 + 14,
-            gameData[userData].square.currentCoord.y1 + 6,
+            gameData[userData].square.currentCoord.topLeft.x + 14,
+            gameData[userData].square.currentCoord.topLeft.y + 6,
             2,
             2
           );
@@ -142,26 +144,26 @@ const RoomGameField = () => {
           ctx.fillStyle = "#204622";
 
           ctx.fillRect(
-            gameData[userData].square.currentCoord.x1 + 8,
-            gameData[userData].square.currentCoord.y1 + 9,
+            gameData[userData].square.currentCoord.topLeft.x + 8,
+            gameData[userData].square.currentCoord.topLeft.y + 9,
             4,
             2
           );
           ctx.fillRect(
-            gameData[userData].square.currentCoord.x1 + 6,
-            gameData[userData].square.currentCoord.y1 + 11,
+            gameData[userData].square.currentCoord.topLeft.x + 6,
+            gameData[userData].square.currentCoord.topLeft.y + 11,
             8,
             2
           );
           ctx.fillRect(
-            gameData[userData].square.currentCoord.x1 + 6,
-            gameData[userData].square.currentCoord.y1 + 13,
+            gameData[userData].square.currentCoord.topLeft.x + 6,
+            gameData[userData].square.currentCoord.topLeft.y + 13,
             2,
             2
           );
           ctx.fillRect(
-            gameData[userData].square.currentCoord.x1 + 12,
-            gameData[userData].square.currentCoord.y1 + 13,
+            gameData[userData].square.currentCoord.topLeft.x + 12,
+            gameData[userData].square.currentCoord.topLeft.y + 13,
             2,
             2
           );

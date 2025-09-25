@@ -6,6 +6,8 @@ import {
   faArrowLeft,
   faArrowRight,
   faArrowUp,
+  faGamepad,
+  faHandFist,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { div, h1 } from "framer-motion/client";
@@ -15,6 +17,8 @@ import { useDispatch, useSelector } from "react-redux";
 import RoomGameField from "./RoomGameField";
 
 const RoomComponentMain = () => {
+  const [startTouchCoord, setStartTouchCoord] = useState<any>();
+  const [moveDitection, setmoveDitection] = useState<any>();
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
   const currentJoinedRoomID = useSelector(
     (state: ICoopGamesSlice) => state.CoopGamesState.currentJoinedRoomID
@@ -128,21 +132,82 @@ const RoomComponentMain = () => {
     socket?.emit("startGame", currentJoinedRoomID);
   };
 
-  const moveDownHandler = () => {
-    console.log("Move down");
-    socket?.emit("clientMoveDown", currentJoinedRoomID);
+  const touchMoveButtonHandler = (e: React.TouchEvent<HTMLDivElement>) => {
+    // console.log(e.targetTouches[0].clientX);
+    // console.log(e.targetTouches[0].clientY);
   };
-  const moveUpHandler = () => {
-    console.log("Move up");
-    socket?.emit("clientMoveUp", currentJoinedRoomID);
+  const moveTouchMoveButtonHandler = (e: React.TouchEvent<HTMLDivElement>) => {
+    // console.log(e.targetTouches[0].clientX);
+    // console.log(e.targetTouches[0].clientY);
   };
-  const moveLeftHandler = () => {
-    console.log("Move left");
-    socket?.emit("clientMoveLeft", currentJoinedRoomID);
+  const stopTouchMoveButtonHandler = (e: React.TouchEvent<HTMLDivElement>) => {
+    // console.log(e.targetTouches[0].clientX);
+    // console.log(e.targetTouches[0].clientY);
   };
-  const moveRightHandler = () => {
-    console.log("Move right");
-    socket?.emit("clientMoveRight", currentJoinedRoomID);
+
+  const mouseDownMoveButtonHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    setStartTouchCoord({ x: e.clientX, y: e.clientY });
+  };
+  const moveMouseMoveButtonHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!startTouchCoord?.x) {
+      return;
+    }
+    if (e.clientX - startTouchCoord?.x > 5 && moveDitection !== "MoveRight") {
+      console.log("MoveRight");
+      setmoveDitection("MoveRight");
+      socket?.emit("clientStartMove", { direction: "right", roomID: currentJoinedRoomID });
+    }
+    if (e.clientX - startTouchCoord?.x < -5 && moveDitection !== "MoveLeft") {
+      console.log("MoveLeft");
+      setmoveDitection("MoveLeft");
+      socket?.emit("clientStartMove", { direction: "left", roomID: currentJoinedRoomID });
+    }
+
+    if (e.clientY - startTouchCoord?.y > 5 && moveDitection !== "MoveDown") {
+      console.log("MoveDown");
+      setmoveDitection("MoveDown");
+      socket?.emit("clientStartMove", { direction: "down", roomID: currentJoinedRoomID });
+    }
+    if (e.clientY - startTouchCoord?.y < -5 && moveDitection !== "MoveUp") {
+      console.log("MoveUp");
+      setmoveDitection("MoveUp");
+      socket?.emit("clientStartMove", { direction: "up", roomID: currentJoinedRoomID });
+    }
+  };
+  const stopMouseMoveButtonHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    console.log("StopMove");
+    setStartTouchCoord(null);
+    socket?.emit("clientStopMove", currentJoinedRoomID);
+  };
+
+  const hoverMouseHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as any;
+    if (!target.closest("div").dataset.direction) {
+      return;
+    }
+    if (moveDitection !== target.closest("div").dataset.direction) {
+      // console.log(target.closest("div").dataset.direction);
+      setmoveDitection(target.closest("div").dataset.direction);
+      socket?.emit("clientStartMove", {
+        direction: target.closest("div").dataset.direction,
+        roomID: currentJoinedRoomID,
+      });
+    }
+  };
+
+  const touchStartHandler = (e: React.TouchEvent<HTMLDivElement>) => {
+    const target = e.target as any;
+    if (!target.closest("div").dataset.direction) {
+      return;
+    }
+    if (moveDitection !== target.closest("div").dataset.direction) {
+      // console.log(target.closest("div").dataset.direction);
+      setmoveDitection(target.closest("div").dataset.direction);
+      socket?.emit("clientStartMove", {
+        direction: target.closest("div").dataset.direction,
+        roomID: currentJoinedRoomID,
+      });
+    }
   };
 
   const clientMoveHandler = function (this: { direction: string }) {
@@ -150,7 +215,9 @@ const RoomComponentMain = () => {
   };
 
   const stopMoveHandler = () => {
+    // console.log("Stop Move");
     socket?.emit("clientStopMove", currentJoinedRoomID);
+    setmoveDitection(null);
   };
 
   useEffect(() => {
@@ -243,13 +310,6 @@ const RoomComponentMain = () => {
         </div>
       </div>
       <div className=" min-h-[70vh]">
-        {/* <div>
-          <h1 className=" px-3 py-3 text-xl text-center">
-            {" "}
-            Вы зашли на сервер с ID {currentJoinedRoomID}{" "}
-          </h1>
-        </div> */}
-
         <div className="h-[20vh] overflow-x-scroll  w-full flex justify-center items-center flex-wrap  gap-6">
           {currentRoomJoinedUsersEl}
         </div>
@@ -281,44 +341,41 @@ const RoomComponentMain = () => {
           Начать игру
         </div>
       </div>
-      <div className=" py-3 my-3 flex justify-center items-center gap-2 border-2 border-solid border-orange-500 rounded-full ">
-        <div
-          onMouseDown={clientMoveHandler.bind({ direction: "left" })}
-          onMouseUp={stopMoveHandler}
-          onTouchStart={clientMoveHandler.bind({ direction: "left" })}
-          onTouchEnd={stopMoveHandler}
-        >
-          <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowLeft} />
-        </div>
-        <div>
-          <div
-            onMouseDown={clientMoveHandler.bind({ direction: "up" })}
-            onMouseUp={stopMoveHandler}
-            onTouchStart={clientMoveHandler.bind({ direction: "up" })}
-            onTouchEnd={stopMoveHandler}
-          >
-            <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowUp} />
-          </div>
-          <div
-            onMouseDown={clientMoveHandler.bind({ direction: "down" })}
-            onMouseUp={stopMoveHandler}
-            onTouchStart={clientMoveHandler.bind({ direction: "down" })}
-            onTouchEnd={stopMoveHandler}
-          >
-            <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowDown} />
-          </div>
-        </div>
-        <div
-          onMouseDown={clientMoveHandler.bind({ direction: "right" })}
-          onMouseUp={stopMoveHandler}
-          onTouchStart={clientMoveHandler.bind({ direction: "right" })}
-          onTouchEnd={stopMoveHandler}
-        >
-          <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowRight} />
-        </div>
-      </div>
-      <div className=" h-80 w-80">
+      <div className=" py-3">
         <RoomGameField></RoomGameField>
+      </div>
+      <div className=" py-3 my-3 flex justify-center items-center gap-2 border-2 border-solid border-orange-500 rounded-full ">
+        <div className=" flex justify-around w-full">
+          <div className=" flex items-center justify-center buttonCoopJoystick h-20 w-20">
+            <FontAwesomeIcon className="  fa-fw fa-2x" icon={faHandFist} />
+          </div>
+          <div
+            onMouseMove={hoverMouseHandler}
+            onMouseLeave={stopMoveHandler}
+            onTouchStart={touchStartHandler}
+            onTouchCancel={stopMoveHandler}
+            onTouchEnd={stopMoveHandler}
+            className=" flex items-center justify-center flex-col"
+          >
+            <div data-direction={"up"}>
+              <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowUp} />
+            </div>
+            <div className=" flex justify-center items-center">
+              <div data-direction={"left"}>
+                <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowLeft} />
+              </div>
+              <div className=" px-1 py-1">
+                <FontAwesomeIcon className="  fa-fw fa-2x" icon={faGamepad} />
+              </div>
+              <div data-direction={"right"}>
+                <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowRight} />
+              </div>
+            </div>
+            <div data-direction={"down"}>
+              <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowDown} />
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
