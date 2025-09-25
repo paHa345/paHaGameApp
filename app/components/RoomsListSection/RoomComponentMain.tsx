@@ -352,9 +352,10 @@ const RoomComponentMain = () => {
           <div
             onMouseMove={hoverMouseHandler}
             onMouseLeave={stopMoveHandler}
-            onTouchStart={touchStartHandler}
+            // onTouchStart={touchStartHandler}
             onTouchCancel={stopMoveHandler}
             onTouchEnd={stopMoveHandler}
+            onTouchMove={touchStartHandler}
             className=" flex items-center justify-center flex-col"
           >
             <div data-direction={"up"}>
