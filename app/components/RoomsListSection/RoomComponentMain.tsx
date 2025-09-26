@@ -29,8 +29,6 @@ const RoomComponentMain = () => {
   const messagesArr = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.messagesArr);
   const [message, setMessage] = useState("");
 
-  const [touchEl, setTouchEl] = useState<any>();
-
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
 
   const messagesContainerEnd = useRef<HTMLDivElement>(null);
@@ -183,6 +181,8 @@ const RoomComponentMain = () => {
   };
 
   const hoverMouseHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (window.navigator.maxTouchPoints !== 0) return;
+
     const target = e.target as any;
     if (!target.closest("div").dataset.direction) {
       return;
@@ -197,25 +197,69 @@ const RoomComponentMain = () => {
   };
 
   const touchStartHandler = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (window.navigator.maxTouchPoints === 0) return;
+
     const target = e.target as any;
     if (!target.closest("div").dataset.direction) {
       return;
     }
-    if (moveDitection !== target.closest("div").dataset.direction) {
-      setmoveDitection(target.closest("div").dataset.direction);
+    setStartTouchCoord({
+      x: e.targetTouches[0].clientX,
+      y: e.targetTouches[0].clientY,
+    });
+    // if (moveDitection !== target.closest("div").dataset.direction) {
+    //   setmoveDitection(target.closest("div").dataset.direction);
+    //   socket?.emit("clientStartMove", {
+    //     direction: target.closest("div").dataset.direction,
+    //     roomID: currentJoinedRoomID,
+    //   });
+    // }
+  };
+
+  let currentDirection: any;
+  let xOrYMove: any;
+  const touchMoveHandler = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (window.navigator.maxTouchPoints === 0) return;
+
+    xOrYMove =
+      (startTouchCoord.y - e.targetTouches[0].clientY) *
+        (startTouchCoord.y - e.targetTouches[0].clientY) >
+      (startTouchCoord.x - e.targetTouches[0].clientX) *
+        (startTouchCoord.x - e.targetTouches[0].clientX)
+        ? "y"
+        : "x";
+
+    if (startTouchCoord.x - e.targetTouches[0].clientX > 5 && xOrYMove === "x") {
+      currentDirection = "left";
+    }
+    if (startTouchCoord.x - e.targetTouches[0].clientX < -5 && xOrYMove === "x") {
+      currentDirection = "right";
+    }
+    if (startTouchCoord.y - e.targetTouches[0].clientY > 5 && xOrYMove === "y") {
+      currentDirection = "up";
+    }
+    if (startTouchCoord.y - e.targetTouches[0].clientY < -5 && xOrYMove === "y") {
+      currentDirection = "down";
+    }
+
+    if (currentDirection !== moveDitection) {
+      console.log("change direction");
+
+      setmoveDitection(currentDirection);
       socket?.emit("clientStartMove", {
-        direction: target.closest("div").dataset.direction,
+        direction: currentDirection,
         roomID: currentJoinedRoomID,
       });
     }
-  };
 
-  const touchMoveHandler = (e: React.TouchEvent<HTMLDivElement>) => {
-    const target = e.target as any;
-    if (!target.closest("div").dataset.direction) {
-      return;
-    }
-    setTouchEl(target.closest("div").dataset.direction);
+    // console.log(e.targetTouches[0].clientX);
+    // console.log(e.targetTouches[0].clientY);
+
+    // if (!target.closest("div").dataset.direction) {
+    //   return;
+    // }
+    // setTouchEl(target.closest("div").dataset.direction);
+    // dispatch(CoopGamesActions.setTouchEl(target.closest("div").dataset.direction));
   };
 
   const clientMoveHandler = function (this: { direction: string }) {
@@ -352,7 +396,7 @@ const RoomComponentMain = () => {
       <div className=" py-3">
         <RoomGameField></RoomGameField>
       </div>
-      <div className=" py-3 my-3 flex justify-center items-center gap-2 border-2 border-solid border-orange-500 rounded-full ">
+      <div className=" touch-none py-3 my-3 flex justify-center items-center gap-2 border-2 border-solid border-orange-500 rounded-full ">
         <div className=" flex justify-around w-full">
           <div className=" flex items-center justify-center buttonCoopJoystick h-20 w-20">
             <FontAwesomeIcon className="  fa-fw fa-2x" icon={faHandFist} />
@@ -363,8 +407,7 @@ const RoomComponentMain = () => {
             onTouchStart={touchStartHandler}
             onTouchEnd={stopMoveHandler}
             onTouchMove={touchMoveHandler}
-            // onTouchMove={touchStartHandler}
-            className=" flex items-center justify-center flex-col"
+            className=" touch-none flex items-center justify-center flex-col"
           >
             <div data-direction={"up"}>
               <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowUp} />
@@ -386,8 +429,6 @@ const RoomComponentMain = () => {
           </div>
         </div>
       </div>
-
-      <div>{touchEl}</div>
     </>
   );
 };

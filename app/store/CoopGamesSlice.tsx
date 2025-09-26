@@ -99,6 +99,7 @@ export interface ICoopGamesSlice {
         userRole: string;
       };
     };
+    touchEl: string;
   };
 }
 
@@ -171,6 +172,7 @@ interface ICoopGamesState {
       userRole: string;
     };
   };
+  touchEl: string;
 }
 
 export const CoopGamesState: ICoopGamesState = {
@@ -179,6 +181,7 @@ export const CoopGamesState: ICoopGamesState = {
   allGamesRoomsList: [],
   showRoomStatus: false,
   fetchAllGameRoomsStatus: CoopGamesFetchStatus.Ready,
+  touchEl: "init",
 };
 
 export const CoopGamesSlice = createSlice({
@@ -270,6 +273,9 @@ export const CoopGamesSlice = createSlice({
 
     setSquareCoordinates(state, action) {
       state.squareCoordinates = action.payload;
+    },
+    setTouchEl(state, action) {
+      state.touchEl = action.payload;
     },
   },
   extraReducers: (builder) => {
