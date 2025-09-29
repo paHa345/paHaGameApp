@@ -320,7 +320,8 @@ const RoomComponentMain = () => {
     );
 
     socket?.on("startGameInRoom", (gameData) => {
-      dispatch(CoopGamesActions.setSquareCoordinates(gameData));
+      dispatch(CoopGamesActions.setSquareCoordinates(gameData.usersData));
+      dispatch(CoopGamesActions.setGameFieldData(gameData.gameFieldData));
     });
     socket?.on("serverMove", (gameData) => {
       dispatch(CoopGamesActions.setSquareCoordinates(gameData));
