@@ -104,6 +104,12 @@ export interface ICoopGamesSlice {
       [row: number]: {
         [col: number]: {
           type: string;
+          coord: {
+            topLeft: { x: number; y: number };
+            topRight: { x: number; y: number };
+            bottomLeft: { x: number; y: number };
+            bottomRight: { x: number; y: number };
+          };
         };
       };
     };
@@ -184,6 +190,12 @@ interface ICoopGamesState {
     [row: number]: {
       [col: number]: {
         type: string;
+        coord: {
+          topLeft: { x: number; y: number };
+          topRight: { x: number; y: number };
+          bottomLeft: { x: number; y: number };
+          bottomRight: { x: number; y: number };
+        };
       };
     };
   };
