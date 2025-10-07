@@ -24,6 +24,14 @@ export enum CoopGamesFetchStatus {
   Error = "error",
 }
 
+export enum UserMoveDirections {
+  right = "right",
+  down = "down",
+  up = "up",
+  left = "left",
+  stop = "stop",
+}
+
 export enum CoopGameMessageType {
   message = "message",
   notification = "notification",
@@ -50,6 +58,8 @@ export interface ICoopGamesSlice {
       photoURL: string | undefined;
       socketID: string;
     }[];
+
+    frameNumber: number;
 
     socket?: io.Socket;
     showRoomStatus: boolean;
@@ -96,7 +106,9 @@ export interface ICoopGamesSlice {
             };
           };
         };
+        moveDirection: UserMoveDirections;
         userRole: string;
+        attackStatus: { time?: number };
       };
     };
     touchEl: string;
@@ -110,6 +122,14 @@ export interface ICoopGamesSlice {
             bottomLeft: { x: number; y: number };
             bottomRight: { x: number; y: number };
           };
+        };
+      };
+    };
+    userAttackObj: {
+      [socketID: string]: {
+        attackStatus: {
+          isCooldown: boolean;
+          time?: number;
         };
       };
     };
@@ -136,6 +156,8 @@ interface ICoopGamesState {
     photoURL: string | undefined;
     socketID: string;
   }[];
+  frameNumber: number;
+
   socket?: io.Socket;
   showRoomStatus: boolean;
   currentJoinedRoomID?: string;
@@ -182,7 +204,9 @@ interface ICoopGamesState {
           };
         };
       };
+      moveDirection: UserMoveDirections;
       userRole: string;
+      attackStatus: { time?: number };
     };
   };
   touchEl: string;
@@ -199,9 +223,19 @@ interface ICoopGamesState {
       };
     };
   };
+  userAttackObj: {
+    [socketID: string]: {
+      attackStatus: {
+        isCooldown: boolean;
+        time?: number;
+      };
+    };
+  };
 }
 
 export const CoopGamesState: ICoopGamesState = {
+  frameNumber: 0,
+
   currentRoomUsersArr: [],
   messagesArr: {},
   allGamesRoomsList: [],
@@ -209,6 +243,7 @@ export const CoopGamesState: ICoopGamesState = {
   fetchAllGameRoomsStatus: CoopGamesFetchStatus.Ready,
   touchEl: "init",
   gameFieldData: {},
+  userAttackObj: {},
 };
 
 export const CoopGamesSlice = createSlice({
@@ -306,6 +341,23 @@ export const CoopGamesSlice = createSlice({
     },
     setGameFieldData(state, action) {
       state.gameFieldData = action.payload;
+    },
+    setUserAttackStatus(state, action) {
+      // if (state.userAttackObj[action.payload.socketID]) {
+      if (!state.userAttackObj[action.payload.socketID]) {
+        state.userAttackObj[action.payload.socketID] = { attackStatus: { isCooldown: false } };
+      }
+      state.userAttackObj[action.payload.socketID].attackStatus.isCooldown =
+        action.payload.isCooldown;
+      state.userAttackObj[action.payload.socketID].attackStatus.time = action.payload.time;
+      // }
+    },
+    increaseFrameNumber(state) {
+      if (state.frameNumber === 5) {
+        state.frameNumber = 0;
+      } else {
+        state.frameNumber = state.frameNumber + 1;
+      }
     },
   },
   extraReducers: (builder) => {

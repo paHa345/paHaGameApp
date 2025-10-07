@@ -132,52 +132,18 @@ const RoomComponentMain = () => {
     socket?.emit("startGame", currentJoinedRoomID);
   };
 
-  const touchMoveButtonHandler = (e: React.TouchEvent<HTMLDivElement>) => {
-    // console.log(e.targetTouches[0].clientX);
-    // console.log(e.targetTouches[0].clientY);
-  };
-  const moveTouchMoveButtonHandler = (e: React.TouchEvent<HTMLDivElement>) => {
-    // console.log(e.targetTouches[0].clientX);
-    // console.log(e.targetTouches[0].clientY);
-  };
-  const stopTouchMoveButtonHandler = (e: React.TouchEvent<HTMLDivElement>) => {
-    // console.log(e.targetTouches[0].clientX);
-    // console.log(e.targetTouches[0].clientY);
+  const attackUserClickHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    console.log("Attack Mouse");
+    socket?.emit("clientStartAttack", {
+      roomID: currentJoinedRoomID,
+    });
   };
 
-  const mouseDownMoveButtonHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    setStartTouchCoord({ x: e.clientX, y: e.clientY });
-  };
-  const moveMouseMoveButtonHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!startTouchCoord?.x) {
-      return;
-    }
-    if (e.clientX - startTouchCoord?.x > 5 && moveDitection !== "MoveRight") {
-      console.log("MoveRight");
-      setmoveDitection("MoveRight");
-      socket?.emit("clientStartMove", { direction: "right", roomID: currentJoinedRoomID });
-    }
-    if (e.clientX - startTouchCoord?.x < -5 && moveDitection !== "MoveLeft") {
-      console.log("MoveLeft");
-      setmoveDitection("MoveLeft");
-      socket?.emit("clientStartMove", { direction: "left", roomID: currentJoinedRoomID });
-    }
-
-    if (e.clientY - startTouchCoord?.y > 5 && moveDitection !== "MoveDown") {
-      console.log("MoveDown");
-      setmoveDitection("MoveDown");
-      socket?.emit("clientStartMove", { direction: "down", roomID: currentJoinedRoomID });
-    }
-    if (e.clientY - startTouchCoord?.y < -5 && moveDitection !== "MoveUp") {
-      console.log("MoveUp");
-      setmoveDitection("MoveUp");
-      socket?.emit("clientStartMove", { direction: "up", roomID: currentJoinedRoomID });
-    }
-  };
-  const stopMouseMoveButtonHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    console.log("StopMove");
-    setStartTouchCoord(null);
-    socket?.emit("clientStopMove", currentJoinedRoomID);
+  const attackUserTouchHandler = (e: React.TouchEvent<HTMLDivElement>) => {
+    console.log("Attack touch");
+    socket?.emit("clientStartAttack", {
+      roomID: currentJoinedRoomID,
+    });
   };
 
   const hoverMouseHandler = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -326,6 +292,24 @@ const RoomComponentMain = () => {
     socket?.on("serverMove", (gameData) => {
       dispatch(CoopGamesActions.setSquareCoordinates(gameData));
     });
+    socket?.on(
+      "serverStartAttack",
+      (serverAttackData: {
+        attackStatus: { isCooldown: boolean; time: number };
+        isCooldpwn: boolean;
+        roomID: string;
+        socketID: string;
+      }) => {
+        console.log(serverAttackData);
+        dispatch(
+          CoopGamesActions.setUserAttackStatus({
+            isCooldown: serverAttackData.attackStatus.isCooldown,
+            time: serverAttackData.attackStatus.time,
+            socketID: serverAttackData.socketID,
+          })
+        );
+      }
+    );
 
     return () => {
       socket?.off("roomGTSGameMessage");
@@ -340,6 +324,7 @@ const RoomComponentMain = () => {
       // socket?.off("serverMoveLeft");
       // socket?.off("serverMoveRight");
       socket?.off("serverMove");
+      socket?.off("serverStartAttack");
     };
   }, [socket]);
 
@@ -398,8 +383,12 @@ const RoomComponentMain = () => {
         <RoomGameField></RoomGameField>
       </div>
       <div className=" touch-none py-3 my-3 flex justify-center items-center gap-2 border-2 border-solid border-orange-500 rounded-full ">
-        <div className=" flex justify-around w-full">
-          <div className=" flex items-center justify-center buttonCoopJoystick h-20 w-20">
+        <div className=" flex justify-around items-center w-full">
+          <div
+            onClick={attackUserClickHandler}
+            onTouchStart={attackUserTouchHandler}
+            className=" flex items-center justify-center buttonCoopJoystick h-20 w-20"
+          >
             <FontAwesomeIcon className="  fa-fw fa-2x" icon={faHandFist} />
           </div>
           <div
