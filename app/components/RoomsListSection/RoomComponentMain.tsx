@@ -286,28 +286,49 @@ const RoomComponentMain = () => {
     );
 
     socket?.on("startGameInRoom", (gameData) => {
+      console.log(socket.id);
+      console.log(gameData);
+      dispatch(CoopGamesActions.addDataInFrameObject(gameData.frameObject.objects));
       dispatch(CoopGamesActions.setSquareCoordinates(gameData.usersData));
       dispatch(CoopGamesActions.setGameFieldData(gameData.gameFieldData));
     });
     socket?.on("serverMove", (gameData) => {
       dispatch(CoopGamesActions.setSquareCoordinates(gameData));
     });
+
     socket?.on(
       "serverStartAttack",
       (serverAttackData: {
-        attackStatus: { isCooldown: boolean; time: number };
-        isCooldpwn: boolean;
+        attackStatusObj: {
+          [objectID: string]: {
+            time?: number | undefined;
+            isCooldown: boolean;
+          };
+        };
         roomID: string;
         socketID: string;
       }) => {
         console.log(serverAttackData);
-        dispatch(
-          CoopGamesActions.setUserAttackStatus({
-            isCooldown: serverAttackData.attackStatus.isCooldown,
-            time: serverAttackData.attackStatus.time,
-            socketID: serverAttackData.socketID,
-          })
-        );
+        // dispatch(
+        //   CoopGamesActions.setUserAttackStatus({
+        //     isCooldown: serverAttackData.attackStatus.isCooldown,
+        //     time: serverAttackData.attackStatus.time,
+        //     socketID: serverAttackData.socketID,
+        //   })
+        // );
+        dispatch(CoopGamesActions.setAttackStatusObj(serverAttackData.attackStatusObj));
+      }
+    );
+    socket?.on(
+      "serverStopAttack",
+      (serverAttackData: {
+        [objectID: string]: {
+          time?: number | undefined;
+          isCooldown: boolean;
+        };
+      }) => {
+        console.log(serverAttackData);
+        dispatch(CoopGamesActions.setAttackStatusObj(serverAttackData));
       }
     );
 
@@ -325,6 +346,7 @@ const RoomComponentMain = () => {
       // socket?.off("serverMoveRight");
       socket?.off("serverMove");
       socket?.off("serverStartAttack");
+      socket?.off("serverStopAttack");
     };
   }, [socket]);
 

@@ -8,9 +8,11 @@ const RoomGameField = () => {
   const dispatch = useDispatch<AppDispatch>();
   const backgroundCanvasRef = useRef(null) as any;
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
-  const userAttackObj = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.userAttackObj);
 
-  const frameNumber = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.frameNumber);
+  const attackDataObj = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.attackStatusObj
+  );
+  const frameObj = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.frameObj);
 
   const gameData = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.squareCoordinates);
 
@@ -56,119 +58,159 @@ const RoomGameField = () => {
   }, []);
 
   useEffect(() => {
+    console.log(attackDataObj);
+    dispatch(CoopGamesActions.resetFrameNumber());
+  }, [attackDataObj]);
+
+  useEffect(() => {
     if (gameData) {
       var ctx = canvasRef.current.getContext("2d");
       for (let userData in gameData) {
-        console.log(gameData[userData].moveDirection);
-        if (gameData[userData].userRole === "steve") {
-          ctx.clearRect(
-            gameData[userData].square.prevCoord.topLeft.x,
-            gameData[userData].square.prevCoord.topLeft.y,
-            32,
-            32
-          );
-
-          steveImg.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_with_shadow.png";
-
-          if (
-            gameData[userData].moveDirection === UserMoveDirections.stop ||
-            gameData[userData].moveDirection === UserMoveDirections.up
-          ) {
-            ctx.drawImage(
-              steveImg,
-              frameNumber === 0 ? 16 : frameNumber * 64 + 16,
-              208,
-              24,
-              32,
-              gameData[userData].square.currentCoord.topLeft.x,
-              gameData[userData].square.currentCoord.topLeft.y,
-              24,
-              32
-            );
-          }
-          if (gameData[userData].moveDirection === UserMoveDirections.left) {
-            ctx.drawImage(
-              steveImg,
-              frameNumber === 0 ? 16 : frameNumber * 64 + 16,
-              80,
-              24,
-              32,
-              gameData[userData].square.currentCoord.topLeft.x,
-              gameData[userData].square.currentCoord.topLeft.y,
-              24,
-              32
-            );
-          }
-          if (gameData[userData].moveDirection === UserMoveDirections.right) {
-            ctx.drawImage(
-              steveImg,
-              frameNumber === 0 ? 16 : frameNumber * 64 + 16,
-              144,
-              24,
-              32,
-              gameData[userData].square.currentCoord.topLeft.x,
-              gameData[userData].square.currentCoord.topLeft.y,
-              24,
-              32
-            );
-          }
-          if (gameData[userData].moveDirection === UserMoveDirections.down) {
-            ctx.drawImage(
-              steveImg,
-              frameNumber === 0 ? 16 : frameNumber * 64 + 16,
-              16,
-              24,
-              32,
-              gameData[userData].square.currentCoord.topLeft.x,
-              gameData[userData].square.currentCoord.topLeft.y,
-              24,
-              32
-            );
-          }
-
-          // let time: number;
-          // function step(timestamp: number) {
-          //   if (!time) {
-          //     time = timestamp;
-          //   }
-          //   if (timestamp - time > 300) {
-          //     console.log(timestamp);
-          //     time = timestamp;
-          //   }
-          //   requestAnimationFrame(step);
-          // }
-
-          // requestAnimationFrame(step);
-
-          // swordImg.src = "/flameSword.png";
-
-          // ctx.drawImage(
-          //   swordImg,
-          //   gameData[userData].square.currentCoord.topLeft.x + 8,
-          //   gameData[userData].square.currentCoord.topLeft.y + 8,
-          //   16,
-          //   16
-          // );
+        // if (gameData[userData].userRole === "steve") {
+        ctx.clearRect(
+          gameData[userData].square.prevCoord.topLeft.x,
+          gameData[userData].square.prevCoord.topLeft.y,
+          24,
+          32
+        );
+        if (attackDataObj[userData]?.isActive) {
+          steveImg.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_Attack_with_shadow.png";
         } else {
-          ctx.clearRect(
-            gameData[userData].square.prevCoord.topLeft.x,
-            gameData[userData].square.prevCoord.topLeft.y,
-            16,
-            16
-          );
-          creeperImg.src = "/creeper.jpg";
+          steveImg.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_with_shadow.png";
+        }
 
+        if (
+          gameData[userData].moveDirection === UserMoveDirections.stop ||
+          gameData[userData].moveDirection === UserMoveDirections.up
+        ) {
           ctx.drawImage(
-            creeperImg,
+            steveImg,
+            frameObj.objects[userData].idFrame === 0
+              ? 22
+              : frameObj.objects[userData].idFrame * 64 + 22,
+            210,
+            24,
+            32,
             gameData[userData].square.currentCoord.topLeft.x,
             gameData[userData].square.currentCoord.topLeft.y,
-            16,
-            16
+            24,
+            32
           );
         }
+        if (gameData[userData].moveDirection === UserMoveDirections.left) {
+          ctx.drawImage(
+            steveImg,
+            frameObj.objects[userData].idFrame === 0
+              ? 22
+              : frameObj.objects[userData].idFrame * 64 + 22,
+            82,
+            24,
+            32,
+            gameData[userData].square.currentCoord.topLeft.x,
+            gameData[userData].square.currentCoord.topLeft.y,
+            24,
+            32
+          );
+        }
+        if (gameData[userData].moveDirection === UserMoveDirections.right) {
+          ctx.drawImage(
+            steveImg,
+            frameObj.objects[userData].idFrame === 0
+              ? 22
+              : frameObj.objects[userData].idFrame * 64 + 22,
+            146,
+            24,
+            32,
+            gameData[userData].square.currentCoord.topLeft.x,
+            gameData[userData].square.currentCoord.topLeft.y,
+            24,
+            32
+          );
+        }
+        if (gameData[userData].moveDirection === UserMoveDirections.down) {
+          ctx.drawImage(
+            steveImg,
+            frameObj.objects[userData].idFrame === 0
+              ? 22
+              : frameObj.objects[userData].idFrame * 64 + 22,
+            18,
+            24,
+            32,
+            gameData[userData].square.currentCoord.topLeft.x,
+            gameData[userData].square.currentCoord.topLeft.y,
+            24,
+            32
+          );
+        }
+        // } else {
+        //   ctx.clearRect(
+        //     gameData[userData].square.prevCoord.topLeft.x,
+        //     gameData[userData].square.prevCoord.topLeft.y,
+        //     24,
+        //     32
+        //   );
+
+        //   steveImg.src = "/Orc/orc3_walk_with_shadow.png";
+
+        //   if (
+        //     gameData[userData].moveDirection === UserMoveDirections.stop ||
+        //     gameData[userData].moveDirection === UserMoveDirections.up
+        //   ) {
+        //     ctx.drawImage(
+        //       steveImg,
+        //       frameNumber === 0 ? 16 : frameNumber * 64 + 16,
+        //       208,
+        //       24,
+        //       32,
+        //       gameData[userData].square.currentCoord.topLeft.x,
+        //       gameData[userData].square.currentCoord.topLeft.y,
+        //       24,
+        //       32
+        //     );
+        //   }
+        //   if (gameData[userData].moveDirection === UserMoveDirections.left) {
+        //     ctx.drawImage(
+        //       steveImg,
+        //       frameNumber === 0 ? 16 : frameNumber * 64 + 16,
+        //       80,
+        //       24,
+        //       32,
+        //       gameData[userData].square.currentCoord.topLeft.x,
+        //       gameData[userData].square.currentCoord.topLeft.y,
+        //       24,
+        //       32
+        //     );
+        //   }
+        //   if (gameData[userData].moveDirection === UserMoveDirections.right) {
+        //     ctx.drawImage(
+        //       steveImg,
+        //       frameNumber === 0 ? 16 : frameNumber * 64 + 16,
+        //       144,
+        //       24,
+        //       32,
+        //       gameData[userData].square.currentCoord.topLeft.x,
+        //       gameData[userData].square.currentCoord.topLeft.y,
+        //       24,
+        //       32
+        //     );
+        //   }
+        //   if (gameData[userData].moveDirection === UserMoveDirections.down) {
+        //     ctx.drawImage(
+        //       steveImg,
+        //       frameNumber === 0 ? 16 : frameNumber * 64 + 16,
+        //       16,
+        //       24,
+        //       32,
+        //       gameData[userData].square.currentCoord.topLeft.x,
+        //       gameData[userData].square.currentCoord.topLeft.y,
+        //       24,
+        //       32
+        //     );
+        //   }
+        // }
       }
     }
-  }, [gameData, frameNumber]);
+  }, [gameData, frameObj, attackDataObj]);
 
   useEffect(() => {
     console.log("Render Game field");
@@ -194,33 +236,6 @@ const RoomGameField = () => {
       }
     }
   }, [gameFieldData]);
-
-  useEffect(() => {
-    console.log(userAttackObj);
-    var ctx = canvasRef.current.getContext("2d");
-
-    // тут срабатывает анимация удара меча
-
-    // for (let i = -1 * 3.14; i <= 3.14; i += 0.5) {
-    //   console.log(`${Math.cos(i) + 1}`);
-    // }
-
-    // let start: number;
-    // function step(timestamp: number) {
-    //   if (start === undefined) {
-    //     start = timestamp;
-    //   }
-
-    //   const shift = (timestamp - start) * 0.1;
-
-    //   console.log(Math.cos(Math.floor(shift - 50) / 50) - 0.5);
-    //   // ctx.rotate((Math.cos(Math.floor(shift - 50) / 50) - 0.5) * 20);
-
-    //   if (shift < 100) requestAnimationFrame(step);
-    // }
-
-    // requestAnimationFrame(step);
-  }, [userAttackObj]);
 
   return (
     <div className=" relative">

@@ -59,7 +59,22 @@ export interface ICoopGamesSlice {
       socketID: string;
     }[];
 
-    frameNumber: number;
+    frameObj: {
+      mainFrame: number;
+      objects: {
+        [id: string]: {
+          idFrame: number;
+        };
+      };
+    };
+
+    attackStatusObj: {
+      [objectID: string]: {
+        time?: number | undefined;
+        isCooldown: boolean;
+        isActive: boolean;
+      };
+    };
 
     socket?: io.Socket;
     showRoomStatus: boolean;
@@ -125,14 +140,6 @@ export interface ICoopGamesSlice {
         };
       };
     };
-    userAttackObj: {
-      [socketID: string]: {
-        attackStatus: {
-          isCooldown: boolean;
-          time?: number;
-        };
-      };
-    };
   };
 }
 
@@ -156,8 +163,22 @@ interface ICoopGamesState {
     photoURL: string | undefined;
     socketID: string;
   }[];
-  frameNumber: number;
+  frameObj: {
+    mainFrame: number;
+    objects: {
+      [id: string]: {
+        idFrame: number;
+      };
+    };
+  };
 
+  attackStatusObj: {
+    [objectID: string]: {
+      time?: number | undefined;
+      isCooldown: boolean;
+      isActive: boolean;
+    };
+  };
   socket?: io.Socket;
   showRoomStatus: boolean;
   currentJoinedRoomID?: string;
@@ -223,19 +244,14 @@ interface ICoopGamesState {
       };
     };
   };
-  userAttackObj: {
-    [socketID: string]: {
-      attackStatus: {
-        isCooldown: boolean;
-        time?: number;
-      };
-    };
-  };
 }
 
 export const CoopGamesState: ICoopGamesState = {
-  frameNumber: 0,
-
+  frameObj: {
+    mainFrame: 0,
+    objects: {},
+  },
+  attackStatusObj: {},
   currentRoomUsersArr: [],
   messagesArr: {},
   allGamesRoomsList: [],
@@ -243,7 +259,6 @@ export const CoopGamesState: ICoopGamesState = {
   fetchAllGameRoomsStatus: CoopGamesFetchStatus.Ready,
   touchEl: "init",
   gameFieldData: {},
-  userAttackObj: {},
 };
 
 export const CoopGamesSlice = createSlice({
@@ -342,21 +357,32 @@ export const CoopGamesSlice = createSlice({
     setGameFieldData(state, action) {
       state.gameFieldData = action.payload;
     },
-    setUserAttackStatus(state, action) {
-      // if (state.userAttackObj[action.payload.socketID]) {
-      if (!state.userAttackObj[action.payload.socketID]) {
-        state.userAttackObj[action.payload.socketID] = { attackStatus: { isCooldown: false } };
-      }
-      state.userAttackObj[action.payload.socketID].attackStatus.isCooldown =
-        action.payload.isCooldown;
-      state.userAttackObj[action.payload.socketID].attackStatus.time = action.payload.time;
-      // }
+    setAttackStatusObj(state, action) {
+      state.attackStatusObj = action.payload;
+    },
+    stopObjectAttack(state, action) {
+      state.attackStatusObj[action.payload].time = undefined;
+    },
+    addDataInFrameObject(state, action) {
+      state.frameObj.objects = action.payload;
     },
     increaseFrameNumber(state) {
-      if (state.frameNumber === 5) {
-        state.frameNumber = 0;
+      if (state.frameObj.mainFrame === 5) {
+        state.frameObj.mainFrame = 0;
+        for (const key in state.frameObj.objects) {
+          state.frameObj.objects[key].idFrame = 0;
+        }
       } else {
-        state.frameNumber = state.frameNumber + 1;
+        state.frameObj.mainFrame = state.frameObj.mainFrame + 1;
+        for (const key in state.frameObj.objects) {
+          state.frameObj.objects[key].idFrame = state.frameObj.mainFrame;
+        }
+      }
+    },
+    resetFrameNumber(state) {
+      state.frameObj.mainFrame = 0;
+      for (const key in state.frameObj.objects) {
+        state.frameObj.objects[key].idFrame = 0;
       }
     },
   },
