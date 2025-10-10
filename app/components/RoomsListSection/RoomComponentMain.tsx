@@ -19,6 +19,7 @@ import RoomGameField from "./RoomGameField";
 const RoomComponentMain = () => {
   const [startTouchCoord, setStartTouchCoord] = useState<any>();
   const [moveDitection, setmoveDitection] = useState<any>();
+
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
   const currentJoinedRoomID = useSelector(
     (state: ICoopGamesSlice) => state.CoopGamesState.currentJoinedRoomID
@@ -331,6 +332,10 @@ const RoomComponentMain = () => {
         dispatch(CoopGamesActions.setAttackStatusObj(serverAttackData));
       }
     );
+    socket?.on("sendDataFromServer", (serverData: any) => {
+      dispatch(CoopGamesActions.setSquareCoordinates(serverData.users));
+      dispatch(CoopGamesActions.setAttackStatusObj(serverData.attackStatus));
+    });
 
     return () => {
       socket?.off("roomGTSGameMessage");
@@ -347,6 +352,7 @@ const RoomComponentMain = () => {
       socket?.off("serverMove");
       socket?.off("serverStartAttack");
       socket?.off("serverStopAttack");
+      socket?.off("sendDataFromServer");
     };
   }, [socket]);
 

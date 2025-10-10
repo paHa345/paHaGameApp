@@ -39,6 +39,7 @@ export enum CoopGameMessageType {
 
 export interface ICoopGamesSlice {
   CoopGamesState: {
+    test: string;
     messagesArr: {
       [name: string]: [
         {
@@ -144,6 +145,8 @@ export interface ICoopGamesSlice {
 }
 
 interface ICoopGamesState {
+  test: string;
+
   messagesArr: {
     [name: string]: [
       {
@@ -247,6 +250,7 @@ interface ICoopGamesState {
 }
 
 export const CoopGamesState: ICoopGamesState = {
+  test: "",
   frameObj: {
     mainFrame: 0,
     objects: {},
@@ -384,6 +388,9 @@ export const CoopGamesSlice = createSlice({
       for (const key in state.frameObj.objects) {
         state.frameObj.objects[key].idFrame = 0;
       }
+    },
+    setTest(state, action) {
+      state.test = action.payload;
     },
   },
   extraReducers: (builder) => {
