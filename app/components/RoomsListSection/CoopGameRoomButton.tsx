@@ -1,6 +1,9 @@
 import { AppDispatch } from "@/app/store";
 import { IAppSlice } from "@/app/store/appStateSlice";
 import { CoopGameMessageType, CoopGamesActions, ICoopGamesSlice } from "@/app/store/CoopGamesSlice";
+import { faDungeon } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { div } from "framer-motion/client";
 import Link from "next/link";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,9 +32,18 @@ const CoopGameRoomButton = ({ id, name, isStarted }: ICoopGameRoomProps) => {
           onClick={joinRoomHandler}
           className=" cursor-pointer my-3 mx-3 text-center buttonCoopRoom"
         >
+          <FontAwesomeIcon className="fa-fw fa-2x" icon={faDungeon} />
           <div>{name}</div>
-          <div>{id}</div>
+          {/* <div>{id}</div> */}
         </div>
+        {telegramUser && telegramUser.id === 363304587 && (
+          <div>
+            <div className=" cursor-pointer my-3 mx-3 text-center buttonCoopRoom">
+              {" "}
+              Сбросить карту
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

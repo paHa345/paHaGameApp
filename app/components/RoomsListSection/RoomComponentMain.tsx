@@ -30,6 +30,10 @@ const RoomComponentMain = () => {
   const messagesArr = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.messagesArr);
   const [message, setMessage] = useState("");
 
+  const cooldownStatus = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.attackStatusObj
+  );
+
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
 
   const messagesContainerEnd = useRef<HTMLDivElement>(null);
@@ -335,6 +339,8 @@ const RoomComponentMain = () => {
     socket?.on("sendDataFromServer", (serverData: any) => {
       dispatch(CoopGamesActions.setSquareCoordinates(serverData.users));
       dispatch(CoopGamesActions.setAttackStatusObj(serverData.attackStatus));
+      // dispatch(CoopGamesActions.setGameFieldData(serverData.gameField));
+      dispatch(CoopGamesActions.setFraneObj(serverData.frameObj));
     });
 
     return () => {

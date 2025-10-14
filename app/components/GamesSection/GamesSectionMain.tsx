@@ -35,6 +35,15 @@ const GamesSectionMain = () => {
       <div className=" px-4  grid lg:grid-cols-3 sm:grid-cols-2 gap-9 justify-center items-center py-5 ">
         <GameSectionCard
           gameData={{
+            title: "Подземелья и др.",
+            link: "wsGamesRoomList",
+            image: "dungeon",
+            description: "Пройди в компании друзей опеснейшее подземелье",
+            backgroundColor: "red",
+          }}
+        ></GameSectionCard>
+        <GameSectionCard
+          gameData={{
             title: "Кроссворды",
             link: "crosswordGame",
             image: "crossword",

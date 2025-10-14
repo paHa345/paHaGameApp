@@ -24,9 +24,9 @@ const page = () => {
         }
       >
         <TransitionTemplate>
-          <div className=" text-xl py-3 font-semibold">
+          {/* <div className=" text-xl py-3 font-semibold">
             <Link href={"/wsGamesRoomList"}>Список игровых серверов</Link>
-          </div>
+          </div> */}
           <ResultsSectionMain></ResultsSectionMain>
         </TransitionTemplate>
       </Suspense>{" "}

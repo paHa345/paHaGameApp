@@ -122,6 +122,12 @@ export interface ICoopGamesSlice {
             };
           };
         };
+        chanks: {
+          topChanks?: { [coord: string]: { x: number; y: number } };
+          bottomChanks?: { [coord: string]: { x: number; y: number } };
+          rightChanks?: { [coord: string]: { x: number; y: number } };
+          leftChanks?: { [coord: string]: { x: number; y: number } };
+        };
         moveDirection: UserMoveDirections;
         userRole: string;
         attackStatus: { time?: number };
@@ -227,6 +233,12 @@ interface ICoopGamesState {
             y: number;
           };
         };
+      };
+      chanks: {
+        topChanks?: { [coord: string]: { x: number; y: number } };
+        bottomChanks?: { [coord: string]: { x: number; y: number } };
+        rightChanks?: { [coord: string]: { x: number; y: number } };
+        leftChanks?: { [coord: string]: { x: number; y: number } };
       };
       moveDirection: UserMoveDirections;
       userRole: string;
@@ -366,6 +378,9 @@ export const CoopGamesSlice = createSlice({
     },
     stopObjectAttack(state, action) {
       state.attackStatusObj[action.payload].time = undefined;
+    },
+    setFraneObj(state, action) {
+      state.frameObj = action.payload;
     },
     addDataInFrameObject(state, action) {
       state.frameObj.objects = action.payload;

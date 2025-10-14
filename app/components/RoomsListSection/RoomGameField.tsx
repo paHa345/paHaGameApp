@@ -37,25 +37,25 @@ const RoomGameField = () => {
 
   // requestAnimationFrame(step);
 
-  useEffect(() => {
-    let time: number;
-    let timerID: any;
+  // useEffect(() => {
+  //   let time: number;
+  //   let timerID: any;
 
-    function step(timestamp: number) {
-      if (!time) {
-        time = timestamp;
-      }
+  //   function step(timestamp: number) {
+  //     if (!time) {
+  //       time = timestamp;
+  //     }
 
-      if (timestamp - time > 150) {
-        time = timestamp;
-        dispatch(CoopGamesActions.increaseFrameNumber());
-      }
-      timerID = requestAnimationFrame(step);
-    }
+  //     if (timestamp - time > 150) {
+  //       time = timestamp;
+  //       dispatch(CoopGamesActions.increaseFrameNumber());
+  //     }
+  //     timerID = requestAnimationFrame(step);
+  //   }
 
-    timerID = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(timerID);
-  }, []);
+  //   timerID = requestAnimationFrame(step);
+  //   return () => cancelAnimationFrame(timerID);
+  // }, []);
 
   // useEffect(() => {
   //   dispatch(CoopGamesActions.resetFrameNumber());
@@ -86,9 +86,7 @@ const RoomGameField = () => {
         ) {
           ctx.drawImage(
             steveImg,
-            frameObj.objects[userData]?.idFrame === 0
-              ? 22
-              : frameObj.objects[userData]?.idFrame * 64 + 22,
+            frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
             210,
             24,
             32,
@@ -101,9 +99,7 @@ const RoomGameField = () => {
         if (gameData[userData].moveDirection === UserMoveDirections.left) {
           ctx.drawImage(
             steveImg,
-            frameObj.objects[userData]?.idFrame === 0
-              ? 22
-              : frameObj.objects[userData]?.idFrame * 64 + 22,
+            frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
             82,
             24,
             32,
@@ -116,9 +112,7 @@ const RoomGameField = () => {
         if (gameData[userData].moveDirection === UserMoveDirections.right) {
           ctx.drawImage(
             steveImg,
-            frameObj.objects[userData]?.idFrame === 0
-              ? 22
-              : frameObj.objects[userData]?.idFrame * 64 + 22,
+            frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
             146,
             24,
             32,
@@ -131,9 +125,7 @@ const RoomGameField = () => {
         if (gameData[userData].moveDirection === UserMoveDirections.down) {
           ctx.drawImage(
             steveImg,
-            frameObj.objects[userData]?.idFrame === 0
-              ? 22
-              : frameObj.objects[userData]?.idFrame * 64 + 22,
+            frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
             18,
             24,
             32,
@@ -232,8 +224,22 @@ const RoomGameField = () => {
         if (!Object.hasOwn(gameFieldData[i], j)) continue;
 
         if (gameFieldData[i][j].type === "stone") {
-          ctx2.drawImage(textureImg, Number(j) * 16, Number(i) * 16, 16, 16);
+          ctx2.drawImage(textureImg, Number(j) * 8, Number(i) * 8, 8, 8);
         }
+
+        // if (!gameFieldData[i][j].type) {
+        //   ctx2.fillStyle = "red";
+        //   ctx2.fillRect(Number(j) * 8, Number(i) * 8, 8, 8);
+
+        //   // ctx2.drawImage(textureImg, Number(j) * 8, Number(i) * 8, 8, 8);
+        // }
+
+        // if (gameFieldData[i][j].type === "user") {
+        //   ctx2.fillStyle = "green";
+        //   ctx2.fillRect(Number(j) * 8, Number(i) * 8, 8, 8);
+
+        //   // ctx2.drawImage(textureImg, Number(j) * 8, Number(i) * 8, 8, 8);
+        // }
       }
     }
   }, [gameFieldData]);

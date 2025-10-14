@@ -1,7 +1,12 @@
 import Link from "next/link";
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCarOn, faChessBoard, faHeadphonesAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCarOn,
+  faChessBoard,
+  faDungeon,
+  faHeadphonesAlt,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface IGameSectionProps {
   gameData: {
@@ -31,6 +36,7 @@ const GameSectionCard = ({ gameData }: IGameSectionProps) => {
             <FontAwesomeIcon className="fa-fw fa-2x" icon={faHeadphonesAlt} />
           )}
           {image === "car" && <FontAwesomeIcon className="fa-fw fa-2x" icon={faCarOn} />}
+          {image === "dungeon" && <FontAwesomeIcon className="fa-fw fa-2x" icon={faDungeon} />}
 
           <div>
             <h1 className=" text-3xl lg:text-2xl text-center font-bold pb-2">{gameData.title}</h1>
