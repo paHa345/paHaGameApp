@@ -308,6 +308,7 @@ const RoomComponentMain = () => {
           [objectID: string]: {
             time?: number | undefined;
             isCooldown: boolean;
+            isActive: boolean;
           };
         };
         roomID: string;
@@ -330,9 +331,22 @@ const RoomComponentMain = () => {
         [objectID: string]: {
           time?: number | undefined;
           isCooldown: boolean;
+          isActive: boolean;
         };
       }) => {
         console.log(serverAttackData);
+        dispatch(CoopGamesActions.setAttackStatusObj(serverAttackData));
+      }
+    );
+    socket?.on(
+      "serverResetCooldown",
+      (serverAttackData: {
+        [objectID: string]: {
+          time?: number | undefined;
+          isCooldown: boolean;
+          isActive: boolean;
+        };
+      }) => {
         dispatch(CoopGamesActions.setAttackStatusObj(serverAttackData));
       }
     );
@@ -358,6 +372,7 @@ const RoomComponentMain = () => {
       socket?.off("serverMove");
       socket?.off("serverStartAttack");
       socket?.off("serverStopAttack");
+      socket?.off("serverResetCooldown");
       socket?.off("sendDataFromServer");
     };
   }, [socket]);

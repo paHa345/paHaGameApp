@@ -18,10 +18,16 @@ const RoomGameField = () => {
 
   const gameFieldData = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.gameFieldData);
   const img = new Image();
-  const steveImg = new Image();
-  const creeperImg = new Image();
+  const steveImgWalk = new Image();
+  const steveImgAttack = new Image();
+
   const textureImg = new Image();
-  const swordImg = new Image();
+
+  useEffect(() => {
+    steveImgAttack.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_Attack_with_shadow.png";
+    steveImgWalk.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_with_shadow.png";
+    steveImgWalk.onload = () => {};
+  });
 
   // let time: number;
   // function step(timestamp: number) {
@@ -72,20 +78,24 @@ const RoomGameField = () => {
           24,
           32
         );
-        if (attackDataObj[userData]?.isActive) {
-          // console.log(frameObj.objects[userData]);
-          // console.log(gameData[userData].square.currentCoord);
-          steveImg.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_Attack_with_shadow.png";
-        } else {
-          steveImg.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_with_shadow.png";
-        }
 
+        // if (attackDataObj[userData]?.isActive) {
+        //   // console.log(frameObj.objects[userData]);
+        //   // console.log(gameData[userData].square.currentCoord);
+        //   steveImg.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_Attack_with_shadow.png";
+        // } else {
+        //   steveImg.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_with_shadow.png";
+        // }
+
+        // steveImg.src = "/Swordsman/Lvl1/Hero_LVL1WalkAttack.png";
+
+        // steveImg.onload = () => {
         if (
           gameData[userData].moveDirection === UserMoveDirections.stop ||
           gameData[userData].moveDirection === UserMoveDirections.up
         ) {
           ctx.drawImage(
-            steveImg,
+            attackDataObj[userData]?.isActive ? steveImgAttack : steveImgWalk,
             frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
             210,
             24,
@@ -98,7 +108,7 @@ const RoomGameField = () => {
         }
         if (gameData[userData].moveDirection === UserMoveDirections.left) {
           ctx.drawImage(
-            steveImg,
+            attackDataObj[userData]?.isActive ? steveImgAttack : steveImgWalk,
             frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
             82,
             24,
@@ -111,7 +121,7 @@ const RoomGameField = () => {
         }
         if (gameData[userData].moveDirection === UserMoveDirections.right) {
           ctx.drawImage(
-            steveImg,
+            attackDataObj[userData]?.isActive ? steveImgAttack : steveImgWalk,
             frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
             146,
             24,
@@ -124,7 +134,7 @@ const RoomGameField = () => {
         }
         if (gameData[userData].moveDirection === UserMoveDirections.down) {
           ctx.drawImage(
-            steveImg,
+            attackDataObj[userData]?.isActive ? steveImgAttack : steveImgWalk,
             frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
             18,
             24,
@@ -135,6 +145,8 @@ const RoomGameField = () => {
             32
           );
         }
+        // };
+
         // } else {
         //   ctx.clearRect(
         //     gameData[userData].square.prevCoord.topLeft.x,

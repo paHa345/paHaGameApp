@@ -5,7 +5,7 @@ import { faDungeon } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { div } from "framer-motion/client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 interface ICoopGameRoomProps {
@@ -19,6 +19,13 @@ const CoopGameRoomButton = ({ id, name, isStarted }: ICoopGameRoomProps) => {
 
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
   const dispatch = useDispatch<AppDispatch>();
+
+  const resetServerHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    console.log("Reset");
+    socket?.emit("resetCraftOrgServer", { roomID: id });
+  };
+
+  useEffect(() => {}, [socket]);
 
   const joinRoomHandler = () => {
     socket?.emit("join_room", { roomID: id, telegramUser, type: CoopGameMessageType.notification });
@@ -38,7 +45,10 @@ const CoopGameRoomButton = ({ id, name, isStarted }: ICoopGameRoomProps) => {
         </div>
         {telegramUser && telegramUser.id === 363304587 && (
           <div>
-            <div className=" cursor-pointer my-3 mx-3 text-center buttonCoopRoom">
+            <div
+              onClick={resetServerHandler}
+              className=" cursor-pointer my-3 mx-3 text-center buttonCoopRoom"
+            >
               {" "}
               Сбросить карту
             </div>
