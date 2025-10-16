@@ -39,6 +39,15 @@ export enum CoopGameMessageType {
 
 export interface ICoopGamesSlice {
   CoopGamesState: {
+    imgResources: {
+      userImgWalk?: HTMLImageElement;
+      userImgAttack?: HTMLImageElement;
+      rockTextureImg?: HTMLImageElement;
+      grassTextureImg?: HTMLImageElement;
+      orcImgWalkImg?: HTMLImageElement;
+      orcImgAttackImg?: HTMLImageElement;
+    };
+
     test: string;
     messagesArr: {
       [name: string]: [
@@ -84,6 +93,8 @@ export interface ICoopGamesSlice {
     fetchAllGameRoomsStatus: CoopGamesFetchStatus;
     squareCoordinates?: {
       [socketID: string]: {
+        type: "gamer" | "NPC";
+        NPCType?: string;
         square: {
           prevCoord: {
             topLeft: {
@@ -152,7 +163,14 @@ export interface ICoopGamesSlice {
 
 interface ICoopGamesState {
   test: string;
-
+  imgResources: {
+    userImgWalk?: HTMLImageElement;
+    userImgAttack?: HTMLImageElement;
+    rockTextureImg?: HTMLImageElement;
+    grassTextureImg?: HTMLImageElement;
+    orcImgWalkImg?: HTMLImageElement;
+    orcImgAttackImg?: HTMLImageElement;
+  };
   messagesArr: {
     [name: string]: [
       {
@@ -196,6 +214,8 @@ interface ICoopGamesState {
   fetchAllGameRoomsStatus: CoopGamesFetchStatus;
   squareCoordinates?: {
     [socketID: string]: {
+      type: "gamer" | "NPC";
+      NPCType?: string;
       square: {
         prevCoord: {
           topLeft: {
@@ -263,6 +283,7 @@ interface ICoopGamesState {
 
 export const CoopGamesState: ICoopGamesState = {
   test: "",
+  imgResources: {},
   frameObj: {
     mainFrame: 0,
     objects: {},
@@ -406,6 +427,9 @@ export const CoopGamesSlice = createSlice({
     },
     setTest(state, action) {
       state.test = action.payload;
+    },
+    setImgResources(state, action) {
+      state.imgResources = action.payload;
     },
   },
   extraReducers: (builder) => {

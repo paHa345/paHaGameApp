@@ -10,8 +10,6 @@ import {
   faHandFist,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { div, h1 } from "framer-motion/client";
-import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import RoomGameField from "./RoomGameField";
@@ -39,6 +37,85 @@ const RoomComponentMain = () => {
   const messagesContainerEnd = useRef<HTMLDivElement>(null);
 
   const dispatch = useDispatch<AppDispatch>();
+
+  const userImgWalk = new Image();
+  const userImgAttack = new Image();
+  const grassTextureImg = new Image();
+  const rockTextureImg = new Image();
+  const orcImgWalkImg = new Image();
+  const orcImgAttackImg = new Image();
+
+  useEffect(() => {
+    // userImgAttack.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_Attack_with_shadow.png";
+    // userImgWalk.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_with_shadow.png";
+    // rockTextureImg.src = "/RockAndStones/Objects_separately/Rokc3_snow_shadow_dark1.png";
+    // grassTextureImg.src = "/grassImg.png";
+
+    userImgWalk.onload = () => {
+      console.log("Images load");
+    };
+    const imageSources = [
+      { name: grassTextureImg, src: "/grassImg.png" },
+      { name: userImgAttack, src: "/Swordsman/Lvl1/Swordsman_lvl1_Walk_Attack_with_shadow.png" },
+      { name: userImgWalk, src: "/Swordsman/Lvl1/Swordsman_lvl1_Walk_with_shadow.png" },
+      { name: orcImgWalkImg, src: "/Orc/orc3_walk_with_shadow.png" },
+      { name: orcImgAttackImg, src: "/Orc/orc3_walk_attack_with_shadow.png" },
+      {
+        name: rockTextureImg,
+        src: "/RockAndStones/Objects_separately/Rokc3_snow_shadow_dark1.png",
+      },
+    ];
+
+    const setImgSrc = () => {
+      imageSources.forEach((imageObj) => {
+        imageObj.name.src = imageObj.src;
+        imageObj.name.onload = () => {
+          console.log("Load");
+        };
+      });
+    };
+
+    setImgSrc();
+
+    console.log(grassTextureImg.src);
+
+    dispatch(
+      CoopGamesActions.setImgResources({
+        userImgWalk: userImgWalk,
+        userImgAttack: userImgAttack,
+        rockTextureImg: rockTextureImg,
+        grassTextureImg: grassTextureImg,
+        orcImgWalkImg: orcImgWalkImg,
+        orcImgAttackImg: orcImgAttackImg,
+      })
+    );
+
+    // const preloadImgResource = (currentImg: any, src: any, callback: any) => {
+    //   currentImg.src = src;
+    //   currentImg.onLoad = callback(null, src);
+    //   currentImg.onError = (error: any) => callback(error, src);
+    // };
+
+    // const imgResourcesPromises = imageSources.map((imageObj) => {
+    //   return new Promise((resolve, reject) => {
+    //     preloadImgResource(imageObj.name, imageObj.src, (error: any) => {
+    //       if (error) {
+    //         reject(error);
+    //       } else {
+    //         resolve("data");
+    //       }
+    //     });
+    //   });
+    // });
+
+    // Promise.all(imgResourcesPromises)
+    //   .then(() => {
+    //     console.log("All images loading");
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+  }, []);
 
   const leaveRoomHandler = () => {
     socket?.emit("leave_room", {

@@ -4,30 +4,20 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const RoomGameField = () => {
+  // console.log(imgResources.imgResources.grassTextureImg.src);
   const canvasRef = useRef(null) as any;
   const dispatch = useDispatch<AppDispatch>();
   const backgroundCanvasRef = useRef(null) as any;
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
 
+  const imgResources = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.imgResources);
+
   const attackDataObj = useSelector(
     (state: ICoopGamesSlice) => state.CoopGamesState.attackStatusObj
   );
   const frameObj = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.frameObj);
-
   const gameData = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.squareCoordinates);
-
   const gameFieldData = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.gameFieldData);
-  const img = new Image();
-  const steveImgWalk = new Image();
-  const steveImgAttack = new Image();
-
-  const textureImg = new Image();
-
-  useEffect(() => {
-    steveImgAttack.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_Attack_with_shadow.png";
-    steveImgWalk.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_with_shadow.png";
-    steveImgWalk.onload = () => {};
-  });
 
   // let time: number;
   // function step(timestamp: number) {
@@ -63,39 +53,34 @@ const RoomGameField = () => {
   //   return () => cancelAnimationFrame(timerID);
   // }, []);
 
-  // useEffect(() => {
-  //   dispatch(CoopGamesActions.resetFrameNumber());
-  // }, [attackDataObj]);
-
   useEffect(() => {
     if (gameData) {
       var ctx = canvasRef.current.getContext("2d");
       for (let userData in gameData) {
-        // if (gameData[userData].userRole === "steve") {
         ctx.clearRect(
           gameData[userData].square.prevCoord.topLeft.x,
           gameData[userData].square.prevCoord.topLeft.y,
           24,
           32
         );
+        // console.log(gameData[userData]);
+        const attackWalkImg = {
+          attack:
+            gameData[userData].type === "NPC"
+              ? imgResources.orcImgAttackImg
+              : imgResources.userImgAttack,
+          walk:
+            gameData[userData].type === "NPC"
+              ? imgResources.orcImgWalkImg
+              : imgResources.userImgWalk,
+        };
 
-        // if (attackDataObj[userData]?.isActive) {
-        //   // console.log(frameObj.objects[userData]);
-        //   // console.log(gameData[userData].square.currentCoord);
-        //   steveImg.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_Attack_with_shadow.png";
-        // } else {
-        //   steveImg.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_with_shadow.png";
-        // }
-
-        // steveImg.src = "/Swordsman/Lvl1/Hero_LVL1WalkAttack.png";
-
-        // steveImg.onload = () => {
         if (
           gameData[userData].moveDirection === UserMoveDirections.stop ||
           gameData[userData].moveDirection === UserMoveDirections.up
         ) {
           ctx.drawImage(
-            attackDataObj[userData]?.isActive ? steveImgAttack : steveImgWalk,
+            attackDataObj[userData]?.isActive ? attackWalkImg.attack : attackWalkImg.walk,
             frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
             210,
             24,
@@ -108,7 +93,7 @@ const RoomGameField = () => {
         }
         if (gameData[userData].moveDirection === UserMoveDirections.left) {
           ctx.drawImage(
-            attackDataObj[userData]?.isActive ? steveImgAttack : steveImgWalk,
+            attackDataObj[userData]?.isActive ? attackWalkImg.attack : attackWalkImg.walk,
             frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
             82,
             24,
@@ -121,7 +106,7 @@ const RoomGameField = () => {
         }
         if (gameData[userData].moveDirection === UserMoveDirections.right) {
           ctx.drawImage(
-            attackDataObj[userData]?.isActive ? steveImgAttack : steveImgWalk,
+            attackDataObj[userData]?.isActive ? attackWalkImg.attack : attackWalkImg.walk,
             frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
             146,
             24,
@@ -134,7 +119,7 @@ const RoomGameField = () => {
         }
         if (gameData[userData].moveDirection === UserMoveDirections.down) {
           ctx.drawImage(
-            attackDataObj[userData]?.isActive ? steveImgAttack : steveImgWalk,
+            attackDataObj[userData]?.isActive ? attackWalkImg.attack : attackWalkImg.walk,
             frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
             18,
             24,
@@ -145,113 +130,24 @@ const RoomGameField = () => {
             32
           );
         }
-        // };
-
-        // } else {
-        //   ctx.clearRect(
-        //     gameData[userData].square.prevCoord.topLeft.x,
-        //     gameData[userData].square.prevCoord.topLeft.y,
-        //     24,
-        //     32
-        //   );
-
-        //   steveImg.src = "/Orc/orc3_walk_with_shadow.png";
-
-        //   if (
-        //     gameData[userData].moveDirection === UserMoveDirections.stop ||
-        //     gameData[userData].moveDirection === UserMoveDirections.up
-        //   ) {
-        //     ctx.drawImage(
-        //       steveImg,
-        //       frameNumber === 0 ? 16 : frameNumber * 64 + 16,
-        //       208,
-        //       24,
-        //       32,
-        //       gameData[userData].square.currentCoord.topLeft.x,
-        //       gameData[userData].square.currentCoord.topLeft.y,
-        //       24,
-        //       32
-        //     );
-        //   }
-        //   if (gameData[userData].moveDirection === UserMoveDirections.left) {
-        //     ctx.drawImage(
-        //       steveImg,
-        //       frameNumber === 0 ? 16 : frameNumber * 64 + 16,
-        //       80,
-        //       24,
-        //       32,
-        //       gameData[userData].square.currentCoord.topLeft.x,
-        //       gameData[userData].square.currentCoord.topLeft.y,
-        //       24,
-        //       32
-        //     );
-        //   }
-        //   if (gameData[userData].moveDirection === UserMoveDirections.right) {
-        //     ctx.drawImage(
-        //       steveImg,
-        //       frameNumber === 0 ? 16 : frameNumber * 64 + 16,
-        //       144,
-        //       24,
-        //       32,
-        //       gameData[userData].square.currentCoord.topLeft.x,
-        //       gameData[userData].square.currentCoord.topLeft.y,
-        //       24,
-        //       32
-        //     );
-        //   }
-        //   if (gameData[userData].moveDirection === UserMoveDirections.down) {
-        //     ctx.drawImage(
-        //       steveImg,
-        //       frameNumber === 0 ? 16 : frameNumber * 64 + 16,
-        //       16,
-        //       24,
-        //       32,
-        //       gameData[userData].square.currentCoord.topLeft.x,
-        //       gameData[userData].square.currentCoord.topLeft.y,
-        //       24,
-        //       32
-        //     );
-        //   }
-        // }
       }
     }
   }, [gameData, frameObj, attackDataObj]);
 
   useEffect(() => {
-    console.log("Render Game field");
     var ctx2 = backgroundCanvasRef.current.getContext("2d");
-    img.src = "/grassImg.png";
 
-    // img.onload = () => {
-    //   const pattern = ctx2.createPattern(img, "repeat");
-    //   ctx2.fillStyle = pattern;
-    //   ctx2.fillRect(0, 0, 300, 300);
-    // };
-    ctx2.drawImage(img, 0, 0, 300, 300);
-
-    textureImg.src = "/RockAndStones/Objects_separately/Rokc3_snow_shadow_dark1.png";
+    if (imgResources.grassTextureImg) {
+      ctx2.drawImage(imgResources.grassTextureImg, 0, 0, 300, 300);
+    }
 
     for (const i in gameFieldData) {
       for (const j in gameFieldData[i]) {
         if (!Object.hasOwn(gameFieldData[i], j)) continue;
 
         if (gameFieldData[i][j].type === "stone") {
-          ctx2.drawImage(textureImg, Number(j) * 8, Number(i) * 8, 8, 8);
+          ctx2.drawImage(imgResources.rockTextureImg, Number(j) * 8, Number(i) * 8, 8, 8);
         }
-
-        // if (!gameFieldData[i][j].type) {
-        //   ctx2.fillStyle = "red";
-        //   ctx2.fillRect(Number(j) * 8, Number(i) * 8, 8, 8);
-
-        //   // ctx2.drawImage(textureImg, Number(j) * 8, Number(i) * 8, 8, 8);
-        // }
-
-        // if (gameFieldData[i][j].type === "user") {
-        //   ctx2.fillStyle = "green";
-        //   ctx2.fillRect(Number(j) * 8, Number(i) * 8, 8, 8);
-
-        //   // ctx2.drawImage(textureImg, Number(j) * 8, Number(i) * 8, 8, 8);
-        // }
       }
     }
   }, [gameFieldData]);
