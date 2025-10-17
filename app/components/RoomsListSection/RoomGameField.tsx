@@ -1,10 +1,10 @@
 import { AppDispatch } from "@/app/store";
 import { CoopGamesActions, ICoopGamesSlice, UserMoveDirections } from "@/app/store/CoopGamesSlice";
+import { coopGameSpritesData } from "@/app/types";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const RoomGameField = () => {
-  // console.log(imgResources.imgResources.grassTextureImg.src);
   const canvasRef = useRef(null) as any;
   const dispatch = useDispatch<AppDispatch>();
   const backgroundCanvasRef = useRef(null) as any;
@@ -61,9 +61,9 @@ const RoomGameField = () => {
           gameData[userData].square.prevCoord.topLeft.x,
           gameData[userData].square.prevCoord.topLeft.y,
           24,
-          32
+          40
         );
-        // console.log(gameData[userData]);
+
         const attackWalkImg = {
           attack:
             gameData[userData].type === "NPC"
@@ -82,52 +82,52 @@ const RoomGameField = () => {
           ctx.drawImage(
             attackDataObj[userData]?.isActive ? attackWalkImg.attack : attackWalkImg.walk,
             frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
-            210,
+            coopGameSpritesData[gameData[userData].objectType].up,
             24,
-            32,
+            40,
             gameData[userData].square.currentCoord.topLeft.x,
             gameData[userData].square.currentCoord.topLeft.y,
             24,
-            32
+            40
           );
         }
         if (gameData[userData].moveDirection === UserMoveDirections.left) {
           ctx.drawImage(
             attackDataObj[userData]?.isActive ? attackWalkImg.attack : attackWalkImg.walk,
             frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
-            82,
+            coopGameSpritesData[gameData[userData].objectType].left,
             24,
-            32,
+            40,
             gameData[userData].square.currentCoord.topLeft.x,
             gameData[userData].square.currentCoord.topLeft.y,
             24,
-            32
+            40
           );
         }
         if (gameData[userData].moveDirection === UserMoveDirections.right) {
           ctx.drawImage(
             attackDataObj[userData]?.isActive ? attackWalkImg.attack : attackWalkImg.walk,
             frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
-            146,
+            coopGameSpritesData[gameData[userData].objectType].right,
             24,
-            32,
+            40,
             gameData[userData].square.currentCoord.topLeft.x,
             gameData[userData].square.currentCoord.topLeft.y,
             24,
-            32
+            40
           );
         }
         if (gameData[userData].moveDirection === UserMoveDirections.down) {
           ctx.drawImage(
             attackDataObj[userData]?.isActive ? attackWalkImg.attack : attackWalkImg.walk,
             frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
-            18,
+            coopGameSpritesData[gameData[userData].objectType].down,
             24,
-            32,
+            40,
             gameData[userData].square.currentCoord.topLeft.x,
             gameData[userData].square.currentCoord.topLeft.y,
             24,
-            32
+            40
           );
         }
       }

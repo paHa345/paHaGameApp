@@ -482,3 +482,27 @@ export const exerciseTypes: IOneExerciseTypes[] = [
   { nameRu: "Плечи", nameEn: "shoulders" },
   { nameRu: "Спина", nameEn: "back" },
 ];
+
+interface ICoopGameSpritesData {
+  [type: string]: {
+    up: number;
+    down: number;
+    left: number;
+    right: number;
+  };
+}
+
+export const coopGameSpritesData: ICoopGameSpritesData = {
+  gamer: {
+    up: 210,
+    down: 18,
+    left: 82,
+    right: 146,
+  },
+  orc3: {
+    up: 73,
+    down: 5,
+    left: 130,
+    right: 195,
+  },
+};

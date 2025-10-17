@@ -94,7 +94,7 @@ export interface ICoopGamesSlice {
     squareCoordinates?: {
       [socketID: string]: {
         type: "gamer" | "NPC";
-        NPCType?: string;
+        objectType: string;
         square: {
           prevCoord: {
             topLeft: {
@@ -215,7 +215,7 @@ interface ICoopGamesState {
   squareCoordinates?: {
     [socketID: string]: {
       type: "gamer" | "NPC";
-      NPCType?: string;
+      objectType: string;
       square: {
         prevCoord: {
           topLeft: {
