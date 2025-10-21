@@ -494,10 +494,10 @@ interface ICoopGameSpritesData {
 
 export const coopGameSpritesData: ICoopGameSpritesData = {
   gamer: {
-    up: 210,
-    down: 18,
-    left: 82,
-    right: 146,
+    up: 205,
+    down: 13,
+    left: 77,
+    right: 141,
   },
   orc3: {
     up: 73,

@@ -148,7 +148,16 @@ export interface ICoopGamesSlice {
     gameFieldData: {
       [row: number]: {
         [col: number]: {
-          type: string;
+          // isUserChank: boolean;
+          type?: string;
+          notMove: boolean;
+          chankUnderAttack: boolean;
+          objectDataChank: {
+            objectID?: string;
+            isObjectChank: boolean;
+          };
+
+          // type: string;
           coord: {
             topLeft: { x: number; y: number };
             topRight: { x: number; y: number };
@@ -269,7 +278,16 @@ interface ICoopGamesState {
   gameFieldData: {
     [row: number]: {
       [col: number]: {
-        type: string;
+        // type: string;
+        // isUserChank: boolean;
+        type?: string;
+        notMove: boolean;
+        chankUnderAttack: boolean;
+        objectDataChank: {
+          objectID?: string;
+          isObjectChank: boolean;
+        };
+
         coord: {
           topLeft: { x: number; y: number };
           topRight: { x: number; y: number };

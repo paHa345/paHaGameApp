@@ -148,6 +148,21 @@ const RoomGameField = () => {
         if (gameFieldData[i][j].type === "stone") {
           ctx2.drawImage(imgResources.rockTextureImg, Number(j) * 8, Number(i) * 8, 8, 8);
         }
+
+        if (gameFieldData[i][j].objectDataChank.isObjectChank) {
+          ctx2.globalAlpha = 0.4;
+          ctx2.fillRect(Number(j) * 8, Number(i) * 8, 8, 8);
+
+          ctx2.globalAlpha = 1;
+        }
+
+        if (gameFieldData[i][j].chankUnderAttack) {
+          ctx2.globalAlpha = 0.4;
+          ctx2.fillStyle = "red";
+          ctx2.fillRect(Number(j) * 8, Number(i) * 8, 8, 8);
+
+          ctx2.globalAlpha = 1;
+        }
       }
     }
   }, [gameFieldData]);
