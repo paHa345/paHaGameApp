@@ -60,7 +60,7 @@ const RoomGameField = () => {
         ctx.clearRect(
           gameData[userData].square.prevCoord.topLeft.x,
           gameData[userData].square.prevCoord.topLeft.y,
-          24,
+          32,
           40
         );
 
@@ -73,6 +73,16 @@ const RoomGameField = () => {
             gameData[userData].type === "NPC"
               ? imgResources.orcImgWalkImg
               : imgResources.userImgWalk,
+          getDamage: imgResources.orcImgGetDamageImg,
+        };
+
+        const imgCompareObj = {
+          orc3AttackImage: imgResources.orcImgAttackImg,
+          orc3WalkImage: imgResources.orcImgWalkImg,
+          orc3GetDamageImage: imgResources.orcImgGetDamageImg,
+          gamerAttackImage: imgResources.userImgAttack,
+          gamerWalkImage: imgResources.userImgWalk,
+          gamerGetDamageImage: imgResources.userImgWalk,
         };
 
         if (
@@ -80,7 +90,7 @@ const RoomGameField = () => {
           gameData[userData].moveDirection === UserMoveDirections.up
         ) {
           ctx.drawImage(
-            attackDataObj[userData]?.isActive ? attackWalkImg.attack : attackWalkImg.walk,
+            imgCompareObj[gameData[userData].imgName],
             frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
             coopGameSpritesData[gameData[userData].objectType].up,
             24,
@@ -93,7 +103,7 @@ const RoomGameField = () => {
         }
         if (gameData[userData].moveDirection === UserMoveDirections.left) {
           ctx.drawImage(
-            attackDataObj[userData]?.isActive ? attackWalkImg.attack : attackWalkImg.walk,
+            imgCompareObj[gameData[userData].imgName],
             frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
             coopGameSpritesData[gameData[userData].objectType].left,
             24,
@@ -106,7 +116,7 @@ const RoomGameField = () => {
         }
         if (gameData[userData].moveDirection === UserMoveDirections.right) {
           ctx.drawImage(
-            attackDataObj[userData]?.isActive ? attackWalkImg.attack : attackWalkImg.walk,
+            imgCompareObj[gameData[userData].imgName],
             frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
             coopGameSpritesData[gameData[userData].objectType].right,
             24,
@@ -119,7 +129,7 @@ const RoomGameField = () => {
         }
         if (gameData[userData].moveDirection === UserMoveDirections.down) {
           ctx.drawImage(
-            attackDataObj[userData]?.isActive ? attackWalkImg.attack : attackWalkImg.walk,
+            imgCompareObj[gameData[userData].imgName],
             frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
             coopGameSpritesData[gameData[userData].objectType].down,
             24,

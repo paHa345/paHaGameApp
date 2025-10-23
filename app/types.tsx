@@ -506,3 +506,11 @@ export const coopGameSpritesData: ICoopGameSpritesData = {
     right: 195,
   },
 };
+
+export type ImageNames =
+  | "orc3AttackImage"
+  | "orc3WalkImage"
+  | "orc3GetDamageImage"
+  | "gamerAttackImage"
+  | "gamerWalkImage"
+  | "gamerGetDamageImage";

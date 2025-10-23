@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import * as io from "socket.io-client";
+import { ImageNames } from "../types";
 
 export const getAllRoomsList = createAsyncThunk(
   "CoopGamesState/getAiiRoomsList",
@@ -46,6 +47,7 @@ export interface ICoopGamesSlice {
       grassTextureImg?: HTMLImageElement;
       orcImgWalkImg?: HTMLImageElement;
       orcImgAttackImg?: HTMLImageElement;
+      orcImgGetDamageImg?: HTMLImageElement;
     };
 
     test: string;
@@ -95,6 +97,8 @@ export interface ICoopGamesSlice {
       [socketID: string]: {
         type: "gamer" | "NPC";
         objectType: string;
+        getDamageStatus: boolean;
+        imgName: ImageNames;
         square: {
           prevCoord: {
             topLeft: {
@@ -179,6 +183,7 @@ interface ICoopGamesState {
     grassTextureImg?: HTMLImageElement;
     orcImgWalkImg?: HTMLImageElement;
     orcImgAttackImg?: HTMLImageElement;
+    orcImgGetDamageImg?: HTMLImageElement;
   };
   messagesArr: {
     [name: string]: [
@@ -225,6 +230,9 @@ interface ICoopGamesState {
     [socketID: string]: {
       type: "gamer" | "NPC";
       objectType: string;
+      getDamageStatus: boolean;
+      imgName: ImageNames;
+
       square: {
         prevCoord: {
           topLeft: {

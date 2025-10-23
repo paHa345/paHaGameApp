@@ -44,6 +44,7 @@ const RoomComponentMain = () => {
   const rockTextureImg = new Image();
   const orcImgWalkImg = new Image();
   const orcImgAttackImg = new Image();
+  const orcImgGetDamageImg = new Image();
 
   useEffect(() => {
     // userImgAttack.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_Attack_with_shadow.png";
@@ -64,6 +65,10 @@ const RoomComponentMain = () => {
         name: rockTextureImg,
         src: "/RockAndStones/Objects_separately/Rokc3_snow_shadow_dark1.png",
       },
+      {
+        name: orcImgGetDamageImg,
+        src: "/Orc/orc3_hurt_with_shadow.png",
+      },
     ];
 
     const setImgSrc = () => {
@@ -77,8 +82,6 @@ const RoomComponentMain = () => {
 
     setImgSrc();
 
-    console.log(grassTextureImg.src);
-
     dispatch(
       CoopGamesActions.setImgResources({
         userImgWalk: userImgWalk,
@@ -87,6 +90,7 @@ const RoomComponentMain = () => {
         grassTextureImg: grassTextureImg,
         orcImgWalkImg: orcImgWalkImg,
         orcImgAttackImg: orcImgAttackImg,
+        orcImgGetDamageImg: orcImgGetDamageImg,
       })
     );
 
