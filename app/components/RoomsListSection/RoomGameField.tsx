@@ -1,13 +1,15 @@
 import { AppDispatch } from "@/app/store";
 import { CoopGamesActions, ICoopGamesSlice, UserMoveDirections } from "@/app/store/CoopGamesSlice";
 import { coopGameSpritesData } from "@/app/types";
+import { div } from "framer-motion/client";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const RoomGameField = () => {
-  const canvasRef = useRef(null) as any;
+  const objectsCanvasRef = useRef(null) as any;
   const dispatch = useDispatch<AppDispatch>();
   const backgroundCanvasRef = useRef(null) as any;
+  const UserStatCanvasRef = useRef(null) as any;
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
 
   const imgResources = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.imgResources);
@@ -55,27 +57,9 @@ const RoomGameField = () => {
 
   useEffect(() => {
     if (gameData) {
-      var ctx = canvasRef.current.getContext("2d");
+      var ctx = objectsCanvasRef.current.getContext("2d");
+      ctx.clearRect(0, 0, 400, 400);
       for (let userData in gameData) {
-        ctx.clearRect(
-          gameData[userData].square.prevCoord.topLeft.x,
-          gameData[userData].square.prevCoord.topLeft.y,
-          32,
-          40
-        );
-
-        const attackWalkImg = {
-          attack:
-            gameData[userData].type === "NPC"
-              ? imgResources.orcImgAttackImg
-              : imgResources.userImgAttack,
-          walk:
-            gameData[userData].type === "NPC"
-              ? imgResources.orcImgWalkImg
-              : imgResources.userImgWalk,
-          getDamage: imgResources.orcImgGetDamageImg,
-        };
-
         const imgCompareObj = {
           orc3AttackImage: imgResources.orcImgAttackImg,
           orc3WalkImage: imgResources.orcImgWalkImg,
@@ -83,6 +67,7 @@ const RoomGameField = () => {
           gamerAttackImage: imgResources.userImgAttack,
           gamerWalkImage: imgResources.userImgWalk,
           gamerGetDamageImage: imgResources.userImgWalk,
+          NPCHPImg: imgResources.NPCHPImg,
         };
 
         if (
@@ -91,53 +76,66 @@ const RoomGameField = () => {
         ) {
           ctx.drawImage(
             imgCompareObj[gameData[userData].imgName],
-            frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
+            frameObj.mainFrame === 0 ? 12 : frameObj.mainFrame * 64 + 12,
             coopGameSpritesData[gameData[userData].objectType].up,
-            24,
-            40,
+            48,
+            48,
             gameData[userData].square.currentCoord.topLeft.x,
             gameData[userData].square.currentCoord.topLeft.y,
-            24,
-            40
+            48,
+            48
           );
         }
         if (gameData[userData].moveDirection === UserMoveDirections.left) {
           ctx.drawImage(
             imgCompareObj[gameData[userData].imgName],
-            frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
+            frameObj.mainFrame === 0 ? 12 : frameObj.mainFrame * 64 + 12,
             coopGameSpritesData[gameData[userData].objectType].left,
-            24,
-            40,
+            48,
+            48,
             gameData[userData].square.currentCoord.topLeft.x,
             gameData[userData].square.currentCoord.topLeft.y,
-            24,
-            40
+            48,
+            48
           );
         }
         if (gameData[userData].moveDirection === UserMoveDirections.right) {
           ctx.drawImage(
             imgCompareObj[gameData[userData].imgName],
-            frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
+            frameObj.mainFrame === 0 ? 12 : frameObj.mainFrame * 64 + 12,
             coopGameSpritesData[gameData[userData].objectType].right,
-            24,
-            40,
+            48,
+            48,
             gameData[userData].square.currentCoord.topLeft.x,
             gameData[userData].square.currentCoord.topLeft.y,
-            24,
-            40
+            48,
+            48
           );
         }
         if (gameData[userData].moveDirection === UserMoveDirections.down) {
           ctx.drawImage(
             imgCompareObj[gameData[userData].imgName],
-            frameObj.mainFrame === 0 ? 22 : frameObj.mainFrame * 64 + 22,
+            frameObj.mainFrame === 0 ? 12 : frameObj.mainFrame * 64 + 12,
             coopGameSpritesData[gameData[userData].objectType].down,
-            24,
-            40,
+            48,
+            48,
             gameData[userData].square.currentCoord.topLeft.x,
             gameData[userData].square.currentCoord.topLeft.y,
-            24,
-            40
+            48,
+            48
+          );
+        }
+        if (gameData[userData].type === "NPC") {
+          ctx.drawImage(
+            imgResources.NPCHPImg,
+            5,
+            5,
+            50,
+            50,
+            gameData[userData].square.currentCoord.topLeft.x,
+            gameData[userData].square.currentCoord.topLeft.y,
+            16,
+            16
           );
         }
       }
@@ -146,6 +144,7 @@ const RoomGameField = () => {
 
   useEffect(() => {
     var ctx2 = backgroundCanvasRef.current.getContext("2d");
+    // backgroundCanvasRef.current.requestFullscreen();
 
     if (imgResources.grassTextureImg) {
       ctx2.drawImage(imgResources.grassTextureImg, 0, 0, 300, 300);
@@ -178,21 +177,24 @@ const RoomGameField = () => {
   }, [gameFieldData]);
 
   return (
-    <div className=" relative">
-      <canvas id="canvas" width={300} height={300}></canvas>
-      <canvas
-        className=" absolute top-px z-20"
-        id="canvas"
-        width={300}
-        height={300}
-        ref={canvasRef}
-      ></canvas>
-      <canvas
-        className=" absolute z-10 top-px"
-        ref={backgroundCanvasRef}
-        width={300}
-        height={300}
-      ></canvas>
+    <div>
+      <div className=" relative">
+        <canvas id="canvas" width={300} height={300}></canvas>
+        <canvas
+          className=" absolute top-px z-20"
+          id="canvas"
+          width={300}
+          height={300}
+          ref={objectsCanvasRef}
+        ></canvas>
+        <canvas
+          className=" absolute z-10 top-px"
+          ref={backgroundCanvasRef}
+          width={300}
+          height={300}
+        ></canvas>
+      </div>
+      <div>{/* <canvas ref={UserStatCanvasRef} width={300} height={100}></canvas> */}</div>
     </div>
   );
 };

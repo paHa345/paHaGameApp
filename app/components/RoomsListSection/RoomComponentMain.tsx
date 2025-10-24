@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import RoomGameField from "./RoomGameField";
 
 const RoomComponentMain = () => {
+  const testCanvasRef = useRef(null) as any;
   const [startTouchCoord, setStartTouchCoord] = useState<any>();
   const [moveDitection, setmoveDitection] = useState<any>();
 
@@ -45,6 +46,7 @@ const RoomComponentMain = () => {
   const orcImgWalkImg = new Image();
   const orcImgAttackImg = new Image();
   const orcImgGetDamageImg = new Image();
+  const NPCHPImg = new Image();
 
   useEffect(() => {
     // userImgAttack.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_Attack_with_shadow.png";
@@ -69,6 +71,10 @@ const RoomComponentMain = () => {
         name: orcImgGetDamageImg,
         src: "/Orc/orc3_hurt_with_shadow.png",
       },
+      {
+        name: NPCHPImg,
+        src: "/HPImage/NPCHPImage.png",
+      },
     ];
 
     const setImgSrc = () => {
@@ -91,6 +97,7 @@ const RoomComponentMain = () => {
         orcImgWalkImg: orcImgWalkImg,
         orcImgAttackImg: orcImgAttackImg,
         orcImgGetDamageImg: orcImgGetDamageImg,
+        NPCHPImg: NPCHPImg,
       })
     );
 
@@ -434,7 +441,7 @@ const RoomComponentMain = () => {
     socket?.on("sendDataFromServer", (serverData: any) => {
       dispatch(CoopGamesActions.setSquareCoordinates(serverData.users));
       dispatch(CoopGamesActions.setAttackStatusObj(serverData.attackStatus));
-      // dispatch(CoopGamesActions.setGameFieldData(serverData.gameField));
+      dispatch(CoopGamesActions.setGameFieldData(serverData.gameField));
       dispatch(CoopGamesActions.setFraneObj(serverData.frameObj));
     });
 
