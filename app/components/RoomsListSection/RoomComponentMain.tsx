@@ -484,6 +484,23 @@ const RoomComponentMain = () => {
     }
   }, [messagesArr]);
 
+  useEffect(() => {
+    const handleEvent = (ev: KeyboardEvent) => {
+      if (ev.code === "Space") {
+        console.log(`yourkey is ${ev.code}!`);
+        socket?.emit("clientStartAttack", {
+          roomID: currentJoinedRoomID,
+        });
+      }
+    };
+
+    window.addEventListener("keyup", handleEvent);
+
+    return () => {
+      window.removeEventListener("keyup", handleEvent);
+    };
+  }, [socket]);
+
   return (
     <>
       <div className=" pt-5">
