@@ -47,6 +47,7 @@ const RoomComponentMain = () => {
   const orcImgAttackImg = new Image();
   const orcImgGetDamageImg = new Image();
   const NPCHPImg = new Image();
+  const userStatsIcon = new Image();
 
   useEffect(() => {
     // userImgAttack.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_Attack_with_shadow.png";
@@ -75,6 +76,10 @@ const RoomComponentMain = () => {
         name: NPCHPImg,
         src: "/HPImage/NPCHPImage.png",
       },
+      {
+        name: userStatsIcon,
+        src: "/UserStatImages/userStatsIcon.png",
+      },
     ];
 
     const setImgSrc = () => {
@@ -98,6 +103,7 @@ const RoomComponentMain = () => {
         orcImgAttackImg: orcImgAttackImg,
         orcImgGetDamageImg: orcImgGetDamageImg,
         NPCHPImg: NPCHPImg,
+        userStatsIcon: userStatsIcon,
       })
     );
 
@@ -381,9 +387,13 @@ const RoomComponentMain = () => {
     socket?.on("startGameInRoom", (gameData) => {
       console.log(socket.id);
       console.log(gameData);
+
+      if (!socket.id) return;
+      // console.log(gameData.statsObj.gamers[socket.id]);
       dispatch(CoopGamesActions.addDataInFrameObject(gameData.frameObject.objects));
       dispatch(CoopGamesActions.setSquareCoordinates(gameData.usersData));
       dispatch(CoopGamesActions.setGameFieldData(gameData.gameFieldData));
+      dispatch(CoopGamesActions.setStatObj(gameData.statsObj));
     });
     socket?.on("serverMove", (gameData) => {
       dispatch(CoopGamesActions.setSquareCoordinates(gameData));
@@ -441,7 +451,7 @@ const RoomComponentMain = () => {
     socket?.on("sendDataFromServer", (serverData: any) => {
       dispatch(CoopGamesActions.setSquareCoordinates(serverData.users));
       dispatch(CoopGamesActions.setAttackStatusObj(serverData.attackStatus));
-      dispatch(CoopGamesActions.setGameFieldData(serverData.gameField));
+      // dispatch(CoopGamesActions.setGameFieldData(serverData.gameField));
       dispatch(CoopGamesActions.setFraneObj(serverData.frameObj));
     });
 

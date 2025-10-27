@@ -49,6 +49,7 @@ export interface ICoopGamesSlice {
       orcImgAttackImg?: HTMLImageElement;
       orcImgGetDamageImg?: HTMLImageElement;
       NPCHPImg?: HTMLImageElement;
+      userStatsIcon?: HTMLImageElement;
     };
 
     test: string;
@@ -86,6 +87,27 @@ export interface ICoopGamesSlice {
         time?: number | undefined;
         isCooldown: boolean;
         isActive: boolean;
+      };
+    };
+
+    statObj: {
+      NPC: {
+        [objectID: string]: {
+          currentHP: number;
+          baseHP: number;
+          currentArmour: number;
+          currentDamage: number;
+          percentHP: number;
+        };
+      };
+      gamers: {
+        [objectID: string]: {
+          currentHP: number;
+          baseHP: number;
+          currentArmour: number;
+          currentDamage: number;
+          percentHP: number;
+        };
       };
     };
 
@@ -186,6 +208,7 @@ interface ICoopGamesState {
     orcImgAttackImg?: HTMLImageElement;
     orcImgGetDamageImg?: HTMLImageElement;
     NPCHPImg?: HTMLImageElement;
+    userStatsIcon?: HTMLImageElement;
   };
   messagesArr: {
     [name: string]: [
@@ -220,6 +243,27 @@ interface ICoopGamesState {
       time?: number | undefined;
       isCooldown: boolean;
       isActive: boolean;
+    };
+  };
+
+  statObj: {
+    NPC: {
+      [objectID: string]: {
+        currentHP: number;
+        baseHP: number;
+        currentArmour: number;
+        currentDamage: number;
+        percentHP: number;
+      };
+    };
+    gamers: {
+      [objectID: string]: {
+        currentHP: number;
+        baseHP: number;
+        currentArmour: number;
+        currentDamage: number;
+        percentHP: number;
+      };
     };
   };
   socket?: io.Socket;
@@ -317,6 +361,10 @@ export const CoopGamesState: ICoopGamesState = {
     objects: {},
   },
   attackStatusObj: {},
+  statObj: {
+    NPC: {},
+    gamers: {},
+  },
   currentRoomUsersArr: [],
   messagesArr: {},
   allGamesRoomsList: [],
@@ -458,6 +506,9 @@ export const CoopGamesSlice = createSlice({
     },
     setImgResources(state, action) {
       state.imgResources = action.payload;
+    },
+    setStatObj(state, action) {
+      state.statObj = action.payload;
     },
   },
   extraReducers: (builder) => {

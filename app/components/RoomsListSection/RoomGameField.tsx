@@ -1,7 +1,6 @@
 import { AppDispatch } from "@/app/store";
 import { CoopGamesActions, ICoopGamesSlice, UserMoveDirections } from "@/app/store/CoopGamesSlice";
 import { coopGameSpritesData } from "@/app/types";
-import { div } from "framer-motion/client";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -17,6 +16,8 @@ const RoomGameField = () => {
   const attackDataObj = useSelector(
     (state: ICoopGamesSlice) => state.CoopGamesState.attackStatusObj
   );
+
+  const statObj = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.statObj);
   const frameObj = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.frameObj);
   const gameData = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.squareCoordinates);
   const gameFieldData = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.gameFieldData);
@@ -69,7 +70,6 @@ const RoomGameField = () => {
           gamerGetDamageImage: imgResources.userImgWalk,
           NPCHPImg: imgResources.NPCHPImg,
         };
-
         if (
           gameData[userData].moveDirection === UserMoveDirections.stop ||
           gameData[userData].moveDirection === UserMoveDirections.up
@@ -174,12 +174,28 @@ const RoomGameField = () => {
         }
       }
     }
+
+    var ctxUserStata = UserStatCanvasRef.current.getContext("2d");
+    ctxUserStata.clearRect(0, 0, 300, 50);
+
+    ctxUserStata.globalAlpha = 0.1;
+    ctxUserStata.fillStyle = "e3dae0";
+    ctxUserStata.fillRect(0, 0, 300, 50);
+
+    ctxUserStata.globalAlpha = 1;
+
+    if (imgResources.userStatsIcon) {
+      ctxUserStata.drawImage(imgResources.userStatsIcon, 10, 10, 90, 90, 10, 5, 20, 20);
+      ctxUserStata.drawImage(imgResources.userStatsIcon, 150, 10, 90, 90, 58, 5, 20, 20);
+      ctxUserStata.drawImage(imgResources.userStatsIcon, 300, 10, 90, 90, 30, 28, 20, 20);
+      ctxUserStata.drawImage(imgResources.userStatsIcon, 450, 10, 90, 90, 120, 5, 40, 40);
+    }
   }, [gameFieldData]);
 
   return (
     <div>
       <div className=" relative">
-        <canvas id="canvas" width={300} height={300}></canvas>
+        <canvas id="canvas" width={300} height={350}></canvas>
         <canvas
           className=" absolute top-px z-20"
           id="canvas"
@@ -193,8 +209,32 @@ const RoomGameField = () => {
           width={300}
           height={300}
         ></canvas>
+        <canvas
+          className=" absolute z-10 bottom-0"
+          ref={UserStatCanvasRef}
+          width={300}
+          height={50}
+        ></canvas>
+        {socket?.id !== undefined && statObj.gamers[socket.id] && (
+          <div className=" relative">
+            <div className=" absolute z-10 bottom-8 left-9">
+              <p className=" font-light text-center">
+                {socket?.id !== undefined ? Number(statObj.gamers[socket.id].baseHP) : 10}
+              </p>
+            </div>
+            <div className=" absolute z-10 bottom-8 left-24">
+              <p className=" font-light text-center">
+                {socket?.id !== undefined ? Number(statObj.gamers[socket.id].currentArmour) : 10}
+              </p>
+            </div>
+            <div className=" absolute z-10 bottom-1 left-16 ">
+              <p className=" font-light text-center">
+                {socket?.id !== undefined ? Number(statObj.gamers[socket.id].currentDamage) : 10}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
-      <div>{/* <canvas ref={UserStatCanvasRef} width={300} height={100}></canvas> */}</div>
     </div>
   );
 };
