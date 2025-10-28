@@ -510,6 +510,9 @@ export const CoopGamesSlice = createSlice({
     setStatObj(state, action) {
       state.statObj = action.payload;
     },
+    setUnderAttackNPCObjStat(state, action) {
+      state.statObj.NPC[action.payload.underAttackObjID] = action.payload.underAttackObjStat;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getAllRoomsList.pending, (state) => {

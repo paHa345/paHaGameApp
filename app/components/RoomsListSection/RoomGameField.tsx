@@ -126,17 +126,58 @@ const RoomGameField = () => {
           );
         }
         if (gameData[userData].type === "NPC") {
-          ctx.drawImage(
-            imgResources.NPCHPImg,
-            5,
-            5,
-            50,
-            50,
-            gameData[userData].square.currentCoord.topLeft.x,
-            gameData[userData].square.currentCoord.topLeft.y,
-            16,
-            16
-          );
+          ctx.globalAlpha = 0.5;
+
+          if (statObj.NPC[userData].percentHP < 25) {
+            ctx.drawImage(
+              imgResources.NPCHPImg,
+              155,
+              5,
+              50,
+              50,
+              gameData[userData].square.currentCoord.topLeft.x,
+              gameData[userData].square.currentCoord.topLeft.y,
+              24,
+              24
+            );
+          } else if (statObj.NPC[userData].percentHP < 50) {
+            ctx.drawImage(
+              imgResources.NPCHPImg,
+              105,
+              5,
+              50,
+              50,
+              gameData[userData].square.currentCoord.topLeft.x,
+              gameData[userData].square.currentCoord.topLeft.y,
+              24,
+              24
+            );
+          } else if (statObj.NPC[userData].percentHP < 75) {
+            ctx.drawImage(
+              imgResources.NPCHPImg,
+              55,
+              5,
+              50,
+              50,
+              gameData[userData].square.currentCoord.topLeft.x,
+              gameData[userData].square.currentCoord.topLeft.y,
+              24,
+              24
+            );
+          } else if (statObj.NPC[userData].percentHP <= 100) {
+            ctx.drawImage(
+              imgResources.NPCHPImg,
+              5,
+              5,
+              50,
+              50,
+              gameData[userData].square.currentCoord.topLeft.x,
+              gameData[userData].square.currentCoord.topLeft.y,
+              24,
+              24
+            );
+          }
+          ctx.globalAlpha = 1;
         }
       }
     }

@@ -451,9 +451,25 @@ const RoomComponentMain = () => {
     socket?.on("sendDataFromServer", (serverData: any) => {
       dispatch(CoopGamesActions.setSquareCoordinates(serverData.users));
       dispatch(CoopGamesActions.setAttackStatusObj(serverData.attackStatus));
-      // dispatch(CoopGamesActions.setGameFieldData(serverData.gameField));
+      dispatch(CoopGamesActions.setGameFieldData(serverData.gameField));
       dispatch(CoopGamesActions.setFraneObj(serverData.frameObj));
     });
+    socket?.on(
+      "serverUnderAttackObjectStat",
+      (serverData: {
+        underAttackObjID: string;
+        underAttackObjStat: {
+          baseHP: number;
+          currentArmour: number;
+          currentDamage: number;
+          currentHP: number;
+          percentHP: number;
+        };
+      }) => {
+        console.log(serverData);
+        dispatch(CoopGamesActions.setUnderAttackNPCObjStat(serverData));
+      }
+    );
 
     return () => {
       socket?.off("roomGTSGameMessage");
@@ -472,6 +488,7 @@ const RoomComponentMain = () => {
       socket?.off("serverStopAttack");
       socket?.off("serverResetCooldown");
       socket?.off("sendDataFromServer");
+      socket?.off("serverUnderAttackObjectStat");
     };
   }, [socket]);
 
