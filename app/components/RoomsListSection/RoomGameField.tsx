@@ -36,25 +36,25 @@ const RoomGameField = () => {
 
   // requestAnimationFrame(step);
 
-  // useEffect(() => {
-  //   let time: number;
-  //   let timerID: any;
+  useEffect(() => {
+    let time: number;
+    let timerID: any;
 
-  //   function step(timestamp: number) {
-  //     if (!time) {
-  //       time = timestamp;
-  //     }
+    function step(timestamp: number) {
+      if (!time) {
+        time = timestamp;
+      }
 
-  //     if (timestamp - time > 150) {
-  //       time = timestamp;
-  //       dispatch(CoopGamesActions.increaseFrameNumber());
-  //     }
-  //     timerID = requestAnimationFrame(step);
-  //   }
+      if (timestamp - time > 150) {
+        time = timestamp;
+        dispatch(CoopGamesActions.increaseFrameNumber());
+      }
+      timerID = requestAnimationFrame(step);
+    }
 
-  //   timerID = requestAnimationFrame(step);
-  //   return () => cancelAnimationFrame(timerID);
-  // }, []);
+    timerID = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(timerID);
+  }, []);
 
   useEffect(() => {
     if (gameData) {
@@ -65,18 +65,24 @@ const RoomGameField = () => {
           orc3AttackImage: imgResources.orcImgAttackImg,
           orc3WalkImage: imgResources.orcImgWalkImg,
           orc3GetDamageImage: imgResources.orcImgGetDamageImg,
+          orc3DeathImage: imgResources.orcImgDeathImg,
           gamerAttackImage: imgResources.userImgAttack,
           gamerWalkImage: imgResources.userImgWalk,
           gamerGetDamageImage: imgResources.userImgWalk,
           NPCHPImg: imgResources.NPCHPImg,
         };
+
+        if (!frameObj.objects[userData]) return;
+
         if (
           gameData[userData].moveDirection === UserMoveDirections.stop ||
           gameData[userData].moveDirection === UserMoveDirections.up
         ) {
           ctx.drawImage(
             imgCompareObj[gameData[userData].imgName],
-            frameObj.mainFrame === 0 ? 12 : frameObj.mainFrame * 64 + 12,
+            frameObj.objects[userData].idFrame === 0
+              ? 12
+              : frameObj.objects[userData].idFrame * 64 + 12,
             coopGameSpritesData[gameData[userData].objectType].up,
             48,
             48,
@@ -89,7 +95,9 @@ const RoomGameField = () => {
         if (gameData[userData].moveDirection === UserMoveDirections.left) {
           ctx.drawImage(
             imgCompareObj[gameData[userData].imgName],
-            frameObj.mainFrame === 0 ? 12 : frameObj.mainFrame * 64 + 12,
+            frameObj.objects[userData].idFrame === 0
+              ? 12
+              : frameObj.objects[userData].idFrame * 64 + 12,
             coopGameSpritesData[gameData[userData].objectType].left,
             48,
             48,
@@ -102,7 +110,9 @@ const RoomGameField = () => {
         if (gameData[userData].moveDirection === UserMoveDirections.right) {
           ctx.drawImage(
             imgCompareObj[gameData[userData].imgName],
-            frameObj.mainFrame === 0 ? 12 : frameObj.mainFrame * 64 + 12,
+            frameObj.objects[userData].idFrame === 0
+              ? 12
+              : frameObj.objects[userData].idFrame * 64 + 12,
             coopGameSpritesData[gameData[userData].objectType].right,
             48,
             48,
@@ -115,7 +125,9 @@ const RoomGameField = () => {
         if (gameData[userData].moveDirection === UserMoveDirections.down) {
           ctx.drawImage(
             imgCompareObj[gameData[userData].imgName],
-            frameObj.mainFrame === 0 ? 12 : frameObj.mainFrame * 64 + 12,
+            frameObj.objects[userData].idFrame === 0
+              ? 12
+              : frameObj.objects[userData].idFrame * 64 + 12,
             coopGameSpritesData[gameData[userData].objectType].down,
             48,
             48,
@@ -126,6 +138,7 @@ const RoomGameField = () => {
           );
         }
         if (gameData[userData].type === "NPC") {
+          if (!statObj.NPC[userData]) return;
           ctx.globalAlpha = 0.5;
 
           if (statObj.NPC[userData].percentHP < 25) {

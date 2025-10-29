@@ -48,6 +48,7 @@ export interface ICoopGamesSlice {
       orcImgWalkImg?: HTMLImageElement;
       orcImgAttackImg?: HTMLImageElement;
       orcImgGetDamageImg?: HTMLImageElement;
+      orcImgDeathImg?: HTMLImageElement;
       NPCHPImg?: HTMLImageElement;
       userStatsIcon?: HTMLImageElement;
     };
@@ -207,6 +208,7 @@ interface ICoopGamesState {
     orcImgWalkImg?: HTMLImageElement;
     orcImgAttackImg?: HTMLImageElement;
     orcImgGetDamageImg?: HTMLImageElement;
+    orcImgDeathImg?: HTMLImageElement;
     NPCHPImg?: HTMLImageElement;
     userStatsIcon?: HTMLImageElement;
   };

@@ -46,6 +46,7 @@ const RoomComponentMain = () => {
   const orcImgWalkImg = new Image();
   const orcImgAttackImg = new Image();
   const orcImgGetDamageImg = new Image();
+  const orcImgDeathImg = new Image();
   const NPCHPImg = new Image();
   const userStatsIcon = new Image();
 
@@ -71,6 +72,10 @@ const RoomComponentMain = () => {
       {
         name: orcImgGetDamageImg,
         src: "/Orc/orc3_hurt_with_shadow.png",
+      },
+      {
+        name: orcImgDeathImg,
+        src: "/Orc/orc3_death_with_shadow.png",
       },
       {
         name: NPCHPImg,
@@ -102,6 +107,7 @@ const RoomComponentMain = () => {
         orcImgWalkImg: orcImgWalkImg,
         orcImgAttackImg: orcImgAttackImg,
         orcImgGetDamageImg: orcImgGetDamageImg,
+        orcImgDeathImg: orcImgDeathImg,
         NPCHPImg: NPCHPImg,
         userStatsIcon: userStatsIcon,
       })
@@ -452,7 +458,7 @@ const RoomComponentMain = () => {
       dispatch(CoopGamesActions.setSquareCoordinates(serverData.users));
       dispatch(CoopGamesActions.setAttackStatusObj(serverData.attackStatus));
       // dispatch(CoopGamesActions.setGameFieldData(serverData.gameField));
-      dispatch(CoopGamesActions.setFraneObj(serverData.frameObj));
+      // dispatch(CoopGamesActions.setFraneObj(serverData.frameObj));
     });
     socket?.on(
       "serverUnderAttackObjectStat",
