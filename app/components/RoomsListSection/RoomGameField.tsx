@@ -1,6 +1,6 @@
 import { AppDispatch } from "@/app/store";
 import { CoopGamesActions, ICoopGamesSlice, UserMoveDirections } from "@/app/store/CoopGamesSlice";
-import { coopGameSpritesData } from "@/app/types";
+import { coopGameSpritesData, ImageNames } from "@/app/types";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -11,6 +11,9 @@ const RoomGameField = () => {
   const UserStatCanvasRef = useRef(null) as any;
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
 
+  const currentMapSize = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.currentMapSize
+  );
   const imgResources = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.imgResources);
 
   const attackDataObj = useSelector(
@@ -21,6 +24,8 @@ const RoomGameField = () => {
   const frameObj = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.frameObj);
   const gameData = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.squareCoordinates);
   const gameFieldData = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.gameFieldData);
+
+  const basePosition = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.basePosition);
 
   // let time: number;
   // function step(timestamp: number) {
@@ -57,9 +62,16 @@ const RoomGameField = () => {
   }, []);
 
   useEffect(() => {
-    if (gameData) {
+    if (!socket?.id) return;
+    if (!gameData) return;
+    if (gameData && gameData[socket.id]) {
       var ctx = objectsCanvasRef.current.getContext("2d");
-      ctx.clearRect(0, 0, 400, 400);
+      ctx.clearRect(
+        gameData[socket.id].square.currentCoord.topLeft.x - 200,
+        gameData[socket.id].square.currentCoord.topLeft.y - 200,
+        450,
+        450
+      );
       for (let userData in gameData) {
         const imgCompareObj = {
           orc3AttackImage: imgResources.orcImgAttackImg,
@@ -70,6 +82,7 @@ const RoomGameField = () => {
           gamerWalkImage: imgResources.userImgWalk,
           gamerGetDamageImage: imgResources.userImgWalk,
           NPCHPImg: imgResources.NPCHPImg,
+          rocksAndStones: imgResources.rocksAndStones,
         };
 
         if (!frameObj.objects[userData]) return;
@@ -201,15 +214,25 @@ const RoomGameField = () => {
     // backgroundCanvasRef.current.requestFullscreen();
 
     if (imgResources.grassTextureImg) {
-      ctx2.drawImage(imgResources.grassTextureImg, 0, 0, 300, 300);
+      ctx2.drawImage(imgResources.grassTextureImg, 0, 0, currentMapSize * 8, currentMapSize * 8);
     }
 
     for (const i in gameFieldData) {
       for (const j in gameFieldData[i]) {
         if (!Object.hasOwn(gameFieldData[i], j)) continue;
 
-        if (gameFieldData[i][j].type === "stone") {
-          ctx2.drawImage(imgResources.rockTextureImg, Number(j) * 8, Number(i) * 8, 8, 8);
+        if (gameFieldData[i][j].textureObj) {
+          ctx2.drawImage(
+            imgResources.rocksAndStones,
+            gameFieldData[i][j].textureObj.XSpriteCoord,
+            gameFieldData[i][j].textureObj.YSpriteCoord,
+            64,
+            64,
+            Number(j) * 8,
+            Number(i) * 8,
+            32,
+            32
+          );
         }
 
         if (gameFieldData[i][j].objectDataChank.isObjectChank) {
@@ -244,25 +267,88 @@ const RoomGameField = () => {
       ctxUserStata.drawImage(imgResources.userStatsIcon, 300, 10, 90, 90, 30, 28, 20, 20);
       ctxUserStata.drawImage(imgResources.userStatsIcon, 450, 10, 90, 90, 120, 5, 40, 40);
     }
-  }, [gameFieldData]);
+  }, [gameFieldData, currentMapSize]);
+
+  useEffect(() => {
+    const questionStatusContainer = document.querySelector(".gameContainer");
+    if (!gameData) return;
+    if (!socket?.id) return;
+    if (!gameData[socket.id]) return;
+    // console.log(gameData[socket.id].square.currentCoord.topLeft.x);
+    // console.log(gameData[socket.id].square.currentCoord.topLeft.y);
+
+    // if (gameData[socket.id].square.currentCoord.topLeft.x > 180) {
+    //   questionStatusContainer?.scrollTo({
+    //     left: 60,
+    //     // top: gameData[socket.id].square.currentCoord.topLeft.y - 150,
+    //     behavior: "smooth",
+    //   });
+    // }
+
+    questionStatusContainer?.scrollTo({
+      left: gameData[socket.id].square.currentCoord.topLeft.x - 150,
+      top: gameData[socket.id].square.currentCoord.topLeft.y - 150,
+      // behavior: "smooth",
+    });
+
+    // if (
+    //   gameData[socket.id].moveDirection === UserMoveDirections.right &&
+    //   gameData[socket.id].square.currentCoord.topLeft.x - basePosition.x > 150
+    // ) {
+    //   console.log(gameData[socket.id].moveDirection);
+    //   console.log(basePosition.x);
+    //   dispatch(CoopGamesActions.setBasePosition({ x: basePosition.x + 16, y: 0 }));
+    //   questionStatusContainer?.scrollTo({
+    //     left: basePosition.x - 8,
+    //     // top: gameData[socket.id].square.currentCoord.topLeft.y - 150,
+    //     behavior: "smooth",
+    //   });
+    // }
+    // // console.log(gameData[socket.id].square.currentCoord.topLeft.x);
+
+    // // console.log(
+    // //   gameData[socket.id].moveDirection === UserMoveDirections.left &&
+    // //     gameData[socket.id].square.currentCoord.topLeft.x < basePosition.x
+    // // );
+    // if (
+    //   gameData[socket.id].moveDirection === UserMoveDirections.left &&
+    //   gameData[socket.id].square.currentCoord.topLeft.x < basePosition.x
+    // ) {
+    //   console.log(basePosition.x);
+    //   console.log(gameData[socket.id].square.currentCoord.topLeft.x);
+    //   dispatch(
+    //     CoopGamesActions.setBasePosition({
+    //       x: basePosition.x - 16,
+    //       y: 0,
+    //     })
+    //   );
+    //   questionStatusContainer?.scrollTo({
+    //     left: basePosition.x - 120,
+    //     // top: gameData[socket.id].square.currentCoord.topLeft.y - 150,
+    //     behavior: "smooth",
+    //   });
+    // }
+  }, [gameData, basePosition]);
 
   return (
     <div>
-      <div className=" relative">
+      <div className=" relative ">
         <canvas id="canvas" width={300} height={350}></canvas>
-        <canvas
-          className=" absolute top-px z-20"
-          id="canvas"
-          width={300}
-          height={300}
-          ref={objectsCanvasRef}
-        ></canvas>
-        <canvas
-          className=" absolute z-10 top-px"
-          ref={backgroundCanvasRef}
-          width={300}
-          height={300}
-        ></canvas>
+        <div className=" gameContainer absolute top-px  h-80 w-80 overflow-hidden   ">
+          <canvas
+            className=" absolute top-px z-20"
+            id="canvas"
+            width={currentMapSize * 8}
+            height={currentMapSize * 8}
+            ref={objectsCanvasRef}
+          ></canvas>
+          <canvas
+            className=" absolute z-10 top-px"
+            ref={backgroundCanvasRef}
+            width={currentMapSize * 8}
+            height={currentMapSize * 8}
+          ></canvas>
+        </div>
         <canvas
           className=" absolute z-10 bottom-0"
           ref={UserStatCanvasRef}

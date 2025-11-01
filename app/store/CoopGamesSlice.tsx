@@ -51,9 +51,14 @@ export interface ICoopGamesSlice {
       orcImgDeathImg?: HTMLImageElement;
       NPCHPImg?: HTMLImageElement;
       userStatsIcon?: HTMLImageElement;
+      rocksAndStones?: HTMLImageElement;
     };
 
     test: string;
+    basePosition: {
+      x: number;
+      y: number;
+    };
     messagesArr: {
       [name: string]: [
         {
@@ -111,6 +116,8 @@ export interface ICoopGamesSlice {
         };
       };
     };
+
+    currentMapSize: number;
 
     socket?: io.Socket;
     showRoomStatus: boolean;
@@ -192,6 +199,12 @@ export interface ICoopGamesSlice {
             bottomLeft: { x: number; y: number };
             bottomRight: { x: number; y: number };
           };
+
+          textureObj?: {
+            imageName: string;
+            XSpriteCoord: number;
+            YSpriteCoord: number;
+          };
         };
       };
     };
@@ -211,6 +224,12 @@ interface ICoopGamesState {
     orcImgDeathImg?: HTMLImageElement;
     NPCHPImg?: HTMLImageElement;
     userStatsIcon?: HTMLImageElement;
+    rocksAndStones?: HTMLImageElement;
+  };
+
+  basePosition: {
+    x: number;
+    y: number;
   };
   messagesArr: {
     [name: string]: [
@@ -271,6 +290,7 @@ interface ICoopGamesState {
   socket?: io.Socket;
   showRoomStatus: boolean;
   currentJoinedRoomID?: string;
+  currentMapSize: number;
 
   allGamesRoomsList: { _id: string; name: string; isStarted: boolean }[];
   fetchAllGameRoomsStatus: CoopGamesFetchStatus;
@@ -350,6 +370,11 @@ interface ICoopGamesState {
           bottomLeft: { x: number; y: number };
           bottomRight: { x: number; y: number };
         };
+        textureObj?: {
+          imageName: string;
+          XSpriteCoord: number;
+          YSpriteCoord: number;
+        };
       };
     };
   };
@@ -362,6 +387,11 @@ export const CoopGamesState: ICoopGamesState = {
     mainFrame: 0,
     objects: {},
   },
+  basePosition: {
+    x: 0,
+    y: 0,
+  },
+  currentMapSize: 0,
   attackStatusObj: {},
   statObj: {
     NPC: {},
@@ -485,17 +515,25 @@ export const CoopGamesSlice = createSlice({
       state.frameObj.objects = action.payload;
     },
     increaseFrameNumber(state) {
+      // if (state.frameObj.mainFrame === 5) {
+      //   state.frameObj.mainFrame = 0;
+      //   for (const key in state.frameObj.objects) {
+      //     state.frameObj.objects[key].idFrame = 0;
+      //   }
+      // } else {
       if (state.frameObj.mainFrame === 5) {
         state.frameObj.mainFrame = 0;
-        for (const key in state.frameObj.objects) {
-          state.frameObj.objects[key].idFrame = 0;
-        }
       } else {
         state.frameObj.mainFrame = state.frameObj.mainFrame + 1;
-        for (const key in state.frameObj.objects) {
-          state.frameObj.objects[key].idFrame = state.frameObj.mainFrame;
+      }
+      for (const key in state.frameObj.objects) {
+        if (state.frameObj.objects[key].idFrame === 5) {
+          state.frameObj.objects[key].idFrame = 0;
+        } else {
+          state.frameObj.objects[key].idFrame = state.frameObj.objects[key].idFrame + 1;
         }
       }
+      // }
     },
     resetFrameNumber(state) {
       state.frameObj.mainFrame = 0;
@@ -503,6 +541,11 @@ export const CoopGamesSlice = createSlice({
         state.frameObj.objects[key].idFrame = 0;
       }
     },
+
+    setObjectStartFrame(state, action) {
+      state.frameObj.objects[action.payload].idFrame = 0;
+    },
+
     setTest(state, action) {
       state.test = action.payload;
     },
@@ -514,6 +557,12 @@ export const CoopGamesSlice = createSlice({
     },
     setUnderAttackNPCObjStat(state, action) {
       state.statObj.NPC[action.payload.underAttackObjID] = action.payload.underAttackObjStat;
+    },
+    setCurrentMapSize(state, action) {
+      state.currentMapSize = action.payload;
+    },
+    setBasePosition(state, action) {
+      state.basePosition = action.payload;
     },
   },
   extraReducers: (builder) => {

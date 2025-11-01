@@ -49,6 +49,7 @@ const RoomComponentMain = () => {
   const orcImgDeathImg = new Image();
   const NPCHPImg = new Image();
   const userStatsIcon = new Image();
+  const rocksAndStones = new Image();
 
   useEffect(() => {
     // userImgAttack.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_Attack_with_shadow.png";
@@ -85,6 +86,10 @@ const RoomComponentMain = () => {
         name: userStatsIcon,
         src: "/UserStatImages/userStatsIcon.png",
       },
+      {
+        name: rocksAndStones,
+        src: "/RocksAndStones/Rocks_source_texture_shadow_dark.png",
+      },
     ];
 
     const setImgSrc = () => {
@@ -110,6 +115,7 @@ const RoomComponentMain = () => {
         orcImgDeathImg: orcImgDeathImg,
         NPCHPImg: NPCHPImg,
         userStatsIcon: userStatsIcon,
+        rocksAndStones: rocksAndStones,
       })
     );
 
@@ -400,35 +406,18 @@ const RoomComponentMain = () => {
       dispatch(CoopGamesActions.setSquareCoordinates(gameData.usersData));
       dispatch(CoopGamesActions.setGameFieldData(gameData.gameFieldData));
       dispatch(CoopGamesActions.setStatObj(gameData.statsObj));
+      dispatch(CoopGamesActions.setCurrentMapSize(gameData.mapSize));
     });
     socket?.on("serverMove", (gameData) => {
       dispatch(CoopGamesActions.setSquareCoordinates(gameData));
     });
 
-    socket?.on(
-      "serverStartAttack",
-      (serverAttackData: {
-        attackStatusObj: {
-          [objectID: string]: {
-            time?: number | undefined;
-            isCooldown: boolean;
-            isActive: boolean;
-          };
-        };
-        roomID: string;
-        socketID: string;
-      }) => {
-        console.log(serverAttackData);
-        // dispatch(
-        //   CoopGamesActions.setUserAttackStatus({
-        //     isCooldown: serverAttackData.attackStatus.isCooldown,
-        //     time: serverAttackData.attackStatus.time,
-        //     socketID: serverAttackData.socketID,
-        //   })
-        // );
-        dispatch(CoopGamesActions.setAttackStatusObj(serverAttackData.attackStatusObj));
-      }
-    );
+    socket?.on("serverStartAttack", (attackObjectData: { attackObjectID: string }) => {
+      console.log(attackObjectData.attackObjectID);
+      dispatch(CoopGamesActions.setObjectStartFrame(attackObjectData.attackObjectID));
+
+      // dispatch(CoopGamesActions.setAttackStatusObj(serverAttackData.attackStatusObj));
+    });
     socket?.on(
       "serverStopAttack",
       (serverAttackData: {
@@ -473,9 +462,14 @@ const RoomComponentMain = () => {
         };
       }) => {
         console.log(serverData);
+        dispatch(CoopGamesActions.setObjectStartFrame(serverData.underAttackObjID));
         dispatch(CoopGamesActions.setUnderAttackNPCObjStat(serverData));
       }
     );
+
+    socket?.on("serverNPCDeathAnimationStatus0", (serverData: { underAttackObjectID: string }) => {
+      dispatch(CoopGamesActions.setObjectStartFrame(serverData.underAttackObjectID));
+    });
 
     return () => {
       socket?.off("roomGTSGameMessage");
@@ -495,6 +489,7 @@ const RoomComponentMain = () => {
       socket?.off("serverResetCooldown");
       socket?.off("sendDataFromServer");
       socket?.off("serverUnderAttackObjectStat");
+      socket?.off("serverNPCDeathAnimationStatus");
     };
   }, [socket]);
 

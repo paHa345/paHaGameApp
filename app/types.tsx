@@ -513,4 +513,5 @@ export type ImageNames =
   | "orc3GetDamageImage"
   | "gamerAttackImage"
   | "gamerWalkImage"
-  | "gamerGetDamageImage";
+  | "gamerGetDamageImage"
+  | "rocksAndStones";
