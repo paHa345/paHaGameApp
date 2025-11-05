@@ -67,10 +67,10 @@ const RoomGameField = () => {
     if (gameData && gameData[socket.id]) {
       var ctx = objectsCanvasRef.current.getContext("2d");
       ctx.clearRect(
-        gameData[socket.id].square.currentCoord.topLeft.x - 200,
+        gameData[socket.id].square.currentCoord.topLeft.x - 350,
         gameData[socket.id].square.currentCoord.topLeft.y - 200,
-        450,
-        450
+        550,
+        550
       );
       for (let userData in gameData) {
         const imgCompareObj = {
