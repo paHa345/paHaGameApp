@@ -470,6 +470,9 @@ const RoomComponentMain = () => {
     socket?.on("serverNPCDeathAnimationStatus0", (serverData: { underAttackObjectID: string }) => {
       dispatch(CoopGamesActions.setObjectStartFrame(serverData.underAttackObjectID));
     });
+    socket?.on("serverNPCAttackChanks", (serverData) => {
+      console.log(serverData);
+    });
 
     return () => {
       socket?.off("roomGTSGameMessage");
@@ -490,6 +493,7 @@ const RoomComponentMain = () => {
       socket?.off("sendDataFromServer");
       socket?.off("serverUnderAttackObjectStat");
       socket?.off("serverNPCDeathAnimationStatus");
+      socket?.off("serverNPCAttackChanks");
     };
   }, [socket]);
 
