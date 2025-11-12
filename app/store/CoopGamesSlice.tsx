@@ -175,6 +175,8 @@ export interface ICoopGamesSlice {
           leftChanks?: { [coord: string]: { x: number; y: number } };
         };
         moveDirection: UserMoveDirections;
+        NPCViewDirection?: UserMoveDirections;
+
         userRole: string;
         attackStatus: { time?: number };
       };
@@ -190,6 +192,7 @@ export interface ICoopGamesSlice {
           objectDataChank: {
             objectID?: string;
             isObjectChank: boolean;
+            isGamerChank: boolean | null;
           };
 
           // type: string;
@@ -346,6 +349,8 @@ interface ICoopGamesState {
         leftChanks?: { [coord: string]: { x: number; y: number } };
       };
       moveDirection: UserMoveDirections;
+      NPCViewDirection?: UserMoveDirections;
+
       userRole: string;
       attackStatus: { time?: number };
     };
@@ -362,6 +367,7 @@ interface ICoopGamesState {
         objectDataChank: {
           objectID?: string;
           isObjectChank: boolean;
+          isGamerChank: boolean | null;
         };
 
         coord: {

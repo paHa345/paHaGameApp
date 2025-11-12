@@ -87,6 +87,30 @@ const RoomGameField = () => {
 
         if (!frameObj.objects[userData]) return;
 
+        let NPCViewDirection;
+        const setObjectViewDirection = () => {
+          if (!gameData[userData].NPCViewDirection) {
+            return;
+          }
+          if (
+            gameData[userData].NPCViewDirection === UserMoveDirections.up ||
+            gameData[userData].NPCViewDirection === UserMoveDirections.stop
+          ) {
+            NPCViewDirection = coopGameSpritesData[gameData[userData].objectType].up;
+          }
+          if (gameData[userData].NPCViewDirection === UserMoveDirections.down) {
+            NPCViewDirection = coopGameSpritesData[gameData[userData].objectType].down;
+          }
+          if (gameData[userData].NPCViewDirection === UserMoveDirections.left) {
+            NPCViewDirection = coopGameSpritesData[gameData[userData].objectType].left;
+          }
+          if (gameData[userData].NPCViewDirection === UserMoveDirections.right) {
+            NPCViewDirection = coopGameSpritesData[gameData[userData].objectType].right;
+          }
+        };
+
+        setObjectViewDirection();
+
         if (
           gameData[userData].moveDirection === UserMoveDirections.stop ||
           gameData[userData].moveDirection === UserMoveDirections.up
@@ -96,7 +120,9 @@ const RoomGameField = () => {
             frameObj.objects[userData].idFrame === 0
               ? 12
               : frameObj.objects[userData].idFrame * 64 + 12,
-            coopGameSpritesData[gameData[userData].objectType].up,
+            NPCViewDirection
+              ? NPCViewDirection
+              : coopGameSpritesData[gameData[userData].objectType].up,
             48,
             48,
             gameData[userData].square.currentCoord.topLeft.x,
@@ -111,7 +137,9 @@ const RoomGameField = () => {
             frameObj.objects[userData].idFrame === 0
               ? 12
               : frameObj.objects[userData].idFrame * 64 + 12,
-            coopGameSpritesData[gameData[userData].objectType].left,
+            NPCViewDirection
+              ? NPCViewDirection
+              : coopGameSpritesData[gameData[userData].objectType].left,
             48,
             48,
             gameData[userData].square.currentCoord.topLeft.x,
@@ -126,7 +154,9 @@ const RoomGameField = () => {
             frameObj.objects[userData].idFrame === 0
               ? 12
               : frameObj.objects[userData].idFrame * 64 + 12,
-            coopGameSpritesData[gameData[userData].objectType].right,
+            NPCViewDirection
+              ? NPCViewDirection
+              : coopGameSpritesData[gameData[userData].objectType].right,
             48,
             48,
             gameData[userData].square.currentCoord.topLeft.x,
@@ -141,7 +171,9 @@ const RoomGameField = () => {
             frameObj.objects[userData].idFrame === 0
               ? 12
               : frameObj.objects[userData].idFrame * 64 + 12,
-            coopGameSpritesData[gameData[userData].objectType].down,
+            NPCViewDirection
+              ? NPCViewDirection
+              : coopGameSpritesData[gameData[userData].objectType].down,
             48,
             48,
             gameData[userData].square.currentCoord.topLeft.x,
@@ -235,6 +267,19 @@ const RoomGameField = () => {
           );
         }
 
+        // if (Number(i) === 16 && Number(j) === 10) {
+        //   ctx2.fillStyle = "red";
+        //   ctx2.fillRect(Number(j) * 8, Number(i) * 8, 8, 8);
+        // }
+        // if (Number(i) === 10 && Number(j) === 10) {
+        //   ctx2.fillStyle = "red";
+        //   ctx2.fillRect(Number(j) * 8, Number(i) * 8, 8, 8);
+        // }
+        // if (Number(i) === 10 && Number(j) === 14) {
+        //   ctx2.fillStyle = "red";
+        //   ctx2.fillRect(Number(j) * 8, Number(i) * 8, 8, 8);
+        // }
+
         if (gameFieldData[i][j].objectDataChank.isObjectChank) {
           ctx2.globalAlpha = 0.4;
           ctx2.fillRect(Number(j) * 8, Number(i) * 8, 8, 8);
@@ -274,60 +319,11 @@ const RoomGameField = () => {
     if (!gameData) return;
     if (!socket?.id) return;
     if (!gameData[socket.id]) return;
-    // console.log(gameData[socket.id].square.currentCoord.topLeft.x);
-    // console.log(gameData[socket.id].square.currentCoord.topLeft.y);
-
-    // if (gameData[socket.id].square.currentCoord.topLeft.x > 180) {
-    //   questionStatusContainer?.scrollTo({
-    //     left: 60,
-    //     // top: gameData[socket.id].square.currentCoord.topLeft.y - 150,
-    //     behavior: "smooth",
-    //   });
-    // }
 
     questionStatusContainer?.scrollTo({
       left: gameData[socket.id].square.currentCoord.topLeft.x - 150,
       top: gameData[socket.id].square.currentCoord.topLeft.y - 150,
-      // behavior: "smooth",
     });
-
-    // if (
-    //   gameData[socket.id].moveDirection === UserMoveDirections.right &&
-    //   gameData[socket.id].square.currentCoord.topLeft.x - basePosition.x > 150
-    // ) {
-    //   console.log(gameData[socket.id].moveDirection);
-    //   console.log(basePosition.x);
-    //   dispatch(CoopGamesActions.setBasePosition({ x: basePosition.x + 16, y: 0 }));
-    //   questionStatusContainer?.scrollTo({
-    //     left: basePosition.x - 8,
-    //     // top: gameData[socket.id].square.currentCoord.topLeft.y - 150,
-    //     behavior: "smooth",
-    //   });
-    // }
-    // // console.log(gameData[socket.id].square.currentCoord.topLeft.x);
-
-    // // console.log(
-    // //   gameData[socket.id].moveDirection === UserMoveDirections.left &&
-    // //     gameData[socket.id].square.currentCoord.topLeft.x < basePosition.x
-    // // );
-    // if (
-    //   gameData[socket.id].moveDirection === UserMoveDirections.left &&
-    //   gameData[socket.id].square.currentCoord.topLeft.x < basePosition.x
-    // ) {
-    //   console.log(basePosition.x);
-    //   console.log(gameData[socket.id].square.currentCoord.topLeft.x);
-    //   dispatch(
-    //     CoopGamesActions.setBasePosition({
-    //       x: basePosition.x - 16,
-    //       y: 0,
-    //     })
-    //   );
-    //   questionStatusContainer?.scrollTo({
-    //     left: basePosition.x - 120,
-    //     // top: gameData[socket.id].square.currentCoord.topLeft.y - 150,
-    //     behavior: "smooth",
-    //   });
-    // }
   }, [gameData, basePosition]);
 
   return (

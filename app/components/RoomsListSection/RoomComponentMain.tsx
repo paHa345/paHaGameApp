@@ -473,6 +473,9 @@ const RoomComponentMain = () => {
     socket?.on("serverNPCAttackChanks", (serverData) => {
       console.log(serverData);
     });
+    socket?.on("serverNPCViewArea", (serverData) => {
+      console.log(serverData);
+    });
 
     return () => {
       socket?.off("roomGTSGameMessage");
@@ -494,6 +497,7 @@ const RoomComponentMain = () => {
       socket?.off("serverUnderAttackObjectStat");
       socket?.off("serverNPCDeathAnimationStatus");
       socket?.off("serverNPCAttackChanks");
+      socket?.off("serverNPCViewArea");
     };
   }, [socket]);
 
