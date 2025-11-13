@@ -211,6 +211,16 @@ export interface ICoopGamesSlice {
         };
       };
     };
+    NPCUnderAttackChanksObj: {
+      [NPCID: string]: {
+        underAttackArea: {
+          baseChankX: number;
+          baseChankY: number;
+          heightChanksNum: number;
+          widthChanksNum: number;
+        };
+      };
+    };
   };
 }
 
@@ -384,6 +394,16 @@ interface ICoopGamesState {
       };
     };
   };
+  NPCUnderAttackChanksObj: {
+    [NPCID: string]: {
+      underAttackArea: {
+        baseChankX: number;
+        baseChankY: number;
+        heightChanksNum: number;
+        widthChanksNum: number;
+      };
+    };
+  };
 }
 
 export const CoopGamesState: ICoopGamesState = {
@@ -410,6 +430,7 @@ export const CoopGamesState: ICoopGamesState = {
   fetchAllGameRoomsStatus: CoopGamesFetchStatus.Ready,
   touchEl: "init",
   gameFieldData: {},
+  NPCUnderAttackChanksObj: {},
 };
 
 export const CoopGamesSlice = createSlice({
@@ -569,6 +590,9 @@ export const CoopGamesSlice = createSlice({
     },
     setBasePosition(state, action) {
       state.basePosition = action.payload;
+    },
+    setNPCUnderAttackChanksObj(state, action) {
+      state.NPCUnderAttackChanksObj = action.payload;
     },
   },
   extraReducers: (builder) => {
