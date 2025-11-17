@@ -476,6 +476,7 @@ const RoomComponentMain = () => {
     });
     socket?.on("NPCChanksUnderAttack", (serverData) => {
       console.log(serverData);
+      dispatch(CoopGamesActions.setNPCUnderAttackChanksObj(serverData));
     });
 
     return () => {

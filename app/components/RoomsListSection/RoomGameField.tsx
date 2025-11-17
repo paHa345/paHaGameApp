@@ -9,6 +9,7 @@ const RoomGameField = () => {
   const dispatch = useDispatch<AppDispatch>();
   const backgroundCanvasRef = useRef(null) as any;
   const UserStatCanvasRef = useRef(null) as any;
+  const NPCUnderAttackAreaCAnvasRef = useRef(null) as any;
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
 
   const currentMapSize = useSelector(
@@ -27,19 +28,9 @@ const RoomGameField = () => {
 
   const basePosition = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.basePosition);
 
-  // let time: number;
-  // function step(timestamp: number) {
-  //   if (!time) {
-  //     time = timestamp;
-  //   }
-  //   if (timestamp - time > 1000) {
-  //     console.log(timestamp);
-  //     time = timestamp;
-  //   }
-  //   requestAnimationFrame(step);
-  // }
-
-  // requestAnimationFrame(step);
+  const NPCUnderAttackChanksObj = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.NPCUnderAttackChanksObj
+  );
 
   useEffect(() => {
     let time: number;
@@ -242,6 +233,24 @@ const RoomGameField = () => {
   }, [gameData, frameObj, attackDataObj]);
 
   useEffect(() => {
+    var underAttackAreaCtx = NPCUnderAttackAreaCAnvasRef.current.getContext("2d");
+
+    underAttackAreaCtx.clearRect(0, 0, currentMapSize * 8, currentMapSize * 8);
+
+    for (const NPCID in NPCUnderAttackChanksObj) {
+      console.log(NPCUnderAttackChanksObj[NPCID]);
+      underAttackAreaCtx.globalAlpha = 0.3;
+      underAttackAreaCtx.fillStyle = "red";
+      underAttackAreaCtx.fillRect(
+        NPCUnderAttackChanksObj[NPCID].underAttackArea.baseChankX * 8,
+        NPCUnderAttackChanksObj[NPCID].underAttackArea.baseChankY * 8,
+        NPCUnderAttackChanksObj[NPCID].underAttackArea.widthChanksNum * 8,
+        NPCUnderAttackChanksObj[NPCID].underAttackArea.heightChanksNum * 8
+      );
+    }
+  }, [NPCUnderAttackChanksObj]);
+
+  useEffect(() => {
     var ctx2 = backgroundCanvasRef.current.getContext("2d");
     // backgroundCanvasRef.current.requestFullscreen();
 
@@ -337,6 +346,13 @@ const RoomGameField = () => {
             width={currentMapSize * 8}
             height={currentMapSize * 8}
             ref={objectsCanvasRef}
+          ></canvas>
+          <canvas
+            className=" absolute top-px z-20"
+            id="canvas"
+            width={currentMapSize * 8}
+            height={currentMapSize * 8}
+            ref={NPCUnderAttackAreaCAnvasRef}
           ></canvas>
           <canvas
             className=" absolute z-10 top-px"
