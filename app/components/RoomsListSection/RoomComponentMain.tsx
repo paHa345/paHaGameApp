@@ -41,6 +41,9 @@ const RoomComponentMain = () => {
 
   const userImgWalk = new Image();
   const userImgAttack = new Image();
+  const userStatsIcon = new Image();
+  const userImgGetDamageImg = new Image();
+
   const grassTextureImg = new Image();
   const rockTextureImg = new Image();
   const orcImgWalkImg = new Image();
@@ -48,7 +51,6 @@ const RoomComponentMain = () => {
   const orcImgGetDamageImg = new Image();
   const orcImgDeathImg = new Image();
   const NPCHPImg = new Image();
-  const userStatsIcon = new Image();
   const rocksAndStones = new Image();
 
   useEffect(() => {
@@ -64,6 +66,7 @@ const RoomComponentMain = () => {
       { name: grassTextureImg, src: "/grassImg.png" },
       { name: userImgAttack, src: "/Swordsman/Lvl1/Swordsman_lvl1_Walk_Attack_with_shadow.png" },
       { name: userImgWalk, src: "/Swordsman/Lvl1/Swordsman_lvl1_Walk_with_shadow.png" },
+      { name: userImgGetDamageImg, src: "/Swordsman/Lvl1/Swordsman_lvl1_Hurt_with_shadow.png" },
       { name: orcImgWalkImg, src: "/Orc/orc3_walk_with_shadow.png" },
       { name: orcImgAttackImg, src: "/Orc/orc3_walk_attack_with_shadow.png" },
       {
@@ -453,6 +456,7 @@ const RoomComponentMain = () => {
       "serverUnderAttackObjectStat",
       (serverData: {
         underAttackObjID: string;
+        underAttackObjectType: "NPC" | "gamer";
         underAttackObjStat: {
           baseHP: number;
           currentArmour: number;

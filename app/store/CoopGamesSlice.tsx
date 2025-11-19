@@ -43,6 +43,7 @@ export interface ICoopGamesSlice {
     imgResources: {
       userImgWalk?: HTMLImageElement;
       userImgAttack?: HTMLImageElement;
+      userImgGetDamageImg?: HTMLImageElement;
       rockTextureImg?: HTMLImageElement;
       grassTextureImg?: HTMLImageElement;
       orcImgWalkImg?: HTMLImageElement;
@@ -583,7 +584,14 @@ export const CoopGamesSlice = createSlice({
       state.statObj = action.payload;
     },
     setUnderAttackNPCObjStat(state, action) {
-      state.statObj.NPC[action.payload.underAttackObjID] = action.payload.underAttackObjStat;
+      if (action.payload.underAttackObjectType === "NPC") {
+        state.statObj.NPC[action.payload.underAttackObjID] = action.payload.underAttackObjStat;
+      }
+
+      console.log(action.payload.underAttackObjStat);
+      if (action.payload.underAttackObjectType === "gamer") {
+        state.statObj.gamers[action.payload.underAttackObjID] = action.payload.underAttackObjStat;
+      }
     },
     setCurrentMapSize(state, action) {
       state.currentMapSize = action.payload;

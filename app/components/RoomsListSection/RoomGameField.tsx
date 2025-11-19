@@ -335,6 +335,10 @@ const RoomGameField = () => {
     });
   }, [gameData, basePosition]);
 
+  useEffect(() => {
+    console.log(statObj);
+  }, [statObj]);
+
   return (
     <div>
       <div className=" relative ">
@@ -371,7 +375,7 @@ const RoomGameField = () => {
           <div className=" relative">
             <div className=" absolute z-10 bottom-8 left-9">
               <p className=" font-light text-center">
-                {socket?.id !== undefined ? Number(statObj.gamers[socket.id].baseHP) : 10}
+                {socket?.id !== undefined ? Number(statObj.gamers[socket.id].currentHP) : 10}
               </p>
             </div>
             <div className=" absolute z-10 bottom-8 left-24">
