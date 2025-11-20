@@ -71,9 +71,10 @@ const RoomGameField = () => {
           orc3DeathImage: imgResources.orcImgDeathImg,
           gamerAttackImage: imgResources.userImgAttack,
           gamerWalkImage: imgResources.userImgWalk,
-          gamerGetDamageImage: imgResources.userImgWalk,
+          gamerGetDamageImage: imgResources.userImgGetDamageImg,
           NPCHPImg: imgResources.NPCHPImg,
           rocksAndStones: imgResources.rocksAndStones,
+          prepareAttackArea: imgResources.prepareAttackArea,
         };
 
         if (!frameObj.objects[userData]) return;
@@ -238,17 +239,27 @@ const RoomGameField = () => {
     underAttackAreaCtx.clearRect(0, 0, currentMapSize * 8, currentMapSize * 8);
 
     for (const NPCID in NPCUnderAttackChanksObj) {
-      console.log(NPCUnderAttackChanksObj[NPCID]);
-      underAttackAreaCtx.globalAlpha = 0.3;
-      underAttackAreaCtx.fillStyle = "red";
-      underAttackAreaCtx.fillRect(
+      underAttackAreaCtx.globalAlpha = 0.9;
+      // underAttackAreaCtx.fillStyle = "red";
+      underAttackAreaCtx.drawImage(
+        imgResources.prepareAttackArea,
+        250 * frameObj.mainFrame,
+        0,
+        250,
+        300,
         NPCUnderAttackChanksObj[NPCID].underAttackArea.baseChankX * 8,
         NPCUnderAttackChanksObj[NPCID].underAttackArea.baseChankY * 8,
         NPCUnderAttackChanksObj[NPCID].underAttackArea.widthChanksNum * 8,
         NPCUnderAttackChanksObj[NPCID].underAttackArea.heightChanksNum * 8
       );
+      // underAttackAreaCtx.fillRect(
+      //   NPCUnderAttackChanksObj[NPCID].underAttackArea.baseChankX * 8,
+      //   NPCUnderAttackChanksObj[NPCID].underAttackArea.baseChankY * 8,
+      //   NPCUnderAttackChanksObj[NPCID].underAttackArea.widthChanksNum * 8,
+      //   NPCUnderAttackChanksObj[NPCID].underAttackArea.heightChanksNum * 8
+      // );
     }
-  }, [NPCUnderAttackChanksObj]);
+  }, [NPCUnderAttackChanksObj, frameObj]);
 
   useEffect(() => {
     var ctx2 = backgroundCanvasRef.current.getContext("2d");

@@ -53,6 +53,7 @@ export interface ICoopGamesSlice {
       NPCHPImg?: HTMLImageElement;
       userStatsIcon?: HTMLImageElement;
       rocksAndStones?: HTMLImageElement;
+      prepareAttackArea?: HTMLImageElement;
     };
 
     test: string;
@@ -230,6 +231,7 @@ interface ICoopGamesState {
   imgResources: {
     userImgWalk?: HTMLImageElement;
     userImgAttack?: HTMLImageElement;
+    userImgGetDamageImg?: HTMLImageElement;
     rockTextureImg?: HTMLImageElement;
     grassTextureImg?: HTMLImageElement;
     orcImgWalkImg?: HTMLImageElement;
@@ -239,6 +241,7 @@ interface ICoopGamesState {
     NPCHPImg?: HTMLImageElement;
     userStatsIcon?: HTMLImageElement;
     rocksAndStones?: HTMLImageElement;
+    prepareAttackArea?: HTMLImageElement;
   };
 
   basePosition: {
