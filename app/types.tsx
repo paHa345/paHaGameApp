@@ -514,4 +514,5 @@ export type ImageNames =
   | "gamerAttackImage"
   | "gamerWalkImage"
   | "gamerGetDamageImage"
-  | "rocksAndStones";
+  | "rocksAndStones"
+  | "roadTile";

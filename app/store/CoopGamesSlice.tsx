@@ -54,6 +54,8 @@ export interface ICoopGamesSlice {
       userStatsIcon?: HTMLImageElement;
       rocksAndStones?: HTMLImageElement;
       prepareAttackArea?: HTMLImageElement;
+      roadTile?: HTMLImageElement;
+      trees?: HTMLImageElement;
     };
 
     test: string;
@@ -190,6 +192,7 @@ export interface ICoopGamesSlice {
           // isUserChank: boolean;
           type?: string;
           notMove: boolean;
+
           chankUnderAttack: boolean;
           objectDataChank: {
             objectID?: string;
@@ -206,9 +209,13 @@ export interface ICoopGamesSlice {
           };
 
           textureObj?: {
-            imageName: string;
+            imageName: ImageNames;
             XSpriteCoord: number;
             YSpriteCoord: number;
+            sourceX?: number;
+            sourceY?: number;
+            heigthChanks?: number;
+            widthChanks?: number;
           };
         };
       };
@@ -242,6 +249,8 @@ interface ICoopGamesState {
     userStatsIcon?: HTMLImageElement;
     rocksAndStones?: HTMLImageElement;
     prepareAttackArea?: HTMLImageElement;
+    roadTile?: HTMLImageElement;
+    trees?: HTMLImageElement;
   };
 
   basePosition: {
@@ -377,6 +386,7 @@ interface ICoopGamesState {
         // isUserChank: boolean;
         type?: string;
         notMove: boolean;
+
         chankUnderAttack: boolean;
         objectDataChank: {
           objectID?: string;
@@ -391,9 +401,13 @@ interface ICoopGamesState {
           bottomRight: { x: number; y: number };
         };
         textureObj?: {
-          imageName: string;
+          imageName: ImageNames;
           XSpriteCoord: number;
           YSpriteCoord: number;
+          sourceX?: number;
+          sourceY?: number;
+          heigthChanks?: number;
+          widthChanks?: number;
         };
       };
     };

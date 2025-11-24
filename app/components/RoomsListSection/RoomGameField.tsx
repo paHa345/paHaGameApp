@@ -31,7 +31,20 @@ const RoomGameField = () => {
   const NPCUnderAttackChanksObj = useSelector(
     (state: ICoopGamesSlice) => state.CoopGamesState.NPCUnderAttackChanksObj
   );
-
+  const imgCompareObj = {
+    orc3AttackImage: imgResources.orcImgAttackImg,
+    orc3WalkImage: imgResources.orcImgWalkImg,
+    orc3GetDamageImage: imgResources.orcImgGetDamageImg,
+    orc3DeathImage: imgResources.orcImgDeathImg,
+    gamerAttackImage: imgResources.userImgAttack,
+    gamerWalkImage: imgResources.userImgWalk,
+    gamerGetDamageImage: imgResources.userImgGetDamageImg,
+    NPCHPImg: imgResources.NPCHPImg,
+    rocksAndStones: imgResources.rocksAndStones,
+    prepareAttackArea: imgResources.prepareAttackArea,
+    roadTile: imgResources.roadTile,
+    trees: imgResources.trees,
+  };
   useEffect(() => {
     let time: number;
     let timerID: any;
@@ -64,19 +77,6 @@ const RoomGameField = () => {
         550
       );
       for (let userData in gameData) {
-        const imgCompareObj = {
-          orc3AttackImage: imgResources.orcImgAttackImg,
-          orc3WalkImage: imgResources.orcImgWalkImg,
-          orc3GetDamageImage: imgResources.orcImgGetDamageImg,
-          orc3DeathImage: imgResources.orcImgDeathImg,
-          gamerAttackImage: imgResources.userImgAttack,
-          gamerWalkImage: imgResources.userImgWalk,
-          gamerGetDamageImage: imgResources.userImgGetDamageImg,
-          NPCHPImg: imgResources.NPCHPImg,
-          rocksAndStones: imgResources.rocksAndStones,
-          prepareAttackArea: imgResources.prepareAttackArea,
-        };
-
         if (!frameObj.objects[userData]) return;
 
         let NPCViewDirection;
@@ -275,15 +275,20 @@ const RoomGameField = () => {
 
         if (gameFieldData[i][j].textureObj) {
           ctx2.drawImage(
-            imgResources.rocksAndStones,
+            imgCompareObj[gameFieldData[i][j].textureObj.imageName],
+
             gameFieldData[i][j].textureObj.XSpriteCoord,
             gameFieldData[i][j].textureObj.YSpriteCoord,
-            64,
-            64,
+            gameFieldData[i][j].textureObj.sourceX,
+            gameFieldData[i][j].textureObj.sourceY,
             Number(j) * 8,
             Number(i) * 8,
-            32,
-            32
+            gameFieldData[i][j].textureObj.heigthChanks
+              ? gameFieldData[i][j].textureObj.heigthChanks * 8
+              : 32,
+            gameFieldData[i][j].textureObj.widthChanks
+              ? gameFieldData[i][j].textureObj.widthChanks * 8
+              : 32
           );
         }
 
