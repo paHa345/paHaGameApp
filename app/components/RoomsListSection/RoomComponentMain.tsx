@@ -55,6 +55,7 @@ const RoomComponentMain = () => {
   const prepareAttackArea = new Image();
   const roadTile = new Image();
   const trees = new Image();
+  const exterior = new Image();
 
   useEffect(() => {
     // userImgAttack.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_Attack_with_shadow.png";
@@ -108,6 +109,10 @@ const RoomComponentMain = () => {
         name: trees,
         src: "/MainCharactersHome/Trees_animation.png",
       },
+      {
+        name: exterior,
+        src: "/MainCharactersHome/exterior.png",
+      },
     ];
 
     const setImgSrc = () => {
@@ -138,6 +143,7 @@ const RoomComponentMain = () => {
         prepareAttackArea: prepareAttackArea,
         roadTile: roadTile,
         trees: trees,
+        exterior: exterior,
       })
     );
 

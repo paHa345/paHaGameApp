@@ -10,6 +10,8 @@ const RoomGameField = () => {
   const backgroundCanvasRef = useRef(null) as any;
   const UserStatCanvasRef = useRef(null) as any;
   const NPCUnderAttackAreaCAnvasRef = useRef(null) as any;
+  const treesCanvasRef = useRef(null) as any;
+
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
 
   const currentMapSize = useSelector(
@@ -44,6 +46,7 @@ const RoomGameField = () => {
     prepareAttackArea: imgResources.prepareAttackArea,
     roadTile: imgResources.roadTile,
     trees: imgResources.trees,
+    exterior: imgResources.exterior,
   };
   useEffect(() => {
     let time: number;
@@ -66,6 +69,53 @@ const RoomGameField = () => {
   }, []);
 
   useEffect(() => {
+    var treesCanvasContext = treesCanvasRef.current.getContext("2d");
+
+    for (const i in gameFieldData) {
+      for (const j in gameFieldData[i]) {
+        if (!Object.hasOwn(gameFieldData[i], j)) continue;
+
+        if (gameFieldData[i][j].textureObj && gameFieldData[i][j].type === "tree") {
+          treesCanvasContext.drawImage(
+            imgCompareObj[gameFieldData[i][j].textureObj.imageName],
+
+            gameFieldData[i][j].textureObj.XSpriteCoord,
+            gameFieldData[i][j].textureObj.YSpriteCoord,
+            gameFieldData[i][j].textureObj.sourceX,
+            gameFieldData[i][j].textureObj.sourceY,
+            Number(j) * 8,
+            Number(i) * 8,
+            gameFieldData[i][j].textureObj.heigthChanks
+              ? gameFieldData[i][j].textureObj.heigthChanks * 8
+              : 32,
+            gameFieldData[i][j].textureObj.widthChanks
+              ? gameFieldData[i][j].textureObj.widthChanks * 8
+              : 32
+          );
+        }
+        if (gameFieldData[i][j].textureObj && gameFieldData[i][j].type === "playersHouse") {
+          treesCanvasContext.drawImage(
+            imgCompareObj[gameFieldData[i][j].textureObj.imageName],
+
+            gameFieldData[i][j].textureObj.XSpriteCoord,
+            gameFieldData[i][j].textureObj.YSpriteCoord,
+            gameFieldData[i][j].textureObj.sourceX,
+            gameFieldData[i][j].textureObj.sourceY,
+            Number(j) * 8,
+            Number(i) * 8,
+            gameFieldData[i][j].textureObj.heigthChanks
+              ? gameFieldData[i][j].textureObj.heigthChanks * 8
+              : 32,
+            gameFieldData[i][j].textureObj.widthChanks
+              ? gameFieldData[i][j].textureObj.widthChanks * 8
+              : 32
+          );
+        }
+      }
+    }
+  }, [gameFieldData, currentMapSize]);
+
+  useEffect(() => {
     if (!socket?.id) return;
     if (!gameData) return;
     if (gameData && gameData[socket.id]) {
@@ -73,8 +123,8 @@ const RoomGameField = () => {
       ctx.clearRect(
         gameData[socket.id].square.currentCoord.topLeft.x - 350,
         gameData[socket.id].square.currentCoord.topLeft.y - 200,
-        550,
-        550
+        650,
+        650
       );
       for (let userData in gameData) {
         if (!frameObj.objects[userData]) return;
@@ -266,7 +316,9 @@ const RoomGameField = () => {
     // backgroundCanvasRef.current.requestFullscreen();
 
     if (imgResources.grassTextureImg) {
-      ctx2.drawImage(imgResources.grassTextureImg, 0, 0, currentMapSize * 8, currentMapSize * 8);
+      const pattern = ctx2.createPattern(imgResources.grassTextureImg, "repeat");
+      ctx2.fillStyle = pattern;
+      ctx2.fillRect(0, 0, currentMapSize * 8, currentMapSize * 8);
     }
 
     for (const i in gameFieldData) {
@@ -360,6 +412,12 @@ const RoomGameField = () => {
       <div className=" relative ">
         <canvas id="canvas" width={300} height={350}></canvas>
         <div className=" gameContainer absolute top-px  h-80 w-80 overflow-hidden   ">
+          <canvas
+            className=" absolute z-30 top-px"
+            ref={treesCanvasRef}
+            width={currentMapSize * 8}
+            height={currentMapSize * 8}
+          ></canvas>
           <canvas
             className=" absolute top-px z-20"
             id="canvas"
