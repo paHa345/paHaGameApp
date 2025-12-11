@@ -15,7 +15,6 @@ import { useDispatch, useSelector } from "react-redux";
 import RoomGameField from "./RoomGameField";
 
 const RoomComponentMain = () => {
-  const testCanvasRef = useRef(null) as any;
   const [startTouchCoord, setStartTouchCoord] = useState<any>();
   const [moveDitection, setmoveDitection] = useState<any>();
 
@@ -36,6 +35,10 @@ const RoomComponentMain = () => {
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
 
   const messagesContainerEnd = useRef<HTMLDivElement>(null);
+
+  const currentResolution = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.currentResolution
+  );
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -558,17 +561,38 @@ const RoomComponentMain = () => {
     };
   }, [socket]);
 
+  useEffect(() => {
+    dispatch(CoopGamesActions.setCurrentHeightResolution(window.innerHeight));
+    dispatch(CoopGamesActions.setCurrentWidthResolution(window.innerWidth));
+
+    const handleResize = () => {
+      dispatch(CoopGamesActions.setCurrentWidthResolution(window.innerWidth));
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <>
       <div className=" pt-5">
         {" "}
+        <div>
+          <h1>Ширина: {currentResolution.width}</h1>
+        </div>
+        <div>
+          <h1>Высота: {currentResolution.height}</h1>
+        </div>
+        <br />
         <div className=" flex">
           <div className=" cursor-pointer buttonBackCoopRoom" onClick={leaveRoomHandler}>
             <FontAwesomeIcon className=" fa-fw" icon={faArrowLeft} />К списку cерверов
           </div>
         </div>
       </div>
-      <div className=" min-h-[70vh]">
+      {/* <div className=" min-h-[70vh]">
         <div className="h-[20vh] overflow-x-scroll  w-full flex justify-center items-center flex-wrap  gap-6">
           {currentRoomJoinedUsersEl}
         </div>
@@ -594,7 +618,7 @@ const RoomComponentMain = () => {
             </div>
           </div>
         </form>
-      </div>
+      </div> */}
       <div>
         <div onClick={startGameHandler} className=" buttonStudent">
           Начать игру

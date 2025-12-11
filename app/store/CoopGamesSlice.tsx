@@ -40,6 +40,10 @@ export enum CoopGameMessageType {
 
 export interface ICoopGamesSlice {
   CoopGamesState: {
+    currentResolution: {
+      height: number;
+      width: number;
+    };
     imgResources: {
       userImgWalk?: HTMLImageElement;
       userImgAttack?: HTMLImageElement;
@@ -236,6 +240,10 @@ export interface ICoopGamesSlice {
 
 interface ICoopGamesState {
   test: string;
+  currentResolution: {
+    height: number;
+    width: number;
+  };
   imgResources: {
     userImgWalk?: HTMLImageElement;
     userImgAttack?: HTMLImageElement;
@@ -428,6 +436,10 @@ interface ICoopGamesState {
 
 export const CoopGamesState: ICoopGamesState = {
   test: "",
+  currentResolution: {
+    height: 0,
+    width: 0,
+  },
   imgResources: {},
   frameObj: {
     mainFrame: 0,
@@ -620,6 +632,13 @@ export const CoopGamesSlice = createSlice({
     },
     setNPCUnderAttackChanksObj(state, action) {
       state.NPCUnderAttackChanksObj = action.payload;
+    },
+    setCurrentHeightResolution(state, action) {
+      console.log("Change");
+      state.currentResolution.height = action.payload;
+    },
+    setCurrentWidthResolution(state, action) {
+      state.currentResolution.width = action.payload;
     },
   },
   extraReducers: (builder) => {
