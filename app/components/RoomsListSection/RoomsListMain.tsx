@@ -160,7 +160,7 @@ const RoomsListMain = () => {
   return (
     <>
       <div
-        className={`${!isTelegramWebAppStatus ? "rotate-90 absolute top-0 origin-bottom right-0 w-[100vh] h-[100vw]" : ""}`}
+        className={`${isTelegramWebAppStatus ? "rotate-90 absolute top-0 origin-bottom right-0 w-[100vh] h-[100vw]" : ""}`}
       >
         <div>
           <div
