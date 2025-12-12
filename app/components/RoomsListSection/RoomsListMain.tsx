@@ -10,13 +10,14 @@ import { div } from "framer-motion/client";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as io from "socket.io-client";
-import { IAppSlice } from "@/app/store/appStateSlice";
+import { appStateActions, IAppSlice } from "@/app/store/appStateSlice";
 import { isTelegramWebApp } from "../Layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import CoopGameRoomButton from "./CoopGameRoomButton";
 import RoomComponentMain from "./RoomComponentMain";
 import { useParams } from "next/navigation";
+import { redirect } from "next/navigation";
 
 const RoomsListMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -50,6 +51,29 @@ const RoomsListMain = () => {
   const setCoopGameHandler = () => {
     console.log("SetCoopName");
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.hash.slice(1));
+    const initData = params.get("tgWebAppData");
+    if (initData !== null) {
+      const initDataParams = new URLSearchParams(initData);
+      const userParams = initDataParams.get("user") as any;
+      const user = JSON.parse(userParams);
+      dispatch(appStateActions.setTelegranUserData(user));
+      console.log(user);
+    } else {
+      dispatch(
+        appStateActions.setTelegranUserData({
+          allows_write_to_pm: false,
+          first_name: "paHa345",
+          id: 777777,
+          language_code: "ru",
+          last_name: "Paha",
+          username: "Paha",
+        })
+      );
+    }
+  }, []);
 
   // const setNameEl = isTelegramWebApp() ? (
   //   <div></div>
@@ -99,8 +123,23 @@ const RoomsListMain = () => {
     dispatch(getAllRoomsList());
   }, []);
 
+  const backToGamePageHandler = () => {
+    redirect("/game");
+  };
+
+  console.log(showRoomStatus);
+  console.log(telegramUser?.id);
+
   return (
     <>
+      <div>
+        <div
+          onClick={backToGamePageHandler}
+          className=" cursor-pointer my-3 mx-3 text-center buttonCoopRoom"
+        >
+          Назад
+        </div>
+      </div>
       {telegramUser?.id && !showRoomStatus && (
         <div>
           <div>

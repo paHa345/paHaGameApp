@@ -302,12 +302,6 @@ const RoomGameField = () => {
         NPCUnderAttackChanksObj[NPCID].underAttackArea.widthChanksNum * 8,
         NPCUnderAttackChanksObj[NPCID].underAttackArea.heightChanksNum * 8
       );
-      // underAttackAreaCtx.fillRect(
-      //   NPCUnderAttackChanksObj[NPCID].underAttackArea.baseChankX * 8,
-      //   NPCUnderAttackChanksObj[NPCID].underAttackArea.baseChankY * 8,
-      //   NPCUnderAttackChanksObj[NPCID].underAttackArea.widthChanksNum * 8,
-      //   NPCUnderAttackChanksObj[NPCID].underAttackArea.heightChanksNum * 8
-      // );
     }
   }, [NPCUnderAttackChanksObj, frameObj]);
 

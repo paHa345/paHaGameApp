@@ -1,5 +1,5 @@
 import { AppDispatch } from "@/app/store";
-import { IAppSlice } from "@/app/store/appStateSlice";
+import { appStateActions, IAppSlice } from "@/app/store/appStateSlice";
 import { CoopGameMessageType, CoopGamesActions, ICoopGamesSlice } from "@/app/store/CoopGamesSlice";
 import {
   faArrowDown,
@@ -40,6 +40,8 @@ const RoomComponentMain = () => {
     (state: ICoopGamesSlice) => state.CoopGamesState.currentResolution
   );
 
+  const mapSize = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.currentMapSize);
+
   const dispatch = useDispatch<AppDispatch>();
 
   const userImgWalk = new Image();
@@ -60,12 +62,9 @@ const RoomComponentMain = () => {
   const trees = new Image();
   const exterior = new Image();
 
-  useEffect(() => {
-    // userImgAttack.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_Attack_with_shadow.png";
-    // userImgWalk.src = "/Swordsman/Lvl1/Swordsman_lvl1_Walk_with_shadow.png";
-    // rockTextureImg.src = "/RockAndStones/Objects_separately/Rokc3_snow_shadow_dark1.png";
-    // grassTextureImg.src = "/grassImg.png";
+  // console.log(mapSize);
 
+  useEffect(() => {
     userImgWalk.onload = () => {
       console.log("Images load");
     };
@@ -579,18 +578,22 @@ const RoomComponentMain = () => {
     <>
       <div className=" pt-5">
         {" "}
-        <div>
-          <h1>Ширина: {currentResolution.width}</h1>
-        </div>
-        <div>
-          <h1>Высота: {currentResolution.height}</h1>
-        </div>
-        <br />
-        <div className=" flex">
-          <div className=" cursor-pointer buttonBackCoopRoom" onClick={leaveRoomHandler}>
-            <FontAwesomeIcon className=" fa-fw" icon={faArrowLeft} />К списку cерверов
+        {mapSize <= 0 && (
+          <div>
+            <div>
+              <h1>Ширина: {currentResolution.width}</h1>
+            </div>
+            <div>
+              <h1>Высота: {currentResolution.height}</h1>
+            </div>
+            <br />
+            <div className=" flex">
+              <div className=" cursor-pointer buttonBackCoopRoom" onClick={leaveRoomHandler}>
+                <FontAwesomeIcon className=" fa-fw" icon={faArrowLeft} />К списку cерверов
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
       {/* <div className=" min-h-[70vh]">
         <div className="h-[20vh] overflow-x-scroll  w-full flex justify-center items-center flex-wrap  gap-6">
@@ -619,51 +622,57 @@ const RoomComponentMain = () => {
           </div>
         </form>
       </div> */}
-      <div>
-        <div onClick={startGameHandler} className=" buttonStudent">
-          Начать игру
-        </div>
-      </div>
-      <div className=" py-3">
-        <RoomGameField></RoomGameField>
-      </div>
-      <div className=" touch-none py-3 my-3 flex justify-center items-center gap-2 border-2 border-solid border-orange-500 rounded-full ">
-        <div className=" flex justify-around items-center w-full">
-          <div
-            onClick={attackUserClickHandler}
-            onTouchStart={attackUserTouchHandler}
-            className=" flex items-center justify-center buttonCoopJoystick h-20 w-20"
-          >
-            <FontAwesomeIcon className="  fa-fw fa-2x" icon={faHandFist} />
-          </div>
-          <div
-            onMouseMove={hoverMouseHandler}
-            onMouseLeave={stopMoveHandler}
-            onTouchStart={touchStartHandler}
-            onTouchEnd={stopMoveHandler}
-            onTouchMove={touchMoveHandler}
-            className=" touch-none flex items-center justify-center flex-col"
-          >
-            <div data-direction={"up"}>
-              <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowUp} />
-            </div>
-            <div className=" flex justify-center items-center">
-              <div data-direction={"left"}>
-                <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowLeft} />
-              </div>
-              <div className=" px-1 py-1">
-                <FontAwesomeIcon className="  fa-fw fa-2x" icon={faGamepad} />
-              </div>
-              <div data-direction={"right"}>
-                <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowRight} />
-              </div>
-            </div>
-            <div data-direction={"down"}>
-              <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowDown} />
-            </div>
+      {mapSize <= 0 && (
+        <div>
+          <div onClick={startGameHandler} className=" buttonStudent">
+            Начать игру
           </div>
         </div>
-      </div>
+      )}
+      {mapSize > 0 && (
+        <div>
+          <div className=" py-3">
+            <RoomGameField></RoomGameField>
+          </div>
+          <div className=" touch-none py-3 my-3 flex justify-center items-center gap-2 border-2 border-solid border-orange-500 rounded-full ">
+            <div className=" flex justify-around items-center w-full">
+              <div
+                onClick={attackUserClickHandler}
+                onTouchStart={attackUserTouchHandler}
+                className=" flex items-center justify-center buttonCoopJoystick h-20 w-20"
+              >
+                <FontAwesomeIcon className="  fa-fw fa-2x" icon={faHandFist} />
+              </div>
+              <div
+                onMouseMove={hoverMouseHandler}
+                onMouseLeave={stopMoveHandler}
+                onTouchStart={touchStartHandler}
+                onTouchEnd={stopMoveHandler}
+                onTouchMove={touchMoveHandler}
+                className=" touch-none flex items-center justify-center flex-col"
+              >
+                <div data-direction={"up"}>
+                  <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowUp} />
+                </div>
+                <div className=" flex justify-center items-center">
+                  <div data-direction={"left"}>
+                    <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowLeft} />
+                  </div>
+                  <div className=" px-1 py-1">
+                    <FontAwesomeIcon className="  fa-fw fa-2x" icon={faGamepad} />
+                  </div>
+                  <div data-direction={"right"}>
+                    <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowRight} />
+                  </div>
+                </div>
+                <div data-direction={"down"}>
+                  <FontAwesomeIcon className=" buttonBackCoopRoom fa-fw" icon={faArrowDown} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

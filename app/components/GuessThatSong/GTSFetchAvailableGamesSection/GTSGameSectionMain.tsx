@@ -8,13 +8,13 @@ import AvailableGTSGamelistModalMain from "../AvailableGTSGameListModal/Availabl
 import { IUserSlice } from "@/app/store/userSlice";
 
 const GTSGameSectionMain = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  // const dispatch = useDispatch<AppDispatch>();
   const showGTSGameChooseModal = useSelector(
     (state: IGuessThatSongSlice) => state.guessThatSongState.showChooseGTSModal
   );
 
   useEffect(() => {
-    console.log(window.location.pathname);
+    // console.log(window.location.pathname);
   });
 
   return (

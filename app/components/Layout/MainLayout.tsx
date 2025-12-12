@@ -17,21 +17,18 @@ export function isTelegramWebApp() {
   return typeof TelegramWebviewProxy !== "undefined";
 }
 const MainLayout = (props: any) => {
+  const pathname = usePathname();
   return (
     <>
       <SessionProviderComponent>
-        <ReduxProvider>
-          <Header></Header>
-        </ReduxProvider>
+        <ReduxProvider>{pathname !== "/wsGamesRoomList" && <Header></Header>}</ReduxProvider>
         <main
           className=" text-headerButtonColor min-h-[80vh] w-11/12
           mx-auto"
         >
           {props.children}
         </main>
-        <ReduxProvider>
-          <Footer></Footer>
-        </ReduxProvider>
+        <ReduxProvider>{pathname !== "/wsGamesRoomList" && <Footer></Footer>}</ReduxProvider>
       </SessionProviderComponent>
     </>
   );
