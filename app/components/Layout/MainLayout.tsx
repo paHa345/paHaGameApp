@@ -23,7 +23,7 @@ const MainLayout = (props: any) => {
       <SessionProviderComponent>
         <ReduxProvider>{pathname !== "/wsGamesRoomList" && <Header></Header>}</ReduxProvider>
         <main
-          className=" text-headerButtonColor min-h-[80vh] w-11/12
+          className=" relative text-headerButtonColor min-h-[80vh] w-11/12
           mx-auto"
         >
           {props.children}
