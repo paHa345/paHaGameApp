@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import RoomGameField from "./RoomGameField";
+import { isTelegramWebApp } from "../Layout/MainLayout";
 
 const RoomComponentMain = () => {
   const [startTouchCoord, setStartTouchCoord] = useState<any>();
@@ -634,7 +635,7 @@ const RoomComponentMain = () => {
           <div className=" py-3">
             <RoomGameField></RoomGameField>
           </div>
-          <div className=" touch-none py-3 my-3 flex justify-center items-center gap-2 border-2 border-solid border-orange-500 rounded-full ">
+          <div className=" w-20 touch-none py-3 my-3 flex justify-center items-center gap-2 border-2 border-solid border-orange-500 rounded-full ">
             <div className=" flex justify-around items-center w-full">
               <div
                 onClick={attackUserClickHandler}

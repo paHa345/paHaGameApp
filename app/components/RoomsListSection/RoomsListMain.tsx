@@ -18,6 +18,7 @@ import CoopGameRoomButton from "./CoopGameRoomButton";
 import RoomComponentMain from "./RoomComponentMain";
 import { useParams } from "next/navigation";
 import { redirect } from "next/navigation";
+import { init, viewport, isTMA } from "@telegram-apps/sdk";
 
 const RoomsListMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -40,6 +41,8 @@ const RoomsListMain = () => {
     (state: ICoopGamesSlice) => state.CoopGamesState.showRoomStatus
   );
 
+  const [isTelegramWebAppStatus, setIsTelegramWebAppStatus] = useState(false);
+
   //   const [socket, setSocket] = useState<io.Socket>();
   const [message, setMessage] = useState("");
 
@@ -48,10 +51,34 @@ const RoomsListMain = () => {
   //   const socket = io.connect("http://localhost:3111");
   //   let socket: io.Socket<DefaultEventsMap, DefaultEventsMap>;
 
+  async function initApp() {
+    if (await isTMA()) {
+      init();
+
+      // Подключаем и расширяем viewport
+      if (viewport.mount.isAvailable()) {
+        await viewport.mount();
+        viewport.expand();
+      }
+
+      // Запрашиваем полноэкранный режим
+      if (viewport.requestFullscreen.isAvailable()) {
+        await viewport.requestFullscreen();
+      }
+    }
+  }
+
+  initApp();
+
   const setCoopGameHandler = () => {
     console.log("SetCoopName");
   };
 
+  useEffect(() => {
+    if (isTelegramWebApp()) {
+      setIsTelegramWebAppStatus(true);
+    }
+  }, []);
   useEffect(() => {
     const params = new URLSearchParams(window.location.hash.slice(1));
     const initData = params.get("tgWebAppData");
@@ -132,39 +159,43 @@ const RoomsListMain = () => {
 
   return (
     <>
-      <div>
-        <div
-          onClick={backToGamePageHandler}
-          className=" cursor-pointer my-3 mx-3 text-center buttonCoopRoom"
-        >
-          Назад
-        </div>
-      </div>
-      {telegramUser?.id && !showRoomStatus && (
+      <div
+        className={`${isTelegramWebAppStatus ? "rotate-90 absolute top-0 left-0 origin-center w-[100vh] h-[100vw]" : ""}`}
+      >
         <div>
-          <div>
-            <h1 className=" text-2xl text-center px-3 py-3">Список игровых серверов</h1>
+          <div
+            onClick={backToGamePageHandler}
+            className=" cursor-pointer my-3 mx-3 text-center buttonCoopRoom"
+          >
+            Назад
           </div>
-          {fetchAllGamesRoomsList === CoopGamesFetchStatus.Loading && (
-            <div className=" py-6 text-center">
-              <FontAwesomeIcon className=" animate-spin fa-fw fa-2x" icon={faSpinner} />
-            </div>
-          )}
-          {fetchAllGamesRoomsList === CoopGamesFetchStatus.Resolve &&
-            allGamesRoomsList.length > 0 && <div>{roomsEl}</div>}
-          {fetchAllGamesRoomsList === CoopGamesFetchStatus.Error && (
-            <div className=" text-center bg-red-200 rounded-xl shadow-smallShadow">
-              {" "}
-              <h1 className=" text-2xl py-2 px-2">
-                {" "}
-                Не удалось получить список серверов. Повторите попытку позже
-              </h1>{" "}
-            </div>
-          )}
         </div>
-      )}
+        {telegramUser?.id && !showRoomStatus && (
+          <div>
+            <div>
+              <h1 className=" text-2xl text-center px-3 py-3">Список игровых серверов</h1>
+            </div>
+            {fetchAllGamesRoomsList === CoopGamesFetchStatus.Loading && (
+              <div className=" py-6 text-center">
+                <FontAwesomeIcon className=" animate-spin fa-fw fa-2x" icon={faSpinner} />
+              </div>
+            )}
+            {fetchAllGamesRoomsList === CoopGamesFetchStatus.Resolve &&
+              allGamesRoomsList.length > 0 && <div>{roomsEl}</div>}
+            {fetchAllGamesRoomsList === CoopGamesFetchStatus.Error && (
+              <div className=" text-center bg-red-200 rounded-xl shadow-smallShadow">
+                {" "}
+                <h1 className=" text-2xl py-2 px-2">
+                  {" "}
+                  Не удалось получить список серверов. Повторите попытку позже
+                </h1>{" "}
+              </div>
+            )}
+          </div>
+        )}
 
-      {showRoomStatus && <RoomComponentMain></RoomComponentMain>}
+        {showRoomStatus && <RoomComponentMain></RoomComponentMain>}
+      </div>
     </>
   );
 };
