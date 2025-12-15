@@ -1,12 +1,13 @@
 import { AppDispatch } from "@/app/store";
 import { CoopGamesActions, ICoopGamesSlice, UserMoveDirections } from "@/app/store/CoopGamesSlice";
 import { coopGameSpritesData, ImageNames } from "@/app/types";
+import { div } from "framer-motion/client";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const RoomGameField = () => {
-  const objectsCanvasRef = useRef(null) as any;
   const dispatch = useDispatch<AppDispatch>();
+  const objectsCanvasRef = useRef(null) as any;
   const backgroundCanvasRef = useRef(null) as any;
   const UserStatCanvasRef = useRef(null) as any;
   const NPCUnderAttackAreaCAnvasRef = useRef(null) as any;
@@ -401,11 +402,32 @@ const RoomGameField = () => {
     console.log(statObj);
   }, [statObj]);
 
+  const canvas = document.getElementById("gameCanvas") as HTMLElement;
+  const button = document.getElementById("fullscreenBtn");
+
+  button?.addEventListener("click", () => {
+    if (canvas.requestFullscreen) {
+      canvas.requestFullscreen().catch((err) => {
+        console.error("Не удалось войти в полноэкранный режим:", err.message);
+      });
+    } else {
+      console.warn("Fullscreen API не поддерживается");
+    }
+  });
+
   return (
+    // <div>
+    //   <canvas id="gameCanvas" width="800" height="600"></canvas>
+    //   <button id="fullscreenBtn">Во весь экран</button>{" "}
+    // </div>
     <div>
       <div className=" relative ">
-        <canvas id="canvas" width={300} height={350}></canvas>
-        <div className=" gameContainer absolute top-px  h-80 w-80 overflow-hidden   ">
+        <canvas
+          className=" w-[100vh] h-[100vw]"
+          id="canvas"
+          //  width={300} height={350}
+        ></canvas>
+        <div className=" gameContainer absolute top-px  w-[100vh] h-[100vw] overflow-hidden   ">
           <canvas
             className=" absolute z-30 top-px"
             ref={treesCanvasRef}

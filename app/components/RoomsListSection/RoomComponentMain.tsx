@@ -18,6 +18,7 @@ import { isTelegramWebApp } from "../Layout/MainLayout";
 const RoomComponentMain = () => {
   const [startTouchCoord, setStartTouchCoord] = useState<any>();
   const [moveDitection, setmoveDitection] = useState<any>();
+  const roomElRef = useRef<HTMLDivElement>(null);
 
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
   const currentJoinedRoomID = useSelector(
@@ -269,9 +270,13 @@ const RoomComponentMain = () => {
     }
   };
 
-  const startGameHandler = () => {
+  const startGameHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     console.log("Start game");
     socket?.emit("startGame", currentJoinedRoomID);
+    // const element = roomElRef.current;
+    // if (element !== null && element.requestFullscreen) {
+    //   element?.requestFullscreen();
+    // }
   };
 
   const attackUserClickHandler = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -295,6 +300,7 @@ const RoomComponentMain = () => {
     if (!target.closest("div").dataset.direction) {
       return;
     }
+
     if (moveDitection !== target.closest("div").dataset.direction) {
       setmoveDitection(target.closest("div").dataset.direction);
       socket?.emit("clientStartMove", {
@@ -349,6 +355,8 @@ const RoomComponentMain = () => {
     if (startTouchCoord.y - e.targetTouches[0].clientY < -5 && xOrYMove === "y") {
       currentDirection = "down";
     }
+
+    console.log(currentDirection);
 
     if (currentDirection !== moveDitection) {
       console.log("change direction");
@@ -635,7 +643,7 @@ const RoomComponentMain = () => {
           <div className=" py-3">
             <RoomGameField></RoomGameField>
           </div>
-          <div className=" w-20 touch-none py-3 my-3 flex justify-center items-center gap-2 border-2 border-solid border-orange-500 rounded-full ">
+          <div className="absolute z-50 bottom-0 right-60 w-20 touch-none py-3 my-3 flex justify-center items-center gap-2 border-2 border-solid border-orange-500 rounded-full ">
             <div className=" flex justify-around items-center w-full">
               <div
                 onClick={attackUserClickHandler}

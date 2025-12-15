@@ -159,42 +159,44 @@ const RoomsListMain = () => {
 
   return (
     <>
-      <div
-        className={`${isTelegramWebAppStatus ? "rotate-90 absolute top-0 origin-bottom right-0 w-[100vh] h-[100vw]" : ""}`}
-      >
-        <div>
-          <div
-            onClick={backToGamePageHandler}
-            className=" cursor-pointer my-3 mx-3 text-center buttonCoopRoom"
-          >
-            Назад
-          </div>
-        </div>
-        {telegramUser?.id && !showRoomStatus && (
-          <div>
-            <div>
-              <h1 className=" text-2xl text-center px-3 py-3">Список игровых серверов</h1>
+      <div>
+        <div
+          className={`${isTelegramWebAppStatus ? " flex flex-col justify-center items-center rotate-90 absolute top-14 origin-bottom -right-16 w-[100vh] h-[100vw]" : ""}`}
+        >
+          <div className=" absolute z-50 top-2 left-0">
+            <div
+              onClick={backToGamePageHandler}
+              className=" cursor-pointer my-3 mx-3 text-center buttonCoopRoom"
+            >
+              X
             </div>
-            {fetchAllGamesRoomsList === CoopGamesFetchStatus.Loading && (
-              <div className=" py-6 text-center">
-                <FontAwesomeIcon className=" animate-spin fa-fw fa-2x" icon={faSpinner} />
-              </div>
-            )}
-            {fetchAllGamesRoomsList === CoopGamesFetchStatus.Resolve &&
-              allGamesRoomsList.length > 0 && <div>{roomsEl}</div>}
-            {fetchAllGamesRoomsList === CoopGamesFetchStatus.Error && (
-              <div className=" text-center bg-red-200 rounded-xl shadow-smallShadow">
-                {" "}
-                <h1 className=" text-2xl py-2 px-2">
-                  {" "}
-                  Не удалось получить список серверов. Повторите попытку позже
-                </h1>{" "}
-              </div>
-            )}
           </div>
-        )}
+          {telegramUser?.id && !showRoomStatus && (
+            <div>
+              <div>
+                <h1 className=" text-2xl text-center px-3 py-3">Список игровых серверов</h1>
+              </div>
+              {fetchAllGamesRoomsList === CoopGamesFetchStatus.Loading && (
+                <div className=" py-6 text-center">
+                  <FontAwesomeIcon className=" animate-spin fa-fw fa-2x" icon={faSpinner} />
+                </div>
+              )}
+              {fetchAllGamesRoomsList === CoopGamesFetchStatus.Resolve &&
+                allGamesRoomsList.length > 0 && <div>{roomsEl}</div>}
+              {fetchAllGamesRoomsList === CoopGamesFetchStatus.Error && (
+                <div className=" text-center bg-red-200 rounded-xl shadow-smallShadow">
+                  {" "}
+                  <h1 className=" text-2xl py-2 px-2">
+                    {" "}
+                    Не удалось получить список серверов. Повторите попытку позже
+                  </h1>{" "}
+                </div>
+              )}
+            </div>
+          )}
 
-        {showRoomStatus && <RoomComponentMain></RoomComponentMain>}
+          {showRoomStatus && <RoomComponentMain></RoomComponentMain>}
+        </div>
       </div>
     </>
   );
