@@ -344,19 +344,17 @@ const RoomComponentMain = () => {
         : "x";
 
     if (startTouchCoord.x - e.targetTouches[0].clientX > 5 && xOrYMove === "x") {
-      currentDirection = "left";
-    }
-    if (startTouchCoord.x - e.targetTouches[0].clientX < -5 && xOrYMove === "x") {
-      currentDirection = "right";
-    }
-    if (startTouchCoord.y - e.targetTouches[0].clientY > 5 && xOrYMove === "y") {
-      currentDirection = "up";
-    }
-    if (startTouchCoord.y - e.targetTouches[0].clientY < -5 && xOrYMove === "y") {
       currentDirection = "down";
     }
-
-    console.log(currentDirection);
+    if (startTouchCoord.x - e.targetTouches[0].clientX < -5 && xOrYMove === "x") {
+      currentDirection = "up";
+    }
+    if (startTouchCoord.y - e.targetTouches[0].clientY > 5 && xOrYMove === "y") {
+      currentDirection = "left";
+    }
+    if (startTouchCoord.y - e.targetTouches[0].clientY < -5 && xOrYMove === "y") {
+      currentDirection = "right";
+    }
 
     if (currentDirection !== moveDitection) {
       console.log("change direction");
