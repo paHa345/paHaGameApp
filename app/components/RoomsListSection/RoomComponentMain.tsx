@@ -16,7 +16,7 @@ import RoomGameField from "./RoomGameField";
 import { isTelegramWebApp } from "../Layout/MainLayout";
 
 const RoomComponentMain = () => {
-  const [startTouchCoord, setStartTouchCoord] = useState<any>();
+  const [startTouchCoord, setStartTouchCoord] = useState<any>({ x: 0, y: 0 });
   const [moveDitection, setmoveDitection] = useState<any>();
   const roomElRef = useRef<HTMLDivElement>(null);
 
@@ -317,6 +317,7 @@ const RoomComponentMain = () => {
     if (!target.closest("div").dataset.direction) {
       return;
     }
+
     setStartTouchCoord({
       x: e.targetTouches[0].clientX,
       y: e.targetTouches[0].clientY,
