@@ -15,6 +15,10 @@ const RoomGameField = () => {
 
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
 
+  const currentResolution = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.currentResolution
+  );
+
   const currentMapSize = useSelector(
     (state: ICoopGamesSlice) => state.CoopGamesState.currentMapSize
   );
@@ -122,10 +126,10 @@ const RoomGameField = () => {
     if (gameData && gameData[socket.id]) {
       var ctx = objectsCanvasRef.current.getContext("2d");
       ctx.clearRect(
-        gameData[socket.id].square.currentCoord.topLeft.x - 350,
+        gameData[socket.id].square.currentCoord.topLeft.x - currentResolution.height,
         gameData[socket.id].square.currentCoord.topLeft.y - 200,
-        650,
-        650
+        currentResolution.height * 2,
+        currentResolution.width + 200
       );
       for (let userData in gameData) {
         if (!frameObj.objects[userData]) return;
@@ -372,8 +376,8 @@ const RoomGameField = () => {
     var ctxUserStata = UserStatCanvasRef.current.getContext("2d");
     ctxUserStata.clearRect(0, 0, 300, 50);
 
-    ctxUserStata.globalAlpha = 0.1;
-    ctxUserStata.fillStyle = "e3dae0";
+    ctxUserStata.globalAlpha = 0.5;
+    ctxUserStata.fillStyle = "white";
     ctxUserStata.fillRect(0, 0, 300, 50);
 
     ctxUserStata.globalAlpha = 1;
@@ -456,19 +460,19 @@ const RoomGameField = () => {
           ></canvas>
         </div>
         <canvas
-          className=" absolute z-10 bottom-0"
+          className=" absolute z-10 top-5 left-5"
           ref={UserStatCanvasRef}
           width={300}
           height={50}
         ></canvas>
         {socket?.id !== undefined && statObj.gamers[socket.id] && (
           <div className=" relative">
-            <div className=" absolute z-10 bottom-8 left-9">
-              <p className=" font-light text-center">
+            <div className=" absolute z-50 top-10 left-10">
+              <p className=" font-light text-center text-6xl">
                 {socket?.id !== undefined ? Number(statObj.gamers[socket.id].currentHP) : 10}
               </p>
             </div>
-            <div className=" absolute z-10 bottom-8 left-24">
+            <div className=" absolute z-50 top-8 left-24">
               <p className=" font-light text-center">
                 {socket?.id !== undefined ? Number(statObj.gamers[socket.id].currentArmour) : 10}
               </p>

@@ -642,7 +642,7 @@ const RoomComponentMain = () => {
           <div className=" py-3">
             <RoomGameField></RoomGameField>
           </div>
-          <div className="absolute z-50 bottom-0 right-60 w-20 touch-none py-3 my-3 flex justify-center items-center gap-2 border-2 border-solid border-orange-500 rounded-full ">
+          <div className="absolute z-50 bottom-10 w-full touch-none py-3 my-3 flex justify-center items-center gap-2">
             <div className=" flex justify-around items-center w-full">
               <div
                 onClick={attackUserClickHandler}

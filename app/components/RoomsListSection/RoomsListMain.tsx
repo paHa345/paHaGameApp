@@ -163,7 +163,7 @@ const RoomsListMain = () => {
         <div
           className={`${isTelegramWebAppStatus ? " flex flex-col justify-center items-center rotate-90 absolute top-14 origin-bottom -right-16 w-[100vh] h-[100vw]" : ""}`}
         >
-          <div className=" absolute z-50 top-2 left-0">
+          <div className={`${isTelegramWebAppStatus ? "absolute z-50 top-2 right-0" : ""}`}>
             <div
               onClick={backToGamePageHandler}
               className=" cursor-pointer my-3 mx-3 text-center buttonCoopRoom"
