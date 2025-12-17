@@ -374,18 +374,18 @@ const RoomGameField = () => {
     }
 
     var ctxUserStata = UserStatCanvasRef.current.getContext("2d");
-    ctxUserStata.clearRect(0, 0, 300, 50);
+    ctxUserStata.clearRect(0, 0, 200, 100);
 
     ctxUserStata.globalAlpha = 0.5;
     ctxUserStata.fillStyle = "white";
-    ctxUserStata.fillRect(0, 0, 300, 50);
+    ctxUserStata.fillRect(0, 0, 200, 100);
 
     ctxUserStata.globalAlpha = 1;
 
     if (imgResources.userStatsIcon) {
-      ctxUserStata.drawImage(imgResources.userStatsIcon, 10, 10, 90, 90, 10, 5, 20, 20);
-      ctxUserStata.drawImage(imgResources.userStatsIcon, 150, 10, 90, 90, 58, 5, 20, 20);
-      ctxUserStata.drawImage(imgResources.userStatsIcon, 300, 10, 90, 90, 30, 28, 20, 20);
+      ctxUserStata.drawImage(imgResources.userStatsIcon, 10, 10, 90, 90, 10, 5, 30, 30);
+      ctxUserStata.drawImage(imgResources.userStatsIcon, 150, 10, 90, 90, 70, 5, 30, 30);
+      ctxUserStata.drawImage(imgResources.userStatsIcon, 300, 10, 90, 90, 50, 40, 30, 30);
       ctxUserStata.drawImage(imgResources.userStatsIcon, 450, 10, 90, 90, 120, 5, 40, 40);
     }
   }, [gameFieldData, currentMapSize]);
@@ -426,6 +426,26 @@ const RoomGameField = () => {
     // </div>
     <div>
       <div className=" relative ">
+        {socket?.id !== undefined && statObj.gamers[socket.id] && (
+          <div className=" relative">
+            <div className=" absolute z-50 top-6 left-16  text-xl ">
+              <p className=" text-center font-bold">
+                {socket?.id !== undefined ? Number(statObj.gamers[socket.id].currentHP) : 10}
+              </p>
+            </div>
+            <div className=" absolute z-50 top-6 left-32 text-xl">
+              <p className=" font-bold text-center">
+                {socket?.id !== undefined ? Number(statObj.gamers[socket.id].currentArmour) : 10}
+              </p>
+            </div>
+            <div className=" absolute z-50 top-16 left-28 text-xl">
+              <p className=" font-bold text-center">
+                {socket?.id !== undefined ? Number(statObj.gamers[socket.id].currentDamage) : 10}
+              </p>
+            </div>
+          </div>
+        )}
+
         <canvas
           className=" w-[100vh] h-[100vw]"
           id="canvas"
@@ -460,30 +480,11 @@ const RoomGameField = () => {
           ></canvas>
         </div>
         <canvas
-          className=" absolute z-10 top-5 left-5"
+          className=" absolute z-40 top-5 left-5"
           ref={UserStatCanvasRef}
-          width={300}
-          height={50}
+          width={200}
+          height={100}
         ></canvas>
-        {socket?.id !== undefined && statObj.gamers[socket.id] && (
-          <div className=" relative">
-            <div className=" absolute z-50 top-10 left-10">
-              <p className=" font-light text-center text-6xl">
-                {socket?.id !== undefined ? Number(statObj.gamers[socket.id].currentHP) : 10}
-              </p>
-            </div>
-            <div className=" absolute z-50 top-8 left-24">
-              <p className=" font-light text-center">
-                {socket?.id !== undefined ? Number(statObj.gamers[socket.id].currentArmour) : 10}
-              </p>
-            </div>
-            <div className=" absolute z-10 bottom-1 left-16 ">
-              <p className=" font-light text-center">
-                {socket?.id !== undefined ? Number(statObj.gamers[socket.id].currentDamage) : 10}
-              </p>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
