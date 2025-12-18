@@ -75,24 +75,24 @@ const RoomsListMain = () => {
     console.log("SetCoopName");
   };
 
-  useEffect(() => {
-    if (isTelegramWebApp()) {
-      disableVerticalSwipes();
-    }
-    // (async () => {
-    //   const [swipeBehavior] = initSwipeBehavior();
+  // useEffect(() => {
+  //   if (isTelegramWebApp()) {
+  //     disableVerticalSwipes();
+  //   }
+  //   // (async () => {
+  //   //   const [swipeBehavior] = initSwipeBehavior();
 
-    //   // Ждём инициализации
-    //   await swipeBehavior.ready();
+  //   //   // Ждём инициализации
+  //   //   await swipeBehavior.ready();
 
-    //   // Отключаем вертикальные свайпы
-    //   if (swipeBehavior.isVerticalSwipeEnabled()) {
-    //     await swipeBehavior.disableVerticalSwipe();
-    //   }
+  //   //   // Отключаем вертикальные свайпы
+  //   //   if (swipeBehavior.isVerticalSwipeEnabled()) {
+  //   //     await swipeBehavior.disableVerticalSwipe();
+  //   //   }
 
-    //   console.log('Вертикальные свайпы отключены');
-    // })();
-  }, []);
+  //   //   console.log('Вертикальные свайпы отключены');
+  //   // })();
+  // }, []);
 
   useEffect(() => {
     if (isTelegramWebApp()) {
