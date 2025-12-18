@@ -74,6 +74,17 @@ const RoomsListMain = () => {
     console.log("SetCoopName");
   };
 
+  if (isTelegramWebApp()) {
+    const tg = window.Telegram.WebApp;
+
+    // Отключаем вертикальные свайпы (сворачивание)
+    tg.expand(); // Сначала расширим окно, если нужно
+    tg.ready(); // Говорим, что приложение готово
+
+    // Отключаем свайп вниз для закрытия
+    tg.disableVerticalSwipes(); // ✅ Самый простой способ    }
+  }
+
   useEffect(() => {
     if (isTelegramWebApp()) {
       setIsTelegramWebAppStatus(true);
