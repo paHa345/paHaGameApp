@@ -18,8 +18,7 @@ import CoopGameRoomButton from "./CoopGameRoomButton";
 import RoomComponentMain from "./RoomComponentMain";
 import { useParams } from "next/navigation";
 import { redirect } from "next/navigation";
-import { init, viewport, isTMA } from "@telegram-apps/sdk";
-import { disableVerticalSwipes, swipeBehavior } from "@telegram-apps/sdk-react";
+import { init, viewport, isTMA, disableVerticalSwipes } from "@telegram-apps/sdk";
 
 const RoomsListMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -66,6 +65,7 @@ const RoomsListMain = () => {
       if (viewport.requestFullscreen.isAvailable()) {
         await viewport.requestFullscreen();
       }
+      disableVerticalSwipes();
     }
   }
 
