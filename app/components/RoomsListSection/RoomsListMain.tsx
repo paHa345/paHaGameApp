@@ -19,6 +19,7 @@ import RoomComponentMain from "./RoomComponentMain";
 import { useParams } from "next/navigation";
 import { redirect } from "next/navigation";
 import { init, viewport, isTMA } from "@telegram-apps/sdk";
+import { disableVerticalSwipes, swipeBehavior } from "@telegram-apps/sdk-react";
 
 const RoomsListMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -74,16 +75,24 @@ const RoomsListMain = () => {
     console.log("SetCoopName");
   };
 
-  if (isTelegramWebApp()) {
-    const tg = window.Telegram.WebApp;
+  useEffect(() => {
+    if (isTelegramWebApp()) {
+      disableVerticalSwipes();
+    }
+    // (async () => {
+    //   const [swipeBehavior] = initSwipeBehavior();
 
-    // Отключаем вертикальные свайпы (сворачивание)
-    tg.expand(); // Сначала расширим окно, если нужно
-    tg.ready(); // Говорим, что приложение готово
+    //   // Ждём инициализации
+    //   await swipeBehavior.ready();
 
-    // Отключаем свайп вниз для закрытия
-    tg.disableVerticalSwipes(); // ✅ Самый простой способ    }
-  }
+    //   // Отключаем вертикальные свайпы
+    //   if (swipeBehavior.isVerticalSwipeEnabled()) {
+    //     await swipeBehavior.disableVerticalSwipe();
+    //   }
+
+    //   console.log('Вертикальные свайпы отключены');
+    // })();
+  }, []);
 
   useEffect(() => {
     if (isTelegramWebApp()) {
