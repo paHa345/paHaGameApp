@@ -61,6 +61,7 @@ export interface ICoopGamesSlice {
       roadTile?: HTMLImageElement;
       trees?: HTMLImageElement;
       exterior?: HTMLImageElement;
+      characterPannel?: HTMLImageElement;
     };
 
     test: string;
@@ -261,6 +262,7 @@ interface ICoopGamesState {
     roadTile?: HTMLImageElement;
     trees?: HTMLImageElement;
     exterior?: HTMLImageElement;
+    characterPannel?: HTMLImageElement;
   };
 
   basePosition: {

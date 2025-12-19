@@ -52,6 +52,7 @@ const RoomGameField = () => {
     roadTile: imgResources.roadTile,
     trees: imgResources.trees,
     exterior: imgResources.exterior,
+    characterPannel: imgResources.characterPannel,
   };
   useEffect(() => {
     let time: number;
@@ -80,7 +81,10 @@ const RoomGameField = () => {
       for (const j in gameFieldData[i]) {
         if (!Object.hasOwn(gameFieldData[i], j)) continue;
 
-        if (gameFieldData[i][j].textureObj && gameFieldData[i][j].type === "tree") {
+        if (
+          (gameFieldData[i][j].textureObj && gameFieldData[i][j].type === "tree") ||
+          (gameFieldData[i][j].textureObj && gameFieldData[i][j].type === "scarecrow")
+        ) {
           treesCanvasContext.drawImage(
             imgCompareObj[gameFieldData[i][j].textureObj.imageName],
 
@@ -376,17 +380,22 @@ const RoomGameField = () => {
     var ctxUserStata = UserStatCanvasRef.current.getContext("2d");
     ctxUserStata.clearRect(0, 0, 200, 100);
 
-    ctxUserStata.globalAlpha = 0.5;
-    ctxUserStata.fillStyle = "white";
-    ctxUserStata.fillRect(0, 0, 200, 100);
+    // ctxUserStata.globalAlpha = 0.5;
+    // ctxUserStata.fillStyle = "white";
+    // ctxUserStata.fillRect(0, 0, 200, 100);
 
-    ctxUserStata.globalAlpha = 1;
+    // ctxUserStata.globalAlpha = 1;
 
-    if (imgResources.userStatsIcon) {
-      ctxUserStata.drawImage(imgResources.userStatsIcon, 10, 10, 90, 90, 10, 5, 30, 30);
-      ctxUserStata.drawImage(imgResources.userStatsIcon, 150, 10, 90, 90, 70, 5, 30, 30);
-      ctxUserStata.drawImage(imgResources.userStatsIcon, 300, 10, 90, 90, 50, 40, 30, 30);
-      ctxUserStata.drawImage(imgResources.userStatsIcon, 450, 10, 90, 90, 120, 5, 40, 40);
+    if (imgResources.characterPannel) {
+      ctxUserStata.drawImage(imgResources.characterPannel, 142, 3, 125, 29, 0, 0, 200, 47);
+
+      ctxUserStata.font = "20px serif";
+      ctxUserStata.fillText("Hello world", 75, 20);
+
+      // ctxUserStata.drawImage(imgResources.userStatsIcon, 10, 10, 90, 90, 10, 5, 30, 30);
+      // ctxUserStata.drawImage(imgResources.userStatsIcon, 150, 10, 90, 90, 70, 5, 30, 30);
+      // ctxUserStata.drawImage(imgResources.userStatsIcon, 300, 10, 90, 90, 50, 40, 30, 30);
+      // ctxUserStata.drawImage(imgResources.userStatsIcon, 450, 10, 90, 90, 120, 5, 40, 40);
     }
   }, [gameFieldData, currentMapSize]);
 
@@ -403,7 +412,30 @@ const RoomGameField = () => {
   }, [gameData, basePosition]);
 
   useEffect(() => {
-    console.log(statObj);
+    if (!gameData) return;
+    if (!socket?.id) return;
+    if (!gameData[socket.id]) return;
+    var ctxUserStata = UserStatCanvasRef.current.getContext("2d");
+    ctxUserStata.clearRect(0, 0, 200, 100);
+
+    if (imgResources.characterPannel) {
+      ctxUserStata.drawImage(imgResources.characterPannel, 142, 3, 125, 29, 0, 0, 200, 47);
+      ctxUserStata.drawImage(
+        imgResources.characterPannel,
+        70,
+        207,
+        60,
+        5,
+        45,
+        5,
+        `${statObj.gamers[socket.id].currentHP > 0 ? 180 * (Number(statObj.gamers[socket.id].currentHP) / 100) : 0}`,
+        5
+      );
+
+      ctxUserStata.font = "20px serif";
+      ctxUserStata.fillText(statObj.gamers[socket.id].currentDamage, 78, 33);
+      ctxUserStata.fillText(statObj.gamers[socket.id].currentArmour, 145, 33);
+    }
   }, [statObj]);
 
   const canvas = document.getElementById("gameCanvas") as HTMLElement;
@@ -426,7 +458,7 @@ const RoomGameField = () => {
     // </div>
     <div>
       <div className=" relative ">
-        {socket?.id !== undefined && statObj.gamers[socket.id] && (
+        {/* {socket?.id !== undefined && statObj.gamers[socket.id] && (
           <div className=" relative">
             <div className=" absolute z-50 top-6 left-16  text-xl ">
               <p className=" text-center font-bold">
@@ -444,7 +476,7 @@ const RoomGameField = () => {
               </p>
             </div>
           </div>
-        )}
+        )} */}
 
         <canvas
           className=" w-[100vh] h-[100vw]"

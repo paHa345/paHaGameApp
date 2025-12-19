@@ -50,7 +50,6 @@ const RoomComponentMain = () => {
   const userImgAttack = new Image();
   const userStatsIcon = new Image();
   const userImgGetDamageImg = new Image();
-
   const grassTextureImg = new Image();
   const rockTextureImg = new Image();
   const orcImgWalkImg = new Image();
@@ -63,6 +62,7 @@ const RoomComponentMain = () => {
   const roadTile = new Image();
   const trees = new Image();
   const exterior = new Image();
+  const characterPannel = new Image();
 
   // console.log(mapSize);
 
@@ -117,6 +117,10 @@ const RoomComponentMain = () => {
         name: exterior,
         src: "/MainCharactersHome/exterior.png",
       },
+      {
+        name: characterPannel,
+        src: "/RPGUI/character_pannel2.png",
+      },
     ];
 
     const setImgSrc = () => {
@@ -148,6 +152,7 @@ const RoomComponentMain = () => {
         roadTile: roadTile,
         trees: trees,
         exterior: exterior,
+        characterPannel: characterPannel,
       })
     );
 
