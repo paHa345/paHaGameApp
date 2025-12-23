@@ -123,6 +123,9 @@ export interface ICoopGamesSlice {
           currentArmour: number;
           currentDamage: number;
           percentHP: number;
+          currentLVL: number;
+          currentLVLUserPoint: number;
+          currentLVLMaxPoint: number;
         };
       };
     };
@@ -322,6 +325,9 @@ interface ICoopGamesState {
         currentArmour: number;
         currentDamage: number;
         percentHP: number;
+        currentLVL: number;
+        currentLVLUserPoint: number;
+        currentLVLMaxPoint: number;
       };
     };
   };
@@ -625,6 +631,10 @@ export const CoopGamesSlice = createSlice({
       if (action.payload.underAttackObjectType === "gamer") {
         state.statObj.gamers[action.payload.underAttackObjID] = action.payload.underAttackObjStat;
       }
+    },
+    setIncreasedUserXP(state, action) {
+      console.log(action.payload);
+      state.statObj.gamers[action.payload.userID] = action.payload.userStat;
     },
     setCurrentMapSize(state, action) {
       state.currentMapSize = action.payload;

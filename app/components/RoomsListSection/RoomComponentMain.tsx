@@ -119,7 +119,7 @@ const RoomComponentMain = () => {
       },
       {
         name: characterPannel,
-        src: "/RPGUI/character_pannel2.png",
+        src: "/RPGUI/character_pannel2.2.png",
       },
     ];
 
@@ -503,11 +503,33 @@ const RoomComponentMain = () => {
           currentDamage: number;
           currentHP: number;
           percentHP: number;
+          currentLVL: number;
+          currentLVLUserPoint: number;
+          currentLVLMaxPoint: number;
         };
       }) => {
         console.log(serverData);
         dispatch(CoopGamesActions.setObjectStartFrame(serverData.underAttackObjID));
         dispatch(CoopGamesActions.setUnderAttackNPCObjStat(serverData));
+      }
+    );
+    socket?.on(
+      "serverIncreaseUserXP",
+      (increasedUserData: {
+        userStat: {
+          baseHP: number;
+          currentArmour: number;
+          currentDamage: number;
+          currentHP: number;
+          percentHP: number;
+          currentLVL: number;
+          currentLVLUserPoint: number;
+          currentLVLMaxPoint: number;
+        };
+        userID: string;
+      }) => {
+        console.log(increasedUserData);
+        dispatch(CoopGamesActions.setIncreasedUserXP(increasedUserData));
       }
     );
 
@@ -544,6 +566,7 @@ const RoomComponentMain = () => {
       socket?.off("serverNPCDeathAnimationStatus");
       socket?.off("serverNPCViewArea");
       socket?.off("NPCChanksUnderAttack");
+      socket?.off("serverIncreaseUserXP");
     };
   }, [socket]);
 

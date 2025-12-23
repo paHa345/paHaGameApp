@@ -419,7 +419,7 @@ const RoomGameField = () => {
     ctxUserStata.clearRect(0, 0, 200, 100);
 
     if (imgResources.characterPannel) {
-      ctxUserStata.drawImage(imgResources.characterPannel, 142, 3, 125, 29, 0, 0, 200, 47);
+      ctxUserStata.drawImage(imgResources.characterPannel, 142, 3, 129, 35, 0, 0, 200, 55);
       ctxUserStata.drawImage(
         imgResources.characterPannel,
         70,
@@ -431,12 +431,23 @@ const RoomGameField = () => {
         `${statObj.gamers[socket.id].currentHP > 0 ? 180 * (Number(statObj.gamers[socket.id].currentHP) / 100) : 0}`,
         5
       );
+      ctxUserStata.drawImage(
+        imgResources.characterPannel,
+        70,
+        202,
+        60,
+        5,
+        25,
+        44,
+        `${(statObj.gamers[socket.id].currentLVLUserPoint / statObj.gamers[socket.id].currentLVLMaxPoint) * 150}`,
+        5
+      );
 
       ctxUserStata.font = "20px serif";
       ctxUserStata.fillText(statObj.gamers[socket.id].currentDamage, 78, 33);
       ctxUserStata.fillText(statObj.gamers[socket.id].currentArmour, 145, 33);
     }
-  }, [statObj]);
+  }, [socket?.id ? statObj.gamers[socket.id] : statObj]);
 
   const canvas = document.getElementById("gameCanvas") as HTMLElement;
   const button = document.getElementById("fullscreenBtn");
@@ -512,7 +523,7 @@ const RoomGameField = () => {
           ></canvas>
         </div>
         <canvas
-          className=" absolute z-40 top-5 left-5"
+          className=" absolute z-40 top-5 left-10"
           ref={UserStatCanvasRef}
           width={200}
           height={100}
