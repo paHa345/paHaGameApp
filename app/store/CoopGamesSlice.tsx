@@ -126,6 +126,7 @@ export interface ICoopGamesSlice {
           currentLVL: number;
           currentLVLUserPoint: number;
           currentLVLMaxPoint: number;
+          levelPoints: number;
         };
       };
     };
@@ -328,6 +329,7 @@ interface ICoopGamesState {
         currentLVL: number;
         currentLVLUserPoint: number;
         currentLVLMaxPoint: number;
+        levelPoints: number;
       };
     };
   };

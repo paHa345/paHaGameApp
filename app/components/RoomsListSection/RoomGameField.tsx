@@ -428,7 +428,7 @@ const RoomGameField = () => {
         5,
         45,
         5,
-        `${statObj.gamers[socket.id].currentHP > 0 ? 180 * (Number(statObj.gamers[socket.id].currentHP) / 100) : 0}`,
+        `${statObj.gamers[socket.id].currentHP > 0 ? 180 * Number(statObj.gamers[socket.id].currentHP / statObj.gamers[socket.id].baseHP) : 0}`,
         5
       );
       ctxUserStata.drawImage(
