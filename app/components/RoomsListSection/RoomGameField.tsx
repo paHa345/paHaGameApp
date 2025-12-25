@@ -1,9 +1,12 @@
 import { AppDispatch } from "@/app/store";
 import { CoopGamesActions, ICoopGamesSlice, UserMoveDirections } from "@/app/store/CoopGamesSlice";
 import { coopGameSpritesData, ImageNames } from "@/app/types";
+import { init, isTMA } from "@telegram-apps/sdk";
+import { isPopupSupported } from "@telegram-apps/sdk-react";
 import { div } from "framer-motion/client";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { MouseEvent, TouchEvent, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import LevelsWindow from "./LevelsWindow";
 
 const RoomGameField = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -34,6 +37,9 @@ const RoomGameField = () => {
   const gameFieldData = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.gameFieldData);
 
   const basePosition = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.basePosition);
+  const showLevelsComponentStatus = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.showLevelsComponent
+  );
 
   const NPCUnderAttackChanksObj = useSelector(
     (state: ICoopGamesSlice) => state.CoopGamesState.NPCUnderAttackChanksObj
@@ -53,7 +59,9 @@ const RoomGameField = () => {
     trees: imgResources.trees,
     exterior: imgResources.exterior,
     characterPannel: imgResources.characterPannel,
+    levelUserWindow: imgResources.levelUserWindow,
   };
+
   useEffect(() => {
     let time: number;
     let timerID: any;
@@ -378,7 +386,7 @@ const RoomGameField = () => {
     }
 
     var ctxUserStata = UserStatCanvasRef.current.getContext("2d");
-    ctxUserStata.clearRect(0, 0, 200, 100);
+    ctxUserStata.clearRect(0, 0, 200, 55);
 
     // ctxUserStata.globalAlpha = 0.5;
     // ctxUserStata.fillStyle = "white";
@@ -388,9 +396,6 @@ const RoomGameField = () => {
 
     if (imgResources.characterPannel) {
       ctxUserStata.drawImage(imgResources.characterPannel, 142, 3, 125, 29, 0, 0, 200, 47);
-
-      ctxUserStata.font = "20px serif";
-      ctxUserStata.fillText("Hello world", 75, 20);
 
       // ctxUserStata.drawImage(imgResources.userStatsIcon, 10, 10, 90, 90, 10, 5, 30, 30);
       // ctxUserStata.drawImage(imgResources.userStatsIcon, 150, 10, 90, 90, 70, 5, 30, 30);
@@ -462,6 +467,13 @@ const RoomGameField = () => {
     }
   });
 
+  const showLevelsComponent = (e: MouseEvent<HTMLDivElement>) => {
+    dispatch(CoopGamesActions.setShowLevelsComponent(!showLevelsComponentStatus));
+  };
+  const touchShowLevelsComponent = (e: TouchEvent<HTMLDivElement>) => {
+    dispatch(CoopGamesActions.setShowLevelsComponent(!showLevelsComponentStatus));
+  };
+
   return (
     // <div>
     //   <canvas id="gameCanvas" width="800" height="600"></canvas>
@@ -522,11 +534,17 @@ const RoomGameField = () => {
             height={currentMapSize * 8}
           ></canvas>
         </div>
+        <div
+          onClick={showLevelsComponent}
+          onTouchStart={touchShowLevelsComponent}
+          className=" absolute z-[41] top-6 left-[65px] h-10 w-10 rounded-full"
+        ></div>
+        <LevelsWindow></LevelsWindow>
         <canvas
-          className=" absolute z-40 top-5 left-10"
+          className=" absolute z-40 top-5 left-16"
           ref={UserStatCanvasRef}
           width={200}
-          height={100}
+          height={55}
         ></canvas>
       </div>
     </div>

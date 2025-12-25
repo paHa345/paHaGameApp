@@ -63,6 +63,7 @@ const RoomComponentMain = () => {
   const trees = new Image();
   const exterior = new Image();
   const characterPannel = new Image();
+  const levelUserWindow = new Image();
 
   // console.log(mapSize);
 
@@ -121,6 +122,10 @@ const RoomComponentMain = () => {
         name: characterPannel,
         src: "/RPGUI/character_pannel2.2.png",
       },
+      {
+        name: levelUserWindow,
+        src: "/RPGUI/Level.png",
+      },
     ];
 
     const setImgSrc = () => {
@@ -153,6 +158,7 @@ const RoomComponentMain = () => {
         trees: trees,
         exterior: exterior,
         characterPannel: characterPannel,
+        levelUserWindow: levelUserWindow,
       })
     );
 

@@ -18,14 +18,7 @@ import CoopGameRoomButton from "./CoopGameRoomButton";
 import RoomComponentMain from "./RoomComponentMain";
 import { useParams } from "next/navigation";
 import { redirect } from "next/navigation";
-import {
-  init,
-  viewport,
-  isTMA,
-  disableVerticalSwipes,
-  isSwipeBehaviorSupported,
-  swipeBehavior,
-} from "@telegram-apps/sdk";
+import { init, viewport, isTMA, swipeBehavior, popup } from "@telegram-apps/sdk";
 
 const RoomsListMain = () => {
   const dispatch = useDispatch<AppDispatch>();
