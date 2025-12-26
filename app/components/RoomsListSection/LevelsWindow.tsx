@@ -39,6 +39,7 @@ const LevelsWindow = () => {
     if (window.navigator.maxTouchPoints === 0) return;
 
     console.log(this);
+    socket?.emit("clientLevelUpHandler", { userID: socket.id, upStat: this });
   };
 
   useEffect(() => {
