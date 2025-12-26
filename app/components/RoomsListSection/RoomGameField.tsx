@@ -468,9 +468,13 @@ const RoomGameField = () => {
   });
 
   const showLevelsComponent = (e: MouseEvent<HTMLDivElement>) => {
+    if (window.navigator.maxTouchPoints !== 0) return;
+
     dispatch(CoopGamesActions.setShowLevelsComponent(!showLevelsComponentStatus));
   };
   const touchShowLevelsComponent = (e: TouchEvent<HTMLDivElement>) => {
+    if (window.navigator.maxTouchPoints === 0) return;
+
     dispatch(CoopGamesActions.setShowLevelsComponent(!showLevelsComponentStatus));
   };
 
@@ -537,11 +541,11 @@ const RoomGameField = () => {
         <div
           onClick={showLevelsComponent}
           onTouchStart={touchShowLevelsComponent}
-          className=" absolute z-[41] top-6 left-[65px] h-10 w-10 rounded-full"
+          className=" absolute z-[41] top-6 left-[77px] h-10 w-10 rounded-full"
         ></div>
         <LevelsWindow></LevelsWindow>
         <canvas
-          className=" absolute z-40 top-5 left-16"
+          className=" absolute z-40 top-5 left-20"
           ref={UserStatCanvasRef}
           width={200}
           height={55}
