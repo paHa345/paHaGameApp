@@ -1,6 +1,5 @@
 import { AppDispatch } from "@/app/store";
 import { CoopGamesActions, ICoopGamesSlice } from "@/app/store/CoopGamesSlice";
-import { th } from "framer-motion/client";
 import React, { MouseEvent, TouchEvent, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -32,7 +31,6 @@ const LevelsWindow = () => {
   const clickLevelUpHandler = function (this: string, e: MouseEvent<HTMLDivElement>) {
     if (window.navigator.maxTouchPoints !== 0) return;
 
-    console.log(this);
     socket?.emit("clientLevelUpHandler", { userID: socket.id, upStat: this });
   };
   const touchLevelUpHandler = function (this: string, e: TouchEvent<HTMLDivElement>) {

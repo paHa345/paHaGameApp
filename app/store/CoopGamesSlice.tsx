@@ -45,6 +45,7 @@ export interface ICoopGamesSlice {
       width: number;
     };
     showLevelsComponent: boolean;
+    showEquipmentComponent: boolean;
     imgResources: {
       userImgWalk?: HTMLImageElement;
       userImgAttack?: HTMLImageElement;
@@ -64,6 +65,7 @@ export interface ICoopGamesSlice {
       exterior?: HTMLImageElement;
       characterPannel?: HTMLImageElement;
       levelUserWindow?: HTMLImageElement;
+      equipmentUserWindow?: HTMLImageElement;
     };
 
     test: string;
@@ -252,6 +254,7 @@ interface ICoopGamesState {
     width: number;
   };
   showLevelsComponent: boolean;
+  showEquipmentComponent: boolean;
 
   imgResources: {
     userImgWalk?: HTMLImageElement;
@@ -272,6 +275,7 @@ interface ICoopGamesState {
     exterior?: HTMLImageElement;
     characterPannel?: HTMLImageElement;
     levelUserWindow?: HTMLImageElement;
+    equipmentUserWindow?: HTMLImageElement;
   };
 
   basePosition: {
@@ -456,6 +460,7 @@ export const CoopGamesState: ICoopGamesState = {
     width: 0,
   },
   showLevelsComponent: false,
+  showEquipmentComponent: false,
   imgResources: {},
   frameObj: {
     mainFrame: 0,
@@ -662,6 +667,9 @@ export const CoopGamesSlice = createSlice({
     },
     setShowLevelsComponent(state, action) {
       state.showLevelsComponent = action.payload;
+    },
+    setShowEquipmentComponent(state, action) {
+      state.showEquipmentComponent = action.payload;
     },
   },
   extraReducers: (builder) => {

@@ -7,6 +7,7 @@ import { div } from "framer-motion/client";
 import React, { MouseEvent, TouchEvent, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import LevelsWindow from "./LevelsWindow";
+import EquipmentWindow from "./EquipmentWindow";
 
 const RoomGameField = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -39,6 +40,10 @@ const RoomGameField = () => {
   const basePosition = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.basePosition);
   const showLevelsComponentStatus = useSelector(
     (state: ICoopGamesSlice) => state.CoopGamesState.showLevelsComponent
+  );
+
+  const showEquipmentComponentStatus = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.showEquipmentComponent
   );
 
   const NPCUnderAttackChanksObj = useSelector(
@@ -477,6 +482,16 @@ const RoomGameField = () => {
 
     dispatch(CoopGamesActions.setShowLevelsComponent(!showLevelsComponentStatus));
   };
+  const showEquipmentComponent = (e: MouseEvent<HTMLDivElement>) => {
+    if (window.navigator.maxTouchPoints !== 0) return;
+
+    dispatch(CoopGamesActions.setShowEquipmentComponent(!showEquipmentComponentStatus));
+  };
+  const touchShowEquipmentComponent = (e: TouchEvent<HTMLDivElement>) => {
+    if (window.navigator.maxTouchPoints === 0) return;
+
+    dispatch(CoopGamesActions.setShowEquipmentComponent(!showEquipmentComponentStatus));
+  };
 
   return (
     // <div>
@@ -539,11 +554,18 @@ const RoomGameField = () => {
           ></canvas>
         </div>
         <div
-          onClick={showLevelsComponent}
-          onTouchStart={touchShowLevelsComponent}
+          onClick={showEquipmentComponent}
+          onTouchStart={touchShowEquipmentComponent}
           className=" absolute z-[41] top-6 left-[77px] h-10 w-10 rounded-full"
         ></div>
+        <div
+          onClick={showLevelsComponent}
+          onTouchStart={touchShowLevelsComponent}
+          className=" absolute z-[41] top-16 left-[97px] h-4 w-36"
+        ></div>
         <LevelsWindow></LevelsWindow>
+        <EquipmentWindow></EquipmentWindow>
+
         <canvas
           className=" absolute z-40 top-5 left-20"
           ref={UserStatCanvasRef}
