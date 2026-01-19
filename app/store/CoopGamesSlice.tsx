@@ -66,6 +66,7 @@ export interface ICoopGamesSlice {
       characterPannel?: HTMLImageElement;
       levelUserWindow?: HTMLImageElement;
       equipmentUserWindow?: HTMLImageElement;
+      equipment?: HTMLImageElement;
     };
 
     test: string;
@@ -276,6 +277,7 @@ interface ICoopGamesState {
     characterPannel?: HTMLImageElement;
     levelUserWindow?: HTMLImageElement;
     equipmentUserWindow?: HTMLImageElement;
+    equipment?: HTMLImageElement;
   };
 
   basePosition: {

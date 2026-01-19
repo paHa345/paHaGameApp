@@ -516,4 +516,5 @@ export type ImageNames =
   | "gamerGetDamageImage"
   | "rocksAndStones"
   | "roadTile"
-  | "exterior";
+  | "exterior"
+  | "equipment";

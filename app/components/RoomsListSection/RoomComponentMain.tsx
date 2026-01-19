@@ -65,6 +65,7 @@ const RoomComponentMain = () => {
   const characterPannel = new Image();
   const levelUserWindow = new Image();
   const equipmentUserWindow = new Image();
+  const equipment = new Image();
 
   // console.log(mapSize);
 
@@ -132,6 +133,10 @@ const RoomComponentMain = () => {
         name: equipmentUserWindow,
         src: "/RPGUI/Equipment.png",
       },
+      {
+        name: equipment,
+        src: "/Equipment/Items1.png",
+      },
     ];
 
     const setImgSrc = () => {
@@ -166,6 +171,7 @@ const RoomComponentMain = () => {
         characterPannel: characterPannel,
         levelUserWindow: levelUserWindow,
         equipmentUserWindow: equipmentUserWindow,
+        equipment: equipment,
       })
     );
 
