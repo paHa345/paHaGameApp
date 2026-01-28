@@ -27,6 +27,7 @@ const RoomComponentMain = () => {
   const currentRoomUsers = useSelector(
     (state: ICoopGamesSlice) => state.CoopGamesState.currentRoomUsersArr
   );
+
   const messagesArr = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.messagesArr);
   const [message, setMessage] = useState("");
 
@@ -66,6 +67,7 @@ const RoomComponentMain = () => {
   const levelUserWindow = new Image();
   const equipmentUserWindow = new Image();
   const equipment = new Image();
+  const userActionButtons = new Image();
 
   // console.log(mapSize);
 
@@ -137,6 +139,10 @@ const RoomComponentMain = () => {
         name: equipment,
         src: "/Equipment/Items1.png",
       },
+      {
+        name: userActionButtons,
+        src: "/UserActionButtons/Icons.png",
+      },
     ];
 
     const setImgSrc = () => {
@@ -172,6 +178,7 @@ const RoomComponentMain = () => {
         levelUserWindow: levelUserWindow,
         equipmentUserWindow: equipmentUserWindow,
         equipment: equipment,
+        userActionButtons: userActionButtons,
       })
     );
 
@@ -459,8 +466,8 @@ const RoomComponentMain = () => {
     );
 
     socket?.on("startGameInRoom", (gameData) => {
-      console.log(socket.id);
-      console.log(gameData);
+      // console.log(socket.id);
+      // console.log(gameData);
 
       if (!socket.id) return;
       // console.log(gameData.statsObj.gamers[socket.id]);
@@ -469,6 +476,7 @@ const RoomComponentMain = () => {
       dispatch(CoopGamesActions.setGameFieldData(gameData.gameFieldData));
       dispatch(CoopGamesActions.setStatObj(gameData.statsObj));
       dispatch(CoopGamesActions.setCurrentMapSize(gameData.mapSize));
+      dispatch(CoopGamesActions.setDropObject(gameData.dropObject.objectData));
     });
     socket?.on("serverMove", (gameData) => {
       dispatch(CoopGamesActions.setSquareCoordinates(gameData));
@@ -563,6 +571,13 @@ const RoomComponentMain = () => {
       console.log(serverData);
       dispatch(CoopGamesActions.setNPCUnderAttackChanksObj(serverData));
     });
+    socket?.on("showPickUpDropButtonStatus", (serverData) => {
+      console.log(serverData);
+      dispatch(CoopGamesActions.setActionButtonData(serverData));
+    });
+    socket?.on("getDropObjectFromServer", (serverData) => {
+      dispatch(CoopGamesActions.setDropObject(serverData));
+    });
 
     return () => {
       socket?.off("roomGTSGameMessage");
@@ -586,6 +601,8 @@ const RoomComponentMain = () => {
       socket?.off("serverNPCViewArea");
       socket?.off("NPCChanksUnderAttack");
       socket?.off("serverIncreaseUserXP");
+      socket?.off("showPickUpDropButtonStatus");
+      socket?.off("getDropObjectFromServer");
     };
   }, [socket]);
 

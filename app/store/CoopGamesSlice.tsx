@@ -67,6 +67,13 @@ export interface ICoopGamesSlice {
       levelUserWindow?: HTMLImageElement;
       equipmentUserWindow?: HTMLImageElement;
       equipment?: HTMLImageElement;
+      userActionButtons?: HTMLImageElement;
+    };
+
+    actionButtonData: {
+      showButtonStatus: boolean;
+      XButtonImageCoord: number;
+      YButtonImageCoord: number;
     };
 
     test: string;
@@ -235,6 +242,19 @@ export interface ICoopGamesSlice {
         };
       };
     };
+    dropObject: {
+      [chanks: string]: {
+        XChank: number;
+        YChank: number;
+        imageName: ImageNames;
+        XSpriteCoord: number;
+        YSpriteCoord: number;
+        sourceX: number;
+        sourceY: number;
+        heigthChanks: number;
+        widthChanks: number;
+      }[];
+    };
     NPCUnderAttackChanksObj: {
       [NPCID: string]: {
         underAttackArea: {
@@ -278,6 +298,13 @@ interface ICoopGamesState {
     levelUserWindow?: HTMLImageElement;
     equipmentUserWindow?: HTMLImageElement;
     equipment?: HTMLImageElement;
+    userActionButtons?: HTMLImageElement;
+  };
+
+  actionButtonData: {
+    showButtonStatus: boolean;
+    XButtonImageCoord: number;
+    YButtonImageCoord: number;
   };
 
   basePosition: {
@@ -443,6 +470,19 @@ interface ICoopGamesState {
       };
     };
   };
+  dropObject: {
+    [chanks: string]: {
+      XChank: number;
+      YChank: number;
+      imageName: ImageNames;
+      XSpriteCoord: number;
+      YSpriteCoord: number;
+      sourceX: number;
+      sourceY: number;
+      heigthChanks: number;
+      widthChanks: number;
+    }[];
+  };
   NPCUnderAttackChanksObj: {
     [NPCID: string]: {
       underAttackArea: {
@@ -460,6 +500,11 @@ export const CoopGamesState: ICoopGamesState = {
   currentResolution: {
     height: 0,
     width: 0,
+  },
+  actionButtonData: {
+    showButtonStatus: false,
+    XButtonImageCoord: 0,
+    YButtonImageCoord: 0,
   },
   showLevelsComponent: false,
   showEquipmentComponent: false,
@@ -485,6 +530,7 @@ export const CoopGamesState: ICoopGamesState = {
   fetchAllGameRoomsStatus: CoopGamesFetchStatus.Ready,
   touchEl: "init",
   gameFieldData: {},
+  dropObject: {},
   NPCUnderAttackChanksObj: {},
 };
 
@@ -672,6 +718,12 @@ export const CoopGamesSlice = createSlice({
     },
     setShowEquipmentComponent(state, action) {
       state.showEquipmentComponent = action.payload;
+    },
+    setDropObject(state, action) {
+      state.dropObject = action.payload;
+    },
+    setActionButtonData(state, action) {
+      state.actionButtonData = action.payload;
     },
   },
   extraReducers: (builder) => {

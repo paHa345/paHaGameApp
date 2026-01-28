@@ -8,6 +8,7 @@ import React, { MouseEvent, TouchEvent, useEffect, useLayoutEffect, useRef, useS
 import { useDispatch, useSelector } from "react-redux";
 import LevelsWindow from "./LevelsWindow";
 import EquipmentWindow from "./EquipmentWindow";
+import UserActionButtonsWindow from "./UserActionButtonsWindow";
 
 const RoomGameField = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -16,6 +17,7 @@ const RoomGameField = () => {
   const UserStatCanvasRef = useRef(null) as any;
   const NPCUnderAttackAreaCAnvasRef = useRef(null) as any;
   const treesCanvasRef = useRef(null) as any;
+  const dropCanvasRef = useRef(null) as any;
 
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
 
@@ -36,6 +38,7 @@ const RoomGameField = () => {
   const frameObj = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.frameObj);
   const gameData = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.squareCoordinates);
   const gameFieldData = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.gameFieldData);
+  const dropObject = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.dropObject);
 
   const basePosition = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.basePosition);
   const showLevelsComponentStatus = useSelector(
@@ -66,6 +69,7 @@ const RoomGameField = () => {
     characterPannel: imgResources.characterPannel,
     levelUserWindow: imgResources.levelUserWindow,
     equipment: imgResources.equipment,
+    userActionButtons: imgResources.userActionButtons,
   };
 
   useEffect(() => {
@@ -423,6 +427,34 @@ const RoomGameField = () => {
   }, [gameData, basePosition]);
 
   useEffect(() => {
+    if (!dropObject) return;
+    if (!gameData) return;
+    if (!socket?.id) return;
+    if (!gameData[socket.id]) return;
+    var ctxDropObject = dropCanvasRef.current.getContext("2d");
+    ctxDropObject.clearRect(0, 0, currentMapSize * 8, currentMapSize * 8);
+
+    for (let drop in dropObject) {
+      dropObject[drop].forEach((dropObj) => {
+        if (!dropObj) return;
+
+        ctxDropObject.drawImage(
+          imgCompareObj[dropObj.imageName],
+
+          dropObj.XSpriteCoord,
+          dropObj.YSpriteCoord,
+          dropObj.sourceX,
+          dropObj.sourceY,
+          dropObj.YChank * 8,
+          dropObj.XChank * 8,
+          dropObj.heigthChanks ? dropObj.heigthChanks * 8 : 32,
+          dropObj.widthChanks ? dropObj.widthChanks * 8 : 32
+        );
+      });
+    }
+  }, [dropObject]);
+
+  useEffect(() => {
     if (!gameData) return;
     if (!socket?.id) return;
     if (!gameData[socket.id]) return;
@@ -534,6 +566,12 @@ const RoomGameField = () => {
             height={currentMapSize * 8}
           ></canvas>
           <canvas
+            className=" absolute z-[19] top-px"
+            ref={dropCanvasRef}
+            width={currentMapSize * 8}
+            height={currentMapSize * 8}
+          ></canvas>
+          <canvas
             className=" absolute top-px z-20"
             id="canvas"
             width={currentMapSize * 8}
@@ -566,6 +604,7 @@ const RoomGameField = () => {
         ></div>
         <LevelsWindow></LevelsWindow>
         <EquipmentWindow></EquipmentWindow>
+        <UserActionButtonsWindow></UserActionButtonsWindow>
 
         <canvas
           className=" absolute z-40 top-5 left-20"
