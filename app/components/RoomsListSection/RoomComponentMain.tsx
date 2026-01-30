@@ -577,6 +577,13 @@ const RoomComponentMain = () => {
     });
     socket?.on("getDropObjectFromServer", (serverData) => {
       dispatch(CoopGamesActions.setDropObject(serverData));
+      dispatch(
+        CoopGamesActions.setActionButtonData({
+          showButtonStatus: false,
+          XButtonImageCoord: 0,
+          YButtonImageCoord: 0,
+        })
+      );
     });
 
     return () => {
