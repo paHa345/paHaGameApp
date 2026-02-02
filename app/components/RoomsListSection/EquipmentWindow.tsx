@@ -11,6 +11,10 @@ const EquipmentWindow = () => {
   );
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
 
+  const userEquipmentObj = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.userInventory
+  );
+
   const gamersUserStat = useSelector(
     (state: ICoopGamesSlice) => state.CoopGamesState.statObj.gamers
   );
@@ -31,12 +35,12 @@ const EquipmentWindow = () => {
 
   useEffect(() => {
     if (!socket?.id) return;
-    if (!gamersUserStat) return;
-    if (gamersUserStat[socket?.id] === undefined) return;
+    if (!userEquipmentObj) return;
+    // if (gamersUserStat[socket?.id] === undefined) return;
 
     var equipmentWindowCtx = UserEquipmentCanvasRef.current.getContext("2d");
 
-    if (imgResources.levelUserWindow) {
+    if (imgResources.equipmentUserWindow) {
       equipmentWindowCtx.drawImage(
         imgResources.equipmentUserWindow,
         5,
@@ -48,8 +52,24 @@ const EquipmentWindow = () => {
         252,
         165
       );
+
+      //   userEquipmentObj.forEach((equipmentEl)=>{
+
+      //   })
+
+      equipmentWindowCtx.drawImage(
+        imgResources.equipment,
+        57,
+        64,
+        114,
+        107,
+        `${78 * 1.5}`,
+        `${20 * 1.5}`,
+        16 * 1.5,
+        16 * 1.5
+      );
     }
-  }, [[socket?.id !== undefined ? gamersUserStat[socket?.id] : gamersUserStat]]);
+  }, [userEquipmentObj]);
 
   return (
     <div className={`${showEquipmentComponentStatus ? "z-[45]" : "z-0"} absolute top-20 left-32`}>

@@ -585,6 +585,9 @@ const RoomComponentMain = () => {
         })
       );
     });
+    socket?.on("setUserDropObjectObjectFromServer", (serverData) => {
+      dispatch(CoopGamesActions.setUserInventory(serverData));
+    });
 
     return () => {
       socket?.off("roomGTSGameMessage");
@@ -610,6 +613,7 @@ const RoomComponentMain = () => {
       socket?.off("serverIncreaseUserXP");
       socket?.off("showPickUpDropButtonStatus");
       socket?.off("getDropObjectFromServer");
+      socket?.off("setUserDropObjectObjectFromServer");
     };
   }, [socket]);
 

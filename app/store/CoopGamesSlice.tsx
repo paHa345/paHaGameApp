@@ -255,6 +255,14 @@ export interface ICoopGamesSlice {
         widthChanks: number;
       }[];
     };
+
+    userInventory: {
+      imageName: string | undefined;
+      XSpriteCoord: number | undefined;
+      YSpriteCoord: number | undefined;
+      sourceXLength: number | undefined;
+      sourceYLength: number | undefined;
+    }[];
     NPCUnderAttackChanksObj: {
       [NPCID: string]: {
         underAttackArea: {
@@ -483,6 +491,13 @@ interface ICoopGamesState {
       widthChanks: number;
     }[];
   };
+  userInventory: {
+    imageName: string | undefined;
+    XSpriteCoord: number | undefined;
+    YSpriteCoord: number | undefined;
+    sourceXLength: number | undefined;
+    sourceYLength: number | undefined;
+  }[];
   NPCUnderAttackChanksObj: {
     [NPCID: string]: {
       underAttackArea: {
@@ -531,6 +546,7 @@ export const CoopGamesState: ICoopGamesState = {
   touchEl: "init",
   gameFieldData: {},
   dropObject: {},
+  userInventory: [],
   NPCUnderAttackChanksObj: {},
 };
 
@@ -724,6 +740,9 @@ export const CoopGamesSlice = createSlice({
     },
     setActionButtonData(state, action) {
       state.actionButtonData = action.payload;
+    },
+    setUserInventory(state, action) {
+      state.userInventory = action.payload;
     },
   },
   extraReducers: (builder) => {
