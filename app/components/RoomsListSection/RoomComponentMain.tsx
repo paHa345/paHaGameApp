@@ -585,8 +585,9 @@ const RoomComponentMain = () => {
         })
       );
     });
-    socket?.on("setUserDropObjectObjectFromServer", (serverData) => {
-      dispatch(CoopGamesActions.setUserInventory(serverData));
+    socket?.on("setUserDropObjectObjectFromServer", (userInventory) => {
+      console.log(userInventory);
+      dispatch(CoopGamesActions.setUserInventory(userInventory));
     });
 
     return () => {

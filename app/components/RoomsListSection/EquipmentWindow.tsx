@@ -32,13 +32,40 @@ const EquipmentWindow = () => {
 
     dispatch(CoopGamesActions.setShowEquipmentComponent(!showEquipmentComponentStatus));
   };
+  const clickToEquipmentElHandler = (e: MouseEvent<HTMLDivElement>) => {
+    if (window.navigator.maxTouchPoints !== 0) return;
+    console.log(e.currentTarget.dataset.equipmentobjid);
+    console.log(e.currentTarget.dataset.equipmentobjtype);
+  };
+  const touchToEquipmentElHandler = (e: TouchEvent<HTMLDivElement>) => {
+    if (window.navigator.maxTouchPoints === 0) return;
+    console.log(e.currentTarget.dataset.equipmentobjid);
+    console.log(e.currentTarget.dataset.equipmentobjtype);
+  };
+
+  const height = Math.floor(16 * 1.5);
+  const equipment = userEquipmentObj.map((equipmentEl, index) => {
+    const topPosition = 20 * 1.5 + Math.floor(index / 4) * 20 * 1.5;
+    const leftPosition = Math.floor((78 + (index % 4) * 13 * 1.5) * 1.5);
+    return (
+      <div
+        onClick={clickToEquipmentElHandler}
+        onTouchStart={touchToEquipmentElHandler}
+        style={{ top: `${topPosition}px`, left: `${leftPosition}px` }}
+        className={`cursor-pointer absolute h-[${height}px] w-[${height}px]`}
+        key={equipmentEl.id}
+        data-equipmentobjid={equipmentEl.id}
+        data-equipmentobjtype={equipmentEl.type}
+      ></div>
+    );
+  });
 
   useEffect(() => {
     if (!socket?.id) return;
     if (!userEquipmentObj) return;
     // if (gamersUserStat[socket?.id] === undefined) return;
 
-    var equipmentWindowCtx = UserEquipmentCanvasRef.current.getContext("2d");
+    const equipmentWindowCtx = UserEquipmentCanvasRef.current.getContext("2d");
 
     if (imgResources.equipmentUserWindow) {
       equipmentWindowCtx.drawImage(
@@ -53,21 +80,19 @@ const EquipmentWindow = () => {
         165
       );
 
-      //   userEquipmentObj.forEach((equipmentEl)=>{
-
-      //   })
-
-      equipmentWindowCtx.drawImage(
-        imgResources.equipment,
-        57,
-        64,
-        114,
-        107,
-        `${78 * 1.5}`,
-        `${20 * 1.5}`,
-        16 * 1.5,
-        16 * 1.5
-      );
+      userEquipmentObj.forEach((equipmentEl, index) => {
+        equipmentWindowCtx.drawImage(
+          imgResources.equipment,
+          equipmentEl.XSpriteCoord,
+          equipmentEl.YSpriteCoord,
+          equipmentEl.sourceXLength,
+          equipmentEl.sourceYLength,
+          `${(78 + (index % 4) * 13 * 1.5) * 1.5}`,
+          `${20 * 1.5 + Math.floor(index / 4) * 20 * 1.5}`,
+          16 * 1.5,
+          16 * 1.5
+        );
+      });
     }
   }, [userEquipmentObj]);
 
@@ -76,8 +101,15 @@ const EquipmentWindow = () => {
       <div
         onClick={showEquipmentComponent}
         onTouchStart={touchShowEquipmentComponent}
-        className={`absolute h-[28px] w-[28px] top-[0px] right-[0px]`}
+        className={` cursor-pointer absolute h-[28px] w-[28px] top-[0px] right-[0px]`}
       ></div>
+      {/* <div className={`absolute h-[${height}px] w-[${height}px] top-[30px] left-[145px]`}></div>
+      <div className={`absolute h-[${height}px] w-[${height}px] top-[30px] left-[178px]`}></div>
+      <div className={`absolute h-[${height}px] w-[${height}px] top-[30px] left-[210px]`}></div>
+      <div
+        className={`absolute h-[${height}px] w-[${height}px] top-[${20 * 1.5 + Math.floor(4 / 4) * 20 * 1.5}px] left-[114px]`}
+      ></div> */}
+      {equipment}
       <canvas ref={UserEquipmentCanvasRef} width={252} height={165}></canvas>
     </div>
   );

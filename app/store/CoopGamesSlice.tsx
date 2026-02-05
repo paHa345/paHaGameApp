@@ -257,6 +257,8 @@ export interface ICoopGamesSlice {
     };
 
     userInventory: {
+      id: number | undefined;
+      type: string | undefined;
       imageName: string | undefined;
       XSpriteCoord: number | undefined;
       YSpriteCoord: number | undefined;
@@ -492,6 +494,8 @@ interface ICoopGamesState {
     }[];
   };
   userInventory: {
+    id: number | undefined;
+    type: string | undefined;
     imageName: string | undefined;
     XSpriteCoord: number | undefined;
     YSpriteCoord: number | undefined;

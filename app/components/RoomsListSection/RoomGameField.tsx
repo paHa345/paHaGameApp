@@ -9,10 +9,10 @@ import { useDispatch, useSelector } from "react-redux";
 import LevelsWindow from "./LevelsWindow";
 import EquipmentWindow from "./EquipmentWindow";
 import UserActionButtonsWindow from "./UserActionButtonsWindow";
+import ObjectsWindow from "./ObjectsWindow";
 
 const RoomGameField = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const objectsCanvasRef = useRef(null) as any;
   const backgroundCanvasRef = useRef(null) as any;
   const UserStatCanvasRef = useRef(null) as any;
   const NPCUnderAttackAreaCAnvasRef = useRef(null) as any;
@@ -21,26 +21,18 @@ const RoomGameField = () => {
 
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
 
-  const currentResolution = useSelector(
-    (state: ICoopGamesSlice) => state.CoopGamesState.currentResolution
-  );
-
   const currentMapSize = useSelector(
     (state: ICoopGamesSlice) => state.CoopGamesState.currentMapSize
   );
   const imgResources = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.imgResources);
 
-  const attackDataObj = useSelector(
-    (state: ICoopGamesSlice) => state.CoopGamesState.attackStatusObj
-  );
-
   const statObj = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.statObj);
   const frameObj = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.frameObj);
-  const gameData = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.squareCoordinates);
+  // const gameData = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.squareCoordinates);
   const gameFieldData = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.gameFieldData);
   const dropObject = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.dropObject);
 
-  const basePosition = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.basePosition);
+  // const basePosition = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.basePosition);
   const showLevelsComponentStatus = useSelector(
     (state: ICoopGamesSlice) => state.CoopGamesState.showLevelsComponent
   );
@@ -141,174 +133,6 @@ const RoomGameField = () => {
       }
     }
   }, [gameFieldData, currentMapSize]);
-
-  useEffect(() => {
-    if (!socket?.id) return;
-    if (!gameData) return;
-    if (gameData && gameData[socket.id]) {
-      var ctx = objectsCanvasRef.current.getContext("2d");
-      ctx.clearRect(
-        gameData[socket.id].square.currentCoord.topLeft.x - currentResolution.height,
-        gameData[socket.id].square.currentCoord.topLeft.y - 200,
-        currentResolution.height * 2,
-        currentResolution.width + 200
-      );
-      for (let userData in gameData) {
-        if (!frameObj.objects[userData]) return;
-
-        let NPCViewDirection;
-        const setObjectViewDirection = () => {
-          if (!gameData[userData].NPCViewDirection) {
-            return;
-          }
-          if (
-            gameData[userData].NPCViewDirection === UserMoveDirections.up ||
-            gameData[userData].NPCViewDirection === UserMoveDirections.stop
-          ) {
-            NPCViewDirection = coopGameSpritesData[gameData[userData].objectType].up;
-          }
-          if (gameData[userData].NPCViewDirection === UserMoveDirections.down) {
-            NPCViewDirection = coopGameSpritesData[gameData[userData].objectType].down;
-          }
-          if (gameData[userData].NPCViewDirection === UserMoveDirections.left) {
-            NPCViewDirection = coopGameSpritesData[gameData[userData].objectType].left;
-          }
-          if (gameData[userData].NPCViewDirection === UserMoveDirections.right) {
-            NPCViewDirection = coopGameSpritesData[gameData[userData].objectType].right;
-          }
-        };
-
-        setObjectViewDirection();
-
-        if (
-          gameData[userData].moveDirection === UserMoveDirections.stop ||
-          gameData[userData].moveDirection === UserMoveDirections.up
-        ) {
-          ctx.drawImage(
-            imgCompareObj[gameData[userData].imgName],
-            frameObj.objects[userData].idFrame === 0
-              ? 12
-              : frameObj.objects[userData].idFrame * 64 + 12,
-            NPCViewDirection
-              ? NPCViewDirection
-              : coopGameSpritesData[gameData[userData].objectType].up,
-            48,
-            48,
-            gameData[userData].square.currentCoord.topLeft.x,
-            gameData[userData].square.currentCoord.topLeft.y,
-            48,
-            48
-          );
-        }
-        if (gameData[userData].moveDirection === UserMoveDirections.left) {
-          ctx.drawImage(
-            imgCompareObj[gameData[userData].imgName],
-            frameObj.objects[userData].idFrame === 0
-              ? 12
-              : frameObj.objects[userData].idFrame * 64 + 12,
-            NPCViewDirection
-              ? NPCViewDirection
-              : coopGameSpritesData[gameData[userData].objectType].left,
-            48,
-            48,
-            gameData[userData].square.currentCoord.topLeft.x,
-            gameData[userData].square.currentCoord.topLeft.y,
-            48,
-            48
-          );
-        }
-        if (gameData[userData].moveDirection === UserMoveDirections.right) {
-          ctx.drawImage(
-            imgCompareObj[gameData[userData].imgName],
-            frameObj.objects[userData].idFrame === 0
-              ? 12
-              : frameObj.objects[userData].idFrame * 64 + 12,
-            NPCViewDirection
-              ? NPCViewDirection
-              : coopGameSpritesData[gameData[userData].objectType].right,
-            48,
-            48,
-            gameData[userData].square.currentCoord.topLeft.x,
-            gameData[userData].square.currentCoord.topLeft.y,
-            48,
-            48
-          );
-        }
-        if (gameData[userData].moveDirection === UserMoveDirections.down) {
-          ctx.drawImage(
-            imgCompareObj[gameData[userData].imgName],
-            frameObj.objects[userData].idFrame === 0
-              ? 12
-              : frameObj.objects[userData].idFrame * 64 + 12,
-            NPCViewDirection
-              ? NPCViewDirection
-              : coopGameSpritesData[gameData[userData].objectType].down,
-            48,
-            48,
-            gameData[userData].square.currentCoord.topLeft.x,
-            gameData[userData].square.currentCoord.topLeft.y,
-            48,
-            48
-          );
-        }
-        if (gameData[userData].type === "NPC") {
-          if (!statObj.NPC[userData]) return;
-          ctx.globalAlpha = 0.5;
-
-          if (statObj.NPC[userData].percentHP < 25) {
-            ctx.drawImage(
-              imgResources.NPCHPImg,
-              155,
-              5,
-              50,
-              50,
-              gameData[userData].square.currentCoord.topLeft.x,
-              gameData[userData].square.currentCoord.topLeft.y,
-              24,
-              24
-            );
-          } else if (statObj.NPC[userData].percentHP < 50) {
-            ctx.drawImage(
-              imgResources.NPCHPImg,
-              105,
-              5,
-              50,
-              50,
-              gameData[userData].square.currentCoord.topLeft.x,
-              gameData[userData].square.currentCoord.topLeft.y,
-              24,
-              24
-            );
-          } else if (statObj.NPC[userData].percentHP < 75) {
-            ctx.drawImage(
-              imgResources.NPCHPImg,
-              55,
-              5,
-              50,
-              50,
-              gameData[userData].square.currentCoord.topLeft.x,
-              gameData[userData].square.currentCoord.topLeft.y,
-              24,
-              24
-            );
-          } else if (statObj.NPC[userData].percentHP <= 100) {
-            ctx.drawImage(
-              imgResources.NPCHPImg,
-              5,
-              5,
-              50,
-              50,
-              gameData[userData].square.currentCoord.topLeft.x,
-              gameData[userData].square.currentCoord.topLeft.y,
-              24,
-              24
-            );
-          }
-          ctx.globalAlpha = 1;
-        }
-      }
-    }
-  }, [gameData, frameObj, attackDataObj]);
 
   useEffect(() => {
     var underAttackAreaCtx = NPCUnderAttackAreaCAnvasRef.current.getContext("2d");
@@ -414,23 +238,26 @@ const RoomGameField = () => {
     }
   }, [gameFieldData, currentMapSize]);
 
-  useEffect(() => {
-    const questionStatusContainer = document.querySelector(".gameContainer");
-    if (!gameData) return;
-    if (!socket?.id) return;
-    if (!gameData[socket.id]) return;
+  // useEffect(() => {
+  //   const questionStatusContainer = document.querySelector(".gameContainer");
+  //   if (!gameData) return;
+  //   if (!socket?.id) return;
+  //   if (!gameData[socket.id]) return;
 
-    questionStatusContainer?.scrollTo({
-      left: gameData[socket.id].square.currentCoord.topLeft.x - 150,
-      top: gameData[socket.id].square.currentCoord.topLeft.y - 150,
-    });
-  }, [gameData, basePosition]);
+  //   questionStatusContainer?.scrollTo({
+  //     left: gameData[socket.id].square.currentCoord.topLeft.x - 150,
+  //     top: gameData[socket.id].square.currentCoord.topLeft.y - 150,
+  //   });
+  // }, [gameData, basePosition]);
 
   useEffect(() => {
     if (!dropObject) return;
-    if (!gameData) return;
-    if (!socket?.id) return;
-    if (!gameData[socket.id]) return;
+    // if (!gameData) return;
+
+    if (!socket) return;
+    if (!socket.id) return;
+    if (!statObj.gamers[socket.id]) return;
+    // if (!gameData[socket.id]) return;
     var ctxDropObject = dropCanvasRef.current.getContext("2d");
     ctxDropObject.clearRect(0, 0, currentMapSize * 8, currentMapSize * 8);
 
@@ -455,9 +282,13 @@ const RoomGameField = () => {
   }, [dropObject]);
 
   useEffect(() => {
-    if (!gameData) return;
-    if (!socket?.id) return;
-    if (!gameData[socket.id]) return;
+    // if (!gameData) return;
+    // if (!gameData[socket.id]) return;
+
+    if (!socket) return;
+    if (!socket.id) return;
+    if (!statObj.gamers[socket.id]) return;
+
     var ctxUserStata = UserStatCanvasRef.current.getContext("2d");
     ctxUserStata.clearRect(0, 0, 200, 100);
 
@@ -571,13 +402,14 @@ const RoomGameField = () => {
             width={currentMapSize * 8}
             height={currentMapSize * 8}
           ></canvas>
-          <canvas
+          {/* <canvas
             className=" absolute top-px z-20"
             id="canvas"
             width={currentMapSize * 8}
             height={currentMapSize * 8}
             ref={objectsCanvasRef}
-          ></canvas>
+          ></canvas> */}
+          <ObjectsWindow></ObjectsWindow>
           <canvas
             className=" absolute top-px z-20"
             id="canvas"
