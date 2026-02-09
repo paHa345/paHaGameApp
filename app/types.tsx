@@ -518,3 +518,16 @@ export type ImageNames =
   | "roadTile"
   | "exterior"
   | "equipment";
+
+export interface IUserInventoryObj {
+  id: string;
+  XChank: number;
+  YChank: number;
+  imageName: ImageNames;
+  XSpriteCoord: number;
+  YSpriteCoord: number;
+  sourceX: number;
+  sourceY: number;
+  heigthChanks: number;
+  widthChanks: number;
+}

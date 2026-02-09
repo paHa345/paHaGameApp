@@ -1,10 +1,29 @@
 import { AppDispatch } from "@/app/store";
 import { CoopGamesActions, ICoopGamesSlice } from "@/app/store/CoopGamesSlice";
-import React, { MouseEvent, TouchEvent, useEffect, useRef } from "react";
+import React, { MouseEvent, TouchEvent, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+import {
+  faArrowDown,
+  faArrowLeft,
+  faArrowRight,
+  faArrowUp,
+  faGamepad,
+  faHandFist,
+  faTrash,
+  faShirt,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const EquipmentWindow = () => {
   const UserEquipmentCanvasRef = useRef(null) as any;
+
+  const [interactEquipmentElCoord, setInteractEquipmentElCoord] = useState({ top: 0, left: 0 });
+  const [currentEquipmentElID, setCurrentEquipmentElID] = useState() as any;
+
+  const showInteractWithEquipmentElStatus = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.showInteractWithEquipmentElStatus
+  );
 
   const showEquipmentComponentStatus = useSelector(
     (state: ICoopGamesSlice) => state.CoopGamesState.showEquipmentComponent
@@ -24,11 +43,13 @@ const EquipmentWindow = () => {
 
   const showEquipmentComponent = (e: MouseEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints !== 0) return;
+    dispatch(CoopGamesActions.showInteractWithEquipmentElStatus(false));
 
     dispatch(CoopGamesActions.setShowEquipmentComponent(!showEquipmentComponentStatus));
   };
   const touchShowEquipmentComponent = (e: TouchEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints === 0) return;
+    dispatch(CoopGamesActions.showInteractWithEquipmentElStatus(false));
 
     dispatch(CoopGamesActions.setShowEquipmentComponent(!showEquipmentComponentStatus));
   };
@@ -36,11 +57,38 @@ const EquipmentWindow = () => {
     if (window.navigator.maxTouchPoints !== 0) return;
     console.log(e.currentTarget.dataset.equipmentobjid);
     console.log(e.currentTarget.dataset.equipmentobjtype);
+    setCurrentEquipmentElID(e.currentTarget.dataset.equipmentobjid);
+    if (currentEquipmentElID !== e.currentTarget.dataset.equipmentobjid) {
+      dispatch(CoopGamesActions.showInteractWithEquipmentElStatus(true));
+    } else {
+      dispatch(
+        CoopGamesActions.showInteractWithEquipmentElStatus(!showInteractWithEquipmentElStatus)
+      );
+    }
+    console.log(e.currentTarget.offsetLeft);
+    console.log(e.currentTarget.offsetTop);
+    setInteractEquipmentElCoord({
+      top: e.currentTarget.offsetTop,
+      left: e.currentTarget.offsetLeft,
+    });
   };
   const touchToEquipmentElHandler = (e: TouchEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints === 0) return;
     console.log(e.currentTarget.dataset.equipmentobjid);
     console.log(e.currentTarget.dataset.equipmentobjtype);
+    setCurrentEquipmentElID(e.currentTarget.dataset.equipmentobjid);
+
+    if (currentEquipmentElID !== e.currentTarget.dataset.equipmentobjid) {
+      dispatch(CoopGamesActions.showInteractWithEquipmentElStatus(true));
+    } else {
+      dispatch(
+        CoopGamesActions.showInteractWithEquipmentElStatus(!showInteractWithEquipmentElStatus)
+      );
+    }
+    setInteractEquipmentElCoord({
+      top: e.currentTarget.offsetTop,
+      left: e.currentTarget.offsetLeft,
+    });
   };
 
   const height = Math.floor(16 * 1.5);
@@ -51,8 +99,13 @@ const EquipmentWindow = () => {
       <div
         onClick={clickToEquipmentElHandler}
         onTouchStart={touchToEquipmentElHandler}
-        style={{ top: `${topPosition}px`, left: `${leftPosition}px` }}
-        className={`cursor-pointer absolute h-[${height}px] w-[${height}px]`}
+        style={{
+          top: `${topPosition}px`,
+          left: `${leftPosition}px`,
+          height: `${height}px`,
+          width: `${height}px`,
+        }}
+        className={`cursor-pointer absolute`}
         key={equipmentEl.id}
         data-equipmentobjid={equipmentEl.id}
         data-equipmentobjtype={equipmentEl.type}
@@ -103,13 +156,25 @@ const EquipmentWindow = () => {
         onTouchStart={touchShowEquipmentComponent}
         className={` cursor-pointer absolute h-[28px] w-[28px] top-[0px] right-[0px]`}
       ></div>
-      {/* <div className={`absolute h-[${height}px] w-[${height}px] top-[30px] left-[145px]`}></div>
-      <div className={`absolute h-[${height}px] w-[${height}px] top-[30px] left-[178px]`}></div>
-      <div className={`absolute h-[${height}px] w-[${height}px] top-[30px] left-[210px]`}></div>
-      <div
-        className={`absolute h-[${height}px] w-[${height}px] top-[${20 * 1.5 + Math.floor(4 / 4) * 20 * 1.5}px] left-[114px]`}
-      ></div> */}
       {equipment}
+      {showInteractWithEquipmentElStatus && (
+        <div
+          style={{
+            top: `${interactEquipmentElCoord.top + 30}px`,
+            left: `${interactEquipmentElCoord.left}px`,
+          }}
+          className="absolute"
+        >
+          <div className="flex gap-2">
+            <div>
+              <FontAwesomeIcon className=" buttonCoopInteractWithEquipment fa-fw" icon={faShirt} />
+            </div>
+            <div>
+              <FontAwesomeIcon className=" buttonCoopInteractWithEquipment fa-fw" icon={faTrash} />
+            </div>
+          </div>
+        </div>
+      )}
       <canvas ref={UserEquipmentCanvasRef} width={252} height={165}></canvas>
     </div>
   );

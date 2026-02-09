@@ -20,6 +20,8 @@ const RoomGameField = () => {
   const dropCanvasRef = useRef(null) as any;
 
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
+  const gameData = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.squareCoordinates);
+  const basePosition = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.basePosition);
 
   const currentMapSize = useSelector(
     (state: ICoopGamesSlice) => state.CoopGamesState.currentMapSize
@@ -238,17 +240,17 @@ const RoomGameField = () => {
     }
   }, [gameFieldData, currentMapSize]);
 
-  // useEffect(() => {
-  //   const questionStatusContainer = document.querySelector(".gameContainer");
-  //   if (!gameData) return;
-  //   if (!socket?.id) return;
-  //   if (!gameData[socket.id]) return;
+  useEffect(() => {
+    const questionStatusContainer = document.querySelector(".gameContainer");
+    if (!gameData) return;
+    if (!socket?.id) return;
+    if (!gameData[socket.id]) return;
 
-  //   questionStatusContainer?.scrollTo({
-  //     left: gameData[socket.id].square.currentCoord.topLeft.x - 150,
-  //     top: gameData[socket.id].square.currentCoord.topLeft.y - 150,
-  //   });
-  // }, [gameData, basePosition]);
+    questionStatusContainer?.scrollTo({
+      left: gameData[socket.id].square.currentCoord.topLeft.x - 150,
+      top: gameData[socket.id].square.currentCoord.topLeft.y - 150,
+    });
+  }, [gameData, basePosition]);
 
   useEffect(() => {
     if (!dropObject) return;

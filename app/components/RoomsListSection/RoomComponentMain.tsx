@@ -478,9 +478,6 @@ const RoomComponentMain = () => {
       dispatch(CoopGamesActions.setCurrentMapSize(gameData.mapSize));
       dispatch(CoopGamesActions.setDropObject(gameData.dropObject.objectData));
     });
-    socket?.on("serverMove", (gameData) => {
-      dispatch(CoopGamesActions.setSquareCoordinates(gameData));
-    });
 
     socket?.on("serverStartAttack", (attackObjectData: { attackObjectID: string }) => {
       console.log(attackObjectData.attackObjectID);
@@ -598,11 +595,6 @@ const RoomComponentMain = () => {
       socket?.off("addUserInRoom");
       socket?.off("deleteUserFromRoom");
       socket?.off("startGameInRoom");
-      // socket?.off("serverMoveDown");
-      // socket?.off("serverMoveUp");
-      // socket?.off("serverMoveLeft");
-      // socket?.off("serverMoveRight");
-      socket?.off("serverMove");
       socket?.off("serverStartAttack");
       socket?.off("serverStopAttack");
       socket?.off("serverResetCooldown");

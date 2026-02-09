@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import * as io from "socket.io-client";
-import { ImageNames } from "../types";
+import { ImageNames, IUserInventoryObj } from "../types";
 
 export const getAllRoomsList = createAsyncThunk(
   "CoopGamesState/getAiiRoomsList",
@@ -45,6 +45,7 @@ export interface ICoopGamesSlice {
       width: number;
     };
     showLevelsComponent: boolean;
+    showInteractWithEquipmentElStatus: boolean;
     showEquipmentComponent: boolean;
     imgResources: {
       userImgWalk?: HTMLImageElement;
@@ -265,6 +266,7 @@ export interface ICoopGamesSlice {
       sourceXLength: number | undefined;
       sourceYLength: number | undefined;
     }[];
+
     NPCUnderAttackChanksObj: {
       [NPCID: string]: {
         underAttackArea: {
@@ -285,6 +287,8 @@ interface ICoopGamesState {
     width: number;
   };
   showLevelsComponent: boolean;
+  showInteractWithEquipmentElStatus: boolean;
+
   showEquipmentComponent: boolean;
 
   imgResources: {
@@ -526,6 +530,8 @@ export const CoopGamesState: ICoopGamesState = {
     YButtonImageCoord: 0,
   },
   showLevelsComponent: false,
+  showInteractWithEquipmentElStatus: false,
+
   showEquipmentComponent: false,
   imgResources: {},
   frameObj: {
@@ -747,6 +753,9 @@ export const CoopGamesSlice = createSlice({
     },
     setUserInventory(state, action) {
       state.userInventory = action.payload;
+    },
+    showInteractWithEquipmentElStatus(state, action) {
+      state.showInteractWithEquipmentElStatus = action.payload;
     },
   },
   extraReducers: (builder) => {

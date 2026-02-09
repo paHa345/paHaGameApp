@@ -82,6 +82,9 @@ textarea {
 .buttonBackCoopRoom {
   @apply text-slate-50 text-base font-bold min-w-max py-2 px-4 rounded-md shadow-audioControlsButtonShadow bg-orange-800 hover:shadow-audioControlsButtonHoverShadow hover:bg-orange-700;
 }
+.buttonCoopInteractWithEquipment {
+  @apply text-slate-50 text-base font-bold min-w-max py-2 px-4 rounded-md shadow-audioControlsButtonShadow bg-slate-800 hover:shadow-audioControlsButtonHoverShadow hover:bg-slate-700;
+}
 .buttonCoopJoystick {
   @apply text-slate-50 text-base font-bold min-w-max py-2 px-4 rounded-full shadow-audioControlsButtonShadow bg-orange-800 hover:shadow-audioControlsButtonHoverShadow hover:bg-orange-700;
 }
