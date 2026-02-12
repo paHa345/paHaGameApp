@@ -583,8 +583,12 @@ const RoomComponentMain = () => {
       );
     });
     socket?.on("setUserDropObjectObjectFromServer", (userInventory) => {
-      console.log(userInventory);
       dispatch(CoopGamesActions.setUserInventory(userInventory));
+    });
+    socket?.on("setUserEquipmentAndInventoryFromServer", (userEquipmentAndInventoryObj) => {
+      console.log(userEquipmentAndInventoryObj);
+      dispatch(CoopGamesActions.setUserInventory(userEquipmentAndInventoryObj.inventory));
+      dispatch(CoopGamesActions.setUserEquipment(userEquipmentAndInventoryObj.equipment));
     });
 
     return () => {
@@ -607,6 +611,7 @@ const RoomComponentMain = () => {
       socket?.off("showPickUpDropButtonStatus");
       socket?.off("getDropObjectFromServer");
       socket?.off("setUserDropObjectObjectFromServer");
+      socket?.off("setUserEquipmentAndInventoryFromServer");
     };
   }, [socket]);
 

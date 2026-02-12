@@ -531,3 +531,13 @@ export interface IUserInventoryObj {
   heigthChanks: number;
   widthChanks: number;
 }
+
+export interface IUserInventoryAndEquipmentObj {
+  id: number | undefined;
+  type: string | undefined;
+  imageName: string | undefined;
+  XSpriteCoord: number | undefined;
+  YSpriteCoord: number | undefined;
+  sourceXLength: number | undefined;
+  sourceYLength: number | undefined;
+}

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import * as io from "socket.io-client";
-import { ImageNames, IUserInventoryObj } from "../types";
+import { ImageNames, IUserInventoryAndEquipmentObj, IUserInventoryObj } from "../types";
 
 export const getAllRoomsList = createAsyncThunk(
   "CoopGamesState/getAiiRoomsList",
@@ -257,15 +257,17 @@ export interface ICoopGamesSlice {
       }[];
     };
 
-    userInventory: {
-      id: number | undefined;
-      type: string | undefined;
-      imageName: string | undefined;
-      XSpriteCoord: number | undefined;
-      YSpriteCoord: number | undefined;
-      sourceXLength: number | undefined;
-      sourceYLength: number | undefined;
-    }[];
+    userInventory: IUserInventoryAndEquipmentObj[];
+
+    userEquipment: {
+      helmet: IUserInventoryAndEquipmentObj[];
+      weapon: IUserInventoryAndEquipmentObj[];
+      shield: IUserInventoryAndEquipmentObj[];
+      armour: IUserInventoryAndEquipmentObj[];
+      boots: IUserInventoryAndEquipmentObj[];
+      ring: IUserInventoryAndEquipmentObj[];
+      amulet: IUserInventoryAndEquipmentObj[];
+    };
 
     NPCUnderAttackChanksObj: {
       [NPCID: string]: {
@@ -497,15 +499,16 @@ interface ICoopGamesState {
       widthChanks: number;
     }[];
   };
-  userInventory: {
-    id: number | undefined;
-    type: string | undefined;
-    imageName: string | undefined;
-    XSpriteCoord: number | undefined;
-    YSpriteCoord: number | undefined;
-    sourceXLength: number | undefined;
-    sourceYLength: number | undefined;
-  }[];
+  userInventory: IUserInventoryAndEquipmentObj[];
+  userEquipment: {
+    helmet: IUserInventoryAndEquipmentObj[];
+    weapon: IUserInventoryAndEquipmentObj[];
+    shield: IUserInventoryAndEquipmentObj[];
+    armour: IUserInventoryAndEquipmentObj[];
+    boots: IUserInventoryAndEquipmentObj[];
+    ring: IUserInventoryAndEquipmentObj[];
+    amulet: IUserInventoryAndEquipmentObj[];
+  };
   NPCUnderAttackChanksObj: {
     [NPCID: string]: {
       underAttackArea: {
@@ -557,6 +560,15 @@ export const CoopGamesState: ICoopGamesState = {
   gameFieldData: {},
   dropObject: {},
   userInventory: [],
+  userEquipment: {
+    helmet: [],
+    weapon: [],
+    shield: [],
+    armour: [],
+    boots: [],
+    ring: [],
+    amulet: [],
+  },
   NPCUnderAttackChanksObj: {},
 };
 
@@ -756,6 +768,9 @@ export const CoopGamesSlice = createSlice({
     },
     showInteractWithEquipmentElStatus(state, action) {
       state.showInteractWithEquipmentElStatus = action.payload;
+    },
+    setUserEquipment(state, action) {
+      state.userEquipment = action.payload;
     },
   },
   extraReducers: (builder) => {

@@ -10,18 +10,21 @@ const UserActionButtonsWindow = () => {
     (state: ICoopGamesSlice) => state.CoopGamesState.actionButtonData
   );
   const imgResources = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.imgResources);
+  const currentRoomID = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.currentJoinedRoomID
+  );
 
   const clickPickUpLootHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints !== 0) return;
 
     console.log("Подобрать предметы");
-    socket?.emit("clientPickUpLootHandler");
+    socket?.emit("clientPickUpLootHandler", currentRoomID);
   };
   const touchPickUpLootHandler = (e: TouchEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints === 0) return;
 
     console.log("Подобрать предметы");
-    socket?.emit("clientPickUpLootHandler");
+    socket?.emit("clientPickUpLootHandler", currentRoomID);
   };
 
   useEffect(() => {

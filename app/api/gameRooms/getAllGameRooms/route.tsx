@@ -6,6 +6,8 @@ export async function GET(req: NextRequest) {
   try {
     await connectMongoDB();
     const allGameRooms = await GameRoom.find();
+
+    console.log(allGameRooms);
     return NextResponse.json({
       status: "Success",
       result: { allGamesRoomList: allGameRooms, isLastPage: "" },
