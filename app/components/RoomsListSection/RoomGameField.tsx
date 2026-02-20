@@ -64,6 +64,7 @@ const RoomGameField = () => {
     levelUserWindow: imgResources.levelUserWindow,
     equipment: imgResources.equipment,
     userActionButtons: imgResources.userActionButtons,
+    inventoryEquipmentInteract: imgResources.inventoryEquipmentInteract,
   };
 
   useEffect(() => {

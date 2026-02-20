@@ -45,6 +45,13 @@ export interface ICoopGamesSlice {
       width: number;
     };
     showLevelsComponent: boolean;
+    showInteractWithInventoryAndEquipmentElStatus: {
+      showStatus: boolean;
+      interactTo: "inventory" | "equipment";
+      XCoord: number;
+      YCoord: number;
+    };
+    userSelectedEquipmentElID: string;
     showInteractWithEquipmentElStatus: boolean;
     showEquipmentComponent: boolean;
     imgResources: {
@@ -69,6 +76,8 @@ export interface ICoopGamesSlice {
       equipmentUserWindow?: HTMLImageElement;
       equipment?: HTMLImageElement;
       userActionButtons?: HTMLImageElement;
+      userActionButtons2?: HTMLImageElement;
+      inventoryEquipmentInteract?: HTMLImageElement;
     };
 
     actionButtonData: {
@@ -289,6 +298,14 @@ interface ICoopGamesState {
     width: number;
   };
   showLevelsComponent: boolean;
+  showInteractWithInventoryAndEquipmentElStatus: {
+    showStatus: boolean;
+    interactTo: "inventory" | "equipment";
+    XCoord: number;
+    YCoord: number;
+  };
+  userSelectedEquipmentElID: string;
+
   showInteractWithEquipmentElStatus: boolean;
 
   showEquipmentComponent: boolean;
@@ -315,6 +332,8 @@ interface ICoopGamesState {
     equipmentUserWindow?: HTMLImageElement;
     equipment?: HTMLImageElement;
     userActionButtons?: HTMLImageElement;
+    userActionButtons2?: HTMLImageElement;
+    inventoryEquipmentInteract?: HTMLImageElement;
   };
 
   actionButtonData: {
@@ -533,6 +552,14 @@ export const CoopGamesState: ICoopGamesState = {
     YButtonImageCoord: 0,
   },
   showLevelsComponent: false,
+  showInteractWithInventoryAndEquipmentElStatus: {
+    showStatus: false,
+    interactTo: "equipment",
+    XCoord: 0,
+    YCoord: 0,
+  },
+  userSelectedEquipmentElID: "",
+
   showInteractWithEquipmentElStatus: false,
 
   showEquipmentComponent: false,
@@ -766,11 +793,27 @@ export const CoopGamesSlice = createSlice({
     setUserInventory(state, action) {
       state.userInventory = action.payload;
     },
+    showInteractWithInventoryElStatus(
+      state,
+      action: {
+        payload: {
+          showStatus: boolean;
+          interactTo: "inventory" | "equipment";
+          XCoord: number;
+          YCoord: number;
+        };
+      }
+    ) {
+      state.showInteractWithInventoryAndEquipmentElStatus = action.payload;
+    },
     showInteractWithEquipmentElStatus(state, action) {
       state.showInteractWithEquipmentElStatus = action.payload;
     },
     setUserEquipment(state, action) {
       state.userEquipment = action.payload;
+    },
+    setUserSelectedEquipmentElID(state, action) {
+      state.userSelectedEquipmentElID = action.payload;
     },
   },
   extraReducers: (builder) => {

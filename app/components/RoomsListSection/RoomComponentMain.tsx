@@ -68,6 +68,8 @@ const RoomComponentMain = () => {
   const equipmentUserWindow = new Image();
   const equipment = new Image();
   const userActionButtons = new Image();
+  const userActionButtons2 = new Image();
+  const inventoryEquipmentInteract = new Image();
 
   // console.log(mapSize);
 
@@ -143,6 +145,14 @@ const RoomComponentMain = () => {
         name: userActionButtons,
         src: "/UserActionButtons/Icons.png",
       },
+      {
+        name: userActionButtons2,
+        src: "/UserActionButtons/Icons2.png",
+      },
+      {
+        name: inventoryEquipmentInteract,
+        src: "/RPGUI/InventoryEquipmentInteract.png",
+      },
     ];
 
     const setImgSrc = () => {
@@ -179,6 +189,8 @@ const RoomComponentMain = () => {
         equipmentUserWindow: equipmentUserWindow,
         equipment: equipment,
         userActionButtons: userActionButtons,
+        userActionButtons2: userActionButtons2,
+        inventoryEquipmentInteract: inventoryEquipmentInteract,
       })
     );
 

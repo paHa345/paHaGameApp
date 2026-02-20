@@ -5,12 +5,22 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { faTrash, faShirt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { div } from "framer-motion/client";
+import InventoryAndEquipmentInteractMeny from "./InventoryAndEquipmentInteractMeny";
 
 const EquipmentWindow = () => {
   const UserEquipmentCanvasRef = useRef(null) as any;
 
   const [interactEquipmentElCoord, setInteractEquipmentElCoord] = useState({ top: 0, left: 0 });
-  const [currentEquipmentElID, setCurrentEquipmentElID] = useState() as any;
+  //   const [currentEquipmentElID, setCurrentEquipmentElID] = useState() as any;
+
+  const userSelectedEquipmentElID = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.userSelectedEquipmentElID
+  );
+
+  const showInteractWithInventoryAndEquipmentElStatus = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.showInteractWithInventoryAndEquipmentElStatus
+  );
 
   const showInteractWithEquipmentElStatus = useSelector(
     (state: ICoopGamesSlice) => state.CoopGamesState.showInteractWithEquipmentElStatus
@@ -35,25 +45,57 @@ const EquipmentWindow = () => {
 
   const showEquipmentComponent = (e: MouseEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints !== 0) return;
-    dispatch(CoopGamesActions.showInteractWithEquipmentElStatus(false));
-
+    // dispatch(CoopGamesActions.showInteractWithInventoryElStatus(false));
+    dispatch(
+      CoopGamesActions.showInteractWithInventoryElStatus({
+        showStatus: false,
+        interactTo: "inventory",
+        XCoord: e.currentTarget.offsetLeft,
+        YCoord: e.currentTarget.offsetTop,
+      })
+    );
     dispatch(CoopGamesActions.setShowEquipmentComponent(!showEquipmentComponentStatus));
+    dispatch(CoopGamesActions.showInteractWithEquipmentElStatus(false));
   };
+
   const touchShowEquipmentComponent = (e: TouchEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints === 0) return;
-    dispatch(CoopGamesActions.showInteractWithEquipmentElStatus(false));
-
+    // dispatch(CoopGamesActions.showInteractWithInventoryElStatus(false));
+    dispatch(
+      CoopGamesActions.showInteractWithInventoryElStatus({
+        showStatus: false,
+        interactTo: "inventory",
+        XCoord: e.currentTarget.offsetLeft,
+        YCoord: e.currentTarget.offsetTop,
+      })
+    );
     dispatch(CoopGamesActions.setShowEquipmentComponent(!showEquipmentComponentStatus));
+    dispatch(CoopGamesActions.showInteractWithEquipmentElStatus(false));
   };
-  const clickToEquipmentElHandler = (e: MouseEvent<HTMLDivElement>) => {
+
+  const clickToInventoryElHandler = (e: MouseEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints !== 0) return;
     if (e.currentTarget.dataset.inventoryobjtype === "other") return;
-    setCurrentEquipmentElID(e.currentTarget.dataset.inventoryobjid);
-    if (currentEquipmentElID !== e.currentTarget.dataset.inventoryobjid) {
-      dispatch(CoopGamesActions.showInteractWithEquipmentElStatus(true));
+    // setCurrentEquipmentElID(e.currentTarget.dataset.inventoryobjid);
+    dispatch(CoopGamesActions.setUserSelectedEquipmentElID(e.currentTarget.dataset.inventoryobjid));
+
+    if (userSelectedEquipmentElID !== e.currentTarget.dataset.inventoryobjid) {
+      dispatch(
+        CoopGamesActions.showInteractWithInventoryElStatus({
+          showStatus: true,
+          interactTo: "inventory",
+          XCoord: e.currentTarget.offsetLeft,
+          YCoord: e.currentTarget.offsetTop,
+        })
+      );
     } else {
       dispatch(
-        CoopGamesActions.showInteractWithEquipmentElStatus(!showInteractWithEquipmentElStatus)
+        CoopGamesActions.showInteractWithInventoryElStatus({
+          showStatus: !showInteractWithInventoryAndEquipmentElStatus.showStatus,
+          interactTo: "inventory",
+          XCoord: e.currentTarget.offsetLeft,
+          YCoord: e.currentTarget.offsetTop,
+        })
       );
     }
     console.log(e.currentTarget.offsetLeft);
@@ -63,17 +105,31 @@ const EquipmentWindow = () => {
       left: e.currentTarget.offsetLeft,
     });
   };
-  const touchToEquipmentElHandler = (e: TouchEvent<HTMLDivElement>) => {
+
+  const touchToInventoryElHandler = (e: TouchEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints === 0) return;
     if (e.currentTarget.dataset.inventoryobjtype === "other") return;
 
-    setCurrentEquipmentElID(e.currentTarget.dataset.inventoryobjid);
+    dispatch(CoopGamesActions.setUserSelectedEquipmentElID(e.currentTarget.dataset.inventoryobjid));
 
-    if (currentEquipmentElID !== e.currentTarget.dataset.inventoryobjid) {
-      dispatch(CoopGamesActions.showInteractWithEquipmentElStatus(true));
+    // setCurrentEquipmentElID(e.currentTarget.dataset.inventoryobjid);
+    if (userSelectedEquipmentElID !== e.currentTarget.dataset.inventoryobjid) {
+      dispatch(
+        CoopGamesActions.showInteractWithInventoryElStatus({
+          showStatus: true,
+          interactTo: "inventory",
+          XCoord: e.currentTarget.offsetLeft,
+          YCoord: e.currentTarget.offsetTop,
+        })
+      );
     } else {
       dispatch(
-        CoopGamesActions.showInteractWithEquipmentElStatus(!showInteractWithEquipmentElStatus)
+        CoopGamesActions.showInteractWithInventoryElStatus({
+          showStatus: !showInteractWithInventoryAndEquipmentElStatus.showStatus,
+          interactTo: "inventory",
+          XCoord: e.currentTarget.offsetLeft,
+          YCoord: e.currentTarget.offsetTop,
+        })
       );
     }
     setInteractEquipmentElCoord({
@@ -81,16 +137,55 @@ const EquipmentWindow = () => {
       left: e.currentTarget.offsetLeft,
     });
   };
-  const clickEquipObjectHandler = (e: MouseEvent<HTMLDivElement>) => {
+
+  //   const clickEquipObjectHandler = (e: MouseEvent<HTMLDivElement>) => {
+  //     if (window.navigator.maxTouchPoints !== 0) return;
+  //     console.log(userSelectedEquipmentElID);
+  //     socket?.emit("clientEquipObject", userSelectedEquipmentElID);
+  //     dispatch(CoopGamesActions.showInteractWithInventoryElStatus(false));
+  //   };
+
+  //   const touchEquipObjectHandler = (e: TouchEvent<HTMLDivElement>) => {
+  //     if (window.navigator.maxTouchPoints === 0) return;
+  //     socket?.emit("clientEquipObject", userSelectedEquipmentElID);
+  //     dispatch(CoopGamesActions.showInteractWithInventoryElStatus(false));
+  //   };
+
+  const clickThrowOutInventionObjHandler = (e: MouseEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints !== 0) return;
-    console.log(currentEquipmentElID);
-    socket?.emit("clientEquipObject", currentEquipmentElID);
-    dispatch(CoopGamesActions.showInteractWithEquipmentElStatus(false));
+    console.log(userSelectedEquipmentElID);
+    // socket?.emit("clientEquipObject", currentEquipmentElID);
+    // dispatch(CoopGamesActions.showInteractWithEquipmentElStatus(false));
   };
-  const touchEquipObjectHandler = (e: TouchEvent<HTMLDivElement>) => {
+  const touchThrowOutInventionObjHandler = (e: TouchEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints === 0) return;
-    socket?.emit("clientEquipObject", currentEquipmentElID);
-    dispatch(CoopGamesActions.showInteractWithEquipmentElStatus(false));
+    console.log(userSelectedEquipmentElID);
+
+    // socket?.emit("clientEquipObject", currentEquipmentElID);
+    // dispatch(CoopGamesActions.showInteractWithEquipmentElStatus(false));
+  };
+  const clickShowInteractManuHandler = (e: MouseEvent<HTMLDivElement>) => {
+    if (window.navigator.maxTouchPoints !== 0) return;
+
+    dispatch(
+      CoopGamesActions.showInteractWithInventoryElStatus({
+        showStatus: true,
+        interactTo: "equipment",
+        XCoord: e.currentTarget.offsetLeft,
+        YCoord: e.currentTarget.offsetTop,
+      })
+    );
+  };
+  const touchShowInteractManuHandler = (e: TouchEvent<HTMLDivElement>) => {
+    if (window.navigator.maxTouchPoints === 0) return;
+    dispatch(
+      CoopGamesActions.showInteractWithInventoryElStatus({
+        showStatus: true,
+        interactTo: "equipment",
+        XCoord: e.currentTarget.offsetLeft,
+        YCoord: e.currentTarget.offsetTop,
+      })
+    );
   };
 
   const height = Math.floor(16 * 1.5);
@@ -99,8 +194,8 @@ const EquipmentWindow = () => {
     const leftPosition = Math.floor((78 + (index % 4) * 13 * 1.5) * 1.5);
     return (
       <div
-        onClick={clickToEquipmentElHandler}
-        onTouchStart={touchToEquipmentElHandler}
+        onClick={clickToInventoryElHandler}
+        onTouchStart={touchToInventoryElHandler}
         style={{
           top: `${topPosition}px`,
           left: `${leftPosition}px`,
@@ -149,10 +244,6 @@ const EquipmentWindow = () => {
         );
       });
     }
-  }, [userInventoryObj]);
-
-  useEffect(() => {
-    const equipmentWindowCtx = UserEquipmentCanvasRef.current.getContext("2d");
 
     if (userEquipmentObj.helmet.length > 0) {
       equipmentWindowCtx.drawImage(
@@ -245,7 +336,134 @@ const EquipmentWindow = () => {
         16 * 1.5
       );
     }
-  }, [userEquipmentObj]);
+    // if (showInteractWithEquipmentElStatus) {
+    //   equipmentWindowCtx.drawImage(
+    //     imgResources.userActionButtons2,
+    //     96,
+    //     39,
+    //     35,
+    //     25,
+    //     interactEquipmentElCoord.left,
+    //     interactEquipmentElCoord.top + 30,
+    //     35,
+    //     25
+    //   );
+    // }
+  }, [userInventoryObj, showInteractWithEquipmentElStatus, userEquipmentObj]);
+
+  //   useEffect(() => {
+  //     const equipmentWindowCtx = UserEquipmentCanvasRef.current.getContext("2d");
+
+  //     if (userEquipmentObj.helmet.length > 0) {
+  //       equipmentWindowCtx.drawImage(
+  //         imgResources.equipment,
+  //         userEquipmentObj.helmet[0].XSpriteCoord,
+  //         userEquipmentObj.helmet[0].YSpriteCoord,
+  //         userEquipmentObj.helmet[0].sourceXLength,
+  //         userEquipmentObj.helmet[0].sourceYLength,
+  //         `${26 * 1.5}`,
+  //         `${16 * 1.5}`,
+  //         16 * 1.5,
+  //         16 * 1.5
+  //       );
+  //     }
+  //     if (userEquipmentObj.weapon.length > 0) {
+  //       equipmentWindowCtx.drawImage(
+  //         imgResources.equipment,
+  //         userEquipmentObj.weapon[0].XSpriteCoord,
+  //         userEquipmentObj.weapon[0].YSpriteCoord,
+  //         userEquipmentObj.weapon[0].sourceXLength,
+  //         userEquipmentObj.weapon[0].sourceYLength,
+  //         `${44 * 1.5}`,
+  //         `${32 * 1.5}`,
+  //         16 * 1.5,
+  //         16 * 1.5
+  //       );
+  //     }
+  //     if (userEquipmentObj.shield.length > 0) {
+  //       equipmentWindowCtx.drawImage(
+  //         imgResources.equipment,
+  //         userEquipmentObj.shield[0].XSpriteCoord,
+  //         userEquipmentObj.shield[0].YSpriteCoord,
+  //         userEquipmentObj.shield[0].sourceXLength,
+  //         userEquipmentObj.shield[0].sourceYLength,
+  //         `${10 * 1.5}`,
+  //         `${32 * 1.5}`,
+  //         16 * 1.5,
+  //         16 * 1.5
+  //       );
+  //     }
+  //     if (userEquipmentObj.armour.length > 0) {
+  //       equipmentWindowCtx.drawImage(
+  //         imgResources.equipment,
+  //         userEquipmentObj.armour[0].XSpriteCoord,
+  //         userEquipmentObj.armour[0].YSpriteCoord,
+  //         userEquipmentObj.armour[0].sourceXLength,
+  //         userEquipmentObj.armour[0].sourceYLength,
+  //         `${27 * 1.5}`,
+  //         `${32 * 1.5}`,
+  //         16 * 1.5,
+  //         16 * 1.5
+  //       );
+  //     }
+  //     if (userEquipmentObj.boots.length > 0) {
+  //       equipmentWindowCtx.drawImage(
+  //         imgResources.equipment,
+  //         userEquipmentObj.boots[0].XSpriteCoord,
+  //         userEquipmentObj.boots[0].YSpriteCoord,
+  //         userEquipmentObj.boots[0].sourceXLength,
+  //         userEquipmentObj.boots[0].sourceYLength,
+  //         `${27 * 1.5}`,
+  //         `${48 * 1.5}`,
+  //         16 * 1.5,
+  //         16 * 1.5
+  //       );
+  //     }
+  //     if (userEquipmentObj.ring.length > 0) {
+  //       equipmentWindowCtx.drawImage(
+  //         imgResources.equipment,
+  //         userEquipmentObj.ring[0].XSpriteCoord,
+  //         userEquipmentObj.ring[0].YSpriteCoord,
+  //         userEquipmentObj.ring[0].sourceXLength,
+  //         userEquipmentObj.ring[0].sourceYLength,
+  //         `${10 * 1.5}`,
+  //         `${64 * 1.5}`,
+  //         16 * 1.5,
+  //         16 * 1.5
+  //       );
+  //     }
+  //     if (userEquipmentObj.amulet.length > 0) {
+  //       equipmentWindowCtx.drawImage(
+  //         imgResources.equipment,
+  //         userEquipmentObj.amulet[0].XSpriteCoord,
+  //         userEquipmentObj.amulet[0].YSpriteCoord,
+  //         userEquipmentObj.amulet[0].sourceXLength,
+  //         userEquipmentObj.amulet[0].sourceYLength,
+  //         `${44 * 1.5}`,
+  //         `${64 * 1.5}`,
+  //         16 * 1.5,
+  //         16 * 1.5
+  //       );
+  //     }
+  //   }, [userEquipmentObj]);
+
+  //   useEffect(() => {
+  //     const equipmentWindowCtx = UserEquipmentCanvasRef.current.getContext("2d");
+
+  //     if (showInteractWithEquipmentElStatus) {
+  //       equipmentWindowCtx.drawImage(
+  //         imgResources.userActionButtons2,
+  //         96,
+  //         39,
+  //         35,
+  //         25,
+  //         interactEquipmentElCoord.left,
+  //         interactEquipmentElCoord.top + 30,
+  //         35,
+  //         25
+  //       );
+  //     }
+  //   }, [showInteractWithEquipmentElStatus]);
 
   return (
     <div className={`${showEquipmentComponentStatus ? "z-[45]" : "z-0"} absolute top-20 left-32`}>
@@ -258,6 +476,8 @@ const EquipmentWindow = () => {
 
       <div>
         <div
+          onClick={clickShowInteractManuHandler}
+          onTouchStart={touchShowInteractManuHandler}
           style={{
             top: `${16 * 1.5}px`,
             left: `${26 * 1.5}px`,
@@ -268,6 +488,8 @@ const EquipmentWindow = () => {
           data-equipmentobjtype={"helmet"}
         ></div>
         <div
+          onClick={clickShowInteractManuHandler}
+          onTouchStart={touchShowInteractManuHandler}
           style={{
             top: `${32 * 1.5}px`,
             left: `${10 * 1.5}px`,
@@ -278,6 +500,8 @@ const EquipmentWindow = () => {
           data-equipmentobjtype={"shield"}
         ></div>
         <div
+          onClick={clickShowInteractManuHandler}
+          onTouchStart={touchShowInteractManuHandler}
           style={{
             top: `${32 * 1.5}px`,
             left: `${27 * 1.5}px`,
@@ -288,6 +512,8 @@ const EquipmentWindow = () => {
           data-equipmentobjtype={"armour"}
         ></div>
         <div
+          onClick={clickShowInteractManuHandler}
+          onTouchStart={touchShowInteractManuHandler}
           style={{
             top: `${32 * 1.5}px`,
             left: `${44 * 1.5}px`,
@@ -298,6 +524,8 @@ const EquipmentWindow = () => {
           data-equipmentobjtype={"weapon"}
         ></div>
         <div
+          onClick={clickShowInteractManuHandler}
+          onTouchStart={touchShowInteractManuHandler}
           style={{
             top: `${48 * 1.5}px`,
             left: `${27 * 1.5}px`,
@@ -308,6 +536,8 @@ const EquipmentWindow = () => {
           data-equipmentobjtype={"boots"}
         ></div>
         <div
+          onClick={clickShowInteractManuHandler}
+          onTouchStart={touchShowInteractManuHandler}
           style={{
             top: `${64 * 1.5}px`,
             left: `${10 * 1.5}px`,
@@ -318,6 +548,8 @@ const EquipmentWindow = () => {
           data-equipmentobjtype={"ring"}
         ></div>
         <div
+          onClick={clickShowInteractManuHandler}
+          onTouchStart={touchShowInteractManuHandler}
           style={{
             top: `${64 * 1.5}px`,
             left: `${44 * 1.5}px`,
@@ -329,7 +561,17 @@ const EquipmentWindow = () => {
         ></div>
       </div>
 
-      {showInteractWithEquipmentElStatus && (
+      {/* {showInteractWithEquipmentElStatus && (
+        <div
+          style={{
+            top: `${interactEquipmentElCoord.top + 30}px`,
+            left: `${interactEquipmentElCoord.left}px`,
+          }}
+          className="absolute cursor-pointer h-8 w-8"
+        ></div>
+      )} */}
+
+      {/* {showInteractWithInventoryAndEquipmentElStatus && (
         <div
           style={{
             top: `${interactEquipmentElCoord.top + 30}px`,
@@ -341,13 +583,20 @@ const EquipmentWindow = () => {
             <div onClick={clickEquipObjectHandler} onTouchStart={touchEquipObjectHandler}>
               <FontAwesomeIcon className=" buttonCoopInteractWithEquipment fa-fw" icon={faShirt} />
             </div>
-            <div>
+            <div
+              onClick={clickThrowOutInventionObjHandler}
+              onTouchStart={touchThrowOutInventionObjHandler}
+            >
               <FontAwesomeIcon className=" buttonCoopInteractWithEquipment fa-fw" icon={faTrash} />
             </div>
           </div>
         </div>
-      )}
+      )} */}
       <canvas ref={UserEquipmentCanvasRef} width={252} height={165}></canvas>
+
+      {showInteractWithInventoryAndEquipmentElStatus.showStatus && (
+        <InventoryAndEquipmentInteractMeny></InventoryAndEquipmentInteractMeny>
+      )}
     </div>
   );
 };
