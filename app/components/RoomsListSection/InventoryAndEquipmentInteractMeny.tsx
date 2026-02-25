@@ -10,8 +10,18 @@ const InventoryAndEquipmentInteractMeny = () => {
     (state: ICoopGamesSlice) => state.CoopGamesState.showInteractWithInventoryAndEquipmentElStatus
   );
 
-  const userSelectedEquipmentElID = useSelector(
-    (state: ICoopGamesSlice) => state.CoopGamesState.userSelectedEquipmentElID
+  const userSelectedInventoryEquipmentElData = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.userSelectedInventoryEquipmentElData
+  );
+  const userSelectedInventoryElID = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.userSelectedInventoryElID
+  );
+
+  const userEquipmentObj = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.userEquipment
+  );
+  const userSelectedEquipmentObjType = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.selectedEquipmentObjType
   );
 
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
@@ -43,8 +53,8 @@ const InventoryAndEquipmentInteractMeny = () => {
 
   const clickEquipObjectHandler = (e: MouseEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints !== 0) return;
-    console.log(userSelectedEquipmentElID);
-    socket?.emit("clientEquipObject", userSelectedEquipmentElID);
+    console.log(userSelectedInventoryElID);
+    socket?.emit("clientEquipObject", userSelectedInventoryElID);
     // dispatch(CoopGamesActions.showInteractWithInventoryElStatus(false));
     dispatch(
       CoopGamesActions.showInteractWithInventoryElStatus({
@@ -58,7 +68,7 @@ const InventoryAndEquipmentInteractMeny = () => {
 
   const touchEquipObjectHandler = (e: TouchEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints === 0) return;
-    socket?.emit("clientEquipObject", userSelectedEquipmentElID);
+    socket?.emit("clientEquipObject", userSelectedInventoryElID);
     // dispatch(CoopGamesActions.showInteractWithInventoryElStatus(false));
     dispatch(
       CoopGamesActions.showInteractWithInventoryElStatus({
@@ -72,8 +82,14 @@ const InventoryAndEquipmentInteractMeny = () => {
 
   const clickTakeOffEquipedObjHandler = (e: MouseEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints !== 0) return;
-    // socket?.emit("clientEquipObject", userSelectedEquipmentElID);
-    // dispatch(CoopGamesActions.showInteractWithInventoryElStatus(false));
+
+    console.log("Take off equipment");
+
+    socket?.emit("clientTakeOffEquipmentObject", {
+      equipmentObjectType: userSelectedEquipmentObjType.objType,
+      equipmentObjectID: userEquipmentObj[userSelectedEquipmentObjType.objType][0].id,
+    });
+
     dispatch(
       CoopGamesActions.showInteractWithInventoryElStatus({
         showStatus: false,
@@ -86,8 +102,15 @@ const InventoryAndEquipmentInteractMeny = () => {
 
   const touchTakeOffEquipedObjHandler = (e: TouchEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints === 0) return;
+    console.log("Take off equipment");
+
     // socket?.emit("clientEquipObject", userSelectedEquipmentElID);
     // dispatch(CoopGamesActions.showInteractWithInventoryElStatus(false));
+
+    socket?.emit("clientTakeOffEquipmentObject", {
+      equipmentObjectType: userSelectedEquipmentObjType.objType,
+      equipmentObjectID: userEquipmentObj[userSelectedEquipmentObjType.objType][0].id,
+    });
     dispatch(
       CoopGamesActions.showInteractWithInventoryElStatus({
         showStatus: false,
@@ -170,15 +193,22 @@ const InventoryAndEquipmentInteractMeny = () => {
   return (
     <div>
       <div
-        onClick={clickCloseMenuHandler}
-        onTouchStart={touchCloseMenuHandler}
         className=" absolute"
         style={{
           top: `${showInteractWithInventoryAndEquipmentElStatus.YCoord + 30}px`,
           left: `${showInteractWithInventoryAndEquipmentElStatus.XCoord}px`,
         }}
       >
-        <div className=" absolute h-5 w-5 top-0 right-0  cursor-pointer "></div>
+        <div className=" absolute top-1 left-2">
+          <div>{userSelectedInventoryEquipmentElData.damage}</div>
+          <div>{userSelectedInventoryEquipmentElData.armour}</div>
+          <div>{userSelectedInventoryEquipmentElData.HP}</div>
+        </div>
+        <div
+          onClick={clickCloseMenuHandler}
+          onTouchStart={touchCloseMenuHandler}
+          className=" absolute h-5 w-5 top-0 right-0  cursor-pointer "
+        ></div>
         {showInteractWithInventoryAndEquipmentElStatus.interactTo === "inventory" && (
           <div>
             <div

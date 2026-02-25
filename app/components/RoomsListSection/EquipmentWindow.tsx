@@ -14,8 +14,8 @@ const EquipmentWindow = () => {
   const [interactEquipmentElCoord, setInteractEquipmentElCoord] = useState({ top: 0, left: 0 });
   //   const [currentEquipmentElID, setCurrentEquipmentElID] = useState() as any;
 
-  const userSelectedEquipmentElID = useSelector(
-    (state: ICoopGamesSlice) => state.CoopGamesState.userSelectedEquipmentElID
+  const userSelectedInventoryElID = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.userSelectedInventoryElID
   );
 
   const showInteractWithInventoryAndEquipmentElStatus = useSelector(
@@ -37,6 +37,10 @@ const EquipmentWindow = () => {
 
   const userEquipmentObj = useSelector(
     (state: ICoopGamesSlice) => state.CoopGamesState.userEquipment
+  );
+
+  const selectedEquipmentObjType = useSelector(
+    (state: ICoopGamesSlice) => state.CoopGamesState.selectedEquipmentObjType
   );
 
   const imgResources = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.imgResources);
@@ -77,9 +81,11 @@ const EquipmentWindow = () => {
     if (window.navigator.maxTouchPoints !== 0) return;
     if (e.currentTarget.dataset.inventoryobjtype === "other") return;
     // setCurrentEquipmentElID(e.currentTarget.dataset.inventoryobjid);
-    dispatch(CoopGamesActions.setUserSelectedEquipmentElID(e.currentTarget.dataset.inventoryobjid));
+    dispatch(CoopGamesActions.setUserSelectedInventoryElID(e.currentTarget.dataset.inventoryobjid));
 
-    if (userSelectedEquipmentElID !== e.currentTarget.dataset.inventoryobjid) {
+    console.log(userInventoryObj);
+
+    if (userSelectedInventoryElID !== e.currentTarget.dataset.inventoryobjid) {
       dispatch(
         CoopGamesActions.showInteractWithInventoryElStatus({
           showStatus: true,
@@ -110,10 +116,10 @@ const EquipmentWindow = () => {
     if (window.navigator.maxTouchPoints === 0) return;
     if (e.currentTarget.dataset.inventoryobjtype === "other") return;
 
-    dispatch(CoopGamesActions.setUserSelectedEquipmentElID(e.currentTarget.dataset.inventoryobjid));
+    dispatch(CoopGamesActions.setUserSelectedInventoryElID(e.currentTarget.dataset.inventoryobjid));
 
     // setCurrentEquipmentElID(e.currentTarget.dataset.inventoryobjid);
-    if (userSelectedEquipmentElID !== e.currentTarget.dataset.inventoryobjid) {
+    if (userSelectedInventoryElID !== e.currentTarget.dataset.inventoryobjid) {
       dispatch(
         CoopGamesActions.showInteractWithInventoryElStatus({
           showStatus: true,
@@ -153,24 +159,32 @@ const EquipmentWindow = () => {
 
   const clickThrowOutInventionObjHandler = (e: MouseEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints !== 0) return;
-    console.log(userSelectedEquipmentElID);
+    console.log(userSelectedInventoryElID);
     // socket?.emit("clientEquipObject", currentEquipmentElID);
     // dispatch(CoopGamesActions.showInteractWithEquipmentElStatus(false));
   };
   const touchThrowOutInventionObjHandler = (e: TouchEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints === 0) return;
-    console.log(userSelectedEquipmentElID);
+    console.log(userSelectedInventoryElID);
 
     // socket?.emit("clientEquipObject", currentEquipmentElID);
     // dispatch(CoopGamesActions.showInteractWithEquipmentElStatus(false));
   };
   const clickShowInteractManuHandler = (e: MouseEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints !== 0) return;
+    if (!e.currentTarget.dataset.equipmentobjtype) return;
 
     dispatch(
-      CoopGamesActions.showInteractWithInventoryElStatus({
-        showStatus: true,
-        interactTo: "equipment",
+      CoopGamesActions.setSelectedEquipmentObjType({
+        objType: e.currentTarget.dataset.equipmentobjtype as
+          | "helmet"
+          | "weapon"
+          | "shield"
+          | "armour"
+          | "boots"
+          | "ring"
+          | "amulet",
+        timeStamp: Date.now(),
         XCoord: e.currentTarget.offsetLeft,
         YCoord: e.currentTarget.offsetTop,
       })
@@ -178,10 +192,18 @@ const EquipmentWindow = () => {
   };
   const touchShowInteractManuHandler = (e: TouchEvent<HTMLDivElement>) => {
     if (window.navigator.maxTouchPoints === 0) return;
+    if (!e.currentTarget.dataset.equipmentobjtype) return;
     dispatch(
-      CoopGamesActions.showInteractWithInventoryElStatus({
-        showStatus: true,
-        interactTo: "equipment",
+      CoopGamesActions.setSelectedEquipmentObjType({
+        objType: e.currentTarget.dataset.equipmentobjtype as
+          | "helmet"
+          | "weapon"
+          | "shield"
+          | "armour"
+          | "boots"
+          | "ring"
+          | "amulet",
+        timeStamp: Date.now(),
         XCoord: e.currentTarget.offsetLeft,
         YCoord: e.currentTarget.offsetTop,
       })
@@ -209,6 +231,33 @@ const EquipmentWindow = () => {
       ></div>
     );
   });
+
+  useEffect(() => {
+    if (userEquipmentObj[selectedEquipmentObjType.objType].length <= 0) return;
+
+    dispatch(
+      CoopGamesActions.showInteractWithInventoryElStatus({
+        showStatus: true,
+        interactTo: "equipment",
+        XCoord: selectedEquipmentObjType.XCoord,
+        YCoord: selectedEquipmentObjType.YCoord,
+      })
+    );
+  }, [selectedEquipmentObjType]);
+
+  useEffect(() => {
+    const el = userInventoryObj.filter((el) => {
+      return el.id === userSelectedInventoryElID;
+    });
+    if (!el[0]) return;
+    dispatch(
+      CoopGamesActions.setUserSelectedInventoryEquipmentElData({
+        damage: el[0].damage,
+        armour: el[0].armour,
+        HP: el[0].HP,
+      })
+    );
+  }, [userSelectedInventoryElID]);
 
   useEffect(() => {
     if (!socket?.id) return;

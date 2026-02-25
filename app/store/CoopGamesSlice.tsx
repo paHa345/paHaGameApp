@@ -51,7 +51,21 @@ export interface ICoopGamesSlice {
       XCoord: number;
       YCoord: number;
     };
-    userSelectedEquipmentElID: string;
+    selectedEquipmentObjType: {
+      objType: "helmet" | "weapon" | "shield" | "armour" | "boots" | "ring" | "amulet";
+
+      timeStamp: number;
+      XCoord: number;
+      YCoord: number;
+    };
+
+    userSelectedInventoryElID: string;
+    userSelectedInventoryEquipmentElData: {
+      name?: string;
+      damage: number;
+      armour: number;
+      HP: number;
+    };
     showInteractWithEquipmentElStatus: boolean;
     showEquipmentComponent: boolean;
     imgResources: {
@@ -304,7 +318,21 @@ interface ICoopGamesState {
     XCoord: number;
     YCoord: number;
   };
-  userSelectedEquipmentElID: string;
+  selectedEquipmentObjType: {
+    objType: "helmet" | "weapon" | "shield" | "armour" | "boots" | "ring" | "amulet";
+
+    timeStamp: number;
+    XCoord: number;
+    YCoord: number;
+  };
+  userSelectedInventoryElID: string;
+
+  userSelectedInventoryEquipmentElData: {
+    name?: string;
+    damage: number;
+    armour: number;
+    HP: number;
+  };
 
   showInteractWithEquipmentElStatus: boolean;
 
@@ -558,7 +586,20 @@ export const CoopGamesState: ICoopGamesState = {
     XCoord: 0,
     YCoord: 0,
   },
-  userSelectedEquipmentElID: "",
+  selectedEquipmentObjType: {
+    objType: "helmet",
+
+    timeStamp: Date.now(),
+    XCoord: 100,
+    YCoord: 100,
+  },
+
+  userSelectedInventoryElID: "",
+  userSelectedInventoryEquipmentElData: {
+    damage: 0,
+    armour: 0,
+    HP: 0,
+  },
 
   showInteractWithEquipmentElStatus: false,
 
@@ -812,8 +853,30 @@ export const CoopGamesSlice = createSlice({
     setUserEquipment(state, action) {
       state.userEquipment = action.payload;
     },
-    setUserSelectedEquipmentElID(state, action) {
-      state.userSelectedEquipmentElID = action.payload;
+    setUserSelectedInventoryElID(state, action) {
+      console.log(
+        state.userInventory.filter((el) => {
+          return el.id === action.payload;
+        })[0]
+      );
+      state.userSelectedInventoryElID = action.payload;
+    },
+    setSelectedEquipmentObjType(
+      state,
+      action: {
+        payload: {
+          objType: "helmet" | "weapon" | "shield" | "armour" | "boots" | "ring" | "amulet";
+
+          timeStamp: number;
+          XCoord: number;
+          YCoord: number;
+        };
+      }
+    ) {
+      state.selectedEquipmentObjType = action.payload;
+    },
+    setUserSelectedInventoryEquipmentElData(state, action) {
+      state.userSelectedInventoryEquipmentElData = action.payload;
     },
   },
   extraReducers: (builder) => {
