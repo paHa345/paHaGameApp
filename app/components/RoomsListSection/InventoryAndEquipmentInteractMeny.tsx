@@ -185,10 +185,72 @@ const InventoryAndEquipmentInteractMeny = () => {
       //     22
       //   );
     }
+
+    if (userSelectedInventoryEquipmentElData.damage > 0) {
+      InventoryEquipmentInteractMenyCtx.drawImage(
+        imgResources.inventoryEquipmentInteract,
+        56,
+        140,
+        20,
+        20,
+        5,
+        5,
+        20,
+        20
+      );
+    }
+    if (userSelectedInventoryEquipmentElData.armour > 0) {
+      InventoryEquipmentInteractMenyCtx.drawImage(
+        imgResources.inventoryEquipmentInteract,
+        21,
+        142,
+        17,
+        20,
+        5,
+        27,
+        17,
+        20
+      );
+    }
+    if (userSelectedInventoryEquipmentElData.HP > 0) {
+      InventoryEquipmentInteractMenyCtx.drawImage(
+        imgResources.inventoryEquipmentInteract,
+        37,
+        142,
+        19,
+        20,
+        5,
+        49,
+        19,
+        20
+      );
+    }
   }, [
     showInteractWithInventoryAndEquipmentElStatus.interactTo,
     showInteractWithInventoryAndEquipmentElStatus.showStatus,
+    userSelectedInventoryEquipmentElData,
   ]);
+
+  //   useEffect(() => {
+  //     const InventoryEquipmentInteractMenyCtx =
+  //       InventoryEquipmentInteractMenyRef.current.getContext("2d");
+
+  //     InventoryEquipmentInteractMenyCtx.clearRect(0, 0, 30, 30);
+
+  //     if (userSelectedInventoryEquipmentElData.damage > 0) {
+  //       InventoryEquipmentInteractMenyCtx.drawImage(
+  //         imgResources.inventoryEquipmentInteract,
+  //         56,
+  //         140,
+  //         30,
+  //         30,
+  //         5,
+  //         5,
+  //         30,
+  //         30
+  //       );
+  //     }
+  //   }, [userSelectedInventoryEquipmentElData]);
 
   return (
     <div>
@@ -199,10 +261,25 @@ const InventoryAndEquipmentInteractMeny = () => {
           left: `${showInteractWithInventoryAndEquipmentElStatus.XCoord}px`,
         }}
       >
-        <div className=" absolute top-1 left-2">
-          <div>{userSelectedInventoryEquipmentElData.damage}</div>
-          <div>{userSelectedInventoryEquipmentElData.armour}</div>
-          <div>{userSelectedInventoryEquipmentElData.HP}</div>
+        <div className=" absolute top-1 left-8">
+          {userSelectedInventoryEquipmentElData.damage > 0 && (
+            <div className=" absolute top-[1px] flex ">
+              {" "}
+              <div>+</div> <div>{userSelectedInventoryEquipmentElData.damage}</div>
+            </div>
+          )}
+          {userSelectedInventoryEquipmentElData.armour > 0 && (
+            <div className=" absolute top-[23px] flex ">
+              {" "}
+              <div>+</div> {userSelectedInventoryEquipmentElData.armour}
+            </div>
+          )}
+          {userSelectedInventoryEquipmentElData.HP > 0 && (
+            <div className=" absolute top-[45px] flex ">
+              {" "}
+              <div>+</div> {userSelectedInventoryEquipmentElData.HP}
+            </div>
+          )}
         </div>
         <div
           onClick={clickCloseMenuHandler}
