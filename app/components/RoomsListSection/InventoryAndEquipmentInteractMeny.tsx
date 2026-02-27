@@ -186,45 +186,45 @@ const InventoryAndEquipmentInteractMeny = () => {
       //   );
     }
 
-    if (userSelectedInventoryEquipmentElData.damage > 0) {
-      InventoryEquipmentInteractMenyCtx.drawImage(
-        imgResources.inventoryEquipmentInteract,
-        56,
-        140,
-        20,
-        20,
-        5,
-        5,
-        20,
-        20
-      );
-    }
-    if (userSelectedInventoryEquipmentElData.armour > 0) {
-      InventoryEquipmentInteractMenyCtx.drawImage(
-        imgResources.inventoryEquipmentInteract,
-        21,
-        142,
-        17,
-        20,
-        5,
-        27,
-        17,
-        20
-      );
-    }
-    if (userSelectedInventoryEquipmentElData.HP > 0) {
-      InventoryEquipmentInteractMenyCtx.drawImage(
-        imgResources.inventoryEquipmentInteract,
-        37,
-        142,
-        19,
-        20,
-        5,
-        49,
-        19,
-        20
-      );
-    }
+    // if (userSelectedInventoryEquipmentElData.damage > 0) {
+    InventoryEquipmentInteractMenyCtx.drawImage(
+      imgResources.inventoryEquipmentInteract,
+      56,
+      140,
+      20,
+      20,
+      5,
+      27,
+      20,
+      20
+    );
+    // }
+    // if (userSelectedInventoryEquipmentElData.armour > 0) {
+    InventoryEquipmentInteractMenyCtx.drawImage(
+      imgResources.inventoryEquipmentInteract,
+      21,
+      142,
+      17,
+      20,
+      30,
+      27,
+      17,
+      20
+    );
+    // }
+    // if (userSelectedInventoryEquipmentElData.HP > 0) {
+    InventoryEquipmentInteractMenyCtx.drawImage(
+      imgResources.inventoryEquipmentInteract,
+      37,
+      142,
+      19,
+      20,
+      55,
+      27,
+      19,
+      20
+    );
+    // }
   }, [
     showInteractWithInventoryAndEquipmentElStatus.interactTo,
     showInteractWithInventoryAndEquipmentElStatus.showStatus,
@@ -261,24 +261,30 @@ const InventoryAndEquipmentInteractMeny = () => {
           left: `${showInteractWithInventoryAndEquipmentElStatus.XCoord}px`,
         }}
       >
-        <div className=" absolute top-1 left-8">
-          {userSelectedInventoryEquipmentElData.damage > 0 && (
-            <div className=" absolute top-[1px] flex ">
+        <div className=" absolute top-[44px] left-1">
+          {userSelectedInventoryEquipmentElData.damage > 0 ? (
+            <div className=" absolute flex text-xs ">
               {" "}
               <div>+</div> <div>{userSelectedInventoryEquipmentElData.damage}</div>
             </div>
+          ) : (
+            <div className=" absolute flex text-sm left-[9px] ">-</div>
           )}
-          {userSelectedInventoryEquipmentElData.armour > 0 && (
-            <div className=" absolute top-[23px] flex ">
+          {userSelectedInventoryEquipmentElData.armour > 0 ? (
+            <div className=" absolute text-xs  flex left-[25px] ">
               {" "}
               <div>+</div> {userSelectedInventoryEquipmentElData.armour}
             </div>
+          ) : (
+            <div className=" absolute flex text-sm top-0 left-[34px] ">-</div>
           )}
-          {userSelectedInventoryEquipmentElData.HP > 0 && (
-            <div className=" absolute top-[45px] flex ">
+          {userSelectedInventoryEquipmentElData.HP > 0 ? (
+            <div className=" absolute text-xs  flex left-[50px] ">
               {" "}
               <div>+</div> {userSelectedInventoryEquipmentElData.HP}
             </div>
+          ) : (
+            <div className=" absolute flex text-xs top-0 left-[59px] ">-</div>
           )}
         </div>
         <div
