@@ -59,8 +59,16 @@ const LevelsWindow = () => {
       levelWindowCtx.font = "14px serif";
 
       levelWindowCtx.fillText(gamersUserStat[socket?.id].baseHP, 100, 92);
-      levelWindowCtx.fillText(gamersUserStat[socket?.id].currentDamage, 100, 125);
-      levelWindowCtx.fillText(gamersUserStat[socket?.id].currentArmour, 100, 158);
+      levelWindowCtx.fillText(
+        gamersUserStat[socket?.id].currentDamage + gamersUserStat[socket?.id].equipmentDamage,
+        100,
+        125
+      );
+      levelWindowCtx.fillText(
+        gamersUserStat[socket?.id].currentArmour + gamersUserStat[socket?.id].equipmentArmour,
+        100,
+        158
+      );
     }
   }, [socket?.id !== undefined ? gamersUserStat[socket?.id] : gamersUserStat]);
 

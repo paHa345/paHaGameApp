@@ -561,6 +561,9 @@ const RoomComponentMain = () => {
           currentLVL: number;
           currentLVLUserPoint: number;
           currentLVLMaxPoint: number;
+          equipmentDamage: number;
+          equipmentArmour: number;
+          equipmentHP: number;
         };
         userID: string;
       }) => {

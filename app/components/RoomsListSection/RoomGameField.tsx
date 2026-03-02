@@ -321,8 +321,16 @@ const RoomGameField = () => {
       );
 
       ctxUserStata.font = "20px serif";
-      ctxUserStata.fillText(statObj.gamers[socket.id].currentDamage, 78, 33);
-      ctxUserStata.fillText(statObj.gamers[socket.id].currentArmour, 145, 33);
+      ctxUserStata.fillText(
+        statObj.gamers[socket.id].currentDamage + statObj.gamers[socket.id].equipmentDamage,
+        78,
+        33
+      );
+      ctxUserStata.fillText(
+        statObj.gamers[socket.id].currentArmour + statObj.gamers[socket.id].equipmentArmour,
+        145,
+        33
+      );
     }
   }, [socket?.id ? statObj.gamers[socket.id] : statObj]);
 

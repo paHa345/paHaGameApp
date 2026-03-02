@@ -163,6 +163,9 @@ export interface ICoopGamesSlice {
           currentLVLUserPoint: number;
           currentLVLMaxPoint: number;
           levelPoints: number;
+          equipmentDamage: number;
+          equipmentArmour: number;
+          equipmentHP: number;
         };
       };
     };
@@ -431,6 +434,9 @@ interface ICoopGamesState {
         currentLVLUserPoint: number;
         currentLVLMaxPoint: number;
         levelPoints: number;
+        equipmentDamage: number;
+        equipmentArmour: number;
+        equipmentHP: number;
       };
     };
   };
