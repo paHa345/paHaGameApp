@@ -19,6 +19,7 @@ import RoomComponentMain from "./RoomComponentMain";
 import { useParams } from "next/navigation";
 import { redirect } from "next/navigation";
 import { init, viewport, isTMA, swipeBehavior, popup } from "@telegram-apps/sdk";
+import WebGLTestMain from "./WebGLTestMain";
 
 const RoomsListMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -224,6 +225,8 @@ const RoomsListMain = () => {
           )}
 
           {showRoomStatus && <RoomComponentMain></RoomComponentMain>}
+
+          {!showRoomStatus && <WebGLTestMain></WebGLTestMain>}
         </div>
       </div>
     </>
