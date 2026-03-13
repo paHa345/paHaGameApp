@@ -6,9 +6,24 @@ import Renderer from "three/src/renderers/common/Renderer.js";
 import gsap from "gsap";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import GUI from "lil-gui";
+// import image from "../../../public/textures/Door_Wood_001_basecolor.jpg";
 
 const WebGLTestMain = () => {
   const GLCanvasRef = useRef(null) as any;
+
+  // /** */
+  // //Textures
+  // /** */
+
+  // const image = new Image();
+
+  // const texture = new THREE.Texture(image);
+
+  // image.onload = () => {
+  //   texture.needsUpdate = true;
+  // };
+
+  // image.src = "/textures/Door_Wood_001_basecolor.jpg";
 
   const [sizes, setSizes] = useState({
     width: 800,
@@ -66,6 +81,50 @@ const WebGLTestMain = () => {
      */
     const gui = new GUI();
 
+    // /** */
+    // //Textures
+    // /** */
+
+    const loadingManager = new THREE.LoadingManager();
+
+    loadingManager.onStart = () => {
+      console.log("Start");
+    };
+    loadingManager.onLoad = () => {
+      console.log("Load");
+    };
+    loadingManager.onProgress = () => {
+      console.log("Progress");
+    };
+    loadingManager.onError = () => {
+      console.log("Error");
+    };
+
+    const textureLoader = new THREE.TextureLoader(loadingManager);
+    const colorTexture = textureLoader.load("/textures/3968513118.png");
+    const alphaTexture = textureLoader.load("/textures/Door_Wood_001_opacity.jpg");
+    const heightTexture = textureLoader.load("/textures/Door_Wood_001_height.png");
+    const normalTexture = textureLoader.load("/textures/Door_Wood_001_normal.jpg");
+    const ambientOcclusionTexture = textureLoader.load(
+      "/textures/Door_Wood_001_ambientOcclusion.jpg",
+    );
+    const metalnessTexture = textureLoader.load("/textures/Door_Wood_001_metallic.jpg");
+    const rougnessTexture = textureLoader.load("/textures/Door_Wood_001_roughness.jpg");
+
+    // colorTexture.repeat.x = 2;
+    // colorTexture.repeat.y = 3;
+    // colorTexture.wrapS = THREE.RepeatWrapping;
+    // colorTexture.wrapT = THREE.RepeatWrapping;
+    // colorTexture.offset.x = 0.5;
+    // colorTexture.offset.y = 0.5;
+    // colorTexture.center.x = 0.5;
+    // colorTexture.center.y = 0.5;
+    // colorTexture.rotation = Math.PI / 4;
+
+    colorTexture.generateMipmaps = false;
+    colorTexture.minFilter = THREE.NearestFilter;
+    colorTexture.magFilter = THREE.NearestFilter;
+
     /**
      *
      */
@@ -107,7 +166,7 @@ const WebGLTestMain = () => {
       //red cube
       const geomentry = new THREE.BoxGeometry(1, 1, 1, 6, 6, 6);
       const material = new THREE.MeshBasicMaterial({
-        color: cubeColor.color,
+        map: colorTexture,
         // wireframe: true,
       });
       const mesh = new THREE.Mesh(geomentry, material);
