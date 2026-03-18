@@ -10,6 +10,7 @@ import GUI from "lil-gui";
 import { HDRLoader } from "three/examples/jsm/loaders/HDRLoader.js";
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
+import { RectAreaLightHelper } from "three/addons/helpers/RectAreaLightHelper.js";
 
 const WebGLTestMain = () => {
   const GLCanvasRef = useRef(null) as any;
@@ -522,6 +523,298 @@ const WebGLTestMain = () => {
 
   //3d text
 
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     const handleResize = () => {
+  //       setSizes({
+  //         width: window.innerWidth,
+  //         height: window.innerHeight,
+  //       });
+  //       camera.aspect = sizes.width / sizes.height;
+  //       camera.updateProjectionMatrix();
+
+  //       renderer.setSize(sizes.width, sizes.height);
+  //       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  //     };
+
+  //     //   // /** */
+  //     //   // //Textures
+  //     //   // /** */
+
+  //     const textureLoader = new THREE.TextureLoader();
+  //     const matcapTexture = textureLoader.load("/textures/matcaps/3.png");
+
+  //     //   // /** */
+  //     //   // //Fonts
+  //     //   // /** */
+
+  //     const fontLoader = new FontLoader();
+  //     const font = fontLoader.load("fonts/helvetiker_regular.typeface.json", (font) => {
+  //       const textGeomentry = new TextGeometry("AKA_9000", {
+  //         font: font,
+  //         size: 0.5,
+  //         depth: 0.3,
+  //         curveSegments: 5,
+  //         bevelEnabled: true,
+  //         bevelThickness: 0.03,
+  //         bevelSegments: 4,
+  //         bevelSize: 0.02,
+  //         bevelOffset: 0,
+  //       });
+
+  //       textGeomentry.computeBoundingBox();
+
+  //       // textGeomentry.translate(
+  //       //   textGeomentry.boundingBox ? -(textGeomentry.boundingBox?.max?.x - 0.02) * 0.5 : 0,
+  //       //   textGeomentry.boundingBox ? -(textGeomentry.boundingBox?.max?.y - 0.02) * 0.5 : 0,
+  //       //   textGeomentry.boundingBox ? -(textGeomentry.boundingBox?.max?.z - 0.03) * 0.5 : 0,
+  //       // );
+
+  //       textGeomentry.center();
+
+  //       const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45);
+  //       const material = new THREE.MeshMatcapMaterial({ matcap: matcapTexture });
+  //       // textMaterial.wireframe = true;
+  //       const text = new THREE.Mesh(textGeomentry, material);
+  //       scene.add(text);
+
+  //       for (let i = 0; i < 100; i++) {
+  //         const donut = new THREE.Mesh(donutGeometry, material);
+
+  //         donut.position.x = (Math.random() - 0.5) * 10;
+  //         donut.position.y = (Math.random() - 0.5) * 10;
+  //         donut.position.z = (Math.random() - 0.5) * 10;
+
+  //         donut.rotation.x = Math.random() * Math.PI;
+  //         donut.rotation.y = Math.random() * Math.PI;
+
+  //         const scale = Math.random();
+  //         donut.scale.set(scale, scale, scale);
+
+  //         scene.add(donut);
+  //       }
+  //     });
+
+  //     //   // /** */
+  //     //   // //Lights
+  //     //   // /** */
+  //     const scene = new THREE.Scene();
+
+  //     const axesHelper = new THREE.AxesHelper();
+  //     scene.add(axesHelper);
+  //     const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+  //     scene.add(ambientLight);
+
+  //     const pointLight = new THREE.PointLight(0xffffff, 30);
+  //     pointLight.position.x = 2;
+  //     pointLight.position.y = 3;
+  //     pointLight.position.z = 4;
+  //     scene.add(pointLight);
+
+  //     // const cube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial());
+
+  //     // scene.add(cube);
+
+  //     const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
+
+  //     camera.position.z = 3;
+
+  //     // camera.lookAt(text.position);
+
+  //     scene.add(camera);
+
+  //     window.addEventListener("resize", handleResize);
+
+  //     //render
+
+  //     const renderer = new THREE.WebGLRenderer({
+  //       canvas: GLCanvasRef.current,
+  //     });
+
+  //     renderer.setSize(sizes.width, sizes.height);
+  //     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  //     //controls
+
+  //     const controls = new OrbitControls(camera, GLCanvasRef.current);
+
+  //     controls.enableDamping = true;
+
+  //     const clock = new THREE.Clock();
+
+  //     const tick = () => {
+  //       const elapsedTime = clock.getElapsedTime();
+  //       controls.update();
+
+  //       // update objects
+
+  //       //render
+  //       renderer.render(scene, camera);
+  //       window.requestAnimationFrame(tick);
+  //     };
+
+  //     tick();
+
+  //     // Cleanup
+  //     return () => window.removeEventListener("resize", handleResize);
+  //   }
+  // });
+
+  //light
+
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     const handleResize = () => {
+  //       setSizes({
+  //         width: window.innerWidth,
+  //         height: window.innerHeight,
+  //       });
+  //       camera.aspect = sizes.width / sizes.height;
+  //       camera.updateProjectionMatrix();
+
+  //       renderer.setSize(sizes.width, sizes.height);
+  //       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  //     };
+
+  //     const gui = new GUI();
+
+  //     const scene = new THREE.Scene();
+
+  //     /**
+  //      * Lights
+  //      */
+
+  //     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+  //     scene.add(ambientLight);
+  //     gui.add(ambientLight, "intensity").min(0).max(1).step(0.01);
+
+  //     const directionalLight = new THREE.DirectionalLight(0x00fffc, 0.3);
+  //     directionalLight.position.set(1, 0.25, 0);
+  //     scene.add(directionalLight);
+  //     gui.add(directionalLight, "intensity").min(0).max(1).step(0.01);
+
+  //     const hemisphereLight = new THREE.HemisphereLight(0xff0000, 0x000fff, 0.5);
+  //     scene.add(hemisphereLight);
+
+  //     const pointLight = new THREE.PointLight(0xff9000, 0.5, 10, 2);
+  //     pointLight.position.set(1, -0.5, 1);
+  //     scene.add(pointLight);
+
+  //     const rectAreaLight = new THREE.RectAreaLight(0x4e00ff, 2, 1, 1);
+  //     rectAreaLight.position.set(-1.5, 0, 1.5);
+  //     rectAreaLight.lookAt(new THREE.Vector3());
+  //     scene.add(rectAreaLight);
+
+  //     const spotLight = new THREE.SpotLight(0x78ff00, 0.9, 10, Math.PI * 0.1, 0.25, 1);
+  //     spotLight.position.set(0, 1, 1);
+
+  //     scene.add(spotLight);
+
+  //     spotLight.target.position.x = -0.75;
+  //     scene.add(spotLight.target);
+
+  //     /**
+  //      * Helpers
+  //      */
+
+  //     const hemisphereLightHelper = new THREE.HemisphereLightHelper(hemisphereLight, 0.2);
+  //     scene.add(hemisphereLightHelper);
+
+  //     const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 0.2);
+  //     scene.add(directionalLightHelper);
+
+  //     const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.3);
+  //     scene.add(pointLightHelper);
+
+  //     const spotLightHelper = new THREE.SpotLightHelper(spotLight);
+  //     scene.add(spotLightHelper);
+
+  //     const rectAreaLightHelper = new RectAreaLightHelper(rectAreaLight);
+  //     scene.add(rectAreaLightHelper);
+
+  //     /**
+  //      * Objects
+  //      */
+  //     // Material
+
+  //     const material = new THREE.MeshStandardMaterial();
+  //     material.roughness = 0.4;
+
+  //     // Objects
+
+  //     // Objects
+  //     const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
+  //     sphere.position.x = -1.5;
+
+  //     const cube = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.75, 0.75), material);
+
+  //     const torus = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.2, 32, 64), material);
+  //     torus.position.x = 1.5;
+
+  //     const plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material);
+  //     plane.rotation.x = -Math.PI * 0.5;
+  //     plane.position.y = -0.65;
+
+  //     scene.add(sphere, cube, torus, plane);
+
+  //     const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
+
+  //     camera.position.z = 3;
+
+  //     camera.lookAt(cube.position);
+
+  //     scene.add(camera);
+
+  //     window.addEventListener("resize", handleResize);
+
+  //     const axesHelper = new THREE.AxesHelper(1); // 5 — длина осей в единицах
+  //     scene.add(axesHelper);
+
+  //     //render
+
+  //     const renderer = new THREE.WebGLRenderer({
+  //       canvas: GLCanvasRef.current,
+  //     });
+
+  //     renderer.setSize(sizes.width, sizes.height);
+  //     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  //     //controls
+
+  //     const controls = new OrbitControls(camera, GLCanvasRef.current);
+
+  //     controls.enableDamping = true;
+  //     const timer = new THREE.Timer();
+
+  //     const tick = () => {
+  //       controls.update();
+  //       timer.update();
+
+  //       const elapsedTime = timer.getElapsed();
+  //       // update objects
+
+  //       sphere.rotation.y = 0.1 * elapsedTime;
+  //       cube.rotation.y = 0.1 * elapsedTime;
+  //       torus.rotation.y = 0.1 * elapsedTime;
+
+  //       sphere.rotation.x = 0.15 * elapsedTime;
+  //       cube.rotation.x = 0.15 * elapsedTime;
+  //       torus.rotation.x = 0.15 * elapsedTime;
+
+  //       //render
+  //       renderer.render(scene, camera);
+  //       window.requestAnimationFrame(tick);
+  //     };
+
+  //     tick();
+
+  //     // Cleanup
+  //     return () => window.removeEventListener("resize", handleResize);
+  //   }
+  // });
+
+  //shadows
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const handleResize = () => {
@@ -536,93 +829,132 @@ const WebGLTestMain = () => {
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       };
 
-      //   // /** */
-      //   // //Textures
-      //   // /** */
+      const gui = new GUI();
 
-      const textureLoader = new THREE.TextureLoader();
-      const matcapTexture = textureLoader.load("/textures/matcaps/3.png");
-
-      //   // /** */
-      //   // //Fonts
-      //   // /** */
-
-      const fontLoader = new FontLoader();
-      const font = fontLoader.load("fonts/helvetiker_regular.typeface.json", (font) => {
-        const textGeomentry = new TextGeometry("AKA_9000", {
-          font: font,
-          size: 0.5,
-          depth: 0.3,
-          curveSegments: 5,
-          bevelEnabled: true,
-          bevelThickness: 0.03,
-          bevelSegments: 4,
-          bevelSize: 0.02,
-          bevelOffset: 0,
-        });
-
-        textGeomentry.computeBoundingBox();
-
-        // textGeomentry.translate(
-        //   textGeomentry.boundingBox ? -(textGeomentry.boundingBox?.max?.x - 0.02) * 0.5 : 0,
-        //   textGeomentry.boundingBox ? -(textGeomentry.boundingBox?.max?.y - 0.02) * 0.5 : 0,
-        //   textGeomentry.boundingBox ? -(textGeomentry.boundingBox?.max?.z - 0.03) * 0.5 : 0,
-        // );
-
-        textGeomentry.center();
-
-        const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45);
-        const material = new THREE.MeshMatcapMaterial({ matcap: matcapTexture });
-        // textMaterial.wireframe = true;
-        const text = new THREE.Mesh(textGeomentry, material);
-        scene.add(text);
-
-        for (let i = 0; i < 100; i++) {
-          const donut = new THREE.Mesh(donutGeometry, material);
-
-          donut.position.x = (Math.random() - 0.5) * 10;
-          donut.position.y = (Math.random() - 0.5) * 10;
-          donut.position.z = (Math.random() - 0.5) * 10;
-
-          donut.rotation.x = Math.random() * Math.PI;
-          donut.rotation.y = Math.random() * Math.PI;
-
-          const scale = Math.random();
-          donut.scale.set(scale, scale, scale);
-
-          scene.add(donut);
-        }
-      });
-
-      //   // /** */
-      //   // //Lights
-      //   // /** */
       const scene = new THREE.Scene();
 
-      const axesHelper = new THREE.AxesHelper();
-      scene.add(axesHelper);
-      const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+      //Textures
+
+      const textureLoader = new THREE.TextureLoader();
+      const bakedTexture = textureLoader.load("/textures/bakedShadow.jpg");
+      const sipmleShadow = textureLoader.load("/textures/simpleShadow.jpg");
+
+      /**
+       * Lights
+       */
+      // Ambient light
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+      gui.add(ambientLight, "intensity").min(0).max(3).step(0.001);
       scene.add(ambientLight);
 
-      const pointLight = new THREE.PointLight(0xffffff, 30);
-      pointLight.position.x = 2;
-      pointLight.position.y = 3;
-      pointLight.position.z = 4;
+      // Directional light
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+      directionalLight.castShadow = false;
+
+      directionalLight.shadow.mapSize.width = 1024;
+      directionalLight.shadow.mapSize.height = 1024;
+
+      directionalLight.shadow.camera.top = 2;
+      directionalLight.shadow.camera.right = 2;
+      directionalLight.shadow.camera.bottom = -2;
+      directionalLight.shadow.camera.left = -2;
+      directionalLight.shadow.camera.near = 1;
+      directionalLight.shadow.camera.far = 6;
+      directionalLight.shadow.radius = 10;
+
+      const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+      directionalLightCameraHelper.visible = false;
+      scene.add(directionalLightCameraHelper);
+
+      directionalLight.position.set(2, 2, -1);
+      gui.add(directionalLight, "intensity").min(0).max(3).step(0.001);
+      gui.add(directionalLight.position, "x").min(-5).max(5).step(0.001);
+      gui.add(directionalLight.position, "y").min(-5).max(5).step(0.001);
+      gui.add(directionalLight.position, "z").min(-5).max(5).step(0.001);
+      scene.add(directionalLight);
+
+      //Spot light
+
+      const spotLight = new THREE.SpotLight("red", 6, 10, Math.PI * 0.3);
+      spotLight.castShadow = false;
+
+      spotLight.shadow.mapSize.width = 1024;
+      spotLight.shadow.mapSize.height = 1024;
+      spotLight.shadow.camera.fov = 30;
+
+      spotLight.shadow.camera.near = 1;
+      spotLight.shadow.camera.far = 6;
+
+      spotLight.position.set(0, 2, 2);
+      scene.add(spotLight);
+      scene.add(spotLight.target);
+
+      const spotLightCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
+      spotLightCameraHelper.visible = false;
+      scene.add(spotLightCameraHelper);
+
+      //pointLight
+
+      const pointLight = new THREE.PointLight("blue", 6);
+      pointLight.castShadow = false;
+      pointLight.shadow.mapSize.width = 1024;
+      pointLight.shadow.mapSize.height = 1024;
+      pointLight.position.set(-1, 1, 0);
+      pointLight.shadow.camera.near = 0.1;
+      pointLight.shadow.camera.far = 5;
+
       scene.add(pointLight);
 
-      // const cube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial());
+      const pointLightCameraHelper = new THREE.CameraHelper(pointLight.shadow.camera);
+      pointLightCameraHelper.visible = false;
+      scene.add(pointLightCameraHelper);
 
-      // scene.add(cube);
+      /**
+       * Materials
+       */
+      const material = new THREE.MeshStandardMaterial();
+      material.roughness = 0.7;
+      gui.add(material, "metalness").min(0).max(1).step(0.001);
+      gui.add(material, "roughness").min(0).max(1).step(0.001);
+
+      /**
+       * Objects
+       */
+      const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
+
+      sphere.castShadow = true;
+
+      const plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material);
+      plane.rotation.x = -Math.PI * 0.5;
+      plane.position.y = -0.5;
+      plane.receiveShadow = true;
+
+      const sphereShadow = new THREE.Mesh(
+        new THREE.PlaneGeometry(1.5, 1.5),
+        new THREE.MeshBasicMaterial({
+          color: 0x000000,
+          transparent: true,
+          alphaMap: sipmleShadow,
+        }),
+      );
+      sphereShadow.rotation.x = -Math.PI * 0.5;
+      sphereShadow.position.y = plane.position.y + 0.01;
+      scene.add(sphereShadow);
+
+      scene.add(sphere, plane);
 
       const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
 
-      camera.position.z = 3;
-
-      // camera.lookAt(text.position);
+      camera.position.x = 1;
+      camera.position.y = 1;
+      camera.position.z = 2;
 
       scene.add(camera);
 
       window.addEventListener("resize", handleResize);
+
+      const axesHelper = new THREE.AxesHelper(1); // 5 — длина осей в единицах
+      scene.add(axesHelper);
 
       //render
 
@@ -633,19 +965,30 @@ const WebGLTestMain = () => {
       renderer.setSize(sizes.width, sizes.height);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFShadowMap;
+
       //controls
 
       const controls = new OrbitControls(camera, GLCanvasRef.current);
 
       controls.enableDamping = true;
-
-      const clock = new THREE.Clock();
+      const timer = new THREE.Timer();
 
       const tick = () => {
-        const elapsedTime = clock.getElapsedTime();
         controls.update();
+        timer.update();
 
-        // update objects
+        const elapsedTime = timer.getElapsed();
+        // update the sphere
+
+        sphere.position.x = Math.cos(elapsedTime) * 1.5;
+        sphere.position.z = Math.sin(elapsedTime) * 1.5;
+        sphere.position.y = Math.abs(Math.sin(elapsedTime * 3));
+
+        sphereShadow.position.x = sphere.position.x;
+        sphereShadow.position.z = sphere.position.z;
+        sphereShadow.material.opacity = (1 - sphere.position.y) * 0.3;
 
         //render
         renderer.render(scene, camera);
