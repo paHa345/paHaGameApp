@@ -21,14 +21,18 @@ const MainLayout = (props: any) => {
   return (
     <>
       <SessionProviderComponent>
-        <ReduxProvider>{pathname !== "/wsGamesRoomList" && <Header></Header>}</ReduxProvider>
+        <ReduxProvider>
+          {pathname !== "/wsGamesRoomList" && pathname !== "/threejsTest" && <Header></Header>}
+        </ReduxProvider>
         <main
           className=" relative text-headerButtonColor min-h-[80vh] w-11/12
           mx-auto"
         >
           {props.children}
         </main>
-        <ReduxProvider>{pathname !== "/wsGamesRoomList" && <Footer></Footer>}</ReduxProvider>
+        <ReduxProvider>
+          {pathname !== "/wsGamesRoomList" && pathname !== "/threejsTest" && <Footer></Footer>}
+        </ReduxProvider>
       </SessionProviderComponent>
     </>
   );

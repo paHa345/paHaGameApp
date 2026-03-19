@@ -71,6 +71,16 @@ const GamesSectionMain = () => {
             backgroundColor: "indigo",
           }}
         ></GameSectionCard>
+        <GameSectionCard
+          gameData={{
+            title: "Test Three.JS",
+            link: "threejsTest",
+            description: "Тестовая страница Three.JS",
+            image: "cube",
+
+            backgroundColor: "red",
+          }}
+        ></GameSectionCard>
 
         {/* <GameSectionCard></GameSectionCard>
         <GameSectionCard></GameSectionCard>

@@ -1,3 +1,5 @@
+"use client";
+
 import { height } from "@fortawesome/free-regular-svg-icons/faSave";
 import { canvas } from "framer-motion/client";
 import React, { useEffect, useRef, useState } from "react";
@@ -815,6 +817,195 @@ const WebGLTestMain = () => {
 
   //shadows
 
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     const handleResize = () => {
+  //       setSizes({
+  //         width: window.innerWidth,
+  //         height: window.innerHeight,
+  //       });
+  //       camera.aspect = sizes.width / sizes.height;
+  //       camera.updateProjectionMatrix();
+
+  //       renderer.setSize(sizes.width, sizes.height);
+  //       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  //     };
+
+  //     const gui = new GUI();
+
+  //     const scene = new THREE.Scene();
+
+  //     //Textures
+
+  //     const textureLoader = new THREE.TextureLoader();
+  //     const bakedTexture = textureLoader.load("/textures/bakedShadow.jpg");
+  //     const sipmleShadow = textureLoader.load("/textures/simpleShadow.jpg");
+
+  //     /**
+  //      * Lights
+  //      */
+  //     // Ambient light
+  //     const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+  //     gui.add(ambientLight, "intensity").min(0).max(3).step(0.001);
+  //     scene.add(ambientLight);
+
+  //     // Directional light
+  //     const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+  //     directionalLight.castShadow = false;
+
+  //     directionalLight.shadow.mapSize.width = 1024;
+  //     directionalLight.shadow.mapSize.height = 1024;
+
+  //     directionalLight.shadow.camera.top = 2;
+  //     directionalLight.shadow.camera.right = 2;
+  //     directionalLight.shadow.camera.bottom = -2;
+  //     directionalLight.shadow.camera.left = -2;
+  //     directionalLight.shadow.camera.near = 1;
+  //     directionalLight.shadow.camera.far = 6;
+  //     directionalLight.shadow.radius = 10;
+
+  //     const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+  //     directionalLightCameraHelper.visible = false;
+  //     scene.add(directionalLightCameraHelper);
+
+  //     directionalLight.position.set(2, 2, -1);
+  //     gui.add(directionalLight, "intensity").min(0).max(3).step(0.001);
+  //     gui.add(directionalLight.position, "x").min(-5).max(5).step(0.001);
+  //     gui.add(directionalLight.position, "y").min(-5).max(5).step(0.001);
+  //     gui.add(directionalLight.position, "z").min(-5).max(5).step(0.001);
+  //     scene.add(directionalLight);
+
+  //     //Spot light
+
+  //     const spotLight = new THREE.SpotLight("red", 6, 10, Math.PI * 0.3);
+  //     spotLight.castShadow = false;
+
+  //     spotLight.shadow.mapSize.width = 1024;
+  //     spotLight.shadow.mapSize.height = 1024;
+  //     spotLight.shadow.camera.fov = 30;
+
+  //     spotLight.shadow.camera.near = 1;
+  //     spotLight.shadow.camera.far = 6;
+
+  //     spotLight.position.set(0, 2, 2);
+  //     scene.add(spotLight);
+  //     scene.add(spotLight.target);
+
+  //     const spotLightCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
+  //     spotLightCameraHelper.visible = false;
+  //     scene.add(spotLightCameraHelper);
+
+  //     //pointLight
+
+  //     const pointLight = new THREE.PointLight("blue", 6);
+  //     pointLight.castShadow = false;
+  //     pointLight.shadow.mapSize.width = 1024;
+  //     pointLight.shadow.mapSize.height = 1024;
+  //     pointLight.position.set(-1, 1, 0);
+  //     pointLight.shadow.camera.near = 0.1;
+  //     pointLight.shadow.camera.far = 5;
+
+  //     scene.add(pointLight);
+
+  //     const pointLightCameraHelper = new THREE.CameraHelper(pointLight.shadow.camera);
+  //     pointLightCameraHelper.visible = false;
+  //     scene.add(pointLightCameraHelper);
+
+  //     /**
+  //      * Materials
+  //      */
+  //     const material = new THREE.MeshStandardMaterial();
+  //     material.roughness = 0.7;
+  //     gui.add(material, "metalness").min(0).max(1).step(0.001);
+  //     gui.add(material, "roughness").min(0).max(1).step(0.001);
+
+  //     /**
+  //      * Objects
+  //      */
+  //     const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
+
+  //     sphere.castShadow = true;
+
+  //     const plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material);
+  //     plane.rotation.x = -Math.PI * 0.5;
+  //     plane.position.y = -0.5;
+  //     plane.receiveShadow = true;
+
+  //     const sphereShadow = new THREE.Mesh(
+  //       new THREE.PlaneGeometry(1.5, 1.5),
+  //       new THREE.MeshBasicMaterial({
+  //         color: 0x000000,
+  //         transparent: true,
+  //         alphaMap: sipmleShadow,
+  //       }),
+  //     );
+  //     sphereShadow.rotation.x = -Math.PI * 0.5;
+  //     sphereShadow.position.y = plane.position.y + 0.01;
+  //     scene.add(sphereShadow);
+
+  //     scene.add(sphere, plane);
+
+  //     const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
+
+  //     camera.position.x = 1;
+  //     camera.position.y = 1;
+  //     camera.position.z = 2;
+
+  //     scene.add(camera);
+
+  //     window.addEventListener("resize", handleResize);
+
+  //     const axesHelper = new THREE.AxesHelper(1); // 5 — длина осей в единицах
+  //     scene.add(axesHelper);
+
+  //     //render
+
+  //     const renderer = new THREE.WebGLRenderer({
+  //       canvas: GLCanvasRef.current,
+  //     });
+
+  //     renderer.setSize(sizes.width, sizes.height);
+  //     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  //     renderer.shadowMap.enabled = true;
+  //     renderer.shadowMap.type = THREE.PCFShadowMap;
+
+  //     //controls
+
+  //     const controls = new OrbitControls(camera, GLCanvasRef.current);
+
+  //     controls.enableDamping = true;
+  //     const timer = new THREE.Timer();
+
+  //     const tick = () => {
+  //       controls.update();
+  //       timer.update();
+
+  //       const elapsedTime = timer.getElapsed();
+  //       // update the sphere
+
+  //       sphere.position.x = Math.cos(elapsedTime) * 1.5;
+  //       sphere.position.z = Math.sin(elapsedTime) * 1.5;
+  //       sphere.position.y = Math.abs(Math.sin(elapsedTime * 3));
+
+  //       sphereShadow.position.x = sphere.position.x;
+  //       sphereShadow.position.z = sphere.position.z;
+  //       sphereShadow.material.opacity = (1 - sphere.position.y) * 0.3;
+
+  //       //render
+  //       renderer.render(scene, camera);
+  //       window.requestAnimationFrame(tick);
+  //     };
+
+  //     tick();
+
+  //     // Cleanup
+  //     return () => window.removeEventListener("resize", handleResize);
+  //   }
+  // });
+
+  //house
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const handleResize = () => {
@@ -829,150 +1020,281 @@ const WebGLTestMain = () => {
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       };
 
-      const gui = new GUI();
+      // const gui = new GUI();
 
       const scene = new THREE.Scene();
 
-      //Textures
-
+      /**
+       * Textures
+       */
       const textureLoader = new THREE.TextureLoader();
-      const bakedTexture = textureLoader.load("/textures/bakedShadow.jpg");
-      const sipmleShadow = textureLoader.load("/textures/simpleShadow.jpg");
+
+      const doorColorTexture = textureLoader.load("/textures/door/color.jpg");
+      const doorAlphaTexture = textureLoader.load("/textures/door/alpha.jpg");
+      const doorAmbientOcclusionTexture = textureLoader.load("/textures/door/ambientOcclusion.jpg");
+      const doorHeightTexture = textureLoader.load("/textures/door/height.jpg");
+      const doorNormalTexture = textureLoader.load("/textures/door/normal.jpg");
+      const doorMetalnessTexture = textureLoader.load("/textures/door/metalness.jpg");
+      const doorRoughnessTexture = textureLoader.load("/textures/door/roughness.jpg");
+
+      const bricksColorTexture = textureLoader.load("/textures/bricks/color.jpg");
+      const bricksAmbientOcclusionTexture = textureLoader.load(
+        "/textures/bricks/ambientOcclusion.jpg",
+      );
+      const bricksNormalTexture = textureLoader.load("/textures/bricks/normal.jpg");
+      const bricksRoughnessTexture = textureLoader.load("/textures/bricks/roughness.jpg");
+
+      const grassColorTexture = textureLoader.load("/textures/grass/color.jpg");
+      const grassAmbientOcclusionTexture = textureLoader.load(
+        "/textures/grass/ambientOcclusion.jpg",
+      );
+      const grassNormalTexture = textureLoader.load("/textures/grass/normal.jpg");
+      const grassRoughnessTexture = textureLoader.load("/textures/grass/roughness.jpg");
+
+      grassColorTexture.repeat.set(8, 8);
+      grassAmbientOcclusionTexture.repeat.set(8, 8);
+      grassNormalTexture.repeat.set(8, 8);
+      grassRoughnessTexture.repeat.set(8, 8);
+
+      grassColorTexture.wrapS = THREE.RepeatWrapping;
+      grassAmbientOcclusionTexture.wrapS = THREE.RepeatWrapping;
+      grassNormalTexture.wrapS = THREE.RepeatWrapping;
+      grassRoughnessTexture.wrapS = THREE.RepeatWrapping;
+      grassColorTexture.wrapT = THREE.RepeatWrapping;
+      grassAmbientOcclusionTexture.wrapT = THREE.RepeatWrapping;
+      grassNormalTexture.wrapT = THREE.RepeatWrapping;
+      grassRoughnessTexture.wrapT = THREE.RepeatWrapping;
+
+      //fog
+
+      const fog = new THREE.Fog("#262837", 1, 15);
+
+      scene.fog = fog;
+      /**
+       * House
+       */
+
+      //group
+      const house = new THREE.Group();
+
+      scene.add(house);
+
+      //walls
+
+      const walls = new THREE.Mesh(
+        new THREE.BoxGeometry(4, 2.5, 4),
+        new THREE.MeshStandardMaterial({
+          map: bricksColorTexture,
+          aoMap: bricksAmbientOcclusionTexture,
+          normalMap: bricksNormalTexture,
+          roughnessMap: bricksRoughnessTexture,
+        }),
+      );
+
+      walls.geometry.setAttribute(
+        "uv2",
+        new THREE.Float32BufferAttribute(walls.geometry.attributes.uv.array, 2),
+      );
+      walls.position.y = 2.5 / 2;
+      house.add(walls);
+
+      //roof
+      const roof = new THREE.Mesh(
+        new THREE.ConeGeometry(3.5, 1, 4),
+        new THREE.MeshStandardMaterial({ color: "#b35f45" }),
+      );
+
+      //door
+
+      const door = new THREE.Mesh(
+        new THREE.PlaneGeometry(2.2, 2.2, 100, 100),
+        new THREE.MeshStandardMaterial({
+          map: doorColorTexture,
+          transparent: true,
+          alphaMap: doorAlphaTexture,
+          aoMap: doorAmbientOcclusionTexture,
+          displacementMap: doorHeightTexture,
+          displacementScale: 0.1,
+          normalMap: doorNormalTexture,
+          metalnessMap: doorMetalnessTexture,
+          roughnessMap: doorRoughnessTexture,
+        }),
+      );
+      door.geometry.setAttribute(
+        "uv2",
+        new THREE.Float32BufferAttribute(door.geometry.attributes.uv.array, 2),
+      );
+      door.position.y = 1;
+      door.position.z = 4 / 2 + 0.01;
+      house.add(door);
+
+      roof.position.y = 2.5 + 0.5;
+      roof.rotation.y = Math.PI * 0.25;
+      house.add(roof);
+
+      //bushes
+
+      const bushGeometry = new THREE.SphereGeometry(1, 16, 16);
+      const bushMaterial = new THREE.MeshStandardMaterial({ color: "#89c854" });
+
+      const bush1 = new THREE.Mesh(bushGeometry, bushMaterial);
+      bush1.scale.set(0.5, 0.5, 0.5);
+      bush1.position.set(0.8, 0.2, 2.2);
+
+      const bush2 = new THREE.Mesh(bushGeometry, bushMaterial);
+      bush2.scale.set(0.25, 0.25, 0.25);
+      bush2.position.set(1.4, 0.1, 2.1);
+
+      const bush3 = new THREE.Mesh(bushGeometry, bushMaterial);
+      bush3.scale.set(0.4, 0.4, 0.4);
+      bush3.position.set(-0.8, 0.1, 2.2);
+
+      const bush4 = new THREE.Mesh(bushGeometry, bushMaterial);
+      bush4.scale.set(0.15, 0.15, 0.15);
+      bush4.position.set(-1, 0.05, 2.6);
+      house.add(bush1, bush2, bush3, bush4);
+
+      //graves
+
+      const graves = new THREE.Group();
+      scene.add(graves);
+
+      const graveGeometry = new THREE.BoxGeometry(0.6, 0.8, 0.2);
+      const graveMaterial = new THREE.MeshStandardMaterial({ color: "#b2b6b1" });
+
+      for (let i = 0; i < 50; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const radius = 3 + Math.random() * 6;
+        const x = Math.sin(angle) * radius;
+        const z = Math.cos(angle) * radius;
+
+        const grave = new THREE.Mesh(graveGeometry, graveMaterial);
+        grave.position.set(x, 0.3, z);
+        grave.rotation.y = (Math.random() - 0.5) * 0.4;
+        grave.rotation.z = (Math.random() - 0.5) * 0.4;
+        grave.castShadow = true;
+        graves.add(grave);
+      }
+
+      // Floor
+      const floor = new THREE.Mesh(
+        new THREE.PlaneGeometry(20, 20),
+        new THREE.MeshStandardMaterial({
+          map: grassColorTexture,
+          aoMap: grassAmbientOcclusionTexture,
+          normalMap: grassNormalTexture,
+          roughnessMap: grassRoughnessTexture,
+        }),
+      );
+
+      floor.geometry.setAttribute(
+        "uv2",
+        new THREE.Float32BufferAttribute(floor.geometry.attributes.uv.array, 2),
+      );
+      floor.rotation.x = -Math.PI * 0.5;
+      floor.position.y = 0;
+      scene.add(floor);
 
       /**
        * Lights
        */
       // Ambient light
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
-      gui.add(ambientLight, "intensity").min(0).max(3).step(0.001);
+      const ambientLight = new THREE.AmbientLight("#b9d5ff", 0.12);
+      // gui.add(ambientLight, "intensity").min(0).max(1).step(0.001);
       scene.add(ambientLight);
 
       // Directional light
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-      directionalLight.castShadow = false;
+      const moonLight = new THREE.DirectionalLight("#b9d5ff", 0.12);
+      moonLight.position.set(4, 5, -2);
+      // gui.add(moonLight, "intensity").min(0).max(1).step(0.001);
+      // gui.add(moonLight.position, "x").min(-5).max(5).step(0.001);
+      // gui.add(moonLight.position, "y").min(-5).max(5).step(0.001);
+      // gui.add(moonLight.position, "z").min(-5).max(5).step(0.001);
+      scene.add(moonLight);
 
-      directionalLight.shadow.mapSize.width = 1024;
-      directionalLight.shadow.mapSize.height = 1024;
+      const doorLight = new THREE.PointLight("#ff7b46", 1, 7);
 
-      directionalLight.shadow.camera.top = 2;
-      directionalLight.shadow.camera.right = 2;
-      directionalLight.shadow.camera.bottom = -2;
-      directionalLight.shadow.camera.left = -2;
-      directionalLight.shadow.camera.near = 1;
-      directionalLight.shadow.camera.far = 6;
-      directionalLight.shadow.radius = 10;
+      doorLight.position.set(0, 2.2, 2.7);
 
-      const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
-      directionalLightCameraHelper.visible = false;
-      scene.add(directionalLightCameraHelper);
-
-      directionalLight.position.set(2, 2, -1);
-      gui.add(directionalLight, "intensity").min(0).max(3).step(0.001);
-      gui.add(directionalLight.position, "x").min(-5).max(5).step(0.001);
-      gui.add(directionalLight.position, "y").min(-5).max(5).step(0.001);
-      gui.add(directionalLight.position, "z").min(-5).max(5).step(0.001);
-      scene.add(directionalLight);
-
-      //Spot light
-
-      const spotLight = new THREE.SpotLight("red", 6, 10, Math.PI * 0.3);
-      spotLight.castShadow = false;
-
-      spotLight.shadow.mapSize.width = 1024;
-      spotLight.shadow.mapSize.height = 1024;
-      spotLight.shadow.camera.fov = 30;
-
-      spotLight.shadow.camera.near = 1;
-      spotLight.shadow.camera.far = 6;
-
-      spotLight.position.set(0, 2, 2);
-      scene.add(spotLight);
-      scene.add(spotLight.target);
-
-      const spotLightCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
-      spotLightCameraHelper.visible = false;
-      scene.add(spotLightCameraHelper);
-
-      //pointLight
-
-      const pointLight = new THREE.PointLight("blue", 6);
-      pointLight.castShadow = false;
-      pointLight.shadow.mapSize.width = 1024;
-      pointLight.shadow.mapSize.height = 1024;
-      pointLight.position.set(-1, 1, 0);
-      pointLight.shadow.camera.near = 0.1;
-      pointLight.shadow.camera.far = 5;
-
-      scene.add(pointLight);
-
-      const pointLightCameraHelper = new THREE.CameraHelper(pointLight.shadow.camera);
-      pointLightCameraHelper.visible = false;
-      scene.add(pointLightCameraHelper);
+      house.add(doorLight);
 
       /**
-       * Materials
+       * Ghosts
        */
-      const material = new THREE.MeshStandardMaterial();
-      material.roughness = 0.7;
-      gui.add(material, "metalness").min(0).max(1).step(0.001);
-      gui.add(material, "roughness").min(0).max(1).step(0.001);
 
-      /**
-       * Objects
-       */
-      const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
-
-      sphere.castShadow = true;
-
-      const plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material);
-      plane.rotation.x = -Math.PI * 0.5;
-      plane.position.y = -0.5;
-      plane.receiveShadow = true;
-
-      const sphereShadow = new THREE.Mesh(
-        new THREE.PlaneGeometry(1.5, 1.5),
-        new THREE.MeshBasicMaterial({
-          color: 0x000000,
-          transparent: true,
-          alphaMap: sipmleShadow,
-        }),
-      );
-      sphereShadow.rotation.x = -Math.PI * 0.5;
-      sphereShadow.position.y = plane.position.y + 0.01;
-      scene.add(sphereShadow);
-
-      scene.add(sphere, plane);
-
-      const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
-
-      camera.position.x = 1;
-      camera.position.y = 1;
-      camera.position.z = 2;
-
-      scene.add(camera);
+      const ghost1 = new THREE.PointLight("#ff00ff", 2, 3);
+      scene.add(ghost1);
+      const ghost2 = new THREE.PointLight("#00ffff", 2, 3);
+      scene.add(ghost2);
+      const ghost3 = new THREE.PointLight("#ffff00", 2, 3);
+      scene.add(ghost3);
 
       window.addEventListener("resize", handleResize);
 
-      const axesHelper = new THREE.AxesHelper(1); // 5 — длина осей в единицах
+      const axesHelper = new THREE.AxesHelper(1);
       scene.add(axesHelper);
 
-      //render
+      /**
+       * Camera
+       */
+      // Base camera
+      const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
+      camera.position.x = 4;
+      camera.position.y = 2;
+      camera.position.z = 5;
+      scene.add(camera);
 
+      // Controls
+      const controls = new OrbitControls(camera, GLCanvasRef.current);
+      controls.enableDamping = true;
+
+      /**
+       * Renderer
+       */
       const renderer = new THREE.WebGLRenderer({
         canvas: GLCanvasRef.current,
       });
-
       renderer.setSize(sizes.width, sizes.height);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setClearColor("#262837");
+
+      /**
+       * Shadows
+       */
+
+      moonLight.castShadow = true;
+      doorLight.castShadow = true;
+      ghost1.castShadow = true;
+      ghost2.castShadow = true;
+      ghost3.castShadow = true;
+
+      walls.castShadow = true;
+
+      bush1.castShadow = true;
+      bush2.castShadow = true;
+      bush3.castShadow = true;
+      bush4.castShadow = true;
+      floor.receiveShadow = true;
 
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFShadowMap;
 
-      //controls
+      doorLight.shadow.mapSize.width = 256;
+      doorLight.shadow.mapSize.height = 256;
+      doorLight.shadow.camera.far = 7;
 
-      const controls = new OrbitControls(camera, GLCanvasRef.current);
+      ghost1.shadow.mapSize.width = 256;
+      ghost1.shadow.mapSize.height = 256;
+      ghost1.shadow.camera.far = 7;
 
-      controls.enableDamping = true;
+      ghost2.shadow.mapSize.width = 256;
+      ghost2.shadow.mapSize.height = 256;
+      ghost2.shadow.camera.far = 7;
+
+      ghost3.shadow.mapSize.width = 256;
+      ghost3.shadow.mapSize.height = 256;
+      ghost3.shadow.camera.far = 7;
+
       const timer = new THREE.Timer();
 
       const tick = () => {
@@ -980,16 +1302,25 @@ const WebGLTestMain = () => {
         timer.update();
 
         const elapsedTime = timer.getElapsed();
-        // update the sphere
+        // update the ghost position
 
-        sphere.position.x = Math.cos(elapsedTime) * 1.5;
-        sphere.position.z = Math.sin(elapsedTime) * 1.5;
-        sphere.position.y = Math.abs(Math.sin(elapsedTime * 3));
+        const ghost1Angle = elapsedTime * 0.5;
 
-        sphereShadow.position.x = sphere.position.x;
-        sphereShadow.position.z = sphere.position.z;
-        sphereShadow.material.opacity = (1 - sphere.position.y) * 0.3;
+        ghost1.position.x = Math.cos(ghost1Angle) * 4;
+        ghost1.position.z = Math.sin(ghost1Angle) * 4;
+        ghost1.position.y = Math.sin(elapsedTime * 3);
 
+        const ghost2Angle = -elapsedTime * 0.32;
+
+        ghost2.position.x = Math.cos(ghost2Angle) * 5;
+        ghost2.position.z = Math.sin(ghost2Angle) * 5;
+        ghost2.position.y = Math.sin(elapsedTime * 4) + Math.sin(elapsedTime * 2.5);
+
+        const ghost3Angle = -elapsedTime * 0.18;
+
+        ghost3.position.x = Math.cos(ghost3Angle) * (7 + Math.sin(elapsedTime * 0.32));
+        ghost3.position.z = Math.sin(ghost3Angle) * (7 + Math.sin(elapsedTime * 0.5));
+        ghost3.position.y = Math.sin(elapsedTime * 5) + Math.sin(elapsedTime * 2);
         //render
         renderer.render(scene, camera);
         window.requestAnimationFrame(tick);

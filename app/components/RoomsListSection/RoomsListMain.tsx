@@ -24,14 +24,14 @@ import WebGLTestMain from "./WebGLTestMain";
 const RoomsListMain = () => {
   const dispatch = useDispatch<AppDispatch>();
   const fetchAllGamesRoomsList = useSelector(
-    (state: ICoopGamesSlice) => state.CoopGamesState.fetchAllGameRoomsStatus
+    (state: ICoopGamesSlice) => state.CoopGamesState.fetchAllGameRoomsStatus,
   );
   const allGamesRoomsList = useSelector(
-    (state: ICoopGamesSlice) => state.CoopGamesState.allGamesRoomsList
+    (state: ICoopGamesSlice) => state.CoopGamesState.allGamesRoomsList,
   );
 
   const currentJoinedRoomID = useSelector(
-    (state: ICoopGamesSlice) => state.CoopGamesState.currentJoinedRoomID
+    (state: ICoopGamesSlice) => state.CoopGamesState.currentJoinedRoomID,
   );
 
   const socket = useSelector((state: ICoopGamesSlice) => state.CoopGamesState.socket);
@@ -39,7 +39,7 @@ const RoomsListMain = () => {
   const telegramUser = useSelector((state: IAppSlice) => state.appState.telegranUserData);
 
   const showRoomStatus = useSelector(
-    (state: ICoopGamesSlice) => state.CoopGamesState.showRoomStatus
+    (state: ICoopGamesSlice) => state.CoopGamesState.showRoomStatus,
   );
 
   const [isTelegramWebAppStatus, setIsTelegramWebAppStatus] = useState(false);
@@ -126,7 +126,7 @@ const RoomsListMain = () => {
           language_code: "ru",
           last_name: "Paha",
           username: "Paha",
-        })
+        }),
       );
     }
   }, []);
@@ -154,8 +154,8 @@ const RoomsListMain = () => {
         CoopGamesActions.setSocket(
           io.connect(process.env.NEXT_PUBLIC_WEB_SOCKET_SERVER_URL, {
             transports: ["websocket"],
-          })
-        )
+          }),
+        ),
       );
     }
   }, []);
@@ -226,7 +226,7 @@ const RoomsListMain = () => {
 
           {showRoomStatus && <RoomComponentMain></RoomComponentMain>}
 
-          {!showRoomStatus && <WebGLTestMain></WebGLTestMain>}
+          {/* {!showRoomStatus && <WebGLTestMain></WebGLTestMain>} */}
         </div>
       </div>
     </>
