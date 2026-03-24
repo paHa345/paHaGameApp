@@ -1,7 +1,7 @@
 "use client";
 
 import { height } from "@fortawesome/free-regular-svg-icons/faSave";
-import { canvas } from "framer-motion/client";
+import { body, canvas } from "framer-motion/client";
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import Renderer from "three/src/renderers/common/Renderer.js";
@@ -13,6 +13,7 @@ import { HDRLoader } from "three/examples/jsm/loaders/HDRLoader.js";
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 import { RectAreaLightHelper } from "three/addons/helpers/RectAreaLightHelper.js";
+import CANNON from "cannon";
 
 const WebGLTestMain = () => {
   const GLCanvasRef = useRef(null) as any;
@@ -78,6 +79,8 @@ const WebGLTestMain = () => {
       document.exitFullscreen();
     }
   }, [fullScreenSTatus]);
+
+  //
 
   // useEffect(() => {
   //   /**
@@ -325,6 +328,8 @@ const WebGLTestMain = () => {
   //     return () => window.removeEventListener("resize", handleResize);
   //   }
   // });
+
+  //
 
   // useEffect(() => {
   //   if (typeof window !== "undefined") {
@@ -1335,6 +1340,10 @@ const WebGLTestMain = () => {
 
   //particles
 
+  /**
+   *
+   */
+
   // useEffect(() => {
   //   if (typeof window !== "undefined") {
   //     const handleResize = () => {
@@ -1451,196 +1460,200 @@ const WebGLTestMain = () => {
   //   }
   // });
 
+  /**
+   *
+   */
+
   //Galaxy generator
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const handleResize = () => {
-        setSizes({
-          width: window.innerWidth,
-          height: window.innerHeight,
-        });
-        camera.aspect = sizes.width / sizes.height;
-        camera.updateProjectionMatrix();
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     const handleResize = () => {
+  //       setSizes({
+  //         width: window.innerWidth,
+  //         height: window.innerHeight,
+  //       });
+  //       camera.aspect = sizes.width / sizes.height;
+  //       camera.updateProjectionMatrix();
 
-        renderer.setSize(sizes.width, sizes.height);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      };
+  //       renderer.setSize(sizes.width, sizes.height);
+  //       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  //     };
 
-      const gui = new GUI({ width: 300 });
+  //     const gui = new GUI({ width: 300 });
 
-      const scene = new THREE.Scene();
+  //     const scene = new THREE.Scene();
 
-      /**
-       * Textures
-       */
-      const textureLoader = new THREE.TextureLoader();
+  //     /**
+  //      * Textures
+  //      */
+  //     const textureLoader = new THREE.TextureLoader();
 
-      /**
-       * Galaxy
-       */
+  //     /**
+  //      * Galaxy
+  //      */
 
-      const parameters: {
-        count: number;
-        size: number;
-        radius: number;
-        branches: number;
-        spin: number;
-        randomness: number;
-        randomnessPower: number;
-        insideColor: string;
-        outsideColor: string;
-      } = {
-        count: 0,
-        size: 0.01,
-        radius: 1,
-        branches: 2,
-        spin: 1,
-        randomness: 0.2,
-        randomnessPower: 3,
-        insideColor: "#ff6030",
-        outsideColor: "#1b3984",
-      };
+  //     const parameters: {
+  //       count: number;
+  //       size: number;
+  //       radius: number;
+  //       branches: number;
+  //       spin: number;
+  //       randomness: number;
+  //       randomnessPower: number;
+  //       insideColor: string;
+  //       outsideColor: string;
+  //     } = {
+  //       count: 0,
+  //       size: 0.01,
+  //       radius: 1,
+  //       branches: 2,
+  //       spin: 1,
+  //       randomness: 0.2,
+  //       randomnessPower: 3,
+  //       insideColor: "#ff6030",
+  //       outsideColor: "#1b3984",
+  //     };
 
-      parameters.count = 100000;
-      parameters.size = 0.01;
-      parameters.radius = 5;
-      parameters.branches = 3;
-      parameters.spin = 1;
-      parameters.randomness = 0.2;
-      parameters.randomnessPower = 3;
+  //     parameters.count = 100000;
+  //     parameters.size = 0.01;
+  //     parameters.radius = 5;
+  //     parameters.branches = 3;
+  //     parameters.spin = 1;
+  //     parameters.randomness = 0.2;
+  //     parameters.randomnessPower = 3;
 
-      let particlsGeometry: THREE.BufferGeometry<
-        THREE.NormalBufferAttributes,
-        THREE.BufferGeometryEventMap
-      > | null = null;
-      let particlesMaterial: THREE.PointsMaterial | null = null;
-      let points: THREE.Points<
-        THREE.BufferGeometry<THREE.NormalBufferAttributes, THREE.BufferGeometryEventMap>,
-        THREE.PointsMaterial,
-        THREE.Object3DEventMap
-      > | null = null;
+  //     let particlsGeometry: THREE.BufferGeometry<
+  //       THREE.NormalBufferAttributes,
+  //       THREE.BufferGeometryEventMap
+  //     > | null = null;
+  //     let particlesMaterial: THREE.PointsMaterial | null = null;
+  //     let points: THREE.Points<
+  //       THREE.BufferGeometry<THREE.NormalBufferAttributes, THREE.BufferGeometryEventMap>,
+  //       THREE.PointsMaterial,
+  //       THREE.Object3DEventMap
+  //     > | null = null;
 
-      const generateGalaxy = () => {
-        if (points !== null) {
-          particlsGeometry?.dispose();
-          particlesMaterial?.dispose();
-          scene.remove(points);
-        }
-        /**
-         * Geometry
-         */
-        const positions = new Float32Array(parameters.count * 3);
-        const colors = new Float32Array(parameters.count * 3);
-        particlsGeometry = new THREE.BufferGeometry();
+  //     const generateGalaxy = () => {
+  //       if (points !== null) {
+  //         particlsGeometry?.dispose();
+  //         particlesMaterial?.dispose();
+  //         scene.remove(points);
+  //       }
+  //       /**
+  //        * Geometry
+  //        */
+  //       const positions = new Float32Array(parameters.count * 3);
+  //       const colors = new Float32Array(parameters.count * 3);
+  //       particlsGeometry = new THREE.BufferGeometry();
 
-        const colorInside = new THREE.Color(parameters.insideColor);
-        const colorOutside = new THREE.Color(parameters.outsideColor);
+  //       const colorInside = new THREE.Color(parameters.insideColor);
+  //       const colorOutside = new THREE.Color(parameters.outsideColor);
 
-        for (let i = 0; i < parameters.count; i++) {
-          const i3 = i * 3;
-          //position
-          const radius = Math.random() * parameters.radius;
-          const branchAngle = ((i % parameters.branches) / parameters.branches) * Math.PI * 2;
-          const spinAngle = radius * parameters.spin;
+  //       for (let i = 0; i < parameters.count; i++) {
+  //         const i3 = i * 3;
+  //         //position
+  //         const radius = Math.random() * parameters.radius;
+  //         const branchAngle = ((i % parameters.branches) / parameters.branches) * Math.PI * 2;
+  //         const spinAngle = radius * parameters.spin;
 
-          const randomX =
-            Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1);
-          const randomY =
-            Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1);
-          const randomZ =
-            Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1);
+  //         const randomX =
+  //           Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1);
+  //         const randomY =
+  //           Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1);
+  //         const randomZ =
+  //           Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1);
 
-          positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
-          positions[i3 + 1] = randomY;
-          positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
+  //         positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
+  //         positions[i3 + 1] = randomY;
+  //         positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
 
-          //color
+  //         //color
 
-          const mixedColor = colorInside.clone();
-          mixedColor.lerp(colorOutside, radius / parameters.radius);
-          colors[i3] = mixedColor.r;
-          colors[i3 + 1] = mixedColor.g;
-          colors[i3 + 2] = mixedColor.b;
-        }
-        particlsGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-        particlsGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+  //         const mixedColor = colorInside.clone();
+  //         mixedColor.lerp(colorOutside, radius / parameters.radius);
+  //         colors[i3] = mixedColor.r;
+  //         colors[i3 + 1] = mixedColor.g;
+  //         colors[i3 + 2] = mixedColor.b;
+  //       }
+  //       particlsGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  //       particlsGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
-        /**
-         * Material
-         */
+  //       /**
+  //        * Material
+  //        */
 
-        particlesMaterial = new THREE.PointsMaterial({
-          size: parameters.size,
-          sizeAttenuation: true,
-          depthWrite: false,
-          blending: THREE.AdditiveBlending,
-          vertexColors: true,
-        });
+  //       particlesMaterial = new THREE.PointsMaterial({
+  //         size: parameters.size,
+  //         sizeAttenuation: true,
+  //         depthWrite: false,
+  //         blending: THREE.AdditiveBlending,
+  //         vertexColors: true,
+  //       });
 
-        points = new THREE.Points(particlsGeometry, particlesMaterial);
-        scene.add(points);
-      };
+  //       points = new THREE.Points(particlsGeometry, particlesMaterial);
+  //       scene.add(points);
+  //     };
 
-      generateGalaxy();
+  //     generateGalaxy();
 
-      gui.add(parameters, "count").min(100).max(100000).step(100).onFinishChange(generateGalaxy);
-      gui.add(parameters, "size").min(0.01).max(0.1).step(0.001).onFinishChange(generateGalaxy);
-      gui.add(parameters, "radius").min(0.01).max(20).step(0.01).onFinishChange(generateGalaxy);
-      gui.add(parameters, "branches").min(2).max(20).step(1).onFinishChange(generateGalaxy);
-      gui.add(parameters, "spin").min(-5).max(5).step(0.01).onFinishChange(generateGalaxy);
-      gui.add(parameters, "randomness").min(0).max(2).step(0.01).onFinishChange(generateGalaxy);
-      gui
-        .add(parameters, "randomnessPower")
-        .min(1)
-        .max(10)
-        .step(0.01)
-        .onFinishChange(generateGalaxy);
-      gui.addColor(parameters, "insideColor").onFinishChange(generateGalaxy);
-      gui.addColor(parameters, "outsideColor").onFinishChange(generateGalaxy);
+  //     gui.add(parameters, "count").min(100).max(100000).step(100).onFinishChange(generateGalaxy);
+  //     gui.add(parameters, "size").min(0.01).max(0.1).step(0.001).onFinishChange(generateGalaxy);
+  //     gui.add(parameters, "radius").min(0.01).max(20).step(0.01).onFinishChange(generateGalaxy);
+  //     gui.add(parameters, "branches").min(2).max(20).step(1).onFinishChange(generateGalaxy);
+  //     gui.add(parameters, "spin").min(-5).max(5).step(0.01).onFinishChange(generateGalaxy);
+  //     gui.add(parameters, "randomness").min(0).max(2).step(0.01).onFinishChange(generateGalaxy);
+  //     gui
+  //       .add(parameters, "randomnessPower")
+  //       .min(1)
+  //       .max(10)
+  //       .step(0.01)
+  //       .onFinishChange(generateGalaxy);
+  //     gui.addColor(parameters, "insideColor").onFinishChange(generateGalaxy);
+  //     gui.addColor(parameters, "outsideColor").onFinishChange(generateGalaxy);
 
-      /**
-       * Camera
-       */
-      // Base camera
-      const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
-      camera.position.z = 3;
-      scene.add(camera);
+  //     /**
+  //      * Camera
+  //      */
+  //     // Base camera
+  //     const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
+  //     camera.position.z = 3;
+  //     scene.add(camera);
 
-      // Controls
-      const controls = new OrbitControls(camera, GLCanvasRef.current);
-      controls.enableDamping = true;
+  //     // Controls
+  //     const controls = new OrbitControls(camera, GLCanvasRef.current);
+  //     controls.enableDamping = true;
 
-      /**
-       * Renderer
-       */
-      const renderer = new THREE.WebGLRenderer({
-        canvas: GLCanvasRef.current,
-      });
-      renderer.setSize(sizes.width, sizes.height);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.setClearColor("#262837");
+  //     /**
+  //      * Renderer
+  //      */
+  //     const renderer = new THREE.WebGLRenderer({
+  //       canvas: GLCanvasRef.current,
+  //     });
+  //     renderer.setSize(sizes.width, sizes.height);
+  //     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  //     renderer.setClearColor("#262837");
 
-      const timer = new THREE.Timer();
+  //     const timer = new THREE.Timer();
 
-      const tick = () => {
-        controls.update();
-        timer.update();
+  //     const tick = () => {
+  //       controls.update();
+  //       timer.update();
 
-        const elapsedTime = timer.getElapsed();
-        // update the particles
+  //       const elapsedTime = timer.getElapsed();
+  //       // update the particles
 
-        //render
-        renderer.render(scene, camera);
-        window.requestAnimationFrame(tick);
-      };
+  //       //render
+  //       renderer.render(scene, camera);
+  //       window.requestAnimationFrame(tick);
+  //     };
 
-      tick();
+  //     tick();
 
-      // Cleanup
-      return () => window.removeEventListener("resize", handleResize);
-    }
-  });
+  //     // Cleanup
+  //     return () => window.removeEventListener("resize", handleResize);
+  //   }
+  // });
 
   //scroll based animation
 
@@ -1664,7 +1677,10 @@ const WebGLTestMain = () => {
   //       materialColor: "#ffeded",
   //     };
 
-  //     gui.addColor(parameters, "materialColor");
+  //     gui.addColor(parameters, "materialColor").onChange(() => {
+  //       material.color.set(parameters.materialColor);
+  //       particlesMateriol.color.set(parameters.materialColor);
+  //     });
 
   //     const scene = new THREE.Scene();
 
@@ -1673,21 +1689,92 @@ const WebGLTestMain = () => {
   //      */
   //     const textureLoader = new THREE.TextureLoader();
 
+  //     const gradientTexture = textureLoader.load("/textures/gradients/3.jpg");
+  //     gradientTexture.magFilter = THREE.NearestFilter;
+
   //     /**
-  //      * Test cube
+  //      * Objects
   //      */
-  //     const cube = new THREE.Mesh(
-  //       new THREE.BoxGeometry(1, 1, 1),
-  //       new THREE.MeshBasicMaterial({ color: "#ff0000" }),
-  //     );
-  //     scene.add(cube);
+
+  //     //material
+  //     const material = new THREE.MeshToonMaterial({
+  //       color: parameters.materialColor,
+  //       gradientMap: gradientTexture,
+  //     });
+  //     //mesh
+
+  //     const objectDistance = 4;
+  //     const mesh1 = new THREE.Mesh(new THREE.TorusGeometry(1, 0.4, 16, 60), material);
+  //     const mesh2 = new THREE.Mesh(new THREE.ConeGeometry(1, 2, 32), material);
+  //     const mesh3 = new THREE.Mesh(new THREE.TorusKnotGeometry(0.8, 0.35, 100, 16), material);
+
+  //     mesh1.position.y = -objectDistance * 0;
+  //     mesh2.position.y = -objectDistance * 1;
+  //     mesh3.position.y = -objectDistance * 2;
+
+  //     mesh1.position.x = 1;
+  //     mesh1.position.x = -1;
+  //     mesh1.position.x = 1;
+
+  //     scene.add(mesh1, mesh2, mesh3);
+
+  //     const sectionMeshes = [mesh1, mesh2, mesh3];
+
+  //     /**
+  //      * Particles
+  //      */
+
+  //     //Geometry
+
+  //     const particlesCount = 200;
+
+  //     const positions = new Float32Array(particlesCount * 3);
+
+  //     for (let i = 0; i < particlesCount; i++) {
+  //       positions[i * 3 + 0] = (Math.random() - 0.5) * 10;
+  //       positions[i * 3 + 1] =
+  //         objectDistance * 0.5 - Math.random() * objectDistance * sectionMeshes.length;
+  //       positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+  //     }
+
+  //     const particlesGeometry = new THREE.BufferGeometry();
+
+  //     particlesGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+
+  //     //Material
+
+  //     const particlesMateriol = new THREE.PointsMaterial({
+  //       color: parameters.materialColor,
+  //       sizeAttenuation: true,
+  //       size: 0.03,
+  //     });
+
+  //     //Points
+
+  //     const particles = new THREE.Points(particlesGeometry, particlesMateriol);
+
+  //     scene.add(particles);
+
+  //     /**
+  //      * Lights
+  //      */
+
+  //     const directionalLight = new THREE.DirectionalLight("#ffffff", 1);
+
+  //     directionalLight.position.set(1, 1, 0);
+  //     scene.add(directionalLight);
+
   //     /**
   //      * Camera
   //      */
+  //     //Camera group
+
+  //     const cameraGroup = new THREE.Group();
+  //     scene.add(cameraGroup);
   //     // Base camera
-  //     const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
-  //     camera.position.z = 3;
-  //     scene.add(camera);
+  //     const camera = new THREE.PerspectiveCamera(35, sizes.width / sizes.height, 0.1, 100);
+  //     camera.position.z = 6;
+  //     cameraGroup.add(camera);
 
   //     // Controls
   //     // const controls = new OrbitControls(camera, GLCanvasRef.current);
@@ -1703,14 +1790,69 @@ const WebGLTestMain = () => {
   //     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   //     renderer.setClearColor("#262837");
 
+  //     /**
+  //      * Animate
+  //      */
+
+  //     let scrollY = window.scrollY;
+
+  //     let currentSection = 0;
+
+  //     window.addEventListener("scroll", () => {
+  //       scrollY = window.scrollY;
+
+  //       const newSection = Math.round(scrollY / sizes.height);
+  //       if (newSection !== currentSection) {
+  //         currentSection = newSection;
+  //         gsap.to(sectionMeshes[currentSection].rotation, {
+  //           duration: 1.5,
+  //           ease: "power2.inOut",
+  //           x: "+=6",
+  //           y: "+=3",
+  //           z: "+=1.5",
+  //         });
+  //       }
+  //     });
+
+  //     /**
+  //      * Cursor
+  //      */
+
+  //     const cursor = { x: 0, y: 0 };
+
+  //     window.addEventListener("mousemove", (e: MouseEvent) => {
+  //       cursor.x = e.clientX / sizes.width - 0.5;
+  //       cursor.y = e.clientY / sizes.height - 0.5;
+  //     });
+
   //     const timer = new THREE.Timer();
+
+  //     let prevTime = 0;
 
   //     const tick = () => {
   //       // controls.update();
   //       timer.update();
 
   //       const elapsedTime = timer.getElapsed();
-  //       // update the particles
+  //       const deltaTime = elapsedTime - prevTime;
+  //       prevTime = elapsedTime;
+
+  //       //Animate camera
+
+  //       camera.position.y = (-scrollY / sizes.height) * objectDistance;
+
+  //       const parallaxX = cursor.x * 0.5;
+  //       const parallaxY = -cursor.y * 0.5;
+
+  //       cameraGroup.position.x += (parallaxX - cameraGroup.position.x) * 2 * deltaTime;
+  //       cameraGroup.position.y += (parallaxY - cameraGroup.position.y) * 2 * deltaTime;
+
+  //       // Animate meshes
+
+  //       for (const mesh of sectionMeshes) {
+  //         mesh.rotation.x += deltaTime * 0.1;
+  //         mesh.rotation.y += deltaTime * 0.12;
+  //       }
 
   //       //render
   //       renderer.render(scene, camera);
@@ -1722,7 +1864,327 @@ const WebGLTestMain = () => {
   //     // Cleanup
   //     return () => window.removeEventListener("resize", handleResize);
   //   }
+
   // });
+
+  /**
+   * Physics
+   */
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const handleResize = () => {
+        setSizes({
+          width: window.innerWidth,
+          height: window.innerHeight,
+        });
+        camera.aspect = sizes.width / sizes.height;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(sizes.width, sizes.height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      };
+
+      const gui = new GUI({ width: 300 });
+
+      const debugObject: { createSphere?: () => void; createBox?: () => void; reset?: () => void } =
+        {};
+
+      debugObject.createSphere = () => {
+        createSphere(
+          Math.random() * 0.5,
+          new CANNON.Vec3((Math.random() - 0.5) * 3, 3, (Math.random() - 0.5) * 3),
+        );
+      };
+      gui.add(debugObject, "createSphere").name("Создать сферу");
+      debugObject.createBox = () => {
+        createBox(
+          Math.random(),
+          Math.random(),
+          Math.random(),
+          new CANNON.Vec3((Math.random() - 0.5) * 3, 3, (Math.random() - 0.5) * 3),
+        );
+      };
+      gui.add(debugObject, "createBox").name("Создать куб");
+
+      debugObject.reset = () => {
+        for (const object of objectsToUpdate) {
+          object.body.removeEventListener("collide", playHitSound);
+          world.remove(object.body);
+
+          scene.remove(object.mesh);
+        }
+        objectsToUpdate.splice(0, objectsToUpdate.length);
+      };
+
+      gui.add(debugObject, "reset").name("Удалить все объекты");
+
+      const scene = new THREE.Scene();
+
+      /**
+       * Sounds
+       */
+
+      const hitSound = new Audio("/sounds/hit.mp3");
+      const playHitSound = (collision: any) => {
+        const impactStrength = collision.contact.getImpactVelocityAlongNormal();
+        if (impactStrength > 1.5) {
+          hitSound.volume = Math.random();
+          hitSound.currentTime = 0;
+          hitSound.play();
+        }
+      };
+
+      /**
+       * Textures
+       */
+      const textureLoader = new THREE.TextureLoader();
+      const cubeTextureLoader = new THREE.CubeTextureLoader();
+
+      const environmentMapTexture = cubeTextureLoader.load([
+        "/textures/environmentMaps/0/px.png",
+        "/textures/environmentMaps/0/nx.png",
+        "/textures/environmentMaps/0/py.png",
+        "/textures/environmentMaps/0/ny.png",
+        "/textures/environmentMaps/0/pz.png",
+        "/textures/environmentMaps/0/nz.png",
+      ]);
+
+      /**
+       * PHYsics
+       */
+
+      //world
+      const world = new CANNON.World();
+
+      world.broadphase = new CANNON.SAPBroadphase(world);
+      world.allowSleep = true;
+
+      world.gravity.set(0, -9.82, 0);
+
+      //Materials
+
+      const defaultMaterial = new CANNON.Material("concrete");
+      // const plasticMaterial = new CANNON.Material("plastic");
+
+      const defaultContactMaterial = new CANNON.ContactMaterial(defaultMaterial, defaultMaterial, {
+        friction: 0.1,
+        restitution: 0.8,
+      });
+
+      world.addContactMaterial(defaultContactMaterial);
+      world.defaultContactMaterial = defaultContactMaterial;
+
+      //Floor
+
+      const floorShape = new CANNON.Plane();
+      const floorBody = new CANNON.Body();
+      floorBody.mass = 0;
+      floorBody.addShape(floorShape);
+      floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5);
+
+      world.addBody(floorBody);
+
+      /**
+       * Floor
+       */
+      const floor = new THREE.Mesh(
+        new THREE.PlaneGeometry(10, 10),
+        new THREE.MeshStandardMaterial({
+          color: "#777777",
+          metalness: 0.3,
+          roughness: 0.4,
+          envMap: environmentMapTexture,
+          envMapIntensity: 0.5,
+        }),
+      );
+      floor.receiveShadow = true;
+      floor.rotation.x = -Math.PI * 0.5;
+      scene.add(floor);
+
+      /**
+       * Lights
+       */
+      const ambientLight = new THREE.AmbientLight(0xffffff, 2.1);
+      scene.add(ambientLight);
+
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+      directionalLight.castShadow = true;
+      directionalLight.shadow.mapSize.set(1024, 1024);
+      directionalLight.shadow.camera.far = 15;
+      directionalLight.shadow.camera.left = -7;
+      directionalLight.shadow.camera.top = 7;
+      directionalLight.shadow.camera.right = 7;
+      directionalLight.shadow.camera.bottom = -7;
+      directionalLight.position.set(5, 5, 5);
+      scene.add(directionalLight);
+
+      window.addEventListener("resize", () => {
+        // Update sizes
+        sizes.width = window.innerWidth;
+        sizes.height = window.innerHeight;
+
+        // Update camera
+        camera.aspect = sizes.width / sizes.height;
+        camera.updateProjectionMatrix();
+
+        // Update renderer
+        renderer.setSize(sizes.width, sizes.height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      });
+
+      /**
+       * Camera
+       */
+      // Base camera
+      const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
+      camera.position.set(-3, 3, 3);
+      scene.add(camera);
+
+      // Controls
+      const controls = new OrbitControls(camera, GLCanvasRef.current);
+      controls.enableDamping = true;
+
+      /**
+       * Renderer
+       */
+      const renderer = new THREE.WebGLRenderer({
+        canvas: GLCanvasRef.current,
+      });
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.setSize(sizes.width, sizes.height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      /**
+       * Utils
+       */
+
+      const objectsToUpdate: {
+        mesh:
+          | THREE.Mesh<THREE.SphereGeometry, THREE.MeshStandardMaterial, THREE.Object3DEventMap>
+          | THREE.Mesh<THREE.BoxGeometry, THREE.MeshStandardMaterial, THREE.Object3DEventMap>;
+        body: CANNON.Body;
+      }[] = [];
+
+      const sphereGeometry = new THREE.SphereGeometry(1, 20, 20);
+      const sphereMaterial = new THREE.MeshStandardMaterial({
+        metalness: 0.3,
+        roughness: 0.4,
+        envMap: environmentMapTexture,
+      });
+
+      const createSphere = (radius: number, position: CANNON.Vec3) => {
+        //three js mesh
+        const mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        mesh.scale.set(radius, radius, radius);
+        mesh.castShadow = true;
+        mesh.position.copy(position);
+
+        scene.add(mesh);
+
+        //Cannon js body
+
+        const shape = new CANNON.Sphere(radius);
+        const body = new CANNON.Body({
+          mass: 1,
+          position: new CANNON.Vec3(0, 3, 0),
+          shape,
+          material: defaultMaterial,
+        });
+        body.position.copy(position);
+        body.addEventListener("collide", playHitSound);
+
+        world.addBody(body);
+
+        //save object to update
+        objectsToUpdate.push({ mesh: mesh, body: body });
+      };
+
+      createSphere(1, new CANNON.Vec3(0, 3, 0));
+
+      //Create Boxes
+
+      const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+      const boxMaterial = new THREE.MeshStandardMaterial({
+        metalness: 0.3,
+        roughness: 0.4,
+        envMap: environmentMapTexture,
+      });
+
+      const createBox = (width: number, height: number, depth: number, position: CANNON.Vec3) => {
+        //three js
+        const mesh = new THREE.Mesh(boxGeometry, boxMaterial);
+
+        mesh.scale.set(width, height, depth);
+
+        mesh.castShadow = true;
+        mesh.position.copy(position);
+        scene.add(mesh);
+
+        //cannon js
+        const shape = new CANNON.Box(new CANNON.Vec3(width * 0.5, height * 0.5, depth * 0.5));
+        const boxBody = new CANNON.Body({
+          mass: 1,
+          position: new CANNON.Vec3(0, 3, 0),
+          shape,
+          material: defaultMaterial,
+        });
+        boxBody.position.copy(position);
+        boxBody.addEventListener("collide", playHitSound);
+
+        world.addBody(boxBody);
+        objectsToUpdate.push({ mesh: mesh, body: boxBody });
+      };
+
+      // createBox(0.5, 1, 1, new CANNON.Vec3(2, 3, 2));
+
+      /**
+       * Animate
+       */
+
+      const timer = new THREE.Timer();
+      let oldElapsedTime = 0;
+
+      const tick = () => {
+        // controls.update();
+        timer.update();
+
+        const elapsedTime = timer.getElapsed();
+
+        const deltaTime = elapsedTime - oldElapsedTime;
+        oldElapsedTime = elapsedTime;
+
+        //Update physics world
+
+        // sphereBody.applyForce(new CANNON.Vec3(-0.5, 0, 0), sphereBody.position);
+        world.step(1 / 60, deltaTime, 3);
+
+        for (const object of objectsToUpdate) {
+          object.mesh.position.copy(object.body.position);
+          object.mesh.quaternion.copy(object.body.quaternion);
+        }
+
+        // sphere.position.copy(sphereBody.position);
+
+        // console.log(sphereBody.position.y);
+
+        // Update controls
+        controls.update();
+
+        // Render
+        renderer.render(scene, camera);
+
+        // Call tick again on the next frame
+        window.requestAnimationFrame(tick);
+      };
+
+      tick();
+
+      // Cleanup
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  });
 
   return (
     <>
@@ -1733,7 +2195,7 @@ const WebGLTestMain = () => {
           ref={GLCanvasRef}
         ></canvas>
 
-        <div className=" text-slate-300 z-20 absolute text-[7vmin] pt-20">
+        {/* <div className=" text-slate-300 z-20 absolute text-[7vmin] pt-20">
           <section className="section h-[100vh]">
             <h1>My Portfolio</h1>
           </section>
@@ -1743,7 +2205,7 @@ const WebGLTestMain = () => {
           <section className="section h-[100vh]">
             <h2>Contact me</h2>
           </section>
-        </div>
+        </div> */}
       </div>
       {/* 
       <canvas ref={GLCanvasRef} width={300} height={300}>
