@@ -18,9 +18,12 @@ import * as CANNON from "cannon-es";
 import { GLTF, GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { paginateListObjectsV2 } from "@aws-sdk/client-s3";
+import FlyingRobot from "./FlyingRobot";
+import Robot from "./Robot";
+import Experience from "./Experience/Experience";
 
 const WebGLTestMain = () => {
-  const GLCanvasRef = useRef(null) as any;
+  const GLCanvasRef = useRef<HTMLCanvasElement>(null);
 
   // /** */
   // //Textures
@@ -76,7 +79,7 @@ const WebGLTestMain = () => {
   };
 
   useEffect(() => {
-    if (fullScreenSTatus === 0) {
+    if (fullScreenSTatus === 0 && GLCanvasRef.current !== null) {
       GLCanvasRef.current.requestFullscreen();
     }
     if (fullScreenSTatus === 1 && document.fullscreenElement) {
@@ -84,258 +87,217 @@ const WebGLTestMain = () => {
     }
   }, [fullScreenSTatus]);
 
-  /**Blender model
-   *
+  /**
+   *  Structuring code
    */
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const handleResize = () => {
-        setSizes({
-          width: window.innerWidth,
-          height: window.innerHeight,
-        });
-        camera.aspect = sizes.width / sizes.height;
-        camera.updateProjectionMatrix();
+      const expirience = new Experience(GLCanvasRef.current);
+      // const handleResize = () => {
+      //   setSizes({
+      //     width: window.innerWidth,
+      //     height: window.innerHeight,
+      //   });
+      //   camera.aspect = sizes.width / sizes.height;
+      //   camera.updateProjectionMatrix();
 
-        renderer.setSize(sizes.width, sizes.height);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      };
+      //   renderer.setSize(sizes.width, sizes.height);
+      //   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      // };
 
-      const gui = new GUI({ width: 300 });
-
-      const debugObj = {
-        envMapIntensity: 0,
-      };
-
-      const scene = new THREE.Scene();
-
-      /**
-       * update all materials
-       */
-
-      const updateAllMaterials = () => {
-        scene.traverse((child) => {
-          if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
-            child.material.envMap = environmentMap;
-            child.material.envMapIntensity = debugObj.envMapIntensity;
-            child.material.needsUpdate = true;
-            child.castShadow = true;
-            child.receiveShadow = true;
-          }
-        });
-      };
-
-      /**
-       * Models
-       */
-      // const dracoLoader = new DRACOLoader();
-      // dracoLoader.setDecoderPath("/draco/");
-
+      // /**
+      //  * Loaders
+      //  */
       // const gltfLoader = new GLTFLoader();
-      // gltfLoader.setDRACOLoader(dracoLoader);
+      // const textureLoader = new THREE.TextureLoader();
+      // const cubeTextureLoader = new THREE.CubeTextureLoader();
 
-      // let mixer = null;
+      // /**
+      //  * Base
+      //  */
+      // // Debug
+      // const gui = new GUI({ width: 300 });
+      // const debugObject = { envMapIntensity: 0.4 };
 
-      // gltfLoader.load("/models/burger.glb", (gltf) => {
+      // const scene = new THREE.Scene();
+
+      // /**
+      //  * Update all materials
+      //  */
+      // const updateAllMaterials = () => {
+      //   scene.traverse((child) => {
+      //     if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
+      //       // child.material.envMap = environmentMap
+      //       child.material.envMapIntensity = debugObject.envMapIntensity;
+      //       child.material.needsUpdate = true;
+      //       child.castShadow = true;
+      //       child.receiveShadow = true;
+      //     }
+      //   });
+      // };
+
+      // /**
+      //  * Environment map
+      //  */
+      // const environmentMap = cubeTextureLoader.load([
+      //   "/textures/environmentMap/px.jpg",
+      //   "/textures/environmentMap/nx.jpg",
+      //   "/textures/environmentMap/py.jpg",
+      //   "/textures/environmentMap/ny.jpg",
+      //   "/textures/environmentMap/pz.jpg",
+      //   "/textures/environmentMap/nz.jpg",
+      // ]);
+
+      // environmentMap.colorSpace = THREE.SRGBColorSpace;
+
+      // // scene.background = environmentMap
+      // scene.environment = environmentMap;
+
+      // debugObject.envMapIntensity = 0.4;
+      // gui
+      //   .add(debugObject, "envMapIntensity")
+      //   .min(0)
+      //   .max(4)
+      //   .step(0.001)
+      //   .onChange(updateAllMaterials);
+
+      // /**
+      //  * Models
+      //  */
+      // let foxMixer: null | THREE.AnimationMixer = null;
+
+      // gltfLoader.load("/models/Fox/glTF/Fox.gltf", (gltf) => {
+      //   // Model
+      //   gltf.scene.scale.set(0.02, 0.02, 0.02);
       //   scene.add(gltf.scene);
+
+      //   // Animation
+      //   foxMixer = new THREE.AnimationMixer(gltf.scene);
+      //   const foxAction = foxMixer.clipAction(gltf.animations[0]);
+      //   foxAction.play();
+
+      //   // Update materials
+      //   updateAllMaterials();
       // });
 
-      /**
-       * Loaders
-       */
+      // /**
+      //  * Floor
+      //  */
+      // const floorColorTexture = textureLoader.load("textures/dirt/color.jpg");
+      // floorColorTexture.colorSpace = THREE.SRGBColorSpace;
+      // floorColorTexture.repeat.set(1.5, 1.5);
+      // floorColorTexture.wrapS = THREE.RepeatWrapping;
+      // floorColorTexture.wrapT = THREE.RepeatWrapping;
 
-      const dracoLoader = new DRACOLoader();
-      dracoLoader.setDecoderPath("/draco/");
+      // const floorNormalTexture = textureLoader.load("textures/dirt/normal.jpg");
+      // floorNormalTexture.repeat.set(1.5, 1.5);
+      // floorNormalTexture.wrapS = THREE.RepeatWrapping;
+      // floorNormalTexture.wrapT = THREE.RepeatWrapping;
 
-      const gltfLoader = new GLTFLoader();
-      gltfLoader.setDRACOLoader(dracoLoader);
-
-      const cubeTextureLoader = new THREE.CubeTextureLoader();
-
-      /**
-       * Environment map
-       */
-
-      const environmentMap = cubeTextureLoader.load([
-        "textures/environmentMaps/0/px.png",
-        "textures/environmentMaps/0/nx.png",
-        "textures/environmentMaps/0/py.png",
-        "textures/environmentMaps/0/ny.png",
-        "textures/environmentMaps/0/pz.png",
-        "textures/environmentMaps/0/nz.png",
-      ]);
-      environmentMap.colorSpace = THREE.SRGBColorSpace;
-      scene.background = environmentMap;
-      scene.environment = environmentMap;
-
-      debugObj.envMapIntensity = 2;
-
-      gui
-        .add(debugObj, "envMapIntensity")
-        .min(0)
-        .max(5)
-        .step(0.001)
-        .onChange(() => {
-          updateAllMaterials();
-        });
-
-      /**
-       * Models
-       */
-
-      gltfLoader.load("/models/burger.glb", (gltf) => {
-        gltf.scene.scale.set(0.3, 0.3, 0.3);
-        gltf.scene.position.set(0, -4, 0);
-        gltf.scene.rotation.y = Math.PI * 0.5;
-
-        scene.add(gltf.scene);
-        gui.add(gltf.scene.rotation, "y").min(-Math.PI).max(Math.PI).step(0.001).name("Поворот");
-
-        updateAllMaterials();
-      });
-
-      /**
-//      * Lights
-//      */
-      // const ambientLight = new THREE.AmbientLight(0xffffff, 2.1);
-      // scene.add(ambientLight);
-
-      const directionalLight = new THREE.DirectionalLight("#ffffff", 1);
-      directionalLight.position.set(0.25, 3, -2.2);
-      directionalLight.castShadow = true;
-      directionalLight.shadow.camera.far = 15;
-      directionalLight.shadow.mapSize.set(1024, 1024);
-      directionalLight.shadow.normalBias = 0.05;
-      scene.add(directionalLight);
-
-      const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
-      scene.add(directionalLightCameraHelper);
-
-      gui.add(directionalLight, "intensity").min(0).max(10).step(0.01).name("Интенсивность света");
-      gui
-        .add(directionalLight.position, "x")
-        .min(-5)
-        .max(5)
-        .step(0.01)
-        .name("Положение света по X");
-      gui
-        .add(directionalLight.position, "y")
-        .min(-5)
-        .max(5)
-        .step(0.01)
-        .name("Положение всета по Y");
-      gui
-        .add(directionalLight.position, "z")
-        .min(-5)
-        .max(5)
-        .step(0.01)
-        .name("Положение всета по Z");
-
-      window.addEventListener("resize", () => {
-        // Update sizes
-        sizes.width = window.innerWidth;
-        sizes.height = window.innerHeight;
-
-        // Update camera
-        camera.aspect = sizes.width / sizes.height;
-        camera.updateProjectionMatrix();
-
-        // Update renderer
-        renderer.setSize(sizes.width, sizes.height);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      });
-
-      /**
-       * Floor
-       */
-      // const floor = new THREE.Mesh(
-      //   new THREE.PlaneGeometry(50, 50),
-      //   new THREE.MeshStandardMaterial({
-      //     color: "#444444",
-      //     metalness: 0,
-      //     roughness: 0.5,
-      //   }),
-      // );
-      // floor.receiveShadow = true;
+      // const floorGeometry = new THREE.CircleGeometry(5, 64);
+      // const floorMaterial = new THREE.MeshStandardMaterial({
+      //   map: floorColorTexture,
+      //   normalMap: floorNormalTexture,
+      // });
+      // const floor = new THREE.Mesh(floorGeometry, floorMaterial);
       // floor.rotation.x = -Math.PI * 0.5;
       // scene.add(floor);
 
-      /**
-       * Camera
-       */
-      // Base camera
-      const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
-      camera.position.set(-3, 3, 3);
-      scene.add(camera);
+      // /**
+      //  * Lights
+      //  */
+      // const directionalLight = new THREE.DirectionalLight("#ffffff", 4);
+      // directionalLight.castShadow = true;
+      // directionalLight.shadow.camera.far = 15;
+      // directionalLight.shadow.mapSize.set(1024, 1024);
+      // directionalLight.shadow.normalBias = 0.05;
+      // directionalLight.position.set(3.5, 2, -1.25);
+      // scene.add(directionalLight);
 
-      // Controls
-      const controls = new OrbitControls(camera, GLCanvasRef.current);
-      controls.enableDamping = true;
+      // gui.add(directionalLight, "intensity").min(0).max(10).step(0.001).name("lightIntensity");
+      // gui.add(directionalLight.position, "x").min(-5).max(5).step(0.001).name("lightX");
+      // gui.add(directionalLight.position, "y").min(-5).max(5).step(0.001).name("lightY");
+      // gui.add(directionalLight.position, "z").min(-5).max(5).step(0.001).name("lightZ");
 
-      /**
-       * Renderer
-       */
-      const renderer = new THREE.WebGLRenderer({
-        canvas: GLCanvasRef.current,
-        antialias: true,
-      });
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFShadowMap;
-      renderer.setSize(sizes.width, sizes.height);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.outputColorSpace = THREE.SRGBColorSpace;
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 3;
+      // window.addEventListener("resize", () => {
+      //   // Update sizes
+      //   sizes.width = window.innerWidth;
+      //   sizes.height = window.innerHeight;
 
-      gui
-        .add(renderer, "toneMapping", {
-          NO: THREE.NoToneMapping,
-          Linear: THREE.LinearToneMapping,
-          Reinhard: THREE.ReinhardToneMapping,
-          Cineon: THREE.CineonToneMapping,
-          ACESFilming: THREE.ReinhardToneMapping,
-        })
-        .onFinishChange(() => {
-          // renderer.toneMapping = Number(renderer.toneMapping)
-          updateAllMaterials();
-        });
+      //   // Update camera
+      //   camera.aspect = sizes.width / sizes.height;
+      //   camera.updateProjectionMatrix();
 
-      gui.add(renderer, "toneMappingExposure").min(0).max(10).step(0.001);
+      //   // Update renderer
+      //   renderer.setSize(sizes.width, sizes.height);
+      //   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      // });
 
-      /**
-       * Animate
-       */
+      // /**
+      //  * Camera
+      //  */
+      // // Base camera
+      // const camera = new THREE.PerspectiveCamera(35, sizes.width / sizes.height, 0.1, 100);
+      // camera.position.set(6, 4, 8);
+      // scene.add(camera);
 
-      const timer = new THREE.Timer();
-      let previousTime = 0;
+      // // Controls
+      // const controls = new OrbitControls(camera, GLCanvasRef.current);
+      // controls.enableDamping = true;
 
-      let currentIntersect: null | THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>> =
-        null;
+      // /**
+      //  * Renderer
+      //  */
+      // const renderer = new THREE.WebGLRenderer({
+      //   canvas: GLCanvasRef.current,
+      //   antialias: true,
+      // });
+      // renderer.toneMapping = THREE.CineonToneMapping;
+      // renderer.toneMappingExposure = 1.75;
+      // renderer.shadowMap.enabled = true;
+      // renderer.shadowMap.type = THREE.PCFShadowMap;
+      // renderer.setClearColor("#211d20");
+      // renderer.setSize(sizes.width, sizes.height);
+      // renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-      const tick = () => {
-        // controls.update();
-        timer.update();
+      // /**
+      //  * Animate
+      //  */
 
-        const elapsedTime = timer.getElapsed();
+      // const timer = new THREE.Timer();
+      // let previousTime = 0;
 
-        const deltaTime = elapsedTime - previousTime;
-        previousTime = elapsedTime;
+      // let currentIntersect: null | THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>> =
+      //   null;
 
-        // Update controls
-        controls.update();
+      // const tick = () => {
+      //   // controls.update();
+      //   timer.update();
 
-        // Render
-        renderer.render(scene, camera);
+      //   const elapsedTime = timer.getElapsed();
 
-        // Call tick again on the next frame
-        window.requestAnimationFrame(tick);
-      };
+      //   const deltaTime = elapsedTime - previousTime;
+      //   previousTime = elapsedTime;
 
-      tick();
+      //   // Update controls
+      //   controls.update();
+
+      //   if (foxMixer) {
+      //     foxMixer.update(deltaTime);
+      //   }
+
+      //   // Render
+      //   renderer.render(scene, camera);
+
+      //   // Call tick again on the next frame
+      //   window.requestAnimationFrame(tick);
+      // };
+
+      // tick();
 
       // Cleanup
-      return () => window.removeEventListener("resize", handleResize);
+      // return () => window.removeEventListener("resize", handleResize);
     }
   });
 
