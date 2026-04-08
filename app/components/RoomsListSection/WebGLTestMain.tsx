@@ -107,6 +107,7 @@ const WebGLTestMain = () => {
        * Textures
        */
       const textureLoader = new THREE.TextureLoader();
+      const flagTexture = textureLoader.load("/textures/Russia.jpg");
 
       /**
        * Test mesh
@@ -127,14 +128,34 @@ const WebGLTestMain = () => {
       geometry.setAttribute("aRandom", new THREE.BufferAttribute(randoms, 1));
 
       // Material
-      const material = new THREE.RawShaderMaterial({
+      const material = new THREE.ShaderMaterial({
         vertexShader: testVertexShaders,
         fragmentShader: testFragmentShaders,
         side: THREE.DoubleSide,
+        uniforms: {
+          uFraquency: { value: new THREE.Vector2(10, 5) },
+          uTime: { value: 0 },
+          uColor: { value: new THREE.Color("orange") },
+          uTexture: { value: flagTexture },
+        },
       });
+
+      gui
+        .add(material.uniforms.uFraquency.value, "x")
+        .min(0)
+        .max(20)
+        .step(0.01)
+        .name("Частота по оси X");
+      gui
+        .add(material.uniforms.uFraquency.value, "y")
+        .min(0)
+        .max(20)
+        .step(0.01)
+        .name("Частота по оси Y");
 
       // Mesh
       const mesh = new THREE.Mesh(geometry, material);
+      mesh.scale.y = 2 / 3;
       scene.add(mesh);
 
       window.addEventListener("resize", () => {
@@ -193,6 +214,10 @@ const WebGLTestMain = () => {
 
         const deltaTime = elapsedTime - previousTime;
         previousTime = elapsedTime;
+
+        // Update material
+
+        material.uniforms.uTime.value = elapsedTime;
 
         // Update controls
         controls.update();
