@@ -25,6 +25,8 @@ import testVertexShaders from "./shaders/test/vertex.glsl";
 import testFragmentShaders from "./shaders/test/fragment.glsl";
 import waterVertexShader from "./shaders/water/vertex.glsl";
 import waterFragmentShader from "./shaders/water/fragment.glsl";
+import galaxyVertexShader from "./shaders/galaxy/vertex.glsl";
+import galaxyFragmentShader from "./shaders/galaxy/fragment.glsl";
 
 const WebGLTestMain = () => {
   const GLCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -77,10 +79,6 @@ const WebGLTestMain = () => {
     }
   }, [fullScreenSTatus]);
 
-  /**
-   *  Shaders
-   */
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       // const expirience = new Experience(GLCanvasRef.current);
@@ -102,142 +100,148 @@ const WebGLTestMain = () => {
       // Debug
       const gui = new GUI();
 
-      const debugObject: {
-        depthColor?: string;
-        surfaceColor?: string;
-      } = {};
-
       // Scene
       const scene = new THREE.Scene();
 
       /**
-       * Textures
+       * Galaxy
        */
-      const textureLoader = new THREE.TextureLoader();
-      const flagTexture = textureLoader.load("/textures/Russia.jpg");
+      const parameters: {
+        count: number;
+        size: number;
+        radius: number;
+        branches: number;
+        spin: number;
+        randomness: number;
+        randomnessPower: number;
+        insideColor: string;
+        outsideColor: string;
+      } = {
+        count: 200000,
+        size: 0.005,
+        radius: 5,
+        branches: 3,
+        spin: 1,
+        randomness: 0.5,
+        randomnessPower: 3,
+        insideColor: "#ff6030",
+        outsideColor: "#1b3984",
+      };
+      // parameters.count = 200000;
+      // parameters.size = 0.005;
+      // parameters.radius = 5;
+      // parameters.branches = 3;
+      // parameters.spin = 1;
+      // parameters.randomness = 0.5;
+      // parameters.randomnessPower = 3;
+      // parameters.insideColor = "#ff6030";
+      // parameters.outsideColor = "#1b3984";
 
-      /**
-       * Water
-       */
-      // Geometry
-      const waterGeometry = new THREE.PlaneGeometry(2, 2, 512, 512);
+      let geometry: any = null;
+      let material: any = null;
+      let points: any = null;
 
-      // Color
+      const generateGalaxy = () => {
+        if (points !== null) {
+          geometry.dispose();
+          material.dispose();
+          scene.remove(points);
+        }
 
-      debugObject.depthColor = "#186691";
-      debugObject.surfaceColor = "#9bd8ff";
+        /**
+         * Geometry
+         */
+        geometry = new THREE.BufferGeometry();
 
-      // Material
-      const waterMaterial = new THREE.ShaderMaterial({
-        vertexShader: waterVertexShader,
-        fragmentShader: waterFragmentShader,
-        // wireframe: true,
-        uniforms: {
-          uTime: { value: 0 },
+        const positions = new Float32Array(parameters.count * 3);
+        const colors = new Float32Array(parameters.count * 3);
 
-          uBigWaveSpeed: { value: 0.5 },
-          uBigWavesElevation: { value: 0.2 },
-          uBigWavesFrequency: { value: new THREE.Vector2(4, 1.5) },
+        const scales = new Float32Array(parameters.count * 1);
 
-          uSmallWavesElevation: { value: 0.15 },
-          uSmallWavesFrequency: { value: 3 },
-          uSmallWavesSpeed: { value: 0.2 },
-          uSmallWavesIterations: { value: 4 },
+        const insideColor = new THREE.Color(parameters.insideColor);
+        const outsideColor = new THREE.Color(parameters.outsideColor);
 
-          uDepthColor: { value: new THREE.Color(debugObject.depthColor) },
-          uSurfaceColor: { value: new THREE.Color(debugObject.surfaceColor) },
-          uColorOffset: { value: 0.08 },
-          uColorMultiplier: { value: 5 },
-        },
-      });
+        for (let i = 0; i < parameters.count; i++) {
+          const i3 = i * 3;
 
-      // Debug
+          // Position
+          const radius = Math.random() * parameters.radius;
 
-      gui
-        .add(waterMaterial.uniforms.uBigWavesElevation, "value")
-        .min(0)
-        .max(1)
-        .step(0.001)
-        .name("Высота больших волн");
+          const branchAngle = ((i % parameters.branches) / parameters.branches) * Math.PI * 2;
 
-      gui
-        .add(waterMaterial.uniforms.uBigWaveSpeed, "value")
-        .min(0)
-        .max(4)
-        .step(0.001)
-        .name("Скорость больших волн");
+          const randomX =
+            Math.pow(Math.random(), parameters.randomnessPower) *
+            (Math.random() < 0.5 ? 1 : -1) *
+            parameters.randomness *
+            radius;
+          const randomY =
+            Math.pow(Math.random(), parameters.randomnessPower) *
+            (Math.random() < 0.5 ? 1 : -1) *
+            parameters.randomness *
+            radius;
+          const randomZ =
+            Math.pow(Math.random(), parameters.randomnessPower) *
+            (Math.random() < 0.5 ? 1 : -1) *
+            parameters.randomness *
+            radius;
 
-      gui
-        .add(waterMaterial.uniforms.uBigWavesFrequency.value, "x")
-        .min(0)
-        .max(10)
-        .step(0.001)
-        .name("Частота больших волн по X");
+          positions[i3] = Math.cos(branchAngle) * radius + randomX;
+          positions[i3 + 1] = randomY;
+          positions[i3 + 2] = Math.sin(branchAngle) * radius + randomZ;
 
-      gui
-        .add(waterMaterial.uniforms.uBigWavesFrequency.value, "y")
-        .min(0)
-        .max(10)
-        .step(0.001)
-        .name("Частота больших волн по Y");
+          // Color
+          const mixedColor = insideColor.clone();
+          mixedColor.lerp(outsideColor, radius / parameters.radius);
 
-      gui
-        .add(waterMaterial.uniforms.uSmallWavesElevation, "value")
-        .min(0)
-        .max(1)
-        .step(0.001)
-        .name("Высота малых волн");
-      gui
-        .add(waterMaterial.uniforms.uSmallWavesFrequency, "value")
-        .min(0)
-        .max(30)
-        .step(0.001)
-        .name("Частота малых волн");
-      gui
-        .add(waterMaterial.uniforms.uSmallWavesSpeed, "value")
-        .min(0)
-        .max(4)
-        .step(0.01)
-        .name("Скорость малых волн");
-      gui
-        .add(waterMaterial.uniforms.uSmallWavesIterations, "value")
-        .min(0)
-        .max(4)
-        .step(1)
-        .name("Количество малых волн");
+          colors[i3] = mixedColor.r;
+          colors[i3 + 1] = mixedColor.g;
+          colors[i3 + 2] = mixedColor.b;
 
-      gui
-        .addColor(debugObject, "depthColor")
-        .name("Цвет глубины")
-        .onChange(() => {
-          waterMaterial.uniforms.uDepthColor.value.set(debugObject.depthColor);
+          // Scale
+
+          scales[i] = Math.random();
+        }
+
+        geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+        geometry.setAttribute("aScale", new THREE.BufferAttribute(scales, 1));
+
+        /**
+         * Material
+         */
+        material = new THREE.ShaderMaterial({
+          // size: parameters.size,
+          // sizeAttenuation: true,
+          depthWrite: false,
+          blending: THREE.AdditiveBlending,
+          vertexColors: true,
+          vertexShader: galaxyVertexShader,
+          fragmentShader: galaxyFragmentShader,
+          uniforms: {
+            uTime: { value: 0 },
+            uSize: { value: 30 * renderer.getPixelRatio() },
+          },
         });
 
-      gui
-        .addColor(debugObject, "surfaceColor")
-        .name("Цвет поверхности")
-        .onChange(() => {
-          waterMaterial.uniforms.uSurfaceColor.value.set(debugObject.surfaceColor);
-        });
+        /**
+         * Points
+         */
+        points = new THREE.Points(geometry, material);
+        scene.add(points);
+      };
 
+      gui.add(parameters, "count").min(100).max(1000000).step(100).onFinishChange(generateGalaxy);
+      gui.add(parameters, "radius").min(0.01).max(20).step(0.01).onFinishChange(generateGalaxy);
+      gui.add(parameters, "branches").min(2).max(20).step(1).onFinishChange(generateGalaxy);
+      gui.add(parameters, "randomness").min(0).max(2).step(0.001).onFinishChange(generateGalaxy);
       gui
-        .add(waterMaterial.uniforms.uColorOffset, "value")
-        .min(0)
-        .max(1)
-        .step(0.001)
-        .name("Смещение цвета");
-
-      gui
-        .add(waterMaterial.uniforms.uColorMultiplier, "value")
-        .min(0)
+        .add(parameters, "randomnessPower")
+        .min(1)
         .max(10)
         .step(0.001)
-        .name("Множитель цвета");
-
-      // Mesh
-      const water = new THREE.Mesh(waterGeometry, waterMaterial);
-      water.rotation.x = -Math.PI * 0.5;
-      scene.add(water);
+        .onFinishChange(generateGalaxy);
+      gui.addColor(parameters, "insideColor").onFinishChange(generateGalaxy);
+      gui.addColor(parameters, "outsideColor").onFinishChange(generateGalaxy);
 
       window.addEventListener("resize", () => {
         // Update sizes
@@ -258,7 +262,9 @@ const WebGLTestMain = () => {
        */
       // Base camera
       const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
-      camera.position.set(1, 1, 1);
+      camera.position.x = 3;
+      camera.position.y = 3;
+      camera.position.z = 3;
       scene.add(camera);
 
       // Controls
@@ -278,6 +284,12 @@ const WebGLTestMain = () => {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
       /**
+       * Generate galaxy
+       */
+
+      generateGalaxy();
+
+      /**
        * Animate
        */
 
@@ -293,9 +305,7 @@ const WebGLTestMain = () => {
 
         const elapsedTime = timer.getElapsed();
 
-        // Update water
-
-        waterMaterial.uniforms.uTime.value = elapsedTime;
+        material.uniforms.uTime.value = elapsedTime;
 
         // Update controls
         controls.update();
