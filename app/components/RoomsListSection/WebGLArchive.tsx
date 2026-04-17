@@ -3540,3 +3540,517 @@
 //       // return () => window.removeEventListener("resize", handleResize);
 //     }
 //   });
+
+/**
+ * Animated Galaxy shader
+ */
+
+// vertex and fragment shaders from /shaders/galaxy
+
+//   useEffect(() => {
+//     if (typeof window !== "undefined") {
+//       // const expirience = new Experience(GLCanvasRef.current);
+//       // const handleResize = () => {
+//       //   setSizes({
+//       //     width: window.innerWidth,
+//       //     height: window.innerHeight,
+//       //   });
+//       //   camera.aspect = sizes.width / sizes.height;
+//       //   camera.updateProjectionMatrix();
+
+//       //   renderer.setSize(sizes.width, sizes.height);
+//       //   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+//       // };
+
+//       /**
+//        * Base
+//        */
+//       // Debug
+//       const gui = new GUI();
+
+//       // Scene
+//       const scene = new THREE.Scene();
+
+//       /**
+//        * Galaxy
+//        */
+//       const parameters: {
+//         count: number;
+//         size: number;
+//         radius: number;
+//         branches: number;
+//         spin: number;
+//         randomness: number;
+//         randomnessPower: number;
+//         insideColor: string;
+//         outsideColor: string;
+//       } = {
+//         count: 200000,
+//         size: 0.005,
+//         radius: 5,
+//         branches: 3,
+//         spin: 1,
+//         randomness: 0.5,
+//         randomnessPower: 3,
+//         insideColor: "#ff6030",
+//         outsideColor: "#1b3984",
+//       };
+
+//       let geometry: any = null;
+//       let material: any = null;
+//       let points: any = null;
+
+//       const generateGalaxy = () => {
+//         if (points !== null) {
+//           geometry.dispose();
+//           material.dispose();
+//           scene.remove(points);
+//         }
+
+//         /**
+//          * Geometry
+//          */
+//         geometry = new THREE.BufferGeometry();
+
+//         const positions = new Float32Array(parameters.count * 3);
+//         const colors = new Float32Array(parameters.count * 3);
+
+//         const scales = new Float32Array(parameters.count * 1);
+//         const randomness = new Float32Array(parameters.count * 1);
+
+//         const insideColor = new THREE.Color(parameters.insideColor);
+//         const outsideColor = new THREE.Color(parameters.outsideColor);
+
+//         for (let i = 0; i < parameters.count; i++) {
+//           const i3 = i * 3;
+
+//           // Position
+//           const radius = Math.random() * parameters.radius;
+
+//           const branchAngle = ((i % parameters.branches) / parameters.branches) * Math.PI * 2;
+
+//           positions[i3] = Math.cos(branchAngle) * radius;
+//           positions[i3 + 1] = 0.0;
+//           positions[i3 + 2] = Math.sin(branchAngle) * radius;
+
+//           // Randomness
+
+//           const randomX =
+//             Math.pow(Math.random(), parameters.randomnessPower) *
+//             (Math.random() < 0.5 ? 1 : -1) *
+//             parameters.randomness *
+//             radius;
+//           const randomY =
+//             Math.pow(Math.random(), parameters.randomnessPower) *
+//             (Math.random() < 0.5 ? 1 : -1) *
+//             parameters.randomness *
+//             radius;
+//           const randomZ =
+//             Math.pow(Math.random(), parameters.randomnessPower) *
+//             (Math.random() < 0.5 ? 1 : -1) *
+//             parameters.randomness *
+//             radius;
+
+//           randomness[i3] = randomX;
+//           randomness[i3 + 1] = randomY;
+//           randomness[i3 + 2] = randomZ;
+
+//           // Color
+//           const mixedColor = insideColor.clone();
+//           mixedColor.lerp(outsideColor, radius / parameters.radius);
+
+//           colors[i3] = mixedColor.r;
+//           colors[i3 + 1] = mixedColor.g;
+//           colors[i3 + 2] = mixedColor.b;
+
+//           // Scale
+
+//           scales[i] = Math.random();
+//         }
+
+//         geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+//         geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+//         geometry.setAttribute("aScale", new THREE.BufferAttribute(scales, 1));
+//         geometry.setAttribute("aRandomness", new THREE.BufferAttribute(randomness, 1));
+
+//         /**
+//          * Material
+//          */
+//         material = new THREE.ShaderMaterial({
+//           // size: parameters.size,
+//           // sizeAttenuation: true,
+//           depthWrite: false,
+//           blending: THREE.AdditiveBlending,
+//           vertexColors: true,
+//           vertexShader: galaxyVertexShader,
+//           fragmentShader: galaxyFragmentShader,
+//           uniforms: {
+//             uTime: { value: 0 },
+//             uSize: { value: 30 * renderer.getPixelRatio() },
+//           },
+//         });
+
+//         /**
+//          * Points
+//          */
+//         points = new THREE.Points(geometry, material);
+//         scene.add(points);
+//       };
+
+//       gui.add(parameters, "count").min(100).max(1000000).step(100).onFinishChange(generateGalaxy);
+//       gui.add(parameters, "radius").min(0.01).max(20).step(0.01).onFinishChange(generateGalaxy);
+//       gui.add(parameters, "branches").min(2).max(20).step(1).onFinishChange(generateGalaxy);
+//       gui.add(parameters, "randomness").min(0).max(2).step(0.001).onFinishChange(generateGalaxy);
+//       gui
+//         .add(parameters, "randomnessPower")
+//         .min(1)
+//         .max(10)
+//         .step(0.001)
+//         .onFinishChange(generateGalaxy);
+//       gui.addColor(parameters, "insideColor").onFinishChange(generateGalaxy);
+//       gui.addColor(parameters, "outsideColor").onFinishChange(generateGalaxy);
+
+//       window.addEventListener("resize", () => {
+//         // Update sizes
+//         sizes.width = window.innerWidth;
+//         sizes.height = window.innerHeight;
+
+//         // Update camera
+//         camera.aspect = sizes.width / sizes.height;
+//         camera.updateProjectionMatrix();
+
+//         // Update renderer
+//         renderer.setSize(sizes.width, sizes.height);
+//         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+//       });
+
+//       /**
+//        * Camera
+//        */
+//       // Base camera
+//       const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
+//       camera.position.x = 3;
+//       camera.position.y = 3;
+//       camera.position.z = 3;
+//       scene.add(camera);
+
+//       // Controls
+//       const controls = new OrbitControls(camera, GLCanvasRef.current);
+//       controls.enableDamping = true;
+
+//       /**
+//        * Renderer
+//        */
+//       if (GLCanvasRef.current === null) {
+//         return;
+//       }
+//       const renderer = new THREE.WebGLRenderer({
+//         canvas: GLCanvasRef.current,
+//       });
+//       renderer.setSize(sizes.width, sizes.height);
+//       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+//       /**
+//        * Generate galaxy
+//        */
+
+//       generateGalaxy();
+
+//       /**
+//        * Animate
+//        */
+
+//       const timer = new THREE.Timer();
+//       let previousTime = 0;
+
+//       let currentIntersect: null | THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>> =
+//         null;
+
+//       const tick = () => {
+//         // controls.update();
+//         timer.update();
+
+//         const elapsedTime = timer.getElapsed();
+
+//         material.uniforms.uTime.value = elapsedTime;
+
+//         // Update controls
+//         controls.update();
+
+//         // Render
+//         renderer.render(scene, camera);
+
+//         // Call tick again on the next frame
+//         window.requestAnimationFrame(tick);
+//       };
+
+//       tick();
+
+//       // Cleanup
+//       // return () => window.removeEventListener("resize", handleResize);
+//     }
+//   });
+
+/**
+ * Modefied material
+ */
+
+//   useEffect(() => {
+//     if (typeof window !== "undefined") {
+//       // const expirience = new Experience(GLCanvasRef.current);
+
+//       /**
+//        * Base
+//        */
+//       // Debug
+//       const gui = new GUI();
+
+//       // Canvas
+//       const canvas = document.querySelector("canvas.webgl");
+
+//       // Scene
+//       const scene = new THREE.Scene();
+
+//       /**
+//        * Loaders
+//        */
+//       const textureLoader = new THREE.TextureLoader();
+//       const gltfLoader = new GLTFLoader();
+//       const cubeTextureLoader = new THREE.CubeTextureLoader();
+
+//       /**
+//        * Update all materials
+//        */
+//       const updateAllMaterials = () => {
+//         scene.traverse((child) => {
+//           if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
+//             child.material.envMapIntensity = 1;
+//             child.material.needsUpdate = true;
+//             child.castShadow = true;
+//             child.receiveShadow = true;
+//           }
+//         });
+//       };
+
+//       /**
+//        * Environment map
+//        */
+//       const environmentMap = cubeTextureLoader.load([
+//         "/textures/environmentMaps/0/px.jpg",
+//         "/textures/environmentMaps/0/nx.jpg",
+//         "/textures/environmentMaps/0/py.jpg",
+//         "/textures/environmentMaps/0/ny.jpg",
+//         "/textures/environmentMaps/0/pz.jpg",
+//         "/textures/environmentMaps/0/nz.jpg",
+//       ]);
+
+//       scene.background = environmentMap;
+//       scene.environment = environmentMap;
+
+//       /**
+//        * Material
+//        */
+
+//       // Textures
+//       const mapTexture = textureLoader.load("/models/LeePerrySmith/color.jpg");
+//       mapTexture.colorSpace = THREE.SRGBColorSpace;
+//       const normalTexture = textureLoader.load("/models/LeePerrySmith/normal.jpg");
+
+//       // Material
+//       const material = new THREE.MeshStandardMaterial({
+//         map: mapTexture,
+//         normalMap: normalTexture,
+//       });
+
+//       const depthMaterial = new THREE.MeshDepthMaterial({
+//         depthPacking: THREE.RGBADepthPacking,
+//       });
+
+//       const customUniformes = {
+//         uTime: { value: 0 },
+//       };
+
+//       material.onBeforeCompile = (shader) => {
+//         shader.uniforms.uTime = customUniformes.uTime;
+
+//         shader.vertexShader = shader.vertexShader.replace(
+//           "#include <common>",
+//           `
+//           #include <common>
+
+//           uniform float uTime;
+
+//                     mat2 get2dRotateMatrix( float _angle){
+//           return mat2(cos(_angle), - sin(_angle), sin(_angle), cos(_angle));
+//           }
+
+//           `,
+//         );
+//         (shader.vertexShader = shader.vertexShader.replace(
+//           "#include <beginnormal_vertex>",
+//           `#include <beginnormal_vertex>
+//            float angle = sin(position.y + uTime) * 0.4;
+//           mat2 rotateMatrix = get2dRotateMatrix(angle);
+
+//           objectNormal.xz = rotateMatrix * objectNormal.xz;
+//           `,
+//         )),
+//           (shader.vertexShader = shader.vertexShader.replace(
+//             "#include <begin_vertex>",
+//             `
+//           #include <begin_vertex>
+
+//           transformed.xz = rotateMatrix * transformed.xz;
+
+//           `,
+//           ));
+//       };
+
+//       depthMaterial.onBeforeCompile = (shader) => {
+//         shader.uniforms.uTime = customUniformes.uTime;
+
+//         shader.vertexShader = shader.vertexShader.replace(
+//           "#include <common>",
+//           `
+//           #include <common>
+
+//           uniform float uTime;
+
+//                     mat2 get2dRotateMatrix( float _angle){
+//           return mat2(cos(_angle), - sin(_angle), sin(_angle), cos(_angle));
+//           }
+
+//           `,
+//         );
+//         shader.vertexShader = shader.vertexShader.replace(
+//           "#include <begin_vertex>",
+//           `
+//           #include <begin_vertex>
+//           float angle = sin(position.y + uTime) * 0.4;
+//           mat2 rotateMatrix = get2dRotateMatrix(angle);
+
+//           transformed.xz = rotateMatrix * transformed.xz;
+
+//           `,
+//         );
+//       };
+
+//       /**
+//        * Models
+//        */
+//       gltfLoader.load("/models/LeePerrySmith/LeePerrySmith.glb", (gltf) => {
+//         // Model
+//         const mesh = gltf.scene.children[0] as any;
+//         mesh.rotation.y = Math.PI * 0.5;
+//         mesh.material = material;
+//         mesh.customDepthMaterial = depthMaterial;
+//         scene.add(mesh);
+
+//         // Update materials
+//         updateAllMaterials();
+//       });
+
+//       /**
+//        * Plane
+//        */
+
+//       const plane = new THREE.Mesh(
+//         new THREE.PlaneGeometry(15, 15, 15),
+//         new THREE.MeshStandardMaterial(),
+//       );
+
+//       plane.rotation.y = Math.PI;
+//       plane.position.y = -5;
+//       plane.position.z = 5;
+
+//       scene.add(plane);
+
+//       /**
+//        * Lights
+//        */
+//       const directionalLight = new THREE.DirectionalLight("#ffffff", 3);
+//       directionalLight.castShadow = true;
+//       directionalLight.shadow.mapSize.set(1024, 1024);
+//       directionalLight.shadow.camera.far = 15;
+//       directionalLight.shadow.normalBias = 0.05;
+//       directionalLight.position.set(0.25, 2, -2.25);
+//       scene.add(directionalLight);
+
+//       window.addEventListener("resize", () => {
+//         // Update sizes
+//         sizes.width = window.innerWidth;
+//         sizes.height = window.innerHeight;
+
+//         // Update camera
+//         camera.aspect = sizes.width / sizes.height;
+//         camera.updateProjectionMatrix();
+
+//         // Update renderer
+//         renderer.setSize(sizes.width, sizes.height);
+//         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+//       });
+
+//       /**
+//        * Camera
+//        */
+//       // Base camera
+//       const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
+//       camera.position.set(4, 1, -4);
+//       scene.add(camera);
+
+//       // Controls
+//       const controls = new OrbitControls(camera, GLCanvasRef.current);
+//       controls.enableDamping = true;
+
+//       /**
+//        * Renderer
+//        */
+
+//       if (GLCanvasRef.current === null) {
+//         return;
+//       }
+//       const renderer = new THREE.WebGLRenderer({
+//         canvas: GLCanvasRef.current,
+//         antialias: true,
+//       });
+//       renderer.shadowMap.enabled = true;
+//       renderer.shadowMap.type = THREE.PCFShadowMap;
+//       renderer.toneMapping = THREE.ACESFilmicToneMapping;
+//       renderer.toneMappingExposure = 1;
+//       renderer.setSize(sizes.width, sizes.height);
+//       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+//       /**
+//        * Animate
+//        */
+
+//       const timer = new THREE.Timer();
+//       let previousTime = 0;
+
+//       let currentIntersect: null | THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>> =
+//         null;
+
+//       const tick = () => {
+//         // controls.update();
+//         timer.update();
+
+//         const elapsedTime = timer.getElapsed();
+
+//         customUniformes.uTime.value = elapsedTime;
+
+//         // Update controls
+//         controls.update();
+
+//         // Render
+//         renderer.render(scene, camera);
+
+//         // Call tick again on the next frame
+//         window.requestAnimationFrame(tick);
+//       };
+
+//       tick();
+
+//       // Cleanup
+//       // return () => window.removeEventListener("resize", handleResize);
+//     }
+//   });
