@@ -28,6 +28,9 @@ import waterFragmentShader from "./shaders/water/fragment.glsl";
 import galaxyVertexShader from "./shaders/galaxy/vertex.glsl";
 import galaxyFragmentShader from "./shaders/galaxy/fragment.glsl";
 
+import cofeeSmokeVertexShader from "./shaders/cofeeSmoke/vertex.glsl";
+import cofeeSmokeFragmentShader from "./shaders/cofeeSmoke/fragment.glsl";
+
 const WebGLTestMain = () => {
   const GLCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -100,7 +103,12 @@ const WebGLTestMain = () => {
        * Camera
        */
       // Base camera
-      const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 100);
+      const camera = new THREE.PerspectiveCamera(
+        25,
+        sizes.width / sizes.height,
+        0.1,
+        100,
+      );
       camera.position.x = 8;
       camera.position.y = 10;
       camera.position.z = 12;
@@ -146,7 +154,31 @@ const WebGLTestMain = () => {
       smokeGeometry.translate(0, 0.5, 0);
       smokeGeometry.scale(1.5, 6, 1.5);
 
+      // Perlin texture
+
+      const perlinTexture = textureLoader.load("./perlin.png");
+      perlinTexture.wrapS = THREE.RepeatWrapping;
+      perlinTexture.wrapT = THREE.RepeatWrapping;
+
       // Material
+
+      const smokeMaterial = new THREE.ShaderMaterial({
+        vertexShader: cofeeSmokeVertexShader,
+        fragmentShader: cofeeSmokeFragmentShader,
+        uniforms: {
+          uTime: new THREE.Uniform(0),
+          uPerlinTexture: new THREE.Uniform(perlinTexture),
+        },
+        side: THREE.DoubleSide,
+        transparent: true,
+        wireframe: true,
+      });
+
+      // Mesh
+
+      const smoke = new THREE.Mesh(smokeGeometry, smokeMaterial);
+      smoke.position.y = 1.83;
+      scene.add(smoke);
 
       /**
        * Animate
@@ -155,14 +187,17 @@ const WebGLTestMain = () => {
       const timer = new THREE.Timer();
       let previousTime = 0;
 
-      let currentIntersect: null | THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>> =
-        null;
+      let currentIntersect: null | THREE.Intersection<
+        THREE.Object3D<THREE.Object3DEventMap>
+      > = null;
 
       const tick = () => {
         // controls.update();
         timer.update();
 
         const elapsedTime = timer.getElapsed();
+
+        smokeMaterial.uniforms.uTime.value = elapsedTime;
 
         // Update controls
         controls.update();
