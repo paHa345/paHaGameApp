@@ -103,12 +103,7 @@ const WebGLTestMain = () => {
        * Camera
        */
       // Base camera
-      const camera = new THREE.PerspectiveCamera(
-        25,
-        sizes.width / sizes.height,
-        0.1,
-        100,
-      );
+      const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 100);
       camera.position.x = 8;
       camera.position.y = 10;
       camera.position.z = 12;
@@ -171,7 +166,8 @@ const WebGLTestMain = () => {
         },
         side: THREE.DoubleSide,
         transparent: true,
-        wireframe: true,
+        depthWrite: false,
+        // wireframe: true,
       });
 
       // Mesh
@@ -187,9 +183,8 @@ const WebGLTestMain = () => {
       const timer = new THREE.Timer();
       let previousTime = 0;
 
-      let currentIntersect: null | THREE.Intersection<
-        THREE.Object3D<THREE.Object3DEventMap>
-      > = null;
+      let currentIntersect: null | THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>> =
+        null;
 
       const tick = () => {
         // controls.update();
