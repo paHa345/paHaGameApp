@@ -1,0 +1,18 @@
+uniform float uTime;
+
+varying vec3 vPosition;
+varying vec3 vNormal;
+
+void main() {
+
+    // Stripes
+
+    float stripes = mod((vPosition.y - uTime * 0.02) * 20.0, 1.0);
+    stripes = pow(stripes, 3.0);
+
+    // Final color
+    gl_FragColor = vec4(vNormal, 0.5);
+
+    #include <tonemapping_fragment>
+    #include <colorspace_fragment>
+}

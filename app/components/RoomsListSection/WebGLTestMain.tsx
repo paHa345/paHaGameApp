@@ -18,18 +18,21 @@ import * as CANNON from "cannon-es";
 import { GLTF, GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { paginateListObjectsV2 } from "@aws-sdk/client-s3";
-import FlyingRobot from "./FlyingRobot";
-import Robot from "./Robot";
-import Experience from "./Experience/Experience";
-import testVertexShaders from "./shaders/test/vertex.glsl";
-import testFragmentShaders from "./shaders/test/fragment.glsl";
-import waterVertexShader from "./shaders/water/vertex.glsl";
-import waterFragmentShader from "./shaders/water/fragment.glsl";
-import galaxyVertexShader from "./shaders/galaxy/vertex.glsl";
-import galaxyFragmentShader from "./shaders/galaxy/fragment.glsl";
+// import FlyingRobot from "./FlyingRobot";
+// import Robot from "./Robot";
+// import Experience from "./Experience/Experience";
+// import testVertexShaders from "./shaders/test/vertex.glsl";
+// import testFragmentShaders from "./shaders/test/fragment.glsl";
+// import waterVertexShader from "./shaders/water/vertex.glsl";
+// import waterFragmentShader from "./shaders/water/fragment.glsl";
+// import galaxyVertexShader from "./shaders/galaxy/vertex.glsl";
+// import galaxyFragmentShader from "./shaders/galaxy/fragment.glsl";
 
-import cofeeSmokeVertexShader from "./shaders/cofeeSmoke/vertex.glsl";
-import cofeeSmokeFragmentShader from "./shaders/cofeeSmoke/fragment.glsl";
+// import cofeeSmokeVertexShader from "./shaders/cofeeSmoke/vertex.glsl";
+// import cofeeSmokeFragmentShader from "./shaders/cofeeSmoke/fragment.glsl";
+
+import holographicVertexShader from "./shaders/holographic/vertex.glsl";
+import holographicFragmentShader from "./shaders/holographic/fragment.glsl";
 
 const WebGLTestMain = () => {
   const GLCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -118,9 +121,7 @@ const WebGLTestMain = () => {
        */
       // Base camera
       const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 100);
-      camera.position.x = 8;
-      camera.position.y = 10;
-      camera.position.z = 12;
+      camera.position.set(7, 7, 7);
       scene.add(camera);
 
       // Controls
@@ -130,6 +131,7 @@ const WebGLTestMain = () => {
       /**
        * Renderer
        */
+      const rendererParameters = { clearColor: "#1d1f2a" };
 
       if (GLCanvasRef.current === null) {
         return;
@@ -138,57 +140,52 @@ const WebGLTestMain = () => {
         canvas: GLCanvasRef.current,
         antialias: true,
       });
+
+      renderer.setClearColor(rendererParameters.clearColor);
       renderer.setSize(sizes.width, sizes.height);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-      /**
-       * Model
-       */
-      gltfLoader.load("./bakedModel.glb", (gltf) => {
-        if (gltf === undefined) return;
-        if (gltf.scene === undefined) return;
-        if (gltf.scene.getObjectByName("baked") === undefined) return;
-
-        const model = gltf.scene.getObjectByName("baked") as any;
-        model.material.map.anisotropy = 8;
-        scene.add(gltf.scene);
+      gui.addColor(rendererParameters, "clearColor").onChange(() => {
+        renderer.setClearColor(rendererParameters.clearColor);
       });
 
       /**
-       * Smoke
+       * Material
        */
 
-      // Geometry
-      const smokeGeometry = new THREE.PlaneGeometry(1, 1, 16, 64);
-      smokeGeometry.translate(0, 0.5, 0);
-      smokeGeometry.scale(1.5, 6, 1.5);
-
-      // Perlin texture
-
-      const perlinTexture = textureLoader.load("./perlin.png");
-      perlinTexture.wrapS = THREE.RepeatWrapping;
-      perlinTexture.wrapT = THREE.RepeatWrapping;
-
-      // Material
-
-      const smokeMaterial = new THREE.ShaderMaterial({
-        vertexShader: cofeeSmokeVertexShader,
-        fragmentShader: cofeeSmokeFragmentShader,
+      const material = new THREE.ShaderMaterial({
+        vertexShader: holographicVertexShader,
+        fragmentShader: holographicFragmentShader,
         uniforms: {
           uTime: new THREE.Uniform(0),
-          uPerlinTexture: new THREE.Uniform(perlinTexture),
         },
-        side: THREE.DoubleSide,
         transparent: true,
-        depthWrite: false,
-        // wireframe: true,
       });
 
-      // Mesh
+      /**
+       * Objects
+       */
+      // Torus knot
+      const torusKnot = new THREE.Mesh(new THREE.TorusKnotGeometry(0.6, 0.25, 128, 32), material);
+      torusKnot.position.x = 3;
+      scene.add(torusKnot);
 
-      const smoke = new THREE.Mesh(smokeGeometry, smokeMaterial);
-      smoke.position.y = 1.83;
-      scene.add(smoke);
+      // Sphere
+      const sphere = new THREE.Mesh(new THREE.SphereGeometry(), material);
+      sphere.position.x = -3;
+      scene.add(sphere);
+
+      // Suzanne
+      let suzanne: any = null;
+      gltfLoader.load("./suzanne.glb", (gltf) => {
+        suzanne = gltf.scene;
+        suzanne.traverse((child: any) => {
+          const childModel = child as any;
+
+          if (childModel.isMesh) childModel.material = material;
+        });
+        scene.add(suzanne);
+      });
 
       /**
        * Animate
@@ -206,7 +203,19 @@ const WebGLTestMain = () => {
 
         const elapsedTime = timer.getElapsed();
 
-        smokeMaterial.uniforms.uTime.value = elapsedTime;
+        material.uniforms.uTime.value = elapsedTime;
+
+        // Rotate objects
+        if (suzanne) {
+          suzanne.rotation.x = -elapsedTime * 0.1;
+          suzanne.rotation.y = elapsedTime * 0.2;
+        }
+
+        sphere.rotation.x = -elapsedTime * 0.1;
+        sphere.rotation.y = elapsedTime * 0.2;
+
+        torusKnot.rotation.x = -elapsedTime * 0.1;
+        torusKnot.rotation.y = elapsedTime * 0.2;
 
         // Update controls
         controls.update();
