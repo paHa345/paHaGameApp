@@ -4203,3 +4203,170 @@
 //       // return () => window.removeEventListener("resize", handleResize);
 //     }
 //   });
+
+/**
+ * Hologram shader
+ */
+
+// vertex and fragment shaders /shaders/holographic
+
+//   useEffect(() => {
+//     if (typeof window !== "undefined") {
+//       // const expirience = new Experience(GLCanvasRef.current);
+
+//       /**
+//        * Base
+//        */
+//       // Debug
+//       const gui = new GUI();
+
+//       // Scene
+//       const scene = new THREE.Scene();
+
+//       // Loaders
+//       const textureLoader = new THREE.TextureLoader();
+//       const gltfLoader = new GLTFLoader();
+
+//       window.addEventListener("resize", () => {
+//         // Update sizes
+//         sizes.width = window.innerWidth;
+//         sizes.height = window.innerHeight;
+
+//         // Update camera
+//         camera.aspect = sizes.width / sizes.height;
+//         camera.updateProjectionMatrix();
+
+//         // Update renderer
+//         renderer.setSize(sizes.width, sizes.height);
+//         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+//       });
+
+//       /**
+//        * Camera
+//        */
+//       // Base camera
+//       const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 100);
+//       camera.position.set(7, 7, 7);
+//       scene.add(camera);
+
+//       // Controls
+//       const controls = new OrbitControls(camera, GLCanvasRef.current);
+//       controls.enableDamping = true;
+
+//       /**
+//        * Renderer
+//        */
+//       const rendererParameters = { clearColor: "#1d1f2a" };
+
+//       if (GLCanvasRef.current === null) {
+//         return;
+//       }
+//       const renderer = new THREE.WebGLRenderer({
+//         canvas: GLCanvasRef.current,
+//         antialias: true,
+//       });
+
+//       renderer.setClearColor(rendererParameters.clearColor);
+//       renderer.setSize(sizes.width, sizes.height);
+//       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+//       gui.addColor(rendererParameters, "clearColor").onChange(() => {
+//         renderer.setClearColor(rendererParameters.clearColor);
+//       });
+
+//       /**
+//        * Material
+//        */
+
+//       const materialParameters = {
+//         color: "#70c1ff",
+//       };
+
+//       gui.addColor(materialParameters, "color").onChange(() => {
+//         material.uniforms.uColor.value.set(materialParameters.color);
+//       });
+
+//       const material = new THREE.ShaderMaterial({
+//         vertexShader: holographicVertexShader,
+//         fragmentShader: holographicFragmentShader,
+//         uniforms: {
+//           uTime: new THREE.Uniform(0),
+//           uColor: new THREE.Uniform(new THREE.Color(materialParameters.color)),
+//         },
+//         transparent: true,
+//         side: THREE.DoubleSide,
+//         depthWrite: false,
+//         blending: THREE.AdditiveBlending,
+//       });
+
+//       /**
+//        * Objects
+//        */
+//       // Torus knot
+//       const torusKnot = new THREE.Mesh(new THREE.TorusKnotGeometry(0.6, 0.25, 128, 32), material);
+//       torusKnot.position.x = 3;
+//       scene.add(torusKnot);
+
+//       // Sphere
+//       const sphere = new THREE.Mesh(new THREE.SphereGeometry(), material);
+//       sphere.position.x = -3;
+//       scene.add(sphere);
+
+//       // Suzanne
+//       let suzanne: any = null;
+//       gltfLoader.load("./suzanne.glb", (gltf) => {
+//         suzanne = gltf.scene;
+//         suzanne.traverse((child: any) => {
+//           const childModel = child as any;
+
+//           if (childModel.isMesh) childModel.material = material;
+//         });
+//         scene.add(suzanne);
+//       });
+
+//       /**
+//        * Animate
+//        */
+
+//       const timer = new THREE.Timer();
+//       let previousTime = 0;
+
+//       let currentIntersect: null | THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>> =
+//         null;
+
+//       const tick = () => {
+//         // controls.update();
+//         timer.update();
+
+//         const elapsedTime = timer.getElapsed();
+
+//         material.uniforms.uTime.value = elapsedTime;
+
+//         // Rotate objects
+//         if (suzanne) {
+//           suzanne.rotation.x = -elapsedTime * 0.1;
+//           suzanne.rotation.y = elapsedTime * 0.2;
+//         }
+
+//         sphere.rotation.x = -elapsedTime * 0.1;
+//         sphere.rotation.y = elapsedTime * 0.2;
+
+//         torusKnot.rotation.x = -elapsedTime * 0.1;
+//         torusKnot.rotation.y = elapsedTime * 0.2;
+
+//         // Update controls
+//         controls.update();
+
+//         // Render
+//         renderer.render(scene, camera);
+
+//         // Call tick again on the next frame
+//         window.requestAnimationFrame(tick);
+//       };
+
+//       tick();
+
+//       // Cleanup
+//       // return () => window.removeEventListener("resize", handleResize);
+//     }
+//   });
