@@ -41,12 +41,12 @@ import { Sky } from "three/addons/objects/Sky.js";
 const WebGLTestMain = () => {
   const GLCanvasRef = useRef<HTMLCanvasElement>(null);
 
-  const [sizes, setSizes] = useState({
-    width: 800,
-    height: 600,
-    resolution: new THREE.Vector2(800, 600),
-    pixelRatio: Math.min(window.devicePixelRatio, 2),
-  });
+  // const [sizes, setSizes] = useState({
+  //   width: 800,
+  //   height: 600,
+  //   resolution: new THREE.Vector2(800, 600),
+  //   pixelRatio: Math.min(window.devicePixelRatio, 2),
+  // });
 
   const [cubeColor, setCubeColor] = useState({
     color: 0xff0000,
@@ -90,21 +90,12 @@ const WebGLTestMain = () => {
     if (typeof window !== "undefined") {
       // const expirience = new Experience(GLCanvasRef.current);
 
-      // setSizes({
-      //   width: 800,
-      //   height: 600,
-      //   resolution: new THREE.Vector2(
-      //     sizes.width * sizes.pixelRatio,
-      //     sizes.height * sizes.pixelRatio,
-      //   ),
-      //   pixelRatio: Math.min(window.devicePixelRatio, 2),
-      // });
-
-      // const sizes = {
-      //   width: window.innerWidth,
-      //   height: window.innerHeight,
-      //   resolution: new THREE.Vector2(0, 0),
-      // };
+      const sizes = {
+        width: 800,
+        height: 600,
+        resolution: new THREE.Vector2(800, 600),
+        pixelRatio: Math.min(window.devicePixelRatio, 2),
+      };
 
       // sizes.resolution = new THREE.Vector2(sizes.width, sizes.height);
 
@@ -344,7 +335,7 @@ const WebGLTestMain = () => {
       gui.add(effectController, "rayleigh", 0.0, 4, 0.001).onChange(guiChanged);
       gui.add(effectController, "mieCoefficient", 0.0, 0.1, 0.001).onChange(guiChanged);
       gui.add(effectController, "mieDirectionalG", 0.0, 1, 0.001).onChange(guiChanged);
-      gui.add(effectController, "elevation", -3, 90, 0.01).onChange(guiChanged);
+      gui.add(effectController, "elevation", -3, 2, 0.001).onChange(guiChanged);
       gui.add(effectController, "azimuth", -180, 180, 0.1).onChange(guiChanged);
       gui.add(effectController, "exposure", 0, 1, 0.0001).onChange(guiChanged);
       gui.add(effectController, "showSunDisc").onChange(guiChanged);
