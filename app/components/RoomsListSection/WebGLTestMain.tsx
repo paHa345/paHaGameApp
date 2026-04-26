@@ -100,11 +100,11 @@ const WebGLTestMain = () => {
       // Scene
       const scene = new THREE.Scene();
 
-      // Axes helper
+      // // Axes helper
 
-      const axesHelper = new THREE.AxesHelper();
-      axesHelper.position.y += 0.25;
-      scene.add(axesHelper);
+      // const axesHelper = new THREE.AxesHelper();
+      // axesHelper.position.y += 0.25;
+      // scene.add(axesHelper);
 
       // Loaders
       const textureLoader = new THREE.TextureLoader();
@@ -117,13 +117,17 @@ const WebGLTestMain = () => {
 
         sizes.pixelRatio = Math.min(window.devicePixelRatio, 2);
 
-        sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio);
+        sizes.resolution.set(
+          sizes.width * sizes.pixelRatio,
+          sizes.height * sizes.pixelRatio,
+        );
 
         // Update camera
         camera.aspect = sizes.width / sizes.height;
         camera.updateProjectionMatrix();
 
         // Update renderer
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.setSize(sizes.width, sizes.height);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       });
@@ -237,7 +241,9 @@ const WebGLTestMain = () => {
         .addColor(debugObject, "surfaceColor")
         .name("Цвет поверхности")
         .onChange(() => {
-          waterMaterial.uniforms.uSurfaceColor.value.set(debugObject.surfaceColor);
+          waterMaterial.uniforms.uSurfaceColor.value.set(
+            debugObject.surfaceColor,
+          );
         });
 
       gui
@@ -263,7 +269,12 @@ const WebGLTestMain = () => {
        * Camera
        */
       // Base camera
-      const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 100);
+      const camera = new THREE.PerspectiveCamera(
+        25,
+        sizes.width / sizes.height,
+        0.1,
+        100,
+      );
       camera.position.set(1, 1, 1);
 
       scene.add(camera);
@@ -295,8 +306,9 @@ const WebGLTestMain = () => {
       const timer = new THREE.Timer();
       let previousTime = 0;
 
-      let currentIntersect: null | THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>> =
-        null;
+      let currentIntersect: null | THREE.Intersection<
+        THREE.Object3D<THREE.Object3DEventMap>
+      > = null;
 
       const tick = () => {
         // controls.update();

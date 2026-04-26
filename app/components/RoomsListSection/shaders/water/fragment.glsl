@@ -60,8 +60,8 @@ void main() {
                 // Light
 
         vec3 light = vec3(0.0);
-        light += directionalLight(vec3(0.74, 0.36, 0.36), 1.0, normal, vec3(-1.0, 0.5, 0.0), viewDirection, 30.0);
-        color += light;
+        light += pointLight(vec3(0.74, 0.36, 0.36), 10.0, normal, vec3(0.0, 0.25, 0.0), viewDirection, 30.0, vPosition, 0.95);
+        color *= light;
 
         // Final color
         gl_FragColor = vec4(color, 1.0);
