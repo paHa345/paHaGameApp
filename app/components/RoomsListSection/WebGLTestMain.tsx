@@ -25,10 +25,8 @@ import { paginateListObjectsV2 } from "@aws-sdk/client-s3";
 // import testFragmentShaders from "./shaders/test/fragment.glsl";
 // import galaxyVertexShader from "./shaders/galaxy/vertex.glsl";
 // import galaxyFragmentShader from "./shaders/galaxy/fragment.glsl";
-
 // import cofeeSmokeVertexShader from "./shaders/cofeeSmoke/vertex.glsl";
 // import cofeeSmokeFragmentShader from "./shaders/cofeeSmoke/fragment.glsl";
-
 // import holographicVertexShader from "./shaders/holographic/vertex.glsl";
 // import holographicFragmentShader from "./shaders/holographic/fragment.glsl";
 // import fireworkVertexShader from "./shaders/firework/vertex.glsl";
@@ -37,8 +35,11 @@ import { paginateListObjectsV2 } from "@aws-sdk/client-s3";
 // import { Sky } from "three/addons/objects/Sky.js";
 // import shadingVertexShader from "./shaders/shading/vertex.glsl";
 // import shadingFragmentShader from "./shaders/shading/fragment.glsl";
-import waterVertexShader from "./shaders/water/vertex.glsl";
-import waterFragmentShader from "./shaders/water/fragment.glsl";
+// import waterVertexShader from "./shaders/water/vertex.glsl";
+// import waterFragmentShader from "./shaders/water/fragment.glsl";
+
+import halftoneVertexShader from "./shaders/halftone/vertex.glsl";
+import halftoneFragmentShader from "./shaders/halftone/fragment.glsl";
 
 const WebGLTestMain = () => {
   const GLCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -132,139 +133,6 @@ const WebGLTestMain = () => {
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       });
 
-      const debugObject = {
-        depthColor: "#ff4000",
-        surfaceColor: "#151c37",
-      };
-
-      /**
-       * Water
-       */
-      // Geometry
-      const waterGeometry = new THREE.PlaneGeometry(2, 2, 512, 512);
-
-      waterGeometry.deleteAttribute("normal");
-      waterGeometry.deleteAttribute("uv");
-
-      // Color
-
-      debugObject.depthColor = "#ff4000";
-      debugObject.surfaceColor = "#151c37";
-
-      // Material
-      const waterMaterial = new THREE.ShaderMaterial({
-        vertexShader: waterVertexShader,
-        fragmentShader: waterFragmentShader,
-        // wireframe: true,
-        uniforms: {
-          uTime: { value: 0 },
-
-          uBigWaveSpeed: { value: 0.5 },
-          uBigWavesElevation: { value: 0.2 },
-          uBigWavesFrequency: { value: new THREE.Vector2(4, 1.5) },
-
-          uSmallWavesElevation: { value: 0.15 },
-          uSmallWavesFrequency: { value: 3 },
-          uSmallWavesSpeed: { value: 0.2 },
-          uSmallWavesIterations: { value: 4 },
-
-          uDepthColor: { value: new THREE.Color(debugObject.depthColor) },
-          uSurfaceColor: { value: new THREE.Color(debugObject.surfaceColor) },
-          uColorOffset: { value: 0.925 },
-          uColorMultiplier: { value: 1 },
-        },
-      });
-
-      // Debug
-
-      gui
-        .add(waterMaterial.uniforms.uBigWavesElevation, "value")
-        .min(0)
-        .max(1)
-        .step(0.001)
-        .name("Высота больших волн");
-
-      gui
-        .add(waterMaterial.uniforms.uBigWaveSpeed, "value")
-        .min(0)
-        .max(4)
-        .step(0.001)
-        .name("Скорость больших волн");
-
-      gui
-        .add(waterMaterial.uniforms.uBigWavesFrequency.value, "x")
-        .min(0)
-        .max(10)
-        .step(0.001)
-        .name("Частота больших волн по X");
-
-      gui
-        .add(waterMaterial.uniforms.uBigWavesFrequency.value, "y")
-        .min(0)
-        .max(10)
-        .step(0.001)
-        .name("Частота больших волн по Y");
-
-      gui
-        .add(waterMaterial.uniforms.uSmallWavesElevation, "value")
-        .min(0)
-        .max(1)
-        .step(0.001)
-        .name("Высота малых волн");
-      gui
-        .add(waterMaterial.uniforms.uSmallWavesFrequency, "value")
-        .min(0)
-        .max(30)
-        .step(0.001)
-        .name("Частота малых волн");
-      gui
-        .add(waterMaterial.uniforms.uSmallWavesSpeed, "value")
-        .min(0)
-        .max(4)
-        .step(0.01)
-        .name("Скорость малых волн");
-      gui
-        .add(waterMaterial.uniforms.uSmallWavesIterations, "value")
-        .min(0)
-        .max(4)
-        .step(1)
-        .name("Количество малых волн");
-
-      gui
-        .addColor(debugObject, "depthColor")
-        .name("Цвет глубины")
-        .onChange(() => {
-          waterMaterial.uniforms.uDepthColor.value.set(debugObject.depthColor);
-        });
-
-      gui
-        .addColor(debugObject, "surfaceColor")
-        .name("Цвет поверхности")
-        .onChange(() => {
-          waterMaterial.uniforms.uSurfaceColor.value.set(
-            debugObject.surfaceColor,
-          );
-        });
-
-      gui
-        .add(waterMaterial.uniforms.uColorOffset, "value")
-        .min(0)
-        .max(1)
-        .step(0.001)
-        .name("Смещение цвета");
-
-      gui
-        .add(waterMaterial.uniforms.uColorMultiplier, "value")
-        .min(0)
-        .max(10)
-        .step(0.001)
-        .name("Множитель цвета");
-
-      // Mesh
-      const water = new THREE.Mesh(waterGeometry, waterMaterial);
-      water.rotation.x = -Math.PI * 0.5;
-      scene.add(water);
-
       /**
        * Camera
        */
@@ -275,7 +143,9 @@ const WebGLTestMain = () => {
         0.1,
         100,
       );
-      camera.position.set(1, 1, 1);
+      camera.position.x = 7;
+      camera.position.y = 7;
+      camera.position.z = 7;
 
       scene.add(camera);
 
@@ -287,6 +157,10 @@ const WebGLTestMain = () => {
        * Renderer
        */
 
+      const rendererParameters = {
+        clearColor: "#26132f",
+      };
+
       if (GLCanvasRef.current === null) {
         return;
       }
@@ -296,8 +170,55 @@ const WebGLTestMain = () => {
       });
       // renderer.toneMapping = THREE.ACESFilmicToneMapping
       // renderer.toneMappingExposure = 3
+      renderer.setClearColor(rendererParameters.clearColor);
       renderer.setSize(sizes.width, sizes.height);
       renderer.setPixelRatio(sizes.pixelRatio);
+
+      /**
+       * Material
+       */
+      const materialParameters = { color: "#ff794d", shadeColor: "#ff794d" };
+
+      const material = new THREE.ShaderMaterial({
+        vertexShader: halftoneVertexShader,
+        fragmentShader: halftoneFragmentShader,
+        uniforms: {
+          uColor: new THREE.Uniform(new THREE.Color(materialParameters.color)),
+          uShadeColor: new THREE.Uniform(
+            new THREE.Color(materialParameters.shadeColor),
+          ),
+        },
+      });
+
+      gui.addColor(materialParameters, "color").onChange(() => {
+        material.uniforms.uColor.value.set(materialParameters.color);
+      });
+
+      /**
+       * Objects
+       */
+      // Torus knot
+      const torusKnot = new THREE.Mesh(
+        new THREE.TorusKnotGeometry(0.6, 0.25, 128, 32),
+        material,
+      );
+      torusKnot.position.x = 3;
+      scene.add(torusKnot);
+
+      // Sphere
+      const sphere = new THREE.Mesh(new THREE.SphereGeometry(), material);
+      sphere.position.x = -3;
+      scene.add(sphere);
+
+      // Suzanne
+      let suzanne: any = null;
+      gltfLoader.load("./suzanne.glb", (gltf) => {
+        suzanne = gltf.scene;
+        suzanne.traverse((child: any) => {
+          if (child.isMesh) child.material = material;
+        });
+        scene.add(suzanne);
+      });
 
       /**
        * Animate
@@ -316,8 +237,17 @@ const WebGLTestMain = () => {
 
         const elapsedTime = timer.getElapsed();
 
-        // Water
-        waterMaterial.uniforms.uTime.value = elapsedTime;
+        // Rotate objects
+        if (suzanne) {
+          suzanne.rotation.x = -elapsedTime * 0.1;
+          suzanne.rotation.y = elapsedTime * 0.2;
+        }
+
+        sphere.rotation.x = -elapsedTime * 0.1;
+        sphere.rotation.y = elapsedTime * 0.2;
+
+        torusKnot.rotation.x = -elapsedTime * 0.1;
+        torusKnot.rotation.y = elapsedTime * 0.2;
 
         // Update controls
         controls.update();
