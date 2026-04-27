@@ -118,10 +118,13 @@ const WebGLTestMain = () => {
 
         sizes.pixelRatio = Math.min(window.devicePixelRatio, 2);
 
-        sizes.resolution.set(
+        // Update materials
+        material.uniforms.uResolution.value.set(
           sizes.width * sizes.pixelRatio,
           sizes.height * sizes.pixelRatio,
         );
+
+        sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio);
 
         // Update camera
         camera.aspect = sizes.width / sizes.height;
@@ -137,12 +140,7 @@ const WebGLTestMain = () => {
        * Camera
        */
       // Base camera
-      const camera = new THREE.PerspectiveCamera(
-        25,
-        sizes.width / sizes.height,
-        0.1,
-        100,
-      );
+      const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 100);
       camera.position.x = 7;
       camera.position.y = 7;
       camera.position.z = 7;
@@ -177,16 +175,26 @@ const WebGLTestMain = () => {
       /**
        * Material
        */
-      const materialParameters = { color: "#ff794d", shadeColor: "#ff794d" };
+      const materialParameters = {
+        color: "#ff794d",
+        shadeColor: "#ff794d",
+        shadowColor: "#8e19b8",
+        lightColor: "#e5ffe0",
+      };
 
       const material = new THREE.ShaderMaterial({
         vertexShader: halftoneVertexShader,
         fragmentShader: halftoneFragmentShader,
         uniforms: {
           uColor: new THREE.Uniform(new THREE.Color(materialParameters.color)),
-          uShadeColor: new THREE.Uniform(
-            new THREE.Color(materialParameters.shadeColor),
+          uShadeColor: new THREE.Uniform(new THREE.Color(materialParameters.shadeColor)),
+          uResolution: new THREE.Uniform(
+            new THREE.Vector2(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio),
           ),
+          uShadowRepetitions: new THREE.Uniform(100),
+          uShadowColor: new THREE.Uniform(new THREE.Color(materialParameters.shadowColor)),
+          uLightRepetitions: new THREE.Uniform(130),
+          uLightColor: new THREE.Uniform(new THREE.Color(materialParameters.lightColor)),
         },
       });
 
@@ -194,14 +202,22 @@ const WebGLTestMain = () => {
         material.uniforms.uColor.value.set(materialParameters.color);
       });
 
+      gui.add(material.uniforms.uShadowRepetitions, "value").min(1).max(300).step(1);
+
+      gui.addColor(materialParameters, "shadowColor").onChange(() => {
+        material.uniforms.uShadowColor.value.set(materialParameters.shadowColor);
+      });
+      gui.add(material.uniforms.uLightRepetitions, "value").min(1).max(300).step(1);
+
+      gui.addColor(materialParameters, "lightColor").onChange(() => {
+        material.uniforms.uLightColor.value.set(materialParameters.lightColor);
+      });
+
       /**
        * Objects
        */
       // Torus knot
-      const torusKnot = new THREE.Mesh(
-        new THREE.TorusKnotGeometry(0.6, 0.25, 128, 32),
-        material,
-      );
+      const torusKnot = new THREE.Mesh(new THREE.TorusKnotGeometry(0.6, 0.25, 128, 32), material);
       torusKnot.position.x = 3;
       scene.add(torusKnot);
 
@@ -227,9 +243,8 @@ const WebGLTestMain = () => {
       const timer = new THREE.Timer();
       let previousTime = 0;
 
-      let currentIntersect: null | THREE.Intersection<
-        THREE.Object3D<THREE.Object3DEventMap>
-      > = null;
+      let currentIntersect: null | THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>> =
+        null;
 
       const tick = () => {
         // controls.update();
