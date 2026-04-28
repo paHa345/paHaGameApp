@@ -5145,3 +5145,211 @@
 //       // return () => window.removeEventListener("resize", handleResize);
 //     }
 //   });
+
+/**
+ * 37 Halftone Shading
+ */
+
+// vertex, fragment shaders /shaders/halftone/
+
+//   useEffect(() => {
+//     if (typeof window !== "undefined") {
+//       // const expirience = new Experience(GLCanvasRef.current);
+
+//       const sizes = {
+//         width: 800,
+//         height: 600,
+//         resolution: new THREE.Vector2(800, 600),
+//         pixelRatio: Math.min(window.devicePixelRatio, 2),
+//       };
+
+//       // sizes.resolution = new THREE.Vector2(sizes.width, sizes.height);
+
+//       /**
+//        * Base
+//        */
+//       // Debug
+//       const gui = new GUI();
+
+//       // Scene
+//       const scene = new THREE.Scene();
+
+//       // // Axes helper
+
+//       // const axesHelper = new THREE.AxesHelper();
+//       // axesHelper.position.y += 0.25;
+//       // scene.add(axesHelper);
+
+//       // Loaders
+//       const textureLoader = new THREE.TextureLoader();
+//       const gltfLoader = new GLTFLoader();
+
+//       window.addEventListener("resize", () => {
+//         // Update sizes
+//         sizes.width = window.innerWidth;
+//         sizes.height = window.innerHeight;
+
+//         sizes.pixelRatio = Math.min(window.devicePixelRatio, 2);
+
+//         // Update materials
+//         material.uniforms.uResolution.value.set(
+//           sizes.width * sizes.pixelRatio,
+//           sizes.height * sizes.pixelRatio,
+//         );
+
+//         sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio);
+
+//         // Update camera
+//         camera.aspect = sizes.width / sizes.height;
+//         camera.updateProjectionMatrix();
+
+//         // Update renderer
+//         renderer.toneMapping = THREE.ACESFilmicToneMapping;
+//         renderer.setSize(sizes.width, sizes.height);
+//         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+//       });
+
+//       /**
+//        * Camera
+//        */
+//       // Base camera
+//       const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 100);
+//       camera.position.x = 7;
+//       camera.position.y = 7;
+//       camera.position.z = 7;
+
+//       scene.add(camera);
+
+//       // Controls
+//       const controls = new OrbitControls(camera, GLCanvasRef.current);
+//       controls.enableDamping = true;
+
+//       /**
+//        * Renderer
+//        */
+
+//       const rendererParameters = {
+//         clearColor: "#26132f",
+//       };
+
+//       if (GLCanvasRef.current === null) {
+//         return;
+//       }
+//       const renderer = new THREE.WebGLRenderer({
+//         canvas: GLCanvasRef.current,
+//         // antialias: true,
+//       });
+//       // renderer.toneMapping = THREE.ACESFilmicToneMapping
+//       // renderer.toneMappingExposure = 3
+//       renderer.setClearColor(rendererParameters.clearColor);
+//       renderer.setSize(sizes.width, sizes.height);
+//       renderer.setPixelRatio(sizes.pixelRatio);
+
+//       /**
+//        * Material
+//        */
+//       const materialParameters = {
+//         color: "#ff794d",
+//         shadeColor: "#ff794d",
+//         shadowColor: "#8e19b8",
+//         lightColor: "#e5ffe0",
+//       };
+
+//       const material = new THREE.ShaderMaterial({
+//         vertexShader: halftoneVertexShader,
+//         fragmentShader: halftoneFragmentShader,
+//         uniforms: {
+//           uColor: new THREE.Uniform(new THREE.Color(materialParameters.color)),
+//           uShadeColor: new THREE.Uniform(new THREE.Color(materialParameters.shadeColor)),
+//           uResolution: new THREE.Uniform(
+//             new THREE.Vector2(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio),
+//           ),
+//           uShadowRepetitions: new THREE.Uniform(100),
+//           uShadowColor: new THREE.Uniform(new THREE.Color(materialParameters.shadowColor)),
+//           uLightRepetitions: new THREE.Uniform(130),
+//           uLightColor: new THREE.Uniform(new THREE.Color(materialParameters.lightColor)),
+//         },
+//       });
+
+//       gui.addColor(materialParameters, "color").onChange(() => {
+//         material.uniforms.uColor.value.set(materialParameters.color);
+//       });
+
+//       gui.add(material.uniforms.uShadowRepetitions, "value").min(1).max(300).step(1);
+
+//       gui.addColor(materialParameters, "shadowColor").onChange(() => {
+//         material.uniforms.uShadowColor.value.set(materialParameters.shadowColor);
+//       });
+//       gui.add(material.uniforms.uLightRepetitions, "value").min(1).max(300).step(1);
+
+//       gui.addColor(materialParameters, "lightColor").onChange(() => {
+//         material.uniforms.uLightColor.value.set(materialParameters.lightColor);
+//       });
+
+//       /**
+//        * Objects
+//        */
+//       // Torus knot
+//       const torusKnot = new THREE.Mesh(new THREE.TorusKnotGeometry(0.6, 0.25, 128, 32), material);
+//       torusKnot.position.x = 3;
+//       scene.add(torusKnot);
+
+//       // Sphere
+//       const sphere = new THREE.Mesh(new THREE.SphereGeometry(), material);
+//       sphere.position.x = -3;
+//       scene.add(sphere);
+
+//       // Suzanne
+//       let suzanne: any = null;
+//       gltfLoader.load("./suzanne.glb", (gltf) => {
+//         suzanne = gltf.scene;
+//         suzanne.traverse((child: any) => {
+//           if (child.isMesh) child.material = material;
+//         });
+//         scene.add(suzanne);
+//       });
+
+//       /**
+//        * Animate
+//        */
+
+//       const timer = new THREE.Timer();
+//       let previousTime = 0;
+
+//       let currentIntersect: null | THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>> =
+//         null;
+
+//       const tick = () => {
+//         // controls.update();
+//         timer.update();
+
+//         const elapsedTime = timer.getElapsed();
+
+//         // Rotate objects
+//         if (suzanne) {
+//           suzanne.rotation.x = -elapsedTime * 0.1;
+//           suzanne.rotation.y = elapsedTime * 0.2;
+//         }
+
+//         sphere.rotation.x = -elapsedTime * 0.1;
+//         sphere.rotation.y = elapsedTime * 0.2;
+
+//         torusKnot.rotation.x = -elapsedTime * 0.1;
+//         torusKnot.rotation.y = elapsedTime * 0.2;
+
+//         // Update controls
+//         controls.update();
+
+//         // Render
+//         renderer.render(scene, camera);
+
+//         // Call tick again on the next frame
+//         window.requestAnimationFrame(tick);
+//       };
+
+//       tick();
+
+//       // Cleanup
+//       // return () => window.removeEventListener("resize", handleResize);
+//     }
+//   });

@@ -37,9 +37,13 @@ import { paginateListObjectsV2 } from "@aws-sdk/client-s3";
 // import shadingFragmentShader from "./shaders/shading/fragment.glsl";
 // import waterVertexShader from "./shaders/water/vertex.glsl";
 // import waterFragmentShader from "./shaders/water/fragment.glsl";
+// import halftoneVertexShader from "./shaders/halftone/vertex.glsl";
+// import halftoneFragmentShader from "./shaders/halftone/fragment.glsl";
 
-import halftoneVertexShader from "./shaders/halftone/vertex.glsl";
-import halftoneFragmentShader from "./shaders/halftone/fragment.glsl";
+import earthVertexShader from "./shaders/earth/vertex.glsl";
+import earthFragmentShader from "./shaders/earth/fragment.glsl";
+import atmosphereVertexShader from "./shaders/atmosphere/vertex.glsl";
+import atmosphereFragmentShader from "./shaders/atmosphere/fragment.glsl";
 
 const WebGLTestMain = () => {
   const GLCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -101,15 +105,126 @@ const WebGLTestMain = () => {
       // Scene
       const scene = new THREE.Scene();
 
-      // // Axes helper
-
-      // const axesHelper = new THREE.AxesHelper();
-      // axesHelper.position.y += 0.25;
-      // scene.add(axesHelper);
-
       // Loaders
       const textureLoader = new THREE.TextureLoader();
       const gltfLoader = new GLTFLoader();
+
+      /**
+       * Earth
+       */
+
+      const earthParameters = {
+        atmosphereDayColor: "#00aaff",
+        atmosphereTwighlightColor: "#ff6600",
+      };
+
+      gui.addColor(earthParameters, "atmosphereDayColor").onChange(() => {
+        earthMaterial.uniforms.uAtmosphereDayColor.value.set(earthParameters.atmosphereDayColor);
+        atmosphereMaterial.uniforms.uAtmosphereDayColor.value.set(
+          earthParameters.atmosphereDayColor,
+        );
+      });
+      gui.addColor(earthParameters, "atmosphereTwighlightColor").onChange(() => {
+        earthMaterial.uniforms.uAtmosphereTwighlightColor.value.set(
+          earthParameters.atmosphereTwighlightColor,
+        );
+        atmosphereMaterial.uniforms.uAtmosphereTwighlightColor.value.set(
+          earthParameters.atmosphereTwighlightColor,
+        );
+      });
+
+      // Textures
+
+      const earthDayTexture = textureLoader.load("./earth/day.jpg");
+      earthDayTexture.colorSpace = THREE.SRGBColorSpace;
+      earthDayTexture.anisotropy = 8;
+
+      const earthNightTexture = textureLoader.load("./earth/night.jpg");
+      earthNightTexture.colorSpace = THREE.SRGBColorSpace;
+      earthNightTexture.anisotropy = 8;
+
+      const earthSpecularCloudsTexture = textureLoader.load("./earth/specularClouds.jpg");
+      earthSpecularCloudsTexture.colorSpace = THREE.SRGBColorSpace;
+      earthSpecularCloudsTexture.anisotropy = 8;
+
+      // Mesh
+      const earthGeometry = new THREE.SphereGeometry(2, 64, 64);
+      const earthMaterial = new THREE.ShaderMaterial({
+        vertexShader: earthVertexShader,
+        fragmentShader: earthFragmentShader,
+        uniforms: {
+          uDayTexture: new THREE.Uniform(earthDayTexture),
+          uNightTexture: new THREE.Uniform(earthNightTexture),
+          uSpecularCloudsTexture: new THREE.Uniform(earthSpecularCloudsTexture),
+          uSunDirection: new THREE.Uniform(new THREE.Vector3(0, 0, 1)),
+          uAtmosphereDayColor: new THREE.Uniform(
+            new THREE.Color(earthParameters.atmosphereDayColor),
+          ),
+          uAtmosphereTwighlightColor: new THREE.Uniform(
+            new THREE.Color(earthParameters.atmosphereTwighlightColor),
+          ),
+        },
+      });
+      const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+      scene.add(earth);
+
+      // Atmosphere
+
+      const atmosphereMaterial = new THREE.ShaderMaterial({
+        vertexShader: atmosphereVertexShader,
+        fragmentShader: atmosphereFragmentShader,
+        uniforms: {
+          uSunDirection: new THREE.Uniform(new THREE.Vector3(0, 0, 1)),
+          uAtmosphereDayColor: new THREE.Uniform(
+            new THREE.Color(earthParameters.atmosphereDayColor),
+          ),
+          uAtmosphereTwighlightColor: new THREE.Uniform(
+            new THREE.Color(earthParameters.atmosphereTwighlightColor),
+          ),
+        },
+        side: THREE.BackSide,
+        transparent: true,
+      });
+      const atmosphere = new THREE.Mesh(earthGeometry, atmosphereMaterial);
+      atmosphere.scale.set(1.04, 1.04, 1.04);
+
+      scene.add(atmosphere);
+
+      /**
+       * Sun
+       */
+
+      const sunSpherical = new THREE.Spherical(1, Math.PI * 0.5, 0.5);
+      const sunDirection = new THREE.Vector3();
+
+      // Debug
+      const debugSun = new THREE.Mesh(
+        new THREE.IcosahedronGeometry(0.1, 2),
+        new THREE.MeshBasicMaterial(),
+      );
+
+      scene.add(debugSun);
+
+      // Update
+
+      const updateSun = () => {
+        //Sun direction
+        sunDirection.setFromSpherical(sunSpherical);
+
+        //Debug
+        debugSun.position.copy(sunDirection).multiplyScalar(5);
+
+        //Uniforms
+        earthMaterial.uniforms.uSunDirection.value.copy(sunDirection);
+        atmosphereMaterial.uniforms.uSunDirection.value.copy(sunDirection);
+      };
+
+      updateSun();
+
+      // Tweaks
+
+      gui.add(sunSpherical, "phi").min(0).max(Math.PI).onChange(updateSun);
+      gui.add(sunSpherical, "theta").min(-Math.PI).max(Math.PI).onChange(updateSun);
 
       window.addEventListener("resize", () => {
         // Update sizes
@@ -117,12 +232,6 @@ const WebGLTestMain = () => {
         sizes.height = window.innerHeight;
 
         sizes.pixelRatio = Math.min(window.devicePixelRatio, 2);
-
-        // Update materials
-        material.uniforms.uResolution.value.set(
-          sizes.width * sizes.pixelRatio,
-          sizes.height * sizes.pixelRatio,
-        );
 
         sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio);
 
@@ -141,9 +250,9 @@ const WebGLTestMain = () => {
        */
       // Base camera
       const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 100);
-      camera.position.x = 7;
-      camera.position.y = 7;
-      camera.position.z = 7;
+      camera.position.x = 12;
+      camera.position.y = 5;
+      camera.position.z = 4;
 
       scene.add(camera);
 
@@ -168,73 +277,9 @@ const WebGLTestMain = () => {
       });
       // renderer.toneMapping = THREE.ACESFilmicToneMapping
       // renderer.toneMappingExposure = 3
-      renderer.setClearColor(rendererParameters.clearColor);
       renderer.setSize(sizes.width, sizes.height);
       renderer.setPixelRatio(sizes.pixelRatio);
-
-      /**
-       * Material
-       */
-      const materialParameters = {
-        color: "#ff794d",
-        shadeColor: "#ff794d",
-        shadowColor: "#8e19b8",
-        lightColor: "#e5ffe0",
-      };
-
-      const material = new THREE.ShaderMaterial({
-        vertexShader: halftoneVertexShader,
-        fragmentShader: halftoneFragmentShader,
-        uniforms: {
-          uColor: new THREE.Uniform(new THREE.Color(materialParameters.color)),
-          uShadeColor: new THREE.Uniform(new THREE.Color(materialParameters.shadeColor)),
-          uResolution: new THREE.Uniform(
-            new THREE.Vector2(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio),
-          ),
-          uShadowRepetitions: new THREE.Uniform(100),
-          uShadowColor: new THREE.Uniform(new THREE.Color(materialParameters.shadowColor)),
-          uLightRepetitions: new THREE.Uniform(130),
-          uLightColor: new THREE.Uniform(new THREE.Color(materialParameters.lightColor)),
-        },
-      });
-
-      gui.addColor(materialParameters, "color").onChange(() => {
-        material.uniforms.uColor.value.set(materialParameters.color);
-      });
-
-      gui.add(material.uniforms.uShadowRepetitions, "value").min(1).max(300).step(1);
-
-      gui.addColor(materialParameters, "shadowColor").onChange(() => {
-        material.uniforms.uShadowColor.value.set(materialParameters.shadowColor);
-      });
-      gui.add(material.uniforms.uLightRepetitions, "value").min(1).max(300).step(1);
-
-      gui.addColor(materialParameters, "lightColor").onChange(() => {
-        material.uniforms.uLightColor.value.set(materialParameters.lightColor);
-      });
-
-      /**
-       * Objects
-       */
-      // Torus knot
-      const torusKnot = new THREE.Mesh(new THREE.TorusKnotGeometry(0.6, 0.25, 128, 32), material);
-      torusKnot.position.x = 3;
-      scene.add(torusKnot);
-
-      // Sphere
-      const sphere = new THREE.Mesh(new THREE.SphereGeometry(), material);
-      sphere.position.x = -3;
-      scene.add(sphere);
-
-      // Suzanne
-      let suzanne: any = null;
-      gltfLoader.load("./suzanne.glb", (gltf) => {
-        suzanne = gltf.scene;
-        suzanne.traverse((child: any) => {
-          if (child.isMesh) child.material = material;
-        });
-        scene.add(suzanne);
-      });
+      renderer.setClearColor("#000011");
 
       /**
        * Animate
@@ -252,17 +297,7 @@ const WebGLTestMain = () => {
 
         const elapsedTime = timer.getElapsed();
 
-        // Rotate objects
-        if (suzanne) {
-          suzanne.rotation.x = -elapsedTime * 0.1;
-          suzanne.rotation.y = elapsedTime * 0.2;
-        }
-
-        sphere.rotation.x = -elapsedTime * 0.1;
-        sphere.rotation.y = elapsedTime * 0.2;
-
-        torusKnot.rotation.x = -elapsedTime * 0.1;
-        torusKnot.rotation.y = elapsedTime * 0.2;
+        earth.rotation.y = elapsedTime * 0.1;
 
         // Update controls
         controls.update();
