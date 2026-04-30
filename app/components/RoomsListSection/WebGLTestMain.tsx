@@ -44,8 +44,8 @@ import { paginateListObjectsV2 } from "@aws-sdk/client-s3";
 // import atmosphereVertexShader from "./shaders/atmosphere/vertex.glsl";
 // import atmosphereFragmentShader from "./shaders/atmosphere/fragment.glsl";
 
-import particlesVertexShader from "./shaders/particles/vertex.glsl";
-import particlesFragmentShader from "./shaders/particles/fragment.glsl";
+import particlesMorphVertexShader from "./shaders/morphParticles/vertex.glsl";
+import particlesMorphFragmentShader from "./shaders/morphParticles/fragment.glsl";
 
 const WebGLTestMain = () => {
   const GLCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -108,17 +108,26 @@ const WebGLTestMain = () => {
       const scene = new THREE.Scene();
 
       // Loaders
-      const textureLoader = new THREE.TextureLoader();
+      const dracoLoader = new DRACOLoader();
+      dracoLoader.setDecoderPath("./draco/");
       const gltfLoader = new GLTFLoader();
+      gltfLoader.setDRACOLoader(dracoLoader);
 
       window.addEventListener("resize", () => {
         // Update sizes
         sizes.width = window.innerWidth;
         sizes.height = window.innerHeight;
-
         sizes.pixelRatio = Math.min(window.devicePixelRatio, 2);
 
         sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio);
+
+        // Materials
+        if (particles) {
+          particles.material.uniforms.uResolution.value.set(
+            sizes.width * sizes.pixelRatio,
+            sizes.height * sizes.pixelRatio,
+          );
+        }
 
         // Update camera
         camera.aspect = sizes.width / sizes.height;
@@ -135,13 +144,15 @@ const WebGLTestMain = () => {
        */
       // Base camera
       const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 100);
-      camera.position.set(0, 0, 18);
+      camera.position.set(0, 0, 8 * 2);
 
       scene.add(camera);
 
       // Controls
       const controls = new OrbitControls(camera, GLCanvasRef.current);
       controls.enableDamping = true;
+
+      const debugObject = { clearColor: "#160920" };
 
       /**
        * Renderer
@@ -158,106 +169,141 @@ const WebGLTestMain = () => {
       // renderer.toneMappingExposure = 3
       renderer.setSize(sizes.width, sizes.height);
       renderer.setPixelRatio(sizes.pixelRatio);
-      renderer.setClearColor("#181818");
 
-      /**
-       * Displacement
-       */
-
-      const displacement: {
-        canvas: HTMLCanvasElement;
-        context: CanvasRenderingContext2D | null;
-        glowImage: HTMLImageElement;
-        interactivePlane: THREE.Mesh<
-          THREE.PlaneGeometry,
-          THREE.MeshBasicMaterial,
-          THREE.Object3DEventMap
-        >;
-        rayCaster: THREE.Raycaster;
-        screenCursor: THREE.Vector2;
-        canvasCursor: THREE.Vector2;
-        canvasCursorPrevious: THREE.Vector2;
-        texture: null | THREE.CanvasTexture<HTMLCanvasElement>;
-      } = {
-        canvas: document.createElement("canvas"),
-        context: null,
-        glowImage: new Image(),
-        interactivePlane: new THREE.Mesh(
-          new THREE.PlaneGeometry(10, 10),
-          new THREE.MeshBasicMaterial({ color: "red", side: THREE.DoubleSide }),
-        ),
-        rayCaster: new THREE.Raycaster(),
-        screenCursor: new THREE.Vector2(9999, 9999),
-        canvasCursor: new THREE.Vector2(9999, 9999),
-        canvasCursorPrevious: new THREE.Vector2(9999, 9999),
-        texture: null,
-      };
-
-      displacement.canvas.width = 128;
-      displacement.canvas.height = 128;
-      displacement.canvas.style.position = "fixed";
-      displacement.canvas.style.width = "512px";
-      displacement.canvas.style.height = "512px";
-      displacement.canvas.style.top = "0px";
-      displacement.canvas.style.left = "0px";
-      displacement.canvas.style.zIndex = "10";
-      document.body.append(displacement.canvas);
-
-      // Context
-
-      displacement.context = displacement.canvas.getContext("2d");
-
-      if (displacement.context === null) return;
-      displacement.context?.fillRect(0, 0, displacement.canvas.width, displacement.canvas.height);
-
-      // Glow image
-      displacement.glowImage.src = "./glow.png";
-
-      // Interactive plane
-      displacement.interactivePlane.visible = false;
-      scene.add(displacement.interactivePlane);
-
-      // Coordinates
-
-      window.addEventListener("pointermove", (event) => {
-        displacement.screenCursor.x = (event.clientX / sizes.width) * 2 - 1;
-        displacement.screenCursor.y = -(event.clientY / sizes.height) * 2 + 1;
+      gui.addColor(debugObject, "clearColor").onChange(() => {
+        renderer.setClearColor(debugObject.clearColor);
       });
-
-      // Texture
-
-      displacement.texture = new THREE.CanvasTexture(displacement.canvas);
+      renderer.setClearColor(debugObject.clearColor);
 
       /**
        * Particles
        */
-      const particlesGeometry = new THREE.PlaneGeometry(10, 10, 128, 128);
-      particlesGeometry.setIndex(null);
-      particlesGeometry.deleteAttribute("normal");
 
-      const intensitiesArray = new Float32Array(particlesGeometry.attributes.position.count);
-      const anglesArray = new Float32Array(particlesGeometry.attributes.position.count);
+      let particles: {
+        geometry: THREE.BufferGeometry;
+        material: THREE.ShaderMaterial;
+        points?: THREE.Points;
+        maxCount: number;
+        positions: THREE.Float32BufferAttribute[];
+        index: number;
+        morph?: any;
+        morph0?: any;
+        morph1?: any;
+        morph2?: any;
+        morph3?: any;
+      } | null = null;
 
-      for (let i = 0; i < particlesGeometry.attributes.position.count; i++) {
-        intensitiesArray[i] = Math.random();
-        anglesArray[i] = Math.random() * Math.PI * 2;
-      }
-      particlesGeometry.setAttribute("aIntensity", new THREE.BufferAttribute(intensitiesArray, 1));
-      particlesGeometry.setAttribute("aAngle", new THREE.BufferAttribute(anglesArray, 1));
+      // Load models
 
-      const particlesMaterial = new THREE.ShaderMaterial({
-        vertexShader: particlesVertexShader,
-        fragmentShader: particlesFragmentShader,
-        uniforms: {
-          uResolution: new THREE.Uniform(
-            new THREE.Vector2(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio),
-          ),
-          uPictureTexture: new THREE.Uniform(textureLoader.load("./picture-3.png")),
-          uDisplacementTexture: new THREE.Uniform(displacement.texture),
-        },
+      gltfLoader.load("./models.glb", (gltf) => {
+        particles = {
+          geometry: new THREE.BufferGeometry(),
+
+          material: new THREE.ShaderMaterial({
+            vertexShader: particlesMorphVertexShader,
+            fragmentShader: particlesMorphFragmentShader,
+            uniforms: {
+              uSize: new THREE.Uniform(0.2),
+              uResolution: new THREE.Uniform(
+                new THREE.Vector2(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio),
+              ),
+              uProgress: new THREE.Uniform(0),
+            },
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+          }),
+          maxCount: 0,
+          positions: [],
+          index: 0,
+        };
+
+        // Positions
+
+        const positions = gltf.scene.children.map((child) => {
+          const childObj = child as any;
+          return childObj.geometry.attributes.position;
+        });
+
+        for (const position of positions) {
+          if (position.count > particles.maxCount) {
+            particles.maxCount = position.count;
+          }
+        }
+
+        for (const position of positions) {
+          const originalArray = position.array;
+          const newArray = new Float32Array(particles.maxCount * 3);
+          for (let i = 0; i < particles.maxCount; i++) {
+            const i3 = i * 3;
+            if (i3 < originalArray.length) {
+              newArray[i3 + 0] = originalArray[i3 + 0];
+              newArray[i3 + 1] = originalArray[i3 + 1];
+              newArray[i3 + 2] = originalArray[i3 + 2];
+            } else {
+              const randomIndex = Math.floor(position.count * Math.random()) * 3;
+              newArray[i3 + 0] = originalArray[randomIndex + 0];
+              newArray[i3 + 1] = originalArray[randomIndex + 1];
+              newArray[i3 + 2] = originalArray[randomIndex + 2];
+            }
+          }
+          particles.positions.push(new THREE.Float32BufferAttribute(newArray, 3));
+        }
+
+        // Geometry
+        particles.geometry.setAttribute("position", particles.positions[particles.index]);
+        particles.geometry.setAttribute("aPositionTarget", particles.positions[3]);
+        // particles.geometry.setIndex(null);
+
+        // Points
+        particles.points = new THREE.Points(particles.geometry, particles.material);
+        scene.add(particles.points);
+
+        // Methods
+
+        particles.morph = (index: number) => {
+          if (!particles) return;
+          particles.geometry.attributes.position = particles.positions[particles.index];
+          particles.geometry.attributes.aPositionTarget = particles.positions[index];
+
+          // Animate uProgress
+
+          gsap.fromTo(
+            particles.material.uniforms.uProgress,
+            { value: 0 },
+            { value: 1, duration: 3, ease: "linear" },
+          );
+
+          // Save index
+          particles.index = index;
+        };
+
+        particles.morph0 = () => {
+          particles?.morph(0);
+        };
+        particles.morph1 = () => {
+          particles?.morph(1);
+        };
+        particles.morph2 = () => {
+          particles?.morph(2);
+        };
+        particles.morph3 = () => {
+          particles?.morph(3);
+        };
+
+        //Tweaks
+
+        gui
+          .add(particles.material.uniforms.uProgress, "value")
+          .min(0)
+          .max(1)
+          .step(0.001)
+          .name("Прогресс");
+
+        gui.add(particles, "morph0");
+        gui.add(particles, "morph1");
+        gui.add(particles, "morph2");
+        gui.add(particles, "morph3");
       });
-      const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-      scene.add(particles);
 
       /**
        * Animate
@@ -277,57 +323,6 @@ const WebGLTestMain = () => {
 
         // Update controls
         controls.update();
-
-        /**
-         * Raycaster
-         */
-
-        displacement.rayCaster.setFromCamera(displacement.screenCursor, camera);
-
-        const intersections = displacement.rayCaster.intersectObject(displacement.interactivePlane);
-
-        if (intersections.length) {
-          const uv = intersections[0].uv;
-          if (!uv) return;
-          displacement.canvasCursor.x = uv.x * displacement.canvas.width;
-          displacement.canvasCursor.y = (1 - uv.y) * displacement.canvas.height;
-        }
-
-        /**
-         * Displacement
-         */
-
-        if (!displacement.context) return;
-        displacement.context.globalCompositeOperation = "source-over";
-        displacement.context.globalAlpha = 0.02;
-
-        displacement.context.fillRect(0, 0, displacement.canvas.width, displacement.canvas.height);
-
-        // Speed alpha
-        const cursorDistance = displacement.canvasCursorPrevious.distanceTo(
-          displacement.canvasCursor,
-        );
-        displacement.canvasCursorPrevious.copy(displacement.canvasCursor);
-        const alpha = Math.min(cursorDistance * 0.1, 1);
-
-        // Draw glow
-        const glowSize = displacement.canvas.width * 0.25;
-
-        displacement.context.globalCompositeOperation = "lighten";
-        displacement.context.globalAlpha = alpha;
-
-        displacement.context?.drawImage(
-          displacement.glowImage,
-          displacement.canvasCursor.x - glowSize * 0.5,
-          displacement.canvasCursor.y - glowSize * 0.5,
-          glowSize,
-          glowSize,
-        );
-
-        //Texture
-
-        if (!displacement.texture) return;
-        displacement.texture.needsUpdate = true;
 
         // Render
         renderer.render(scene, camera);
