@@ -119,7 +119,10 @@ const WebGLTestMain = () => {
         sizes.height = window.innerHeight;
         sizes.pixelRatio = Math.min(window.devicePixelRatio, 2);
 
-        sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio);
+        sizes.resolution.set(
+          sizes.width * sizes.pixelRatio,
+          sizes.height * sizes.pixelRatio,
+        );
 
         // Materials
         if (particles) {
@@ -143,7 +146,12 @@ const WebGLTestMain = () => {
        * Camera
        */
       // Base camera
-      const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 100);
+      const camera = new THREE.PerspectiveCamera(
+        25,
+        sizes.width / sizes.height,
+        0.1,
+        100,
+      );
       camera.position.set(0, 0, 8 * 2);
 
       scene.add(camera);
@@ -152,7 +160,11 @@ const WebGLTestMain = () => {
       const controls = new OrbitControls(camera, GLCanvasRef.current);
       controls.enableDamping = true;
 
-      const debugObject = { clearColor: "#160920" };
+      const debugObject = {
+        clearColor: "#160920",
+        colorA: "#DC143C",
+        colorB: "#32CD32",
+      };
 
       /**
        * Renderer
@@ -203,11 +215,16 @@ const WebGLTestMain = () => {
             vertexShader: particlesMorphVertexShader,
             fragmentShader: particlesMorphFragmentShader,
             uniforms: {
-              uSize: new THREE.Uniform(0.2),
+              uSize: new THREE.Uniform(0.4),
               uResolution: new THREE.Uniform(
-                new THREE.Vector2(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio),
+                new THREE.Vector2(
+                  sizes.width * sizes.pixelRatio,
+                  sizes.height * sizes.pixelRatio,
+                ),
               ),
               uProgress: new THREE.Uniform(0),
+              uColorA: new THREE.Uniform(new THREE.Color(debugObject.colorA)),
+              uColorB: new THREE.Uniform(new THREE.Color(debugObject.colorB)),
             },
             blending: THREE.AdditiveBlending,
             depthWrite: false,
@@ -240,30 +257,60 @@ const WebGLTestMain = () => {
               newArray[i3 + 1] = originalArray[i3 + 1];
               newArray[i3 + 2] = originalArray[i3 + 2];
             } else {
-              const randomIndex = Math.floor(position.count * Math.random()) * 3;
+              const randomIndex =
+                Math.floor(position.count * Math.random()) * 3;
               newArray[i3 + 0] = originalArray[randomIndex + 0];
               newArray[i3 + 1] = originalArray[randomIndex + 1];
               newArray[i3 + 2] = originalArray[randomIndex + 2];
             }
           }
-          particles.positions.push(new THREE.Float32BufferAttribute(newArray, 3));
+          particles.positions.push(
+            new THREE.Float32BufferAttribute(newArray, 3),
+          );
         }
 
         // Geometry
-        particles.geometry.setAttribute("position", particles.positions[particles.index]);
-        particles.geometry.setAttribute("aPositionTarget", particles.positions[3]);
+
+        const sizesArray = new Float32Array(particles.maxCount);
+        for (let i = 0; i < particles.maxCount; i++) {
+          sizesArray[i] = Math.random();
+        }
+        particles.geometry.setAttribute(
+          "aSize",
+          new THREE.BufferAttribute(sizesArray, 1),
+        );
+
+        particles.geometry.setAttribute(
+          "position",
+          particles.positions[particles.index],
+        );
+        particles.geometry.setAttribute(
+          "aPositionTarget",
+          particles.positions[3],
+        );
+
         // particles.geometry.setIndex(null);
 
         // Points
-        particles.points = new THREE.Points(particles.geometry, particles.material);
+        particles.points = new THREE.Points(
+          particles.geometry,
+          particles.material,
+        );
+        particles.points.frustumCulled = false;
         scene.add(particles.points);
+
+        // window.requestAnimationFrame(() => {
+        //   console.log(particles?.points?.geometry.boundingSphere);
+        // });
 
         // Methods
 
         particles.morph = (index: number) => {
           if (!particles) return;
-          particles.geometry.attributes.position = particles.positions[particles.index];
-          particles.geometry.attributes.aPositionTarget = particles.positions[index];
+          particles.geometry.attributes.position =
+            particles.positions[particles.index];
+          particles.geometry.attributes.aPositionTarget =
+            particles.positions[index];
 
           // Animate uProgress
 
@@ -297,12 +344,20 @@ const WebGLTestMain = () => {
           .min(0)
           .max(1)
           .step(0.001)
-          .name("Прогресс");
+          .name("Прогресс")
+          .listen();
 
         gui.add(particles, "morph0");
         gui.add(particles, "morph1");
         gui.add(particles, "morph2");
         gui.add(particles, "morph3");
+      });
+
+      gui.addColor(debugObject, "colorA").onChange(() => {
+        particles?.material.uniforms.uColorA.value.set(debugObject.colorA);
+      });
+      gui.addColor(debugObject, "colorB").onChange(() => {
+        particles?.material.uniforms.uColorB.value.set(debugObject.colorB);
       });
 
       /**
@@ -312,8 +367,9 @@ const WebGLTestMain = () => {
       const timer = new THREE.Timer();
       let previousTime = 0;
 
-      let currentIntersect: null | THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>> =
-        null;
+      let currentIntersect: null | THREE.Intersection<
+        THREE.Object3D<THREE.Object3DEventMap>
+      > = null;
 
       const tick = () => {
         // controls.update();
