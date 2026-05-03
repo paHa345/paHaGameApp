@@ -18,6 +18,11 @@ import * as CANNON from "cannon-es";
 import { GLTF, GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { paginateListObjectsV2 } from "@aws-sdk/client-s3";
+import {
+  GPUComputationRenderer,
+  Variable,
+} from "three/addons/misc/GPUComputationRenderer.js";
+
 // import FlyingRobot from "./FlyingRobot";
 // import Robot from "./Robot";
 // import Experience from "./Experience/Experience";
@@ -43,9 +48,12 @@ import { paginateListObjectsV2 } from "@aws-sdk/client-s3";
 // import earthFragmentShader from "./shaders/earth/fragment.glsl";
 // import atmosphereVertexShader from "./shaders/atmosphere/vertex.glsl";
 // import atmosphereFragmentShader from "./shaders/atmosphere/fragment.glsl";
+// import particlesMorphVertexShader from "./shaders/morphParticles/vertex.glsl";
+// import particlesMorphFragmentShader from "./shaders/morphParticles/fragment.glsl";
 
-import particlesMorphVertexShader from "./shaders/morphParticles/vertex.glsl";
-import particlesMorphFragmentShader from "./shaders/morphParticles/fragment.glsl";
+import particlesVertexShader from "./shaders/40_gpgpuParticles/vertex.glsl";
+import particlesFragmentShader from "./shaders/40_gpgpuParticles/fragment.glsl";
+import gpgpuParticlesShader from "./shaders/gpgpu/particles.glsl";
 
 const WebGLTestMain = () => {
   const GLCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -152,7 +160,7 @@ const WebGLTestMain = () => {
         0.1,
         100,
       );
-      camera.position.set(0, 0, 8 * 2);
+      camera.position.set(4.5, 4, 11);
 
       scene.add(camera);
 
@@ -162,8 +170,6 @@ const WebGLTestMain = () => {
 
       const debugObject = {
         clearColor: "#160920",
-        colorA: "#DC143C",
-        colorB: "#32CD32",
       };
 
       /**
@@ -181,184 +187,96 @@ const WebGLTestMain = () => {
       // renderer.toneMappingExposure = 3
       renderer.setSize(sizes.width, sizes.height);
       renderer.setPixelRatio(sizes.pixelRatio);
-
-      gui.addColor(debugObject, "clearColor").onChange(() => {
-        renderer.setClearColor(debugObject.clearColor);
-      });
       renderer.setClearColor(debugObject.clearColor);
+
+      /**
+       * Base geometry
+       */
+
+      const baseGeometry = {
+        instance: new THREE.SphereGeometry(3),
+        count: 0,
+      };
+
+      baseGeometry.count = baseGeometry.instance.attributes.position.count;
+
+      /**
+       * GPU compute
+       */
+      // Setup
+      const gpgpu: {
+        size: number;
+        computation?: GPUComputationRenderer;
+        particlesVariable?: Variable;
+      } = { size: Math.ceil(Math.sqrt(baseGeometry.count)) };
+      gpgpu.computation = new GPUComputationRenderer(
+        gpgpu.size,
+        gpgpu.size,
+        renderer,
+      );
+
+      // Base particles
+
+      const baseParticlesTexture = gpgpu.computation.createTexture();
+
+      // Particles variable
+      gpgpu.particlesVariable = gpgpu.computation.addVariable(
+        "uParticles",
+        gpgpuParticlesShader,
+        baseParticlesTexture,
+      );
+
+      gpgpu.computation.setVariableDependencies(gpgpu.particlesVariable, [
+        gpgpu.particlesVariable,
+      ]);
+
+      // Init
+      gpgpu.computation.init();
 
       /**
        * Particles
        */
 
       let particles: {
-        geometry: THREE.BufferGeometry;
         material: THREE.ShaderMaterial;
         points?: THREE.Points;
-        maxCount: number;
-        positions: THREE.Float32BufferAttribute[];
-        index: number;
-        morph?: any;
-        morph0?: any;
-        morph1?: any;
-        morph2?: any;
-        morph3?: any;
       } | null = null;
 
-      // Load models
-
-      gltfLoader.load("./models.glb", (gltf) => {
-        particles = {
-          geometry: new THREE.BufferGeometry(),
-
-          material: new THREE.ShaderMaterial({
-            vertexShader: particlesMorphVertexShader,
-            fragmentShader: particlesMorphFragmentShader,
-            uniforms: {
-              uSize: new THREE.Uniform(0.4),
-              uResolution: new THREE.Uniform(
-                new THREE.Vector2(
-                  sizes.width * sizes.pixelRatio,
-                  sizes.height * sizes.pixelRatio,
-                ),
+      particles = {
+        material: new THREE.ShaderMaterial({
+          vertexShader: particlesVertexShader,
+          fragmentShader: particlesFragmentShader,
+          uniforms: {
+            uSize: new THREE.Uniform(0.4),
+            uResolution: new THREE.Uniform(
+              new THREE.Vector2(
+                sizes.width * sizes.pixelRatio,
+                sizes.height * sizes.pixelRatio,
               ),
-              uProgress: new THREE.Uniform(0),
-              uColorA: new THREE.Uniform(new THREE.Color(debugObject.colorA)),
-              uColorB: new THREE.Uniform(new THREE.Color(debugObject.colorB)),
-            },
-            blending: THREE.AdditiveBlending,
-            depthWrite: false,
-          }),
-          maxCount: 0,
-          positions: [],
-          index: 0,
-        };
+            ),
+          },
+        }),
+      };
 
-        // Positions
+      // Points
+      particles.points = new THREE.Points(
+        baseGeometry.instance,
+        particles.material,
+      );
+      scene.add(particles.points);
 
-        const positions = gltf.scene.children.map((child) => {
-          const childObj = child as any;
-          return childObj.geometry.attributes.position;
-        });
-
-        for (const position of positions) {
-          if (position.count > particles.maxCount) {
-            particles.maxCount = position.count;
-          }
-        }
-
-        for (const position of positions) {
-          const originalArray = position.array;
-          const newArray = new Float32Array(particles.maxCount * 3);
-          for (let i = 0; i < particles.maxCount; i++) {
-            const i3 = i * 3;
-            if (i3 < originalArray.length) {
-              newArray[i3 + 0] = originalArray[i3 + 0];
-              newArray[i3 + 1] = originalArray[i3 + 1];
-              newArray[i3 + 2] = originalArray[i3 + 2];
-            } else {
-              const randomIndex =
-                Math.floor(position.count * Math.random()) * 3;
-              newArray[i3 + 0] = originalArray[randomIndex + 0];
-              newArray[i3 + 1] = originalArray[randomIndex + 1];
-              newArray[i3 + 2] = originalArray[randomIndex + 2];
-            }
-          }
-          particles.positions.push(
-            new THREE.Float32BufferAttribute(newArray, 3),
-          );
-        }
-
-        // Geometry
-
-        const sizesArray = new Float32Array(particles.maxCount);
-        for (let i = 0; i < particles.maxCount; i++) {
-          sizesArray[i] = Math.random();
-        }
-        particles.geometry.setAttribute(
-          "aSize",
-          new THREE.BufferAttribute(sizesArray, 1),
-        );
-
-        particles.geometry.setAttribute(
-          "position",
-          particles.positions[particles.index],
-        );
-        particles.geometry.setAttribute(
-          "aPositionTarget",
-          particles.positions[3],
-        );
-
-        // particles.geometry.setIndex(null);
-
-        // Points
-        particles.points = new THREE.Points(
-          particles.geometry,
-          particles.material,
-        );
-        particles.points.frustumCulled = false;
-        scene.add(particles.points);
-
-        // window.requestAnimationFrame(() => {
-        //   console.log(particles?.points?.geometry.boundingSphere);
-        // });
-
-        // Methods
-
-        particles.morph = (index: number) => {
-          if (!particles) return;
-          particles.geometry.attributes.position =
-            particles.positions[particles.index];
-          particles.geometry.attributes.aPositionTarget =
-            particles.positions[index];
-
-          // Animate uProgress
-
-          gsap.fromTo(
-            particles.material.uniforms.uProgress,
-            { value: 0 },
-            { value: 1, duration: 3, ease: "linear" },
-          );
-
-          // Save index
-          particles.index = index;
-        };
-
-        particles.morph0 = () => {
-          particles?.morph(0);
-        };
-        particles.morph1 = () => {
-          particles?.morph(1);
-        };
-        particles.morph2 = () => {
-          particles?.morph(2);
-        };
-        particles.morph3 = () => {
-          particles?.morph(3);
-        };
-
-        //Tweaks
-
-        gui
-          .add(particles.material.uniforms.uProgress, "value")
-          .min(0)
-          .max(1)
-          .step(0.001)
-          .name("Прогресс")
-          .listen();
-
-        gui.add(particles, "morph0");
-        gui.add(particles, "morph1");
-        gui.add(particles, "morph2");
-        gui.add(particles, "morph3");
+      /**
+       * Tweaks
+       */
+      gui.addColor(debugObject, "clearColor").onChange(() => {
+        renderer.setClearColor(debugObject.clearColor);
       });
-
-      gui.addColor(debugObject, "colorA").onChange(() => {
-        particles?.material.uniforms.uColorA.value.set(debugObject.colorA);
-      });
-      gui.addColor(debugObject, "colorB").onChange(() => {
-        particles?.material.uniforms.uColorB.value.set(debugObject.colorB);
-      });
+      gui
+        .add(particles.material.uniforms.uSize, "value")
+        .min(0)
+        .max(1)
+        .step(0.001)
+        .name("uSize");
 
       /**
        * Animate
@@ -379,6 +297,10 @@ const WebGLTestMain = () => {
 
         // Update controls
         controls.update();
+
+        // GPGPU Update
+
+        gpgpu.computation?.compute();
 
         // Render
         renderer.render(scene, camera);
