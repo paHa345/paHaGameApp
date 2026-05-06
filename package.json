@@ -74,6 +74,7 @@
     "styled": "^1.0.0",
     "swr": "^2.2.5",
     "three": "^0.183.2",
+    "three-custom-shader-material": "^6.4.0",
     "typescript-plugin-styled-components": "^3.0.0",
     "uuid": "^11.1.0",
     "waveform-data": "^4.5.1",
