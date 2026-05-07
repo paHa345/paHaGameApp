@@ -54,8 +54,10 @@ import CustomShaderMaterial from "three-custom-shader-material/vanilla";
 // import particlesVertexShader from "./shaders/40_gpgpuParticles/vertex.glsl";
 // import particlesFragmentShader from "./shaders/40_gpgpuParticles/fragment.glsl";
 // import gpgpuParticlesShader from "./shaders/gpgpu/particles.glsl";
-import wobbleVertexShader from "./shaders/wobble/vertex.glsl";
-import wobbleFragmentShader from "./shaders/wobble/fragment.glsl";
+// import wobbleVertexShader from "./shaders/wobble/vertex.glsl";
+// import wobbleFragmentShader from "./shaders/wobble/fragment.glsl";
+import slicedVertexShader from "./shaders/sliced/vertex.glsl";
+import slicedFragmentShader from "./shaders/sliced/fragment.glsl";
 
 const WebGLTestMain = () => {
   const GLCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -126,16 +128,6 @@ const WebGLTestMain = () => {
       const gltfLoader = new GLTFLoader();
       gltfLoader.setDRACOLoader(dracoLoader);
 
-      /**
-       * Environment map
-       */
-      rgbeLoader.load("./urban_alley_01_1k.hdr", (environmentMap) => {
-        environmentMap.mapping = THREE.EquirectangularReflectionMapping;
-
-        scene.background = environmentMap;
-        scene.environment = environmentMap;
-      });
-
       const debugObject = {
         clearColor: "#160920",
         colorA: "#0000ff",
@@ -143,120 +135,125 @@ const WebGLTestMain = () => {
       };
 
       /**
-       * Wobble
+       * Environment map
+       */
+      rgbeLoader.load("./aerodynamics_workshop.hdr", (environmentMap) => {
+        environmentMap.mapping = THREE.EquirectangularReflectionMapping;
+
+        scene.background = environmentMap;
+        scene.backgroundBlurriness = 0.5;
+        scene.environment = environmentMap;
+      });
+
+      /**
+       * Sliced model
        */
 
       const uniforms = {
-        uTime: new THREE.Uniform(0),
-        uPositionFrequency: new THREE.Uniform(0.5),
-        uTimeFrequency: new THREE.Uniform(0.4),
-        uStrength: new THREE.Uniform(0.3),
+        uSliceStart: new THREE.Uniform(1.75),
+        uSliceArc: new THREE.Uniform(1.25),
+      };
 
-        uWarpPositionFrequency: new THREE.Uniform(0.38),
-        uWarpTimeFrequency: new THREE.Uniform(0.12),
-        uWarpStrength: new THREE.Uniform(1.7),
+      gui.add(uniforms.uSliceStart, "value", -Math.PI, Math.PI, 0.001).name("Начало разреза");
+      gui.add(uniforms.uSliceArc, "value", 0, Math.PI * 2, 0.001).name("Конец разреза");
 
-        uColorA: new THREE.Uniform(new THREE.Color(debugObject.colorA)),
-        uColorB: new THREE.Uniform(new THREE.Color(debugObject.colorB)),
+      const patchMap = {
+        csm_Slice: {
+          "#include <colorspace_fragment>": `
+          #include <colorspace_fragment>
+          if(!gl_FrontFacing){
+            gl_FragColor = vec4(0.75,0.15,0.3,1.0);
+          }
+          `,
+        },
       };
 
       // Material
-      const material = new CustomShaderMaterial({
-        // CSM
-        baseMaterial: THREE.MeshPhysicalMaterial,
-        vertexShader: wobbleVertexShader,
-        fragmentShader: wobbleFragmentShader,
-        uniforms: uniforms,
-        // MeshPhysicalMaterial
-        metalness: 0,
-        roughness: 0.5,
-        color: "#ffffff",
-        transmission: 0,
-        ior: 1.5,
-        thickness: 1.5,
-        transparent: true,
-        wireframe: false,
+      const material = new THREE.MeshStandardMaterial({
+        metalness: 0.5,
+        roughness: 0.25,
+        envMapIntensity: 0.5,
+        color: "#858080",
       });
 
-      const depthMaterial = new CustomShaderMaterial({
+      const slicedMaterial = new CustomShaderMaterial({
+        // CSM
+        baseMaterial: THREE.MeshStandardMaterial,
+        vertexShader: slicedVertexShader,
+        fragmentShader: slicedFragmentShader,
+        uniforms: uniforms,
+        patchMap: patchMap,
+
+        // Mesh standert material
+        metalness: 0.5,
+        roughness: 0.25,
+        envMapIntensity: 0.5,
+        color: "#858080",
+        side: THREE.DoubleSide,
+      });
+
+      const slicedDepthMaterial = new CustomShaderMaterial({
         // CSM
         baseMaterial: THREE.MeshDepthMaterial,
-        vertexShader: wobbleVertexShader,
+        vertexShader: slicedVertexShader,
+        fragmentShader: slicedFragmentShader,
         uniforms: uniforms,
+        patchMap: patchMap,
 
         // MeshDepthMaterial
         depthPacking: THREE.RGBADepthPacking,
       });
 
-      // Tweaks
-
-      gui.add(uniforms.uPositionFrequency, "value", 0, 2, 0.001).name("Частота");
-      gui.add(uniforms.uTimeFrequency, "value", 0, 2, 0.001).name("Частота по времени");
-      gui.add(uniforms.uStrength, "value", 0, 2, 0.001).name("Сила");
-
-      gui.add(uniforms.uWarpPositionFrequency, "value", 0, 2, 0.001).name("Частота деформации");
-      gui
-        .add(uniforms.uWarpTimeFrequency, "value", 0, 2, 0.001)
-        .name("Частота деформации по времени");
-      gui.add(uniforms.uWarpStrength, "value", 0, 2, 0.001).name("Сила деформации");
-
-      gui.addColor(debugObject, "colorA").onChange(() => {
-        uniforms.uColorA.value.set(debugObject.colorA);
-      });
-      gui.addColor(debugObject, "colorB").onChange(() => {
-        uniforms.uColorB.value.set(debugObject.colorB);
-      });
-
-      // gui.add(material, "metalness", 0, 1, 0.001);
-      // gui.add(material, "roughness", 0, 1, 0.001);
-      // gui.add(material, "transmission", 0, 1, 0.001);
-      // gui.add(material, "ior", 0, 10, 0.001);
-      // gui.add(material, "thickness", 0, 10, 0.001);
-      // gui.addColor(material, "color");
-
-      // // Geometry
-      // let geometry = new THREE.IcosahedronGeometry(2.5, 50) as any;
-      // geometry = mergeVertices(geometry);
-      // geometry.computeTangents();
-
-      // // Mesh
-      // const wobble = new THREE.Mesh(geometry, material);
-      // wobble.customDepthMaterial = depthMaterial;
-      // wobble.receiveShadow = true;
-      // wobble.castShadow = true;
-      // scene.add(wobble);
-
       // Model
-      gltfLoader.load("./suzanne.glb", (gltf) => {
-        const wobble = gltf.scene.children[0] as any;
-        wobble.castShadow = true;
-        wobble.material = material;
-        wobble.customDepthMaterial = depthMaterial;
-        scene.add(wobble);
+      let model: null | THREE.Group<THREE.Object3DEventMap> = null;
+      gltfLoader.load("./gears.glb", (gltf) => {
+        model = gltf.scene;
+
+        model.traverse((child) => {
+          const object = child as any;
+          if (object.isMesh) {
+            if (object.name === "outerHull") {
+              object.material = slicedMaterial;
+              object.customDepthMaterial = slicedDepthMaterial;
+            } else {
+              object.material = material;
+            }
+            object.castShadow = true;
+            object.receiveShadow = true;
+          }
+        });
+
+        scene.add(model);
       });
 
       /**
        * Plane
        */
       const plane = new THREE.Mesh(
-        new THREE.PlaneGeometry(15, 15, 15),
-        new THREE.MeshStandardMaterial(),
+        new THREE.PlaneGeometry(10, 10, 10),
+        new THREE.MeshStandardMaterial({ color: "#aaaaaa" }),
       );
       plane.receiveShadow = true;
-      plane.rotation.y = Math.PI;
-      plane.position.y = -5;
-      plane.position.z = 5;
+      plane.position.x = -4;
+      plane.position.y = -3;
+      plane.position.z = -4;
+      plane.lookAt(new THREE.Vector3(0, 0, 0));
       scene.add(plane);
 
       /**
        * Lights
        */
-      const directionalLight = new THREE.DirectionalLight("#ffffff", 3);
+      const directionalLight = new THREE.DirectionalLight("#ffffff", 4);
+      directionalLight.position.set(6.25, 3, 4);
       directionalLight.castShadow = true;
       directionalLight.shadow.mapSize.set(1024, 1024);
-      directionalLight.shadow.camera.far = 15;
+      directionalLight.shadow.camera.near = 0.1;
+      directionalLight.shadow.camera.far = 30;
       directionalLight.shadow.normalBias = 0.05;
-      directionalLight.position.set(0.25, 2, -2.25);
+      directionalLight.shadow.camera.top = 8;
+      directionalLight.shadow.camera.right = 8;
+      directionalLight.shadow.camera.bottom = -8;
+      directionalLight.shadow.camera.left = -8;
       scene.add(directionalLight);
 
       window.addEventListener("resize", () => {
@@ -290,7 +287,7 @@ const WebGLTestMain = () => {
        */
       // Base camera
       const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 100);
-      camera.position.set(13, -3, -5);
+      camera.position.set(-5, 5, 12);
       scene.add(camera);
 
       // Controls
@@ -333,9 +330,10 @@ const WebGLTestMain = () => {
         const deltaTime = elapsedTime - previousTime;
         previousTime = elapsedTime;
 
-        // Materials
-
-        uniforms.uTime.value = elapsedTime;
+        // Update model
+        if (model !== null) {
+          model.rotation.y = elapsedTime * 0.1;
+        }
 
         // Update controls
         controls.update();
