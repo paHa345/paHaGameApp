@@ -23,41 +23,16 @@ import { GPUComputationRenderer, Variable } from "three/addons/misc/GPUComputati
 // import FlyingRobot from "./FlyingRobot";
 // import Robot from "./Robot";
 // import Experience from "./Experience/Experience";
-// import testVertexShaders from "./shaders/test/vertex.glsl";
-// import testFragmentShaders from "./shaders/test/fragment.glsl";
-// import galaxyVertexShader from "./shaders/galaxy/vertex.glsl";
-// import galaxyFragmentShader from "./shaders/galaxy/fragment.glsl";
-// import cofeeSmokeVertexShader from "./shaders/cofeeSmoke/vertex.glsl";
-// import cofeeSmokeFragmentShader from "./shaders/cofeeSmoke/fragment.glsl";
-// import holographicVertexShader from "./shaders/holographic/vertex.glsl";
-// import holographicFragmentShader from "./shaders/holographic/fragment.glsl";
-// import fireworkVertexShader from "./shaders/firework/vertex.glsl";
-// import fireworkFragmentShader from "./shaders/firework/fragment.glsl";
+
 // import Sizes from "./Experience/Utils/Sizes";
 // import { Sky } from "three/addons/objects/Sky.js";
-// import shadingVertexShader from "./shaders/shading/vertex.glsl";
-// import shadingFragmentShader from "./shaders/shading/fragment.glsl";
-// import waterVertexShader from "./shaders/water/vertex.glsl";
-// import waterFragmentShader from "./shaders/water/fragment.glsl";
-// import halftoneVertexShader from "./shaders/halftone/vertex.glsl";
-// import halftoneFragmentShader from "./shaders/halftone/fragment.glsl";
-// import earthVertexShader from "./shaders/earth/vertex.glsl";
-// import earthFragmentShader from "./shaders/earth/fragment.glsl";
-// import atmosphereVertexShader from "./shaders/atmosphere/vertex.glsl";
-// import atmosphereFragmentShader from "./shaders/atmosphere/fragment.glsl";
-// import particlesMorphVertexShader from "./shaders/morphParticles/vertex.glsl";
-// import particlesMorphFragmentShader from "./shaders/morphParticles/fragment.glsl";
-import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
 
+import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
 import CustomShaderMaterial from "three-custom-shader-material/vanilla";
 
-// import particlesVertexShader from "./shaders/40_gpgpuParticles/vertex.glsl";
-// import particlesFragmentShader from "./shaders/40_gpgpuParticles/fragment.glsl";
-// import gpgpuParticlesShader from "./shaders/gpgpu/particles.glsl";
-// import wobbleVertexShader from "./shaders/wobble/vertex.glsl";
-// import wobbleFragmentShader from "./shaders/wobble/fragment.glsl";
-import slicedVertexShader from "./shaders/sliced/vertex.glsl";
-import slicedFragmentShader from "./shaders/sliced/fragment.glsl";
+import { Brush, Evaluator, SUBTRACTION } from "three-bvh-csg";
+import terrainVertexShader from "./shaders/terrain/vertex.glsl";
+import terrainFragmentShader from "./shaders/terrain/fragment.glsl";
 
 const WebGLTestMain = () => {
   const GLCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -90,14 +65,14 @@ const WebGLTestMain = () => {
     }
   };
 
-  useEffect(() => {
-    if (fullScreenSTatus === 0 && GLCanvasRef.current !== null) {
-      GLCanvasRef.current.requestFullscreen();
-    }
-    if (fullScreenSTatus === 1 && document.fullscreenElement) {
-      document.exitFullscreen();
-    }
-  }, [fullScreenSTatus]);
+  // useEffect(() => {
+  //   if (fullScreenSTatus === 0 && GLCanvasRef.current !== null) {
+  //     GLCanvasRef.current.requestFullscreen();
+  //   }
+  //   if (fullScreenSTatus === 1 && document.fullscreenElement) {
+  //     document.exitFullscreen();
+  //   }
+  // }, [fullScreenSTatus]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -137,7 +112,7 @@ const WebGLTestMain = () => {
       /**
        * Environment map
        */
-      rgbeLoader.load("./aerodynamics_workshop.hdr", (environmentMap) => {
+      rgbeLoader.load("/spruit_sunrise.hdr", (environmentMap) => {
         environmentMap.mapping = THREE.EquirectangularReflectionMapping;
 
         scene.background = environmentMap;
@@ -146,99 +121,62 @@ const WebGLTestMain = () => {
       });
 
       /**
-       * Sliced model
+       * Terrain
        */
 
-      const uniforms = {
-        uSliceStart: new THREE.Uniform(1.75),
-        uSliceArc: new THREE.Uniform(1.25),
-      };
+      // Geometry
 
-      gui.add(uniforms.uSliceStart, "value", -Math.PI, Math.PI, 0.001).name("Начало разреза");
-      gui.add(uniforms.uSliceArc, "value", 0, Math.PI * 2, 0.001).name("Конец разреза");
-
-      const patchMap = {
-        csm_Slice: {
-          "#include <colorspace_fragment>": `
-          #include <colorspace_fragment>
-          if(!gl_FrontFacing){
-            gl_FragColor = vec4(0.75,0.15,0.3,1.0);
-          }
-          `,
-        },
-      };
+      const geometry = new THREE.PlaneGeometry(10, 10, 500, 500);
+      geometry.deleteAttribute("uv");
+      geometry.deleteAttribute("normal");
+      geometry.rotateX(-Math.PI * 0.5);
 
       // Material
-      const material = new THREE.MeshStandardMaterial({
-        metalness: 0.5,
-        roughness: 0.25,
-        envMapIntensity: 0.5,
-        color: "#858080",
-      });
 
-      const slicedMaterial = new CustomShaderMaterial({
+      const material = new CustomShaderMaterial({
         // CSM
         baseMaterial: THREE.MeshStandardMaterial,
-        vertexShader: slicedVertexShader,
-        fragmentShader: slicedFragmentShader,
-        uniforms: uniforms,
-        patchMap: patchMap,
+        vertexShader: terrainVertexShader,
+        fragmentShader: terrainFragmentShader,
 
-        // Mesh standert material
-        metalness: 0.5,
-        roughness: 0.25,
-        envMapIntensity: 0.5,
-        color: "#858080",
-        side: THREE.DoubleSide,
+        // Mesh Standart Material
+        metalness: 0,
+        roughness: 0.5,
+        color: "#85d534",
       });
 
-      const slicedDepthMaterial = new CustomShaderMaterial({
-        // CSM
-        baseMaterial: THREE.MeshDepthMaterial,
-        vertexShader: slicedVertexShader,
-        fragmentShader: slicedFragmentShader,
-        uniforms: uniforms,
-        patchMap: patchMap,
+      // Mesh
+      const terrain = new THREE.Mesh(geometry, material);
 
-        // MeshDepthMaterial
-        depthPacking: THREE.RGBADepthPacking,
-      });
+      terrain.receiveShadow = true;
+      terrain.castShadow = true;
 
-      // Model
-      let model: null | THREE.Group<THREE.Object3DEventMap> = null;
-      gltfLoader.load("./gears.glb", (gltf) => {
-        model = gltf.scene;
-
-        model.traverse((child) => {
-          const object = child as any;
-          if (object.isMesh) {
-            if (object.name === "outerHull") {
-              object.material = slicedMaterial;
-              object.customDepthMaterial = slicedDepthMaterial;
-            } else {
-              object.material = material;
-            }
-            object.castShadow = true;
-            object.receiveShadow = true;
-          }
-        });
-
-        scene.add(model);
-      });
+      scene.add(terrain);
 
       /**
-       * Plane
+       * Board
        */
-      const plane = new THREE.Mesh(
-        new THREE.PlaneGeometry(10, 10, 10),
-        new THREE.MeshStandardMaterial({ color: "#aaaaaa" }),
-      );
-      plane.receiveShadow = true;
-      plane.position.x = -4;
-      plane.position.y = -3;
-      plane.position.z = -4;
-      plane.lookAt(new THREE.Vector3(0, 0, 0));
-      scene.add(plane);
+
+      const boardFill = new Brush(new THREE.BoxGeometry(11, 2, 11));
+      const boardHole = new Brush(new THREE.BoxGeometry(10, 2.1, 10));
+      // boardHole.position.y = 0.2;
+      // boardHole.updateMatrixWorld();
+
+      // Evaluate
+
+      const evaluator = new Evaluator();
+      const board = evaluator.evaluate(boardFill, boardHole, SUBTRACTION);
+      board.geometry.clearGroups();
+      board.material = new THREE.MeshStandardMaterial({
+        color: "#ffffff",
+        metalness: 0,
+        roughness: 0.3,
+      });
+
+      board.castShadow = true;
+      board.receiveShadow = true;
+
+      scene.add(board);
 
       /**
        * Lights
@@ -249,7 +187,6 @@ const WebGLTestMain = () => {
       directionalLight.shadow.mapSize.set(1024, 1024);
       directionalLight.shadow.camera.near = 0.1;
       directionalLight.shadow.camera.far = 30;
-      directionalLight.shadow.normalBias = 0.05;
       directionalLight.shadow.camera.top = 8;
       directionalLight.shadow.camera.right = 8;
       directionalLight.shadow.camera.bottom = -8;
@@ -287,7 +224,7 @@ const WebGLTestMain = () => {
        */
       // Base camera
       const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 100);
-      camera.position.set(-5, 5, 12);
+      camera.position.set(-10, 6, -2);
       scene.add(camera);
 
       // Controls
@@ -329,11 +266,6 @@ const WebGLTestMain = () => {
         const elapsedTime = timer.getElapsed();
         const deltaTime = elapsedTime - previousTime;
         previousTime = elapsedTime;
-
-        // Update model
-        if (model !== null) {
-          model.rotation.y = elapsedTime * 0.1;
-        }
 
         // Update controls
         controls.update();
