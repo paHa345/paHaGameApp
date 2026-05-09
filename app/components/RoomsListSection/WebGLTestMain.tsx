@@ -18,7 +18,10 @@ import * as CANNON from "cannon-es";
 import { GLTF, GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { paginateListObjectsV2 } from "@aws-sdk/client-s3";
-import { GPUComputationRenderer, Variable } from "three/addons/misc/GPUComputationRenderer.js";
+import {
+  GPUComputationRenderer,
+  Variable,
+} from "three/addons/misc/GPUComputationRenderer.js";
 
 // import FlyingRobot from "./FlyingRobot";
 // import Robot from "./Robot";
@@ -33,6 +36,8 @@ import CustomShaderMaterial from "three-custom-shader-material/vanilla";
 import { Brush, Evaluator, SUBTRACTION } from "three-bvh-csg";
 import terrainVertexShader from "./shaders/terrain/vertex.glsl";
 import terrainFragmentShader from "./shaders/terrain/fragment.glsl";
+import { Uniform } from "three/src/renderers/common/Uniform.js";
+import { roughness, transmission } from "three/src/nodes/TSL.js";
 
 const WebGLTestMain = () => {
   const GLCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -104,9 +109,12 @@ const WebGLTestMain = () => {
       gltfLoader.setDRACOLoader(dracoLoader);
 
       const debugObject = {
-        clearColor: "#160920",
-        colorA: "#0000ff",
-        colorB: "#ff0000",
+        colorWaterDeep: "#002b3d",
+        colorWaterSurface: "#66a8ff",
+        colorSand: "#ffe894",
+        colorGrass: "#85d534",
+        colorSnow: "#ffffff",
+        colorRock: "#bfbd8d",
       };
 
       /**
@@ -132,12 +140,75 @@ const WebGLTestMain = () => {
       geometry.rotateX(-Math.PI * 0.5);
 
       // Material
+      const uniforms = {
+        uTime: new THREE.Uniform(0),
+        uPositionFrequency: new THREE.Uniform(0.2),
+        uStrength: new THREE.Uniform(2.0),
+        uWarpFrequency: new THREE.Uniform(5),
+        uWarpStrength: new THREE.Uniform(0.5),
+
+        ucColorWaterDeep: new THREE.Uniform(
+          new THREE.Color(debugObject.colorWaterDeep),
+        ),
+        uColorWaterSurface: new THREE.Uniform(
+          new THREE.Color(debugObject.colorWaterSurface),
+        ),
+        uColorSand: new THREE.Uniform(new THREE.Color(debugObject.colorSand)),
+        uColorGrass: new THREE.Uniform(new THREE.Color(debugObject.colorGrass)),
+        uColorSnow: new THREE.Uniform(new THREE.Color(debugObject.colorSnow)),
+        uColorRock: new THREE.Uniform(new THREE.Color(debugObject.colorRock)),
+      };
+
+      gui
+        .add(uniforms.uPositionFrequency, "value")
+        .min(0)
+        .max(1)
+        .step(0.001)
+        .name("uPositionFrequency");
+      gui
+        .add(uniforms.uStrength, "value")
+        .min(0)
+        .max(10)
+        .step(0.001)
+        .name("uStrength");
+      gui
+        .add(uniforms.uWarpFrequency, "value")
+        .min(0)
+        .max(10)
+        .step(0.001)
+        .name("uWarpFrequency");
+      gui
+        .add(uniforms.uWarpStrength, "value")
+        .min(0)
+        .max(1)
+        .step(0.001)
+        .name("uWarpStrength");
+
+      gui.addColor(debugObject, "colorWaterDeep").onChange(() => {
+        uniforms.ucColorWaterDeep.value.set(debugObject.colorWaterDeep);
+      });
+      gui.addColor(debugObject, "colorWaterSurface").onChange(() => {
+        uniforms.uColorWaterSurface.value.set(debugObject.colorWaterSurface);
+      });
+      gui.addColor(debugObject, "colorSand").onChange(() => {
+        uniforms.uColorSand.value.set(debugObject.colorSand);
+      });
+      gui.addColor(debugObject, "colorGrass").onChange(() => {
+        uniforms.uColorGrass.value.set(debugObject.colorGrass);
+      });
+      gui.addColor(debugObject, "colorSnow").onChange(() => {
+        uniforms.uColorSnow.value.set(debugObject.colorSnow);
+      });
+      gui.addColor(debugObject, "colorRock").onChange(() => {
+        uniforms.uColorRock.value.set(debugObject.colorRock);
+      });
 
       const material = new CustomShaderMaterial({
         // CSM
         baseMaterial: THREE.MeshStandardMaterial,
         vertexShader: terrainVertexShader,
         fragmentShader: terrainFragmentShader,
+        uniforms: uniforms,
 
         // Mesh Standart Material
         metalness: 0,
@@ -145,13 +216,38 @@ const WebGLTestMain = () => {
         color: "#85d534",
       });
 
+      const depthMaterial = new CustomShaderMaterial({
+        // CSM
+        baseMaterial: THREE.MeshDepthMaterial,
+        vertexShader: terrainVertexShader,
+        uniforms: uniforms,
+
+        // Mesh Depth Material
+        depthPacking: THREE.RGBADepthPacking,
+      });
+
       // Mesh
       const terrain = new THREE.Mesh(geometry, material);
+      terrain.customDepthMaterial = depthMaterial;
 
       terrain.receiveShadow = true;
       terrain.castShadow = true;
 
       scene.add(terrain);
+
+      /**
+       * Water
+       */
+      const water = new THREE.Mesh(
+        new THREE.PlaneGeometry(10, 10, 1, 1),
+        new THREE.MeshPhysicalMaterial({
+          transmission: 1,
+          roughness: 0.3,
+        }),
+      );
+      water.rotation.x = -Math.PI * 0.5;
+      water.position.y = -0.1;
+      scene.add(water);
 
       /**
        * Board
@@ -199,7 +295,10 @@ const WebGLTestMain = () => {
         sizes.height = window.innerHeight;
         sizes.pixelRatio = Math.min(window.devicePixelRatio, 2);
 
-        sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio);
+        sizes.resolution.set(
+          sizes.width * sizes.pixelRatio,
+          sizes.height * sizes.pixelRatio,
+        );
 
         // // Materials
         // if (particles) {
@@ -223,7 +322,12 @@ const WebGLTestMain = () => {
        * Camera
        */
       // Base camera
-      const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 100);
+      const camera = new THREE.PerspectiveCamera(
+        25,
+        sizes.width / sizes.height,
+        0.1,
+        100,
+      );
       camera.position.set(-10, 6, -2);
       scene.add(camera);
 
@@ -256,8 +360,9 @@ const WebGLTestMain = () => {
       const timer = new THREE.Timer();
       let previousTime = 0;
 
-      let currentIntersect: null | THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>> =
-        null;
+      let currentIntersect: null | THREE.Intersection<
+        THREE.Object3D<THREE.Object3DEventMap>
+      > = null;
 
       const tick = () => {
         // controls.update();
@@ -266,6 +371,8 @@ const WebGLTestMain = () => {
         const elapsedTime = timer.getElapsed();
         const deltaTime = elapsedTime - previousTime;
         previousTime = elapsedTime;
+
+        uniforms.uTime.value = elapsedTime;
 
         // Update controls
         controls.update();
