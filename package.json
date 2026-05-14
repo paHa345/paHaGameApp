@@ -71,6 +71,7 @@
     "react-transition-group": "^4.4.5",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
+    "stats.js": "^0.17.0",
     "styled": "^1.0.0",
     "swr": "^2.2.5",
     "three": "^0.183.2",
