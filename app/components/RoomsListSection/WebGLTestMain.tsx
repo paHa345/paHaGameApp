@@ -57,9 +57,8 @@ const WebGLTestMain = () => {
   //   pixelRatio: Math.min(window.devicePixelRatio, 2),
   // });
 
-  const [cubeColor, setCubeColor] = useState({
-    color: 0xff0000,
-  });
+  const [showTextStatus, setShowTextStatus] = useState(0);
+  const [scalePoint, setScalePoint] = useState(0);
 
   const modelRef = useRef<any>(null);
 
@@ -124,8 +123,14 @@ const WebGLTestMain = () => {
       const loadingManager = new THREE.LoadingManager(
         // Loaded
         () => {
-          gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0 });
-          loadingBarEl.style.transform = ``;
+          gsap.delayedCall(0.5, () => {
+            gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0 });
+            loadingBarEl.style.transform = ``;
+          });
+          // window.setTimeout(() => {
+          //   gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0 });
+          //   loadingBarEl.style.transform = ``;
+          // }, 500);
         },
         // Progress
         (itemUrl, itemsLoaded, itemTotal) => {
@@ -232,14 +237,24 @@ const WebGLTestMain = () => {
       /**
        * Models
        */
-      gltfLoader.load("/models/FlightHelmet/glTF/FlightHelmet.gltf", (gltf) => {
-        gltf.scene.scale.set(10, 10, 10);
-        gltf.scene.position.set(0, -4, 0);
+      gltfLoader.load("/models/DamagedHelmet/glTF/DamagedHelmet.gltf", (gltf) => {
+        gltf.scene.scale.set(2.5, 2.5, 2.5);
         gltf.scene.rotation.y = Math.PI * 0.5;
         scene.add(gltf.scene);
 
         updateAllMaterials();
       });
+
+      /**
+       * Points of interest
+       */
+
+      const points = [
+        {
+          position: new THREE.Vector3(1.55, 0.3, -0.6),
+          element: document.querySelector(".point-0") as any,
+        },
+      ];
 
       /**
        * Lights
@@ -306,6 +321,16 @@ const WebGLTestMain = () => {
         // Update controls
         controls.update();
 
+        // Go through each point
+
+        for (const point of points) {
+          const screenPosition = point.position.clone();
+          screenPosition.project(camera);
+
+          const translateX = screenPosition.x * sizes.width * 0.5;
+          point.element.style.transform = `translateX(${translateX}px)`;
+        }
+
         // Render
         renderer.render(scene, camera);
 
@@ -320,7 +345,7 @@ const WebGLTestMain = () => {
       // Cleanup
       // return () => window.removeEventListener("resize", handleResize);
     }
-  });
+  }, []);
 
   return (
     <>
@@ -332,6 +357,34 @@ const WebGLTestMain = () => {
         ></canvas>
       </div>
       <div className="loading-bar z-20 absolute top-1/2 w-full h-1 bg-slate-50 scale-x-[0] origin-top-left transition duration-500"></div>
+
+      <div
+        className={` point point-0 z-20 
+      absolute top-2/4 left-2/4 scale-[1]
+      
+      `}
+        onMouseEnter={() => {
+          setShowTextStatus(60);
+        }}
+        onMouseLeave={() => {
+          setShowTextStatus(0);
+        }}
+      >
+        <div
+          className="label absolute w-10 h-10 bg-gray-700 opacity-70
+           font-thin font-serif text-center text-2xl
+ text-slate-100 top-[-20px] left-[-20px] border rounded-full cursor-help "
+        >
+          1
+        </div>
+        <div
+          className={` absolute top-[30px] left-[-120px] w-[200px] p-5 rounded 
+         bg-gray-700 opacity-${showTextStatus} font-thin font-serif text-center text-sm 
+          text-slate-100 pointer-events-none `}
+        >
+          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        </div>
+      </div>
     </>
   );
 };
