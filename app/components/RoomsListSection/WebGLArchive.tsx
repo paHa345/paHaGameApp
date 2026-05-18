@@ -8249,3 +8249,313 @@
 //       // return () => window.removeEventListener("resize", handleResize);
 //     }
 //   });
+
+/**
+ * 48 Mixing HTML and WebGL
+ */
+
+//   const [showTextStatus0, setShowTextStatus0] = useState(0);
+//   const [showTextStatus1, setShowTextStatus1] = useState(0);
+//   const [showTextStatus2, setShowTextStatus2] = useState(0);
+//   const [scalePoint, setScalePoint] = useState(0);
+
+//   useEffect(() => {
+//     if (typeof window !== "undefined") {
+//       // const expirience = new Experience(GLCanvasRef.current);
+
+//       const sizes = {
+//         width: 800,
+//         height: 600,
+//         resolution: new THREE.Vector2(800, 600),
+//         pixelRatio: Math.min(window.devicePixelRatio, 2),
+//       };
+
+//       // sizes.resolution = new THREE.Vector2(sizes.width, sizes.height);
+
+//       /**
+//        * Stats
+//        */
+
+//       const stats = new Stats();
+//       stats.showPanel(0);
+//       document.body.appendChild(stats.dom);
+
+//       /**
+//        * Base
+//        */
+//       // Debug
+//       const gui = new GUI();
+
+//       // Scene
+//       const scene = new THREE.Scene();
+
+//       // Loaders
+
+//       let sceneReady = false;
+
+//       const loadingBarEl = document.querySelector(".loading-bar") as any;
+
+//       const loadingManager = new THREE.LoadingManager(
+//         // Loaded
+//         () => {
+//           gsap.delayedCall(0.5, () => {
+//             gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0 });
+//             loadingBarEl.style.transform = ``;
+//           });
+//           // window.setTimeout(() => {
+//           //   gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0 });
+//           //   loadingBarEl.style.transform = ``;
+//           // }, 500);
+
+//           window.setTimeout(() => {
+//             sceneReady = true;
+//           }, 3000);
+//         },
+//         // Progress
+//         (itemUrl, itemsLoaded, itemTotal) => {
+//           const progressRatio = itemsLoaded / itemTotal;
+//           loadingBarEl.style.transform = `scalex(${progressRatio})`;
+//         },
+//       );
+//       const gltfLoader = new GLTFLoader(loadingManager);
+//       const cubeTextureLoader = new THREE.CubeTextureLoader();
+
+//       const debugObject = { envMapIntensity: 2.5 };
+
+//       window.addEventListener("resize", () => {
+//         // Update sizes
+//         sizes.width = window.innerWidth;
+//         sizes.height = window.innerHeight;
+//         sizes.pixelRatio = Math.min(window.devicePixelRatio, 2);
+
+//         sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio);
+
+//         // // Materials
+//         // if (particles) {
+//         //   particles.material.uniforms.uResolution.value.set(
+//         //     sizes.width * sizes.pixelRatio,
+//         //     sizes.height * sizes.pixelRatio,
+//         //   );
+//         // }
+
+//         // Update camera
+//         camera.aspect = sizes.width / sizes.height;
+//         camera.updateProjectionMatrix();
+
+//         // Update renderer
+//         // renderer.toneMapping = THREE.ACESFilmicToneMapping;
+//         renderer.setSize(sizes.width, sizes.height);
+//         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+//         // Update effect composer
+
+//         // effectComposer.setSize(sizes.width, sizes.height);
+//         // effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+//       });
+
+//       /**
+//        * Overlay
+//        */
+
+//       const overlayGeometry = new THREE.PlaneGeometry(2, 2, 1, 1);
+//       const overlayMaterial = new THREE.ShaderMaterial({
+//         uniforms: {
+//           uAlpha: { value: 1 },
+//         },
+//         transparent: true,
+//         // wireframe: true,
+//         vertexShader: `
+//         void main(){
+//         gl_Position = vec4(position, 1.0);
+//         }
+//         `,
+//         fragmentShader: `
+//               uniform float uAlpha;
+
+//                 void main(){
+//                 gl_FragColor = vec4(0.0,0.0,0.0, uAlpha);
+
+//         }`,
+//       });
+
+//       const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial);
+//       scene.add(overlay);
+
+//       /**
+//        * Update all materials
+//        */
+//       const updateAllMaterials = () => {
+//         scene.traverse((child) => {
+//           if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
+//             // child.material.envMap = environmentMap
+//             child.material.envMapIntensity = debugObject.envMapIntensity;
+//             child.material.needsUpdate = true;
+//             child.castShadow = true;
+//             child.receiveShadow = true;
+//           }
+//         });
+//       };
+
+//       /**
+//        * Environment map
+//        */
+//       const environmentMap = cubeTextureLoader.load([
+//         "/textures/environmentMaps/0/px.jpg",
+//         "/textures/environmentMaps/0/nx.jpg",
+//         "/textures/environmentMaps/0/py.jpg",
+//         "/textures/environmentMaps/0/ny.jpg",
+//         "/textures/environmentMaps/0/pz.jpg",
+//         "/textures/environmentMaps/0/nz.jpg",
+//       ]);
+
+//       environmentMap.colorSpace = THREE.SRGBColorSpace;
+
+//       scene.background = environmentMap;
+//       scene.environment = environmentMap;
+
+//       /**
+//        * Models
+//        */
+//       gltfLoader.load("/models/DamagedHelmet/glTF/DamagedHelmet.gltf", (gltf) => {
+//         gltf.scene.scale.set(2.5, 2.5, 2.5);
+//         gltf.scene.rotation.y = Math.PI * 0.5;
+//         scene.add(gltf.scene);
+
+//         updateAllMaterials();
+//       });
+
+//       /**
+//        * Points of interest
+//        */
+
+//       const raycaster = new THREE.Raycaster();
+
+//       const points = [
+//         {
+//           position: new THREE.Vector3(1.55, 0.3, -0.6),
+//           element: document.querySelector(".point-0") as any,
+//         },
+//         {
+//           position: new THREE.Vector3(0.5, 0.8, -1.6),
+//           element: document.querySelector(".point-1") as any,
+//         },
+//         {
+//           position: new THREE.Vector3(1.6, -1.3, -0.7),
+//           element: document.querySelector(".point-2") as any,
+//         },
+//       ];
+
+//       /**
+//        * Lights
+//        */
+//       const directionalLight = new THREE.DirectionalLight("#ffffff", 3);
+//       directionalLight.castShadow = true;
+//       directionalLight.shadow.camera.far = 15;
+//       directionalLight.shadow.mapSize.set(1024, 1024);
+//       directionalLight.shadow.normalBias = 0.05;
+//       directionalLight.position.set(0.25, 3, -2.25);
+//       scene.add(directionalLight);
+
+//       /**
+//        * Camera
+//        */
+//       // Base camera
+//       const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 100);
+//       camera.position.set(4, 1, -4);
+//       scene.add(camera);
+
+//       // Controls
+//       const controls = new OrbitControls(camera, GLCanvasRef.current);
+//       controls.enableDamping = true;
+
+//       /**
+//        * Renderer
+//        */
+
+//       if (GLCanvasRef.current === null) {
+//         return;
+//       }
+//       const renderer = new THREE.WebGLRenderer({
+//         canvas: GLCanvasRef.current,
+//         // powerPreference: "high-performance",
+//         antialias: true,
+//       });
+//       renderer.toneMapping = THREE.ReinhardToneMapping;
+//       renderer.toneMappingExposure = 3;
+//       renderer.shadowMap.enabled = true;
+//       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+//       renderer.setSize(sizes.width, sizes.height);
+//       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+//       /**
+//        * Animate
+//        */
+
+//       const timer = new THREE.Timer();
+//       let previousTime = 0;
+
+//       let currentIntersect: null | THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>> =
+//         null;
+
+//       const tick = () => {
+//         // controls.update();
+//         timer.update();
+
+//         stats.begin();
+
+//         const elapsedTime = timer.getElapsed();
+//         const deltaTime = elapsedTime - previousTime;
+//         previousTime = elapsedTime;
+
+//         // Update controls
+//         controls.update();
+
+//         // Go through each point
+//         if (sceneReady) {
+//           for (const point of points) {
+//             const screenPosition = point.position.clone();
+//             screenPosition.project(camera);
+
+//             const screenPos = new THREE.Vector2();
+//             screenPos.x = screenPosition.x;
+//             screenPos.y = screenPosition.y;
+
+//             raycaster.setFromCamera(screenPos, camera);
+//             const intersects = raycaster.intersectObjects(scene.children, true);
+
+//             if (intersects.length === 0) {
+//               // setScalePoint(1);
+//               point.element.style.display = "block";
+//             } else {
+//               const intersectionDistance = intersects[0].distance;
+//               const pointDistance = point.position.distanceTo(camera.position);
+//               if (intersectionDistance < pointDistance) {
+//                 // setScalePoint(0);
+//                 point.element.style.display = "none";
+//               } else {
+//                 // setScalePoint(1);
+//                 point.element.style.display = "block";
+//               }
+//             }
+
+//             const translateX = screenPosition.x * sizes.width * 0.5;
+//             const translateY = -screenPosition.y * sizes.height * 0.5;
+//             point.element.style.transform = `translate(${translateX}px, ${translateY}px)`;
+//           }
+//         }
+
+//         // Render
+//         renderer.render(scene, camera);
+
+//         // Call tick again on the next frame
+//         window.requestAnimationFrame(tick);
+
+//         stats.end();
+//       };
+
+//       tick();
+
+//       // Cleanup
+//       // return () => window.removeEventListener("resize", handleResize);
+//     }
+//   }, []);

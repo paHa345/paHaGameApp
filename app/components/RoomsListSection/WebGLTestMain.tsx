@@ -57,7 +57,9 @@ const WebGLTestMain = () => {
   //   pixelRatio: Math.min(window.devicePixelRatio, 2),
   // });
 
-  const [showTextStatus, setShowTextStatus] = useState(0);
+  const [showTextStatus0, setShowTextStatus0] = useState(0);
+  const [showTextStatus1, setShowTextStatus1] = useState(0);
+  const [showTextStatus2, setShowTextStatus2] = useState(0);
   const [scalePoint, setScalePoint] = useState(0);
 
   const modelRef = useRef<any>(null);
@@ -118,6 +120,8 @@ const WebGLTestMain = () => {
 
       // Loaders
 
+      let sceneReady = false;
+
       const loadingBarEl = document.querySelector(".loading-bar") as any;
 
       const loadingManager = new THREE.LoadingManager(
@@ -131,6 +135,10 @@ const WebGLTestMain = () => {
           //   gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0 });
           //   loadingBarEl.style.transform = ``;
           // }, 500);
+
+          window.setTimeout(() => {
+            sceneReady = true;
+          }, 3000);
         },
         // Progress
         (itemUrl, itemsLoaded, itemTotal) => {
@@ -249,10 +257,20 @@ const WebGLTestMain = () => {
        * Points of interest
        */
 
+      const raycaster = new THREE.Raycaster();
+
       const points = [
         {
           position: new THREE.Vector3(1.55, 0.3, -0.6),
           element: document.querySelector(".point-0") as any,
+        },
+        {
+          position: new THREE.Vector3(0.5, 0.8, -1.6),
+          element: document.querySelector(".point-1") as any,
+        },
+        {
+          position: new THREE.Vector3(1.6, -1.3, -0.7),
+          element: document.querySelector(".point-2") as any,
         },
       ];
 
@@ -322,13 +340,37 @@ const WebGLTestMain = () => {
         controls.update();
 
         // Go through each point
+        if (sceneReady) {
+          for (const point of points) {
+            const screenPosition = point.position.clone();
+            screenPosition.project(camera);
 
-        for (const point of points) {
-          const screenPosition = point.position.clone();
-          screenPosition.project(camera);
+            const screenPos = new THREE.Vector2();
+            screenPos.x = screenPosition.x;
+            screenPos.y = screenPosition.y;
 
-          const translateX = screenPosition.x * sizes.width * 0.5;
-          point.element.style.transform = `translateX(${translateX}px)`;
+            raycaster.setFromCamera(screenPos, camera);
+            const intersects = raycaster.intersectObjects(scene.children, true);
+
+            if (intersects.length === 0) {
+              // setScalePoint(1);
+              point.element.style.display = "block";
+            } else {
+              const intersectionDistance = intersects[0].distance;
+              const pointDistance = point.position.distanceTo(camera.position);
+              if (intersectionDistance < pointDistance) {
+                // setScalePoint(0);
+                point.element.style.display = "none";
+              } else {
+                // setScalePoint(1);
+                point.element.style.display = "block";
+              }
+            }
+
+            const translateX = screenPosition.x * sizes.width * 0.5;
+            const translateY = -screenPosition.y * sizes.height * 0.5;
+            point.element.style.transform = `translate(${translateX}px, ${translateY}px)`;
+          }
         }
 
         // Render
@@ -360,14 +402,15 @@ const WebGLTestMain = () => {
 
       <div
         className={` point point-0 z-20 
-      absolute top-2/4 left-2/4 scale-[1]
+      absolute top-2/4 left-2/4
+       hidden
       
       `}
         onMouseEnter={() => {
-          setShowTextStatus(60);
+          setShowTextStatus0(60);
         }}
         onMouseLeave={() => {
-          setShowTextStatus(0);
+          setShowTextStatus0(0);
         }}
       >
         <div
@@ -379,7 +422,61 @@ const WebGLTestMain = () => {
         </div>
         <div
           className={` absolute top-[30px] left-[-120px] w-[200px] p-5 rounded 
-         bg-gray-700 opacity-${showTextStatus} font-thin font-serif text-center text-sm 
+         bg-gray-700 opacity-${showTextStatus0} font-thin font-serif text-center text-sm 
+          text-slate-100 pointer-events-none `}
+        >
+          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        </div>
+      </div>
+      <div
+        className={` point point-1 z-20 
+      absolute top-2/4 left-2/4 hidden
+      
+      `}
+        onMouseEnter={() => {
+          setShowTextStatus1(60);
+        }}
+        onMouseLeave={() => {
+          setShowTextStatus1(0);
+        }}
+      >
+        <div
+          className="label absolute w-10 h-10 bg-gray-700 opacity-70
+           font-thin font-serif text-center text-2xl
+ text-slate-100 top-[-20px] left-[-20px] border rounded-full cursor-help "
+        >
+          2
+        </div>
+        <div
+          className={` absolute top-[30px] left-[-120px] w-[200px] p-5 rounded 
+         bg-gray-700 opacity-${showTextStatus1} font-thin font-serif text-center text-sm 
+          text-slate-100 pointer-events-none `}
+        >
+          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        </div>
+      </div>
+      <div
+        className={` point point-2 z-20 
+      absolute top-2/4 left-2/4 hidden
+      
+      `}
+        onMouseEnter={() => {
+          setShowTextStatus2(60);
+        }}
+        onMouseLeave={() => {
+          setShowTextStatus2(0);
+        }}
+      >
+        <div
+          className="label absolute w-10 h-10 bg-gray-700 opacity-70
+           font-thin font-serif text-center text-2xl
+ text-slate-100 top-[-20px] left-[-20px] border rounded-full cursor-help "
+        >
+          3
+        </div>
+        <div
+          className={` absolute top-[30px] left-[-120px] w-[200px] p-5 rounded 
+         bg-gray-700 opacity-${showTextStatus2} font-thin font-serif text-center text-sm 
           text-slate-100 pointer-events-none `}
         >
           Lorem ipsum dolor sit amet consectetur adipisicing elit.
