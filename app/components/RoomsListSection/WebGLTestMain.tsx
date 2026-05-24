@@ -18,7 +18,10 @@ import * as CANNON from "cannon-es";
 import { GLTF, GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 // import { paginateListObjectsV2 } from "@aws-sdk/client-s3";
-import { GPUComputationRenderer, Variable } from "three/addons/misc/GPUComputationRenderer.js";
+import {
+  GPUComputationRenderer,
+  Variable,
+} from "three/addons/misc/GPUComputationRenderer.js";
 
 // import FlyingRobot from "./FlyingRobot";
 // import Robot from "./Robot";
@@ -35,8 +38,6 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 
 import { Brush, Evaluator, SUBTRACTION } from "three-bvh-csg";
-import terrainVertexShader from "./shaders/terrain/vertex.glsl";
-import terrainFragmentShader from "./shaders/terrain/fragment.glsl";
 import { DotScreenPass } from "three/addons/postprocessing/DotScreenPass.js";
 import { GlitchPass } from "three/addons/postprocessing/GlitchPass.js";
 import { RGBShiftShader } from "three/addons/shaders/RGBShiftShader.js";
@@ -46,6 +47,9 @@ import { SMAAPass } from "three/addons/postprocessing/SMAAPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import Stats from "stats.js";
 import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js";
+
+import firefliesFragmentShader from "./shaders/fireflies/fragment.glsl";
+import firefliesVertexShader from "./shaders/fireflies/vertex.glsl";
 
 const WebGLTestMain = () => {
   const GLCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -109,11 +113,22 @@ const WebGLTestMain = () => {
       stats.showPanel(0);
       document.body.appendChild(stats.dom);
 
+      // /**
+      //  * Spector
+      //  */
+
+      // const SPECTOR = require("spectorjs");
+
+      // const spector = new SPECTOR.Spector();
+      // spector.displayUI();
+
       /**
        * Base
        */
       // Debug
-      const gui = new GUI();
+      const gui = new GUI({ width: 400 });
+
+      const debugObject = { clearColor: "#4f5f4e" };
 
       // Scene
       const scene = new THREE.Scene();
@@ -132,7 +147,13 @@ const WebGLTestMain = () => {
       const gltfLoader = new GLTFLoader();
       gltfLoader.setDRACOLoader(dracoLoader);
 
-      const debugObject = { envMapIntensity: 2.5 };
+      /**
+       * Textures
+       */
+
+      const bakesTexture = textureLoader.load("baked.jpg");
+      bakesTexture.flipY = false;
+      bakesTexture.colorSpace = THREE.SRGBColorSpace;
 
       window.addEventListener("resize", () => {
         // Update sizes
@@ -140,7 +161,10 @@ const WebGLTestMain = () => {
         sizes.height = window.innerHeight;
         sizes.pixelRatio = Math.min(window.devicePixelRatio, 2);
 
-        sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio);
+        sizes.resolution.set(
+          sizes.width * sizes.pixelRatio,
+          sizes.height * sizes.pixelRatio,
+        );
 
         // // Materials
         // if (particles) {
@@ -159,6 +183,13 @@ const WebGLTestMain = () => {
         renderer.setSize(sizes.width, sizes.height);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+        // Update fireflies
+
+        firefliesMaterial.uniforms.uPixelRatio.value = Math.min(
+          window.devicePixelRatio,
+          2,
+        );
+
         // Update effect composer
 
         // effectComposer.setSize(sizes.width, sizes.height);
@@ -166,26 +197,111 @@ const WebGLTestMain = () => {
       });
 
       /**
-       * Object
+       * Material
        */
-      const cube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial());
 
-      scene.add(cube);
+      const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakesTexture });
+
+      // Pole lamp material
+
+      const poleLampMaterial = new THREE.MeshBasicMaterial({ color: 0xffffe5 });
+      const portalLightMaterial = new THREE.MeshBasicMaterial({
+        color: "#e9abed",
+      });
 
       /**
        * Model
        */
 
       gltfLoader.load("./portal.glb", (gltf) => {
+        // gltf.scene.traverse((child) => {
+        //   const GLTFEl = child as THREE.Mesh;
+        //   GLTFEl.material = bakedMaterial;
+        // });
+
+        const bakedMesh = gltf.scene.children.find((child) => {
+          return child.name === "baked";
+        }) as THREE.Mesh;
+
+        const poleLightAMesh = gltf.scene.children.find((child) => {
+          return child.name === "poleLightA";
+        }) as THREE.Mesh;
+        const poleLightBMesh = gltf.scene.children.find((child) => {
+          return child.name === "poleLightB";
+        }) as THREE.Mesh;
+        const portalLightMesh = gltf.scene.children.find((child) => {
+          return child.name === "portalLight";
+        }) as THREE.Mesh;
+
+        bakedMesh.material = bakedMaterial;
+        poleLightAMesh.material = poleLampMaterial;
+        poleLightBMesh.material = poleLampMaterial;
+        portalLightMesh.material = portalLightMaterial;
+
         scene.add(gltf.scene);
-        console.log(gltf.scene);
       });
+
+      /**
+       * Fireflies
+       */
+
+      const firefliesGeometry = new THREE.BufferGeometry();
+      const firefliesCount = 30;
+      const positionsArray = new Float32Array(firefliesCount * 3);
+
+      const scaleArray = new Float32Array(firefliesCount);
+
+      for (let i = 0; i < firefliesCount; i++) {
+        positionsArray[i * 3 + 0] = (Math.random() - 0.5) * 4;
+        positionsArray[i * 3 + 1] = Math.random() * 1.5;
+        positionsArray[i * 3 + 2] = (Math.random() - 0.5) * 4;
+
+        scaleArray[i] = Math.random();
+      }
+      firefliesGeometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(positionsArray, 3),
+      );
+      firefliesGeometry.setAttribute(
+        "aScale",
+        new THREE.BufferAttribute(scaleArray, 1),
+      );
+
+      //Material
+      const firefliesMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+          uTime: { value: 0 },
+          uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+          uSize: { value: 100 },
+        },
+        fragmentShader: firefliesFragmentShader,
+        vertexShader: firefliesVertexShader,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      });
+
+      gui
+        .add(firefliesMaterial.uniforms.uSize, "value")
+        .min(0)
+        .max(500)
+        .step(1);
+
+      // Points
+
+      const fireflies = new THREE.Points(firefliesGeometry, firefliesMaterial);
+      scene.add(fireflies);
 
       /**
        * Camera
        */
       // Base camera
-      const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 100);
+      const camera = new THREE.PerspectiveCamera(
+        25,
+        sizes.width / sizes.height,
+        0.1,
+        100,
+      );
       camera.position.x = 4;
       camera.position.y = 2;
       camera.position.z = 4;
@@ -210,6 +326,12 @@ const WebGLTestMain = () => {
       renderer.setSize(sizes.width, sizes.height);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+      renderer.setClearColor(debugObject.clearColor);
+
+      gui.addColor(debugObject, "clearColor").onChange(() => {
+        renderer.setClearColor(debugObject.clearColor);
+      });
+
       /**
        * Animate
        */
@@ -217,8 +339,9 @@ const WebGLTestMain = () => {
       const timer = new THREE.Timer();
       let previousTime = 0;
 
-      let currentIntersect: null | THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>> =
-        null;
+      let currentIntersect: null | THREE.Intersection<
+        THREE.Object3D<THREE.Object3DEventMap>
+      > = null;
 
       const tick = () => {
         // controls.update();
@@ -229,6 +352,9 @@ const WebGLTestMain = () => {
         const elapsedTime = timer.getElapsed();
         const deltaTime = elapsedTime - previousTime;
         previousTime = elapsedTime;
+
+        // Update fireflys material
+        firefliesMaterial.uniforms.uTime.value = elapsedTime;
 
         // Update controls
         controls.update();
