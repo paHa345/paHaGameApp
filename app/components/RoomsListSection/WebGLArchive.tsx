@@ -8559,3 +8559,289 @@
 //       // return () => window.removeEventListener("resize", handleResize);
 //     }
 //   }, []);
+
+/**
+ * 52 Portal scene
+ */
+
+// shaders shaders/fireflies
+//   /shaders/portal
+
+//   useEffect(() => {
+//     if (typeof window !== "undefined") {
+//       // const expirience = new Experience(GLCanvasRef.current);
+
+//       const sizes = {
+//         width: 800,
+//         height: 600,
+//         resolution: new THREE.Vector2(800, 600),
+//         pixelRatio: Math.min(window.devicePixelRatio, 2),
+//       };
+
+//       // sizes.resolution = new THREE.Vector2(sizes.width, sizes.height);
+
+//       /**
+//        * Stats
+//        */
+
+//       const stats = new Stats();
+//       stats.showPanel(0);
+//       document.body.appendChild(stats.dom);
+
+//       // /**
+//       //  * Spector
+//       //  */
+
+//       // const SPECTOR = require("spectorjs");
+
+//       // const spector = new SPECTOR.Spector();
+//       // spector.displayUI();
+
+//       /**
+//        * Base
+//        */
+//       // Debug
+//       const gui = new GUI({ width: 400 });
+
+//       const debugObject = {
+//         clearColor: "#4f5f4e",
+//         portalColorStart: "#FDE7E7",
+//         portalColorEnd: "#F891EA",
+//       };
+
+//       // Scene
+//       const scene = new THREE.Scene();
+
+//       /**
+//        * Loaders
+//        */
+//       // Texture loader
+//       const textureLoader = new THREE.TextureLoader();
+
+//       // Draco loader
+//       const dracoLoader = new DRACOLoader();
+//       dracoLoader.setDecoderPath("draco/");
+
+//       // GLTF loader
+//       const gltfLoader = new GLTFLoader();
+//       gltfLoader.setDRACOLoader(dracoLoader);
+
+//       /**
+//        * Textures
+//        */
+
+//       const bakesTexture = textureLoader.load("baked.jpg");
+//       bakesTexture.flipY = false;
+//       bakesTexture.colorSpace = THREE.SRGBColorSpace;
+
+//       window.addEventListener("resize", () => {
+//         // Update sizes
+//         sizes.width = window.innerWidth;
+//         sizes.height = window.innerHeight;
+//         sizes.pixelRatio = Math.min(window.devicePixelRatio, 2);
+
+//         sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio);
+
+//         // // Materials
+//         // if (particles) {
+//         //   particles.material.uniforms.uResolution.value.set(
+//         //     sizes.width * sizes.pixelRatio,
+//         //     sizes.height * sizes.pixelRatio,
+//         //   );
+//         // }
+
+//         // Update camera
+//         camera.aspect = sizes.width / sizes.height;
+//         camera.updateProjectionMatrix();
+
+//         // Update renderer
+//         // renderer.toneMapping = THREE.ACESFilmicToneMapping;
+//         renderer.setSize(sizes.width, sizes.height);
+//         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+//         // Update fireflies
+
+//         firefliesMaterial.uniforms.uPixelRatio.value = Math.min(window.devicePixelRatio, 2);
+
+//         // Update effect composer
+
+//         // effectComposer.setSize(sizes.width, sizes.height);
+//         // effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+//       });
+
+//       /**
+//        * Material
+//        */
+
+//       const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakesTexture });
+
+//       // Pole lamp material
+
+//       const poleLampMaterial = new THREE.MeshBasicMaterial({ color: 0xffffe5 });
+//       const portalLightMaterial = new THREE.ShaderMaterial({
+//         uniforms: {
+//           uTime: { value: 0 },
+//           uColorStart: { value: new THREE.Color("#FDE7E7") },
+//           uColorEnd: { value: new THREE.Color("#F891EA") },
+//         },
+//         vertexShader: portalVertexShader,
+//         fragmentShader: portalFragmentShader,
+//       });
+
+//       gui.addColor(debugObject, "portalColorStart").onChange(() => {
+//         portalLightMaterial.uniforms.uColorStart.value.set(debugObject.portalColorStart);
+//       });
+//       gui.addColor(debugObject, "portalColorEnd").onChange(() => {
+//         portalLightMaterial.uniforms.uColorEnd.value.set(debugObject.portalColorEnd);
+//       });
+
+//       /**
+//        * Model
+//        */
+
+//       gltfLoader.load("./portal.glb", (gltf) => {
+//         // gltf.scene.traverse((child) => {
+//         //   const GLTFEl = child as THREE.Mesh;
+//         //   GLTFEl.material = bakedMaterial;
+//         // });
+
+//         const bakedMesh = gltf.scene.children.find((child) => {
+//           return child.name === "baked";
+//         }) as THREE.Mesh;
+
+//         const poleLightAMesh = gltf.scene.children.find((child) => {
+//           return child.name === "poleLightA";
+//         }) as THREE.Mesh;
+//         const poleLightBMesh = gltf.scene.children.find((child) => {
+//           return child.name === "poleLightB";
+//         }) as THREE.Mesh;
+//         const portalLightMesh = gltf.scene.children.find((child) => {
+//           return child.name === "portalLight";
+//         }) as THREE.Mesh;
+
+//         bakedMesh.material = bakedMaterial;
+//         poleLightAMesh.material = poleLampMaterial;
+//         poleLightBMesh.material = poleLampMaterial;
+//         portalLightMesh.material = portalLightMaterial;
+
+//         scene.add(gltf.scene);
+//       });
+
+//       /**
+//        * Fireflies
+//        */
+
+//       const firefliesGeometry = new THREE.BufferGeometry();
+//       const firefliesCount = 30;
+//       const positionsArray = new Float32Array(firefliesCount * 3);
+
+//       const scaleArray = new Float32Array(firefliesCount);
+
+//       for (let i = 0; i < firefliesCount; i++) {
+//         positionsArray[i * 3 + 0] = (Math.random() - 0.5) * 4;
+//         positionsArray[i * 3 + 1] = Math.random() * 1.5;
+//         positionsArray[i * 3 + 2] = (Math.random() - 0.5) * 4;
+
+//         scaleArray[i] = Math.random();
+//       }
+//       firefliesGeometry.setAttribute("position", new THREE.BufferAttribute(positionsArray, 3));
+//       firefliesGeometry.setAttribute("aScale", new THREE.BufferAttribute(scaleArray, 1));
+
+//       //Material
+//       const firefliesMaterial = new THREE.ShaderMaterial({
+//         uniforms: {
+//           uTime: { value: 0 },
+//           uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+//           uSize: { value: 100 },
+//         },
+//         fragmentShader: firefliesFragmentShader,
+//         vertexShader: firefliesVertexShader,
+//         transparent: true,
+//         blending: THREE.AdditiveBlending,
+//         depthWrite: false,
+//       });
+
+//       gui.add(firefliesMaterial.uniforms.uSize, "value").min(0).max(500).step(1);
+
+//       // Points
+
+//       const fireflies = new THREE.Points(firefliesGeometry, firefliesMaterial);
+//       scene.add(fireflies);
+
+//       /**
+//        * Camera
+//        */
+//       // Base camera
+//       const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 100);
+//       camera.position.x = 4;
+//       camera.position.y = 2;
+//       camera.position.z = 4;
+//       scene.add(camera);
+
+//       // Controls
+//       const controls = new OrbitControls(camera, GLCanvasRef.current);
+//       controls.enableDamping = true;
+
+//       /**
+//        * Renderer
+//        */
+
+//       if (GLCanvasRef.current === null) {
+//         return;
+//       }
+//       const renderer = new THREE.WebGLRenderer({
+//         canvas: GLCanvasRef.current,
+//         // powerPreference: "high-performance",
+//         antialias: true,
+//       });
+//       renderer.setSize(sizes.width, sizes.height);
+//       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+//       renderer.setClearColor(debugObject.clearColor);
+
+//       gui.addColor(debugObject, "clearColor").onChange(() => {
+//         renderer.setClearColor(debugObject.clearColor);
+//       });
+
+//       /**
+//        * Animate
+//        */
+
+//       const timer = new THREE.Timer();
+//       let previousTime = 0;
+
+//       let currentIntersect: null | THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>> =
+//         null;
+
+//       const tick = () => {
+//         // controls.update();
+//         timer.update();
+
+//         stats.begin();
+
+//         const elapsedTime = timer.getElapsed();
+//         const deltaTime = elapsedTime - previousTime;
+//         previousTime = elapsedTime;
+
+//         // Update fireflys material
+//         firefliesMaterial.uniforms.uTime.value = elapsedTime;
+//         portalLightMaterial.uniforms.uTime.value = elapsedTime;
+
+//         // Update controls
+//         controls.update();
+
+//         // Render
+//         renderer.render(scene, camera);
+
+//         // Call tick again on the next frame
+//         window.requestAnimationFrame(tick);
+
+//         stats.end();
+//       };
+
+//       tick();
+
+//       // Cleanup
+//       // return () => window.removeEventListener("resize", handleResize);
+//     }
+//   }, []);
