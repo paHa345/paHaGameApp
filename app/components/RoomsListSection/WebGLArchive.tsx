@@ -8845,3 +8845,73 @@
 //       // return () => window.removeEventListener("resize", handleResize);
 //     }
 //   }, []);
+
+/**
+ * 56 R3F and Drei
+ */
+
+//   return (
+//     <>
+//       <OrbitControls makeDefault />
+//       <directionalLight position={[1, 2, 3]} intensity={1.5} />
+//       <ambientLight intensity={0.5} />
+//       <group ref={groupRef}>
+//         <PivotControls
+//           depthTest={false}
+//           lineWidth={4}
+//           //   scale={2}
+//           //   axisColors={["red", "blue", "black"]}
+//           //   fixed={true}
+//           anchor={[0, 0, 0]}
+//         >
+//           <mesh ref={sphereRef} position={[-2, 0, 0]}>
+//             {/* <sphereGeometry args={[1.5, 32, 32]} /> */}
+//             <sphereGeometry />
+//             <meshStandardMaterial color="orange" />
+//             <Html
+//               className=" text-4xl absolute bg-gray-700 p-4 whitespace-nowrap
+//  overflow-hidden rounded-2xl select-none text-amber-50 "
+//               position={[1, 1, 0]}
+//               center
+//               distanceFactor={6}
+//               occlude={[sphereRef, cubeRef]}
+//             >
+//               Это сфера
+//             </Html>
+//           </mesh>
+//         </PivotControls>
+//         <mesh ref={cubeRef} rotation-y={Math.PI * 0.25} position={[2, 0, 0]} scale={1.5}>
+//           {/* <sphereGeometry args={[1.5, 32, 32]} /> */}
+//           <boxGeometry scale={1.5} />
+//           <meshStandardMaterial color="mediumpurple" />
+//         </mesh>
+//         <TransformControls object={cubeRef} mode="translate"></TransformControls>
+//       </group>
+//       <mesh position={[0, -1, 0]} rotation-x={-Math.PI / 2} scale={10}>
+//         {/* <sphereGeometry args={[1.5, 32, 32]} /> */}
+//         <planeGeometry />
+//         {/* <MeshReflectorMaterial
+//           resolution={512}
+//           blur={[1000, 1000]}
+//           mixBlur={1}
+//           mirror={0.5}
+//           color={"greenyellow"}
+//         ></MeshReflectorMaterial> */}
+//         <meshStandardMaterial color="greenyellow" wireframe={false} />
+//       </mesh>
+//       <Float speed={5} floatIntensity={2}>
+//         <Text
+//           fontSize={1}
+//           color={"salmon"}
+//           position-y={2}
+//           maxWidth={3}
+//           textAlign="center"
+//           font="./bangers-v20-latin-regular.woff"
+//         >
+//           I Love THREE.JS
+//           {/* <meshNormalMaterial /> */}
+//         </Text>
+//       </Float>
+//       {/* <CustomObject></CustomObject> */}
+//     </>
+//   );
