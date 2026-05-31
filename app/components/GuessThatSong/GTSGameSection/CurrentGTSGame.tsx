@@ -15,17 +15,21 @@ const CurrentGTSGame = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const showFirstStepAnswerStatus = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.showCurrentGameFirstStepAnswer
+    (state: IGuessThatSongSlice) =>
+      state.guessThatSongState.showCurrentGameFirstStepAnswer,
   );
 
   const currentGameShowAnswerStatus = useSelector(
-    (state: IUserSlice) => state.userState.currentGameShowAnswerStatus
+    (state: IUserSlice) => state.userState.currentGameShowAnswerStatus,
   );
 
-  const gamesData = useSelector((state: IUserSlice) => state.userState.gamesData);
+  const gamesData = useSelector(
+    (state: IUserSlice) => state.userState.gamesData,
+  );
 
   const currentGTSAnswers = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData.questionAnswers
+    (state: IGuessThatSongSlice) =>
+      state.guessThatSongState.currentGTSAttemptData.questionAnswers,
   );
 
   const answersEls = currentGTSAnswers.map((answer, index) => {
@@ -43,22 +47,31 @@ const CurrentGTSGame = () => {
           <CurrentAttemptQuestionStatusMain></CurrentAttemptQuestionStatusMain>
         )}
         {/* <GTSGameAudioVisualiser audioRef={audioRef}></GTSGameAudioVisualiser> */}
-        <DisplayCurrentTrack audioRef={audioRef}></DisplayCurrentTrack>
+
+        <DisplayCurrentTrack
+          audioRef={audioRef as React.RefObject<HTMLAudioElement>}
+        ></DisplayCurrentTrack>
 
         {Boolean(currentGameShowAnswerStatus) === false && (
-          <SongStartStopButton audioRef={audioRef}></SongStartStopButton>
+          <SongStartStopButton
+            audioRef={audioRef as React.RefObject<HTMLAudioElement>}
+          ></SongStartStopButton>
         )}
 
         <div className=" flex flex-col w-full h-full justify-center items-center">
           {Boolean(currentGameShowAnswerStatus) === true && (
-            <AnswerShowFirstStepMain audioRef={audioRef}></AnswerShowFirstStepMain>
+            <AnswerShowFirstStepMain
+              audioRef={audioRef as React.RefObject<HTMLAudioElement>}
+            ></AnswerShowFirstStepMain>
           )}
         </div>
 
         {/* <div className=" basis-1/5"> */}
         <AttemptRemainedTimer></AttemptRemainedTimer>
         {/* </div> */}
-        {Boolean(currentGameShowAnswerStatus) === false && <AnswersModalMain></AnswersModalMain>}
+        {Boolean(currentGameShowAnswerStatus) === false && (
+          <AnswersModalMain></AnswersModalMain>
+        )}
         {/* {Boolean(currentGameShowAnswerStatus) === true && <div>{answersEls} </div>} */}
       </div>
     </>

@@ -28,7 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 interface IAudioPlayerControlsProps {
   audioRef: React.RefObject<HTMLAudioElement>;
-  progressBarRef: React.MutableRefObject<null>;
+  progressBarRef: React.RefObject<HTMLInputElement>;
 }
 const AudioPlayerControls = ({
   audioRef,
@@ -36,17 +36,17 @@ const AudioPlayerControls = ({
 }: IAudioPlayerControlsProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const songIsPlaying = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.songIsPlaying
+    (state: IGuessThatSongSlice) => state.guessThatSongState.songIsPlaying,
   );
 
   const isSongMuted = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.mutedSongVolume
+    (state: IGuessThatSongSlice) => state.guessThatSongState.mutedSongVolume,
   );
 
-  const playAnimationRef: any = useRef();
+  const playAnimationRef: any = useRef(null);
 
   const songVolume = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.songVolume
+    (state: IGuessThatSongSlice) => state.guessThatSongState.songVolume,
   );
   const stopStartSongHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -58,7 +58,7 @@ const AudioPlayerControls = ({
   };
   const playingSongCurrentTime = useSelector(
     (state: IGuessThatSongSlice) =>
-      state.guessThatSongState.playingSongCurrentTime
+      state.guessThatSongState.playingSongCurrentTime,
   );
 
   const changeVolumeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,8 +98,8 @@ const AudioPlayerControls = ({
     if (audioRef.current?.currentTime) {
       dispatch(
         guessThatSongActions.setPlayingSongCurrentTime(
-          audioRef.current?.currentTime
-        )
+          audioRef.current?.currentTime,
+        ),
       );
       // progressBarRef.current.value = playingSongCurrentTime;
       // let time = progressBarRef.current?.value;

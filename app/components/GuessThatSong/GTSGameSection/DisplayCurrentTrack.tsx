@@ -1,5 +1,8 @@
 import { AppDispatch } from "@/app/store";
-import { guessThatSongActions, IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
+import {
+  guessThatSongActions,
+  IGuessThatSongSlice,
+} from "@/app/store/guessThatSongSlice";
 import { Dispatch } from "@reduxjs/toolkit";
 import React, { SetStateAction, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,12 +14,14 @@ interface IDisplayCurrentTrackProps {
 
 const DisplayCurrentTrack = ({ audioRef }: IDisplayCurrentTrackProps) => {
   const currentAttempt = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSGameAttemptID
+    (state: IGuessThatSongSlice) =>
+      state.guessThatSongState.currentGTSGameAttemptID,
   );
   const dispatch = useDispatch<AppDispatch>();
 
   const currentAttemptData = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.currentGTSAttemptData
+    (state: IGuessThatSongSlice) =>
+      state.guessThatSongState.currentGTSAttemptData,
   );
 
   const endSongHandler = () => {
@@ -25,11 +30,11 @@ const DisplayCurrentTrack = ({ audioRef }: IDisplayCurrentTrackProps) => {
   };
 
   const abortController = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.abortController
+    (state: IGuessThatSongSlice) => state.guessThatSongState.abortController,
   );
 
   const audioSource = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.audioSource
+    (state: IGuessThatSongSlice) => state.guessThatSongState.audioSource,
   );
 
   const audioCanLoadHandler = (e: any) => {

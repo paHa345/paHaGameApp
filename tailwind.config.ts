@@ -26,9 +26,11 @@ export default {
 
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "gradient-conic":
+          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors: {
+        brandPrimary: "#3b82f6",
         mainColor: "#F0C808",
         backgroundBodyColor: "#FFFDF4",
         secoundaryColor: "#E7F9FF",

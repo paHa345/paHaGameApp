@@ -1,7 +1,12 @@
 "use client";
+import { Canvas } from "@react-three/fiber";
 
 const ReactThreeFiberTestMain = () => {
-  return <></>;
+  return (
+    <>
+      <Canvas></Canvas>
+    </>
+  );
 };
 
 export default ReactThreeFiberTestMain;

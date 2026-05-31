@@ -30,32 +30,37 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
   const peaksAudioRef2 = useRef<HTMLMediaElement>(null);
 
   const peaksInstance = useSelector(
-    (state: IEditSongAppSlice) => state.EditSongAppState.addeOptionalAudioValue[value].peaksInstance
+    (state: IEditSongAppSlice) =>
+      state.EditSongAppState.addeOptionalAudioValue[value].peaksInstance,
   );
 
   const songVolume = useSelector(
-    (state: IEditSongAppSlice) => state.EditSongAppState.addeOptionalAudioValue[value].songVolume
+    (state: IEditSongAppSlice) =>
+      state.EditSongAppState.addeOptionalAudioValue[value].songVolume,
   );
 
   const isSongMuted = useSelector(
-    (state: IEditSongAppSlice) => state.EditSongAppState.addeOptionalAudioValue[value].isSongMuted
+    (state: IEditSongAppSlice) =>
+      state.EditSongAppState.addeOptionalAudioValue[value].isSongMuted,
   );
 
   const showNotificationModal = useSelector(
     (state: IEditSongAppSlice) =>
-      state.EditSongAppState.addeOptionalAudioValue[value].showNotificationModal
+      state.EditSongAppState.addeOptionalAudioValue[value]
+        .showNotificationModal,
   );
 
   const editedSongURL = useSelector(
-    (state: IEditSongAppSlice) => state.EditSongAppState.addeOptionalAudioValue[value].editedSongURL
+    (state: IEditSongAppSlice) =>
+      state.EditSongAppState.addeOptionalAudioValue[value].editedSongURL,
   );
   const editedSongName = useSelector(
     (state: IEditSongAppSlice) =>
-      state.EditSongAppState.addeOptionalAudioValue[value].editedSongName
+      state.EditSongAppState.addeOptionalAudioValue[value].editedSongName,
   );
   const editedSongData = useSelector(
     (state: IEditSongAppSlice) =>
-      state.EditSongAppState.addeOptionalAudioValue[value].editedSongData
+      state.EditSongAppState.addeOptionalAudioValue[value].editedSongData,
   );
 
   const endPeakSongHandler = () => {
@@ -63,7 +68,7 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
       EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
         value: value,
         editedSongIsPlaying: false,
-      })
+      }),
     );
   };
 
@@ -75,7 +80,7 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
         EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
           value: value,
           status: true,
-        })
+        }),
       );
 
       const audioElement = peaksAudioRef2.current;
@@ -90,14 +95,14 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
           EditSongAppStateActions.setOptionalSongEditedSongBlobString({
             value: value,
             blobString: URL.createObjectURL(files[0]),
-          })
+          }),
         );
 
         dispatch(
           EditSongAppStateActions.setOptionalSongEditedSongName({
             value: value,
             editedSongName: files[0].name,
-          })
+          }),
         );
 
         const options2 = {
@@ -114,7 +119,7 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
             EditSongAppStateActions.setOptionalAudioSongIsPlayingStatus({
               value: value,
               editedSongIsPlaying: false,
-            })
+            }),
           );
         }
         if (peaksInstance?.segments) {
@@ -128,10 +133,12 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
         if (peaksInstance) {
           peaksInstance?.setSource(options2, function (error: Error) {
             dispatch(
-              EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
-                value: value,
-                status: false,
-              })
+              EditSongAppStateActions.setOptionalSongshowNotificationModalStatus(
+                {
+                  value: value,
+                  status: false,
+                },
+              ),
             );
             if (error) [console.log(error.message)];
 
@@ -140,10 +147,12 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
         } else {
           setTimeout(() => {
             dispatch(
-              EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
-                value: value,
-                status: false,
-              })
+              EditSongAppStateActions.setOptionalSongshowNotificationModalStatus(
+                {
+                  value: value,
+                  status: false,
+                },
+              ),
             );
           }, 5000);
         }
@@ -151,7 +160,7 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
           EditSongAppStateActions.setOptionalSongEditedSongName({
             value: value,
             editedSongName: files[0].name,
-          })
+          }),
         );
       }
     } catch (error) {
@@ -159,13 +168,15 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
         EditSongAppStateActions.setOptionalSongshowNotificationModalStatus({
           value: value,
           status: false,
-        })
+        }),
       );
       alert("Ошибка. Повторите попытку позднее");
     }
   };
 
-  const downloadEditedSongHandler = async (e: React.MouseEvent<HTMLDivElement>) => {
+  const downloadEditedSongHandler = async (
+    e: React.MouseEvent<HTMLDivElement>,
+  ) => {
     e.preventDefault();
 
     console.log(editedSongName);
@@ -173,13 +184,18 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
     if (editedSongName) {
       const nameString = `${editedSongName.split(".")[0]}_(paHaCutSongApp)${Date.now()}.mp3`;
 
-      FileSaver.saveAs(new Blob([editedSongData.buffer], { type: "audio/mp3" }), nameString);
+      FileSaver.saveAs(
+        new Blob([editedSongData.buffer], { type: "audio/mp3" }),
+        nameString,
+      );
     }
   };
 
   const deleteOptionalSongHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    dispatch(EditSongAppStateActions.setShowDeleteOptionalSongNotificationModal(true));
+    dispatch(
+      EditSongAppStateActions.setShowDeleteOptionalSongNotificationModal(true),
+    );
   };
 
   useEffect(() => {
@@ -215,7 +231,7 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
           EditSongAppStateActions.setOptionalSongPeaksInstance({
             value: value,
             peaksInstance: optionalPeaks,
-          })
+          }),
         );
 
         // peaks?.on("player.timeupdate", function (time) {
@@ -237,7 +253,9 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
   return (
     <div className="px-2 py-5 shadow-optionalAudioElementShadow">
       <div>
-        <NotificationDeleteOptionalSongModal value={value}></NotificationDeleteOptionalSongModal>
+        <NotificationDeleteOptionalSongModal
+          value={value}
+        ></NotificationDeleteOptionalSongModal>
       </div>
       <div className=" w-full flex justify-end px-2">
         <div
@@ -279,7 +297,11 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
         <h1 className=" text-center">{editedSongName}</h1>
       </div>
       <div>
-        <audio ref={peaksAudioRef2} id={`peaksAudio${value}`} onEnded={endPeakSongHandler}></audio>
+        <audio
+          ref={peaksAudioRef2}
+          id={`peaksAudio${value}`}
+          onEnded={endPeakSongHandler}
+        ></audio>
 
         <div id={`zoomview-container${value}`} className=" h-14 w-full"></div>
         <div id={`overview-container${value}`} className=" h-14 w-full"></div>
@@ -287,14 +309,17 @@ const AddedOptionalSongMain = ({ value }: IAddOptionalAudioProps) => {
         {peaksAudioRef2?.current && (
           <AddedSongControlButtons
             value={value}
-            peaksAudioRef={peaksAudioRef2}
+            peaksAudioRef={peaksAudioRef2 as React.RefObject<HTMLMediaElement>}
           ></AddedSongControlButtons>
         )}
       </div>
 
       {editedSongURL && (
         <div className=" py-5">
-          <div onClick={downloadEditedSongHandler} className=" buttonStandart w-1/5 cursor-pointer">
+          <div
+            onClick={downloadEditedSongHandler}
+            className=" buttonStandart w-1/5 cursor-pointer"
+          >
             <span>
               <FontAwesomeIcon className=" pr-3 fa-fw" icon={faDownload} />
             </span>

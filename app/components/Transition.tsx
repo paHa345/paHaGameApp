@@ -1,6 +1,10 @@
-import { TransitionGroup, Transition as ReactTransition } from "react-transition-group";
+import {
+  TransitionGroup,
+  Transition as ReactTransition,
+} from "react-transition-group";
 
-import { ReactChild } from "react";
+// import { ReactChild } from "react";
+import { ReactNode } from "react"; // Заменили ReactChild → ReactNode
 
 type TransitionKind<RC> = {
   children: RC;
@@ -28,7 +32,10 @@ const getTransitionStyles: any = {
   },
 };
 
-const Transition: React.FC<TransitionKind<ReactChild>> = ({ children, location }) => {
+const Transition: React.FC<TransitionKind<ReactNode>> = ({
+  children,
+  location,
+}) => {
   return (
     <TransitionGroup style={{ position: "relative" }}>
       <ReactTransition

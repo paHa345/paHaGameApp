@@ -23,13 +23,13 @@ const modalVariant = {
   hidden: {
     y: "-100vh",
   },
-  visible: {
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 70,
-    },
-  },
+  // visible: {
+  //   y: 0,
+  //   transition: {
+  //     type: "spring",
+  //     stiffness: 70,
+  //   },
+  // },
 };
 
 const Modal: FC<Props> = ({ isOpen, setIsOpen }) => {
@@ -46,9 +46,10 @@ const Modal: FC<Props> = ({ isOpen, setIsOpen }) => {
           <motion.div className="modal-container" variants={modalVariant}>
             <h1>Modal Header</h1>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Porro reprehenderit dolores
-              iure facilis libero repellendus pariatur, totam voluptate magnam dolorem assumenda
-              soluta. Repellendus praesentium, ducimus corporis ab odio dignissimos quam?
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Porro
+              reprehenderit dolores iure facilis libero repellendus pariatur,
+              totam voluptate magnam dolorem assumenda soluta. Repellendus
+              praesentium, ducimus corporis ab odio dignissimos quam?
             </p>
             <motion.div className="close" onClick={() => setIsOpen(false)}>
               <div></div>

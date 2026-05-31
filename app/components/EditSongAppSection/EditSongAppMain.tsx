@@ -12,7 +12,10 @@ import AddedOptionalSongMain from "./AddedOptionalSongMain";
 import { useDispatch, useSelector } from "react-redux";
 import { IGuessThatSongSlice } from "@/app/store/guessThatSongSlice";
 import { AppDispatch } from "@/app/store";
-import { EditSongAppStateActions, IEditSongAppSlice } from "@/app/store/EditSongAppSlice";
+import {
+  EditSongAppStateActions,
+  IEditSongAppSlice,
+} from "@/app/store/EditSongAppSlice";
 import MainSongControlButtons from "./MainSongControlButtons";
 import NotificationDeleteOptionalSongModal from "./NotificationDeleteOptionalSongModal";
 
@@ -22,35 +25,38 @@ const EditSongAppMain = () => {
   const peaksAudioRef = useRef<HTMLMediaElement>(null);
 
   const mainSongPeaksInstance = useSelector(
-    (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.peaksInstance
+    (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.peaksInstance,
   );
 
   const editedSongURL = useSelector(
-    (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.editedSongURL
+    (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.editedSongURL,
   );
 
   const editedSongName = useSelector(
-    (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.editedSongName
+    (state: IEditSongAppSlice) =>
+      state.EditSongAppState.mainSong.editedSongName,
   );
 
   const editedSongData = useSelector(
-    (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.editedSongData
+    (state: IEditSongAppSlice) =>
+      state.EditSongAppState.mainSong.editedSongData,
   );
 
   const showNotificationModal = useSelector(
-    (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.showNotificationModal
+    (state: IEditSongAppSlice) =>
+      state.EditSongAppState.mainSong.showNotificationModal,
   );
 
   const isSongMuted = useSelector(
-    (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.isSongMuted
+    (state: IEditSongAppSlice) => state.EditSongAppState.mainSong.isSongMuted,
   );
 
   const addedptionalAudioValue = useSelector(
-    (state: IEditSongAppSlice) => state.EditSongAppState.addeOptionalAudioValue
+    (state: IEditSongAppSlice) => state.EditSongAppState.addeOptionalAudioValue,
   );
 
   const songVolume = useSelector(
-    (state: IGuessThatSongSlice) => state.guessThatSongState.songVolume
+    (state: IGuessThatSongSlice) => state.guessThatSongState.songVolume,
   );
 
   const endPeakSongHandler = () => {
@@ -61,9 +67,13 @@ const EditSongAppMain = () => {
     if (e.target.files === null) return;
 
     try {
-      dispatch(EditSongAppStateActions.setMainSongshowNotificationModalStatus(true));
+      dispatch(
+        EditSongAppStateActions.setMainSongshowNotificationModalStatus(true),
+      );
       dispatch(EditSongAppStateActions.setMainSongEditedSongURL(undefined));
-      dispatch(EditSongAppStateActions.setMainSongEditedSegmantIsCreatedStatus(false));
+      dispatch(
+        EditSongAppStateActions.setMainSongEditedSegmantIsCreatedStatus(false),
+      );
 
       const audioElement = peaksAudioRef.current;
 
@@ -72,9 +82,13 @@ const EditSongAppMain = () => {
         var files = e.target.files;
         audioElement.src = URL.createObjectURL(files[0]);
         dispatch(
-          EditSongAppStateActions.setMainSongEditedSongBlobString(URL.createObjectURL(files[0]))
+          EditSongAppStateActions.setMainSongEditedSongBlobString(
+            URL.createObjectURL(files[0]),
+          ),
         );
-        dispatch(EditSongAppStateActions.setMainSongEditedSongName(files[0].name));
+        dispatch(
+          EditSongAppStateActions.setMainSongEditedSongName(files[0].name),
+        );
 
         const options = {
           mediaUrl: URL.createObjectURL(files[0]),
@@ -88,7 +102,7 @@ const EditSongAppMain = () => {
           EditSongAppStateActions.setMainSongPointsStatus({
             start: false,
             finish: false,
-          })
+          }),
         );
 
         if (mainSongPeaksInstance?.player?.play()) {
@@ -105,29 +119,44 @@ const EditSongAppMain = () => {
 
         if (mainSongPeaksInstance) {
           mainSongPeaksInstance?.setSource(options, function (error: Error) {
-            dispatch(EditSongAppStateActions.setMainSongshowNotificationModalStatus(false));
+            dispatch(
+              EditSongAppStateActions.setMainSongshowNotificationModalStatus(
+                false,
+              ),
+            );
             if (error) [console.log(error.message)];
           });
         } else {
           setTimeout(() => {
-            dispatch(EditSongAppStateActions.setMainSongshowNotificationModalStatus(false));
+            dispatch(
+              EditSongAppStateActions.setMainSongshowNotificationModalStatus(
+                false,
+              ),
+            );
             console.log(mainSongPeaksInstance);
           }, 5000);
         }
       }
     } catch (error) {
-      dispatch(EditSongAppStateActions.setMainSongshowNotificationModalStatus(false));
+      dispatch(
+        EditSongAppStateActions.setMainSongshowNotificationModalStatus(false),
+      );
       alert("Ошибка. Повторите попытку позднее");
     }
   };
 
-  const downloadEditedSongHandler = async (e: React.MouseEvent<HTMLDivElement>) => {
+  const downloadEditedSongHandler = async (
+    e: React.MouseEvent<HTMLDivElement>,
+  ) => {
     e.preventDefault();
 
     if (editedSongName) {
       const nameString = `${editedSongName.split(".")[0]}_(paHaCutSongApp)${Date.now()}.mp3`;
 
-      FileSaver.saveAs(new Blob([editedSongData.buffer], { type: "audio/mp3" }), nameString);
+      FileSaver.saveAs(
+        new Blob([editedSongData.buffer], { type: "audio/mp3" }),
+        nameString,
+      );
     }
   };
 
@@ -295,9 +324,15 @@ const EditSongAppMain = () => {
 
         <div id="zoomview-container" className=" h-28 w-full"></div>
         <div id="overview-container" className=" h-28 w-full"></div>
-        <audio ref={peaksAudioRef} id="peaksAudio" onEnded={endPeakSongHandler}></audio>
+        <audio
+          ref={peaksAudioRef}
+          id="peaksAudio"
+          onEnded={endPeakSongHandler}
+        ></audio>
         {mainSongPeaksInstance && (
-          <MainSongControlButtons peaksAudioRef={peaksAudioRef}></MainSongControlButtons>
+          <MainSongControlButtons
+            peaksAudioRef={peaksAudioRef as React.RefObject<HTMLMediaElement>}
+          ></MainSongControlButtons>
         )}
 
         {editedSongURL && (

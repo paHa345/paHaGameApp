@@ -5,7 +5,7 @@ import { body, canvas } from "framer-motion/client";
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import Renderer from "three/src/renderers/common/Renderer.js";
-import gsap from "gsap";
+
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import GUI from "lil-gui";
 // import image from "../../../public/textures/Door_Wood_001_basecolor.jpg";
@@ -14,11 +14,15 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 import { RectAreaLightHelper } from "three/addons/helpers/RectAreaLightHelper.js";
 import * as CANNON from "cannon-es";
+import gsap from "gsap";
 
 import { GLTF, GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 // import { paginateListObjectsV2 } from "@aws-sdk/client-s3";
-import { GPUComputationRenderer, Variable } from "three/addons/misc/GPUComputationRenderer.js";
+import {
+  GPUComputationRenderer,
+  Variable,
+} from "three/addons/misc/GPUComputationRenderer.js";
 
 // import FlyingRobot from "./FlyingRobot";
 // import Robot from "./Robot";
@@ -164,7 +168,10 @@ const WebGLTestMain = () => {
         sizes.height = window.innerHeight;
         sizes.pixelRatio = Math.min(window.devicePixelRatio, 2);
 
-        sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio);
+        sizes.resolution.set(
+          sizes.width * sizes.pixelRatio,
+          sizes.height * sizes.pixelRatio,
+        );
 
         // // Materials
         // if (particles) {
@@ -185,7 +192,10 @@ const WebGLTestMain = () => {
 
         // Update fireflies
 
-        firefliesMaterial.uniforms.uPixelRatio.value = Math.min(window.devicePixelRatio, 2);
+        firefliesMaterial.uniforms.uPixelRatio.value = Math.min(
+          window.devicePixelRatio,
+          2,
+        );
 
         // Update effect composer
 
@@ -213,10 +223,14 @@ const WebGLTestMain = () => {
       });
 
       gui.addColor(debugObject, "portalColorStart").onChange(() => {
-        portalLightMaterial.uniforms.uColorStart.value.set(debugObject.portalColorStart);
+        portalLightMaterial.uniforms.uColorStart.value.set(
+          debugObject.portalColorStart,
+        );
       });
       gui.addColor(debugObject, "portalColorEnd").onChange(() => {
-        portalLightMaterial.uniforms.uColorEnd.value.set(debugObject.portalColorEnd);
+        portalLightMaterial.uniforms.uColorEnd.value.set(
+          debugObject.portalColorEnd,
+        );
       });
 
       /**
@@ -268,8 +282,14 @@ const WebGLTestMain = () => {
 
         scaleArray[i] = Math.random();
       }
-      firefliesGeometry.setAttribute("position", new THREE.BufferAttribute(positionsArray, 3));
-      firefliesGeometry.setAttribute("aScale", new THREE.BufferAttribute(scaleArray, 1));
+      firefliesGeometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(positionsArray, 3),
+      );
+      firefliesGeometry.setAttribute(
+        "aScale",
+        new THREE.BufferAttribute(scaleArray, 1),
+      );
 
       //Material
       const firefliesMaterial = new THREE.ShaderMaterial({
@@ -285,7 +305,11 @@ const WebGLTestMain = () => {
         depthWrite: false,
       });
 
-      gui.add(firefliesMaterial.uniforms.uSize, "value").min(0).max(500).step(1);
+      gui
+        .add(firefliesMaterial.uniforms.uSize, "value")
+        .min(0)
+        .max(500)
+        .step(1);
 
       // Points
 
@@ -296,7 +320,12 @@ const WebGLTestMain = () => {
        * Camera
        */
       // Base camera
-      const camera = new THREE.PerspectiveCamera(25, sizes.width / sizes.height, 0.1, 100);
+      const camera = new THREE.PerspectiveCamera(
+        25,
+        sizes.width / sizes.height,
+        0.1,
+        100,
+      );
       camera.position.x = 4;
       camera.position.y = 2;
       camera.position.z = 4;
@@ -334,8 +363,9 @@ const WebGLTestMain = () => {
       const timer = new THREE.Timer();
       let previousTime = 0;
 
-      let currentIntersect: null | THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>> =
-        null;
+      let currentIntersect: null | THREE.Intersection<
+        THREE.Object3D<THREE.Object3DEventMap>
+      > = null;
 
       const tick = () => {
         // controls.update();

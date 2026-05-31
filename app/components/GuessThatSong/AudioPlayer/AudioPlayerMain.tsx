@@ -10,7 +10,7 @@ import ProgressBar from "./ProgressBar";
 const AudioPlayerMain = () => {
   const dispatch = useDispatch<AppDispatch>();
   const audioRef = useRef<HTMLAudioElement>(null);
-  const progressBarRef = useRef(null);
+  const progressBarRef = useRef<HTMLInputElement>(null);
   const [timeProgress, setTimeProgress] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -19,15 +19,17 @@ const AudioPlayerMain = () => {
   return (
     <div>
       <figure>
-        <DisplayTrack audioRef={audioRef}></DisplayTrack>
+        <DisplayTrack
+          audioRef={audioRef as React.RefObject<HTMLAudioElement>}
+        ></DisplayTrack>
         <ProgressBar
-          progressBarRef={progressBarRef}
-          audioRef={audioRef}
+          progressBarRef={progressBarRef as React.RefObject<HTMLInputElement>}
+          audioRef={audioRef as React.RefObject<HTMLAudioElement>}
           timeProgress={timeProgress}
         ></ProgressBar>
         <AudioPlayerControls
-          audioRef={audioRef}
-          progressBarRef={progressBarRef}
+          audioRef={audioRef as React.RefObject<HTMLAudioElement>}
+          progressBarRef={progressBarRef as React.RefObject<HTMLInputElement>}
         ></AudioPlayerControls>
       </figure>
     </div>
