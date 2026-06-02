@@ -8915,3 +8915,262 @@
 //       {/* <CustomObject></CustomObject> */}
 //     </>
 //   );
+
+/**
+ *
+ * 58 R3F environmrnt and staging
+ */
+
+// const Experience = () => {
+//   const cubeRef = useRef<any>(null);
+//   const groupRef = useRef<Mesh>(null);
+//   const sphereRef = useRef<Mesh>(null);
+//   const directionalLightRef = useRef<any>(null);
+
+//   //   const { camera, gl } = useThree();
+
+//   const { position, color, visible, myInterval } = useControls("sphere", {
+//     position: {
+//       value: { x: -2, y: 0 },
+//       //   min: -4,
+//       //   max: 4,
+//       step: 0.01,
+//       joystick: "invertY",
+//     },
+//     color: "#ff0000",
+//     visible: true,
+//     myInterval: {
+//       min: 0,
+//       max: 10,
+//       value: [4, 5],
+//     },
+//     clickMe: button(() => {
+//       console.log("Click");
+//     }),
+//     choise: { options: ["a", "b", "c"] },
+//   });
+
+//   const { scale } = useControls("cube", {
+//     scale: {
+//       value: 1.5,
+//       step: 0.01,
+//       min: 0,
+//       max: 5,
+//     },
+//   });
+
+//   const { contactShadowsBlur, contactShadowsColor, contactShadowsOpacity } = useControls(
+//     "contactShadows",
+//     {
+//       contactShadowsBlur: {
+//         value: 1,
+//         step: 0.001,
+//         min: 0,
+//         max: 10,
+//       },
+//       contactShadowsColor: "green",
+//       contactShadowsOpacity: {
+//         value: 0.8,
+//         step: 0.001,
+//         min: 0,
+//         max: 1,
+//       },
+//     },
+//   );
+
+//   const { sunPosition } = useControls("sky", {
+//     sunPosition: {
+//       value: [1, 2, 3],
+//     },
+//   });
+
+//   const { envMapIntensity, envMapHeight, envMapRadius, envMapScale } = useControls(
+//     "environmentMap",
+//     {
+//       envMapIntensity: {
+//         value: 3.5,
+//         min: 0,
+//         max: 12,
+//       },
+//       envMapHeight: {
+//         value: 7,
+//         min: 0,
+//         max: 100,
+//       },
+//       envMapRadius: {
+//         value: 28,
+//         min: 10,
+//         max: 1000,
+//       },
+//       envMapScale: {
+//         value: 100,
+//         min: 10,
+//         max: 1000,
+//       },
+//     },
+//   );
+
+//   useHelper(directionalLightRef, THREE.DirectionalLightHelper, 1);
+
+//   useFrame((state, delta) => {
+//     // state.camera.position.x += delta;
+//     // console.log(state.clock.elapsedTime);
+//     // const angle = state.clock.elapsedTime;
+//     // state.camera.position.x = Math.sin(angle) * 8;
+//     // state.camera.position.z = Math.cos(angle) * 8;
+//     // state.camera.lookAt(0, 0, 0);
+//     // const time = state.clock.elapsedTime;
+//     if (cubeRef.current) {
+//       //   groupRef.current.rotation.y += delta;
+//       cubeRef.current.rotation.y += delta * 0.2;
+//       //   cubeRef.current.position.x = 2 + Math.sin(time);
+//     }
+//   });
+
+//   return (
+//     <>
+//       {/* <BakeShadows></BakeShadows> */}
+
+//       {/* <SoftShadows size={25} samples={10} focus={3} /> */}
+
+//       {/* <Environment
+//         // background
+//         // files={"./environmentMaps/the_sky_is_on_fire_2k.hdr"}
+//         preset="sunset"
+//         // resolution={32}
+//         environmentIntensity={envMapIntensity}
+//         ground={{
+//           height: envMapHeight,
+//           radius: envMapRadius,
+//           scale: envMapScale,
+//         }}
+//       > */}
+//       {/* <color args={["#000000"]} attach={"background"}></color>
+//         <Lightformer
+//           position-z={-5}
+//           scale={10}
+//           color={"red"}
+//           intensity={10}
+//           form={"ring"}
+//         ></Lightformer> */}
+//       {/* <mesh position-z={-5} scale={10}>
+//           <planeGeometry />
+//           <meshBasicMaterial color={[10, 0, 0]} />
+//         </mesh> */}
+//       {/* </Environment> */}
+
+//       {/* <color args={["ivory"]} attach={"background"}></color> */}
+
+//       <OrbitControls makeDefault />
+
+//       {/* <AccumulativeShadows
+//         opacity={0.8}
+//         frames={Infinity}
+//         color="#b4ff52"
+//         position={[0, -0.99, 0]}
+//         scale={10}
+//         temporal
+//         blend={100}
+//       >
+//         <RandomizedLight
+//           amount={8}
+//           radius={1}
+//           ambient={0.5}
+//           intensity={1}
+//           position={[1, 2, 3]}
+//           bias={0.001}
+//         />
+//       </AccumulativeShadows> */}
+
+//       {/* <ContactShadows
+//         position={[0, 0, 0]}
+//         scale={10}
+//         resolution={512}
+//         far={5}
+//         color={contactShadowsColor}
+//         opacity={contactShadowsOpacity}
+//         blur={contactShadowsBlur}
+//         frames={1}
+//       ></ContactShadows> */}
+
+//       {/* <directionalLight
+//         ref={directionalLightRef}
+//         castShadow
+//         position={sunPosition}
+//         intensity={1.5}
+//         shadow-mapSize={[1024, 1024]}
+//         shadow-camera-near={1}
+//         shadow-camera-far={10}
+//         shadow-camera-top={5}
+//         shadow-camera-right={5}
+//         shadow-camera-bottom={-5}
+//         shadow-camera-left={-5}
+//       />
+//       <ambientLight intensity={0.5} />
+
+//       <Sky sunPosition={sunPosition}></Sky> */}
+
+//       {/* <group ref={groupRef}>
+//         <mesh
+//           ref={sphereRef}
+//           position-y={1}
+//           position-x={-2}
+//           castShadow
+//           visible={visible}
+//           //   position={[position.x, position.y, 0]}
+//         >
+//           <sphereGeometry />
+//           <meshStandardMaterial color={color} />
+//         </mesh>
+
+//         <mesh
+//           ref={cubeRef}
+//           castShadow
+//           position-y={1}
+//           position-x={2}
+//           rotation-y={Math.PI * 0.25}
+//           //   position={[2, 0, 0]}
+//           scale={scale}
+//         >
+//           <boxGeometry scale={1.5} />
+//           <meshStandardMaterial color="mediumpurple" />
+//         </mesh>
+//       </group> */}
+//       {/* <mesh position={[0, 0, 0]} rotation-x={-Math.PI / 2} scale={10}>
+//         <planeGeometry />
+//         <meshStandardMaterial color="#b4ff52" wireframe={false} />
+//       </mesh> */}
+
+//       <Stage shadows={"contact"} preset={"portrait"} intensity={2} environment="sunset">
+//         <group ref={groupRef}>
+//           <mesh
+//             ref={sphereRef}
+//             position-y={1}
+//             position-x={-2}
+//             castShadow
+//             visible={visible}
+//             //   position={[position.x, position.y, 0]}
+//           >
+//             <sphereGeometry />
+//             <meshStandardMaterial color={color} />
+//           </mesh>
+
+//           <mesh
+//             ref={cubeRef}
+//             castShadow
+//             position-y={1}
+//             position-x={2}
+//             rotation-y={Math.PI * 0.25}
+//             //   position={[2, 0, 0]}
+//             scale={scale}
+//           >
+//             <boxGeometry scale={1.5} />
+//             <meshStandardMaterial color="mediumpurple" />
+//           </mesh>
+//         </group>
+//       </Stage>
+
+//       {/* <CustomObject></CustomObject> */}
+//     </>
+//   );
+// };

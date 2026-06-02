@@ -1,13 +1,13 @@
 import React from "react";
 import WebGLTestMain from "../components/RoomsListSection/WebGLTestMain";
-import ReactThreeFiberTestMain from "../components/RoomsListSection/ReactThreeFiberTestMain";
+import ReactThreeFiberMain from "../components/RoomsListSection/ReactThreeFiber/ReactThreeFiberMain";
 
 const page = () => {
   return (
-    <div>
+    <>
       {/* <WebGLTestMain></WebGLTestMain> */}
-      <ReactThreeFiberTestMain></ReactThreeFiberTestMain>
-    </div>
+      <ReactThreeFiberMain></ReactThreeFiberMain>
+    </>
   );
 };
 
