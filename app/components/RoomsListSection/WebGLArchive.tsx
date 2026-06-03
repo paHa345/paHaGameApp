@@ -9174,3 +9174,90 @@
 //     </>
 //   );
 // };
+
+/**
+ * 59 Load models with R3F
+ */
+
+//   <mesh receiveShadow rotation-x={-Math.PI * 0.5} scale={10}>
+//     <planeGeometry />
+//     <meshStandardMaterial color="greenyellow" />
+//   </mesh>
+//   <Suspense fallback={<Placeholder position-y={0.5} scale={[2, 3, 2]}></Placeholder>}>
+//     {/* <Model></Model> */}
+//     <Hamburger scale={0.35}></Hamburger>
+//     <Fox></Fox>
+//   </Suspense>
+
+// const Hamburger = (props: any) => {
+//   const { nodes, materials }: any = useGLTF("./models/hamburger-draco.glb");
+
+//   return (
+//     <>
+//       <group {...props} dispose={null}>
+//         <mesh
+//           castShadow
+//           receiveShadow
+//           geometry={nodes.cheese.geometry}
+//           material={materials.CheeseMaterial}
+//           position={[0, 3.04, 0]}
+//         ></mesh>
+//         <mesh
+//           castShadow
+//           receiveShadow
+//           geometry={nodes.meat.geometry}
+//           material={materials.SteakMaterial}
+//           position={[0, 2.82, 0]}
+//         ></mesh>
+//         <mesh
+//           castShadow
+//           receiveShadow
+//           geometry={nodes.bottomBun.geometry}
+//           material={materials.BunMaterial}
+//         ></mesh>
+//         <mesh
+//           castShadow
+//           receiveShadow
+//           geometry={nodes.topBun.geometry}
+//           material={materials.BunMaterial}
+//           position={[0, 1.77, 0]}
+//         ></mesh>
+//       </group>
+//     </>
+//   );
+// };
+
+// useGLTF.preload("./models/hamburger-draco.glb");
+
+// const Fox = () => {
+//   const fox = useGLTF("./models/Fox/glTF/Fox.gltf");
+
+//   const animations = useAnimations(fox.animations, fox.scene);
+
+//   const { foxAnimation } = useControls("foxAnimation", {
+//     foxAnimation: {
+//       options: animations.names,
+//     },
+//   });
+
+//   useEffect(() => {
+//     const action = animations.actions[foxAnimation];
+//     action?.reset().fadeIn(0.5).play();
+
+//     return () => {
+//       action?.fadeOut(0.5);
+//     };
+
+//     // setTimeout(() => {
+//     //   if (animations.actions.Walk === null || animations.actions.Run === null) return;
+//     //   animations.actions.Walk.play();
+//     //   animations.actions.Walk.crossFadeFrom(animations.actions.Run, 1);
+//     // }, 2000);
+//   }, [foxAnimation]);
+
+//   return (
+//     <>
+//       <primitive scale={0.02} object={fox.scene} position={[-2.5, 0, 2.5]}></primitive>
+//     </>
+//   );
+// };
