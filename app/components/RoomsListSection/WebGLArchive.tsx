@@ -9261,3 +9261,228 @@
 //     </>
 //   );
 // };
+
+/**
+ * 60 3D text with R3F
+ */
+
+// const torusGeometry = new THREE.TorusGeometry(1, 0.6, 16, 32);
+// const material = new THREE.MeshMatcapMaterial();
+
+// const Experience = () => {
+//   const [matcap, url] = useMatcapTexture(92, 256);
+//   const donutsGroup = useRef<THREE.Group | null>(null);
+
+//   useEffect(() => {
+//     material.matcap = matcap;
+//     material.needsUpdate = true;
+//   }, []);
+
+//   //   const [torusGeometry, setTorusGeometry] = useState();
+//   //   const [material, setMaterial] = useState();
+
+//   useFrame((state, delta) => {
+//     if (donutsGroup.current === null) return;
+//     for (const donut of donutsGroup.current.children) {
+//       donut.rotation.y += delta * 0.2;
+//     }
+//   });
+
+//   return (
+//     <>
+//       <OrbitControls makeDefault />
+
+//       <directionalLight castShadow position={[1, 2, 3]} intensity={4.5} shadow-normalBias={0.04} />
+//       <ambientLight intensity={1.5} />
+
+//       <Center>
+//         <Text3D
+//           material={material}
+//           font={"./fonts/helvetiker_regular.typeface.json"}
+//           size={0.75}
+//           height={0.2}
+//           curveSegments={12}
+//           bevelEnabled
+//           bevelThickness={0.02}
+//           bevelSize={0.02}
+//           bevelOffset={0}
+//           bevelSegments={5}
+//         >
+//           AKA 9000
+//         </Text3D>
+//       </Center>
+
+//       <group ref={donutsGroup}>
+//         {[...Array(100)].map((value, index) => {
+//           return (
+//             <mesh
+//               key={index}
+//               geometry={torusGeometry}
+//               material={material}
+//               position={[
+//                 (Math.random() - 0.5) * 10,
+//                 (Math.random() - 0.5) * 10,
+//                 (Math.random() - 0.5) * 10,
+//               ]}
+//               scale={0.2 + Math.random() * 0.2}
+//               rotation={[Math.random() * Math.PI, Math.random() * Math.PI, 0]}
+//             ></mesh>
+//           );
+//         })}
+//       </group>
+//     </>
+//   );
+// };
+
+/**
+ * 61 Portal scene with r3f
+ */
+
+// vertex and fragment shaders shaders/portal/...
+
+// const PortalMaterial = shaderMaterial(
+//   {
+//     uTime: 0,
+//     uColorStart: new THREE.Color("#ffffff"),
+//     uColorEnd: new THREE.Color("#000000"),
+//   },
+//   portalVertexShader,
+//   portalFragmentShader,
+// );
+// extend({ PortalMaterial });
+
+// const Experience = () => {
+//   const { nodes } = useGLTF("./portal.glb");
+//   const bakedTexture = useTexture("./baked.jpg");
+//   bakedTexture.flipY = false;
+//   const baked = nodes.baked as THREE.Mesh;
+//   const poleLightA = nodes.poleLightA as THREE.Mesh;
+//   const poleLightB = nodes.poleLightB as THREE.Mesh;
+//   const portalLight = nodes.portalLight as THREE.Mesh;
+
+//   const portalMaterial = useRef(null) as any;
+
+//   useFrame((state, delta) => {
+//     if (portalMaterial.current === null) return;
+//     portalMaterial.current.uniforms.uTime.value += delta;
+//   });
+
+//   return (
+//     <>
+//       <color args={["#030202"]} attach={"background"}></color>
+//       <OrbitControls makeDefault />
+
+//       <Center>
+//         <mesh geometry={baked.geometry}>
+//           <meshBasicMaterial map={bakedTexture} />
+//         </mesh>
+//         <mesh geometry={poleLightA.geometry} position={poleLightA.position}>
+//           <meshBasicMaterial color={"#ffffe5"} />
+//         </mesh>
+//         <mesh geometry={poleLightB.geometry} position={poleLightB.position}>
+//           <meshBasicMaterial color={"#ffffe5"} />
+//         </mesh>
+
+//         <mesh
+//           geometry={portalLight.geometry}
+//           position={portalLight.position}
+//           rotation={portalLight.rotation}
+//         >
+//           {/* <meshBasicMaterial color={"#ffffff"} /> */}
+//           <shaderMaterial
+//             ref={portalMaterial}
+//             vertexShader={portalVertexShader}
+//             fragmentShader={portalFragmentShader}
+//             uniforms={{
+//               uTime: { value: 1.0 },
+//               uColorStart: { value: new THREE.Color("#ffffff") },
+//               uColorEnd: { value: new THREE.Color("#000000") },
+//             }}
+//           />
+//           {/* <portalMaterial ref={portalMaterial} /> */}
+//         </mesh>
+//         <Sparkles size={6} scale={[4, 2, 4]} position-y={1} speed={0.2} count={40}></Sparkles>
+//       </Center>
+//     </>
+//   );
+// };
+
+/**
+ * 62 Moves events with r3f
+ */
+
+// const Experience = () => {
+//   const cube = useRef<THREE.Mesh>(null);
+
+//   const [color, setColor] = useState("mediumpurple");
+
+//   useFrame((state, delta) => {
+//     if (cube.current === null) return;
+//     cube.current.rotation.y += delta * 0.2;
+//   });
+
+//   const eventHandler = (event: ThreeEvent<MouseEvent>) => {
+//     console.log(event.distance);
+
+//     const randomColor =
+//       "#" +
+//       Math.floor(Math.random() * 16777215)
+//         .toString(16)
+//         .padStart(6, "0");
+
+//     setColor(randomColor);
+//   };
+
+//   const burger = useGLTF("./models/burger.glb");
+//   console.log(burger);
+
+//   return (
+//     <>
+//       <OrbitControls makeDefault />
+
+//       <directionalLight position={[1, 2, 3]} intensity={4.5} />
+//       <ambientLight intensity={1.5} />
+
+//       <mesh
+//         position-x={-2}
+//         onClick={(e) => {
+//           e.stopPropagation();
+//         }}
+//       >
+//         <sphereGeometry />
+//         <meshStandardMaterial color="orange" />
+//       </mesh>
+
+//       <mesh
+//         ref={cube}
+//         raycast={meshBounds}
+//         position-x={2}
+//         scale={1.5}
+//         onClick={eventHandler}
+//         onPointerEnter={() => {
+//           document.body.style.cursor = "pointer";
+//         }}
+//         onPointerLeave={() => {
+//           document.body.style.cursor = "default";
+//         }}
+//       >
+//         <boxGeometry />
+//         <meshStandardMaterial color={color} />
+//       </mesh>
+
+//       <mesh position-y={-1} rotation-x={-Math.PI * 0.5} scale={10}>
+//         <planeGeometry />
+//         <meshStandardMaterial color="greenyellow" />
+//       </mesh>
+//       <primitive
+//         object={burger.scene}
+//         scale={0.25}
+//         position-y={0.5}
+//         onClick={(event: ThreeEvent<MouseEvent>) => {
+//           console.log(event.object.name);
+//           event.stopPropagation();
+//         }}
+//       ></primitive>
+//     </>
+//   );
+// };

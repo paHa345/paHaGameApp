@@ -24,7 +24,11 @@ const ReactThreeFiberMain = () => {
       <div className=" pt-5 h-full w-full absolute">
         <Leva collapsed></Leva>
         <Canvas
+          // onPointerMissed={() => {
+          //   console.log("You missed");
+          // }}
           shadows
+          flat
           camera={{
             fov: 45,
             near: 0.1,
