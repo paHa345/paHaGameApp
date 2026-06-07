@@ -45,13 +45,46 @@ import portalVertexShader from "../shaders/portal/vertex.glsl";
 import portalFragmentShader from "../shaders/portal/fragment.glsl";
 import { extend } from "@react-three/fiber";
 
-import { EffectComposer, Vignette } from "@react-three/postprocessing";
+import {
+  Bloom,
+  DepthOfField,
+  EffectComposer,
+  Glitch,
+  Noise,
+  Vignette,
+} from "@react-three/postprocessing";
+import {
+  BlendFunction,
+  DepthOfFieldEffect,
+  EffectPass,
+  GlitchMode,
+  RenderPass,
+} from "postprocessing";
+import Drunk from "./Drunk";
+import DrunkEffect from "./DrunkEffect";
 
 const Experience = () => {
+  const drunkRef = useRef(null);
   return (
     <>
+      <color args={["#fffff"]} attach={"background"}></color>
       <EffectComposer multisampling={8}>
-        <Vignette offset={0.3} darkness={0.9} />
+        <Drunk frequency={2} amplitude={0.1} ref={drunkRef}></Drunk>
+        {/* <DepthOfField focalLength={0.02} /> */}
+
+        {/* <Bloom /> */}
+        {/* <Noise premultiply blendFunction={BlendFunction.SOFT_LIGHT} /> */}
+        {/* <Vignette
+          offset={0.3}
+          darkness={0.9}
+          blendFunction={BlendFunction.NORMAL}
+        />
+        <Glitch
+          delay={new THREE.Vector2(0.5, 1)}
+          duration={new THREE.Vector2(0.1, 0.3)}
+          strength={new THREE.Vector2(0.2, 0.4)}
+          mode={GlitchMode.CONSTANT_MILD}
+        /> */}
       </EffectComposer>
       <OrbitControls makeDefault />
 
@@ -65,10 +98,15 @@ const Experience = () => {
 
       <mesh castShadow position-x={2} scale={1.5}>
         <boxGeometry />
-        <meshStandardMaterial color="mediumpurple" />
+        <meshStandardMaterial color={"mediumpurple"} />
       </mesh>
 
-      <mesh receiveShadow position-y={-1} rotation-x={-Math.PI * 0.5} scale={10}>
+      <mesh
+        receiveShadow
+        position-y={-1}
+        rotation-x={-Math.PI * 0.5}
+        scale={10}
+      >
         <planeGeometry />
         <meshStandardMaterial color="greenyellow" />
       </mesh>

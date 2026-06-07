@@ -65,6 +65,7 @@
     "node-xlsx": "^0.24.0",
     "nodemailer": "^7.0.7",
     "peaks.js": "^4.0.0",
+    "postprocessing": "^6.39.1",
     "r3f-monitor": "^1.0.2",
     "r3f-perf": "^7.2.3",
     "raw-loader": "^4.0.2",
