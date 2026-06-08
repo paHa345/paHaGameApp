@@ -24,6 +24,7 @@ const ReactThreeFiberMain = () => {
       <div className=" pt-5 h-full w-full absolute">
         <Leva collapsed></Leva>
         <Canvas
+          className=" touch-none"
           // onPointerMissed={() => {
           //   console.log("You missed");
           // }}

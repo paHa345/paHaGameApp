@@ -18,6 +18,7 @@ import {
   MeshReflectorMaterial,
   OrbitControls,
   PivotControls,
+  PresentationControls,
   RandomizedLight,
   shaderMaterial,
   Sky,
@@ -27,6 +28,7 @@ import {
   Text,
   Text3D,
   TransformControls,
+  useFBX,
   useGLTF,
   useHelper,
   useMatcapTexture,
@@ -64,52 +66,26 @@ import Drunk from "./Drunk";
 import DrunkEffect from "./DrunkEffect";
 
 const Experience = () => {
-  const drunkRef = useRef(null);
+  const computer = useFBX("./models/Macbook.FBX");
+
   return (
     <>
-      <color args={["#fffff"]} attach={"background"}></color>
-      <EffectComposer multisampling={8}>
-        <Drunk frequency={2} amplitude={0.1} ref={drunkRef}></Drunk>
-        {/* <DepthOfField focalLength={0.02} /> */}
+      <Environment preset="city"></Environment>
+      <color args={["#241a1a"]} attach={"background"}></color>
+      {/* <OrbitControls makeDefault /> */}
 
-        {/* <Bloom /> */}
-        {/* <Noise premultiply blendFunction={BlendFunction.SOFT_LIGHT} /> */}
-        {/* <Vignette
-          offset={0.3}
-          darkness={0.9}
-          blendFunction={BlendFunction.NORMAL}
-        />
-        <Glitch
-          delay={new THREE.Vector2(0.5, 1)}
-          duration={new THREE.Vector2(0.1, 0.3)}
-          strength={new THREE.Vector2(0.2, 0.4)}
-          mode={GlitchMode.CONSTANT_MILD}
-        /> */}
-      </EffectComposer>
-      <OrbitControls makeDefault />
-
-      <directionalLight castShadow position={[1, 2, 3]} intensity={4.5} />
-      <ambientLight intensity={1.5} />
-
-      <mesh castShadow position-x={-2}>
-        <sphereGeometry />
-        <meshStandardMaterial color="orange" />
-      </mesh>
-
-      <mesh castShadow position-x={2} scale={1.5}>
-        <boxGeometry />
-        <meshStandardMaterial color={"mediumpurple"} />
-      </mesh>
-
-      <mesh
-        receiveShadow
-        position-y={-1}
-        rotation-x={-Math.PI * 0.5}
-        scale={10}
+      <PresentationControls
+        global
+        rotation={[0.13, 0.1, 0]}
+        polar={[-0.4, 0.2]}
+        azimuth={[-1, 0.75]}
+        snap={4}
+        // config={{ mass: 4, tension: 400 }}
       >
-        <planeGeometry />
-        <meshStandardMaterial color="greenyellow" />
-      </mesh>
+        <Float rotationIntensity={0.4}>
+          <primitive object={computer} scale={0.4} position={[0, 0.8, 0]}></primitive>
+        </Float>
+      </PresentationControls>
     </>
   );
 };

@@ -9486,3 +9486,126 @@
 //     </>
 //   );
 // };
+
+/**
+ * 63 Post-processing with R3F
+ */
+
+// // Expirience component
+
+// const Experience = () => {
+//   const drunkRef = useRef(null);
+
+//   const { effectFrequency, effectAmplitude } = useControls("DrunkEffects", {
+//     effectFrequency: { value: 2, min: 0, max: 20, step: 1 },
+//     effectAmplitude: { value: 0.1, min: 0, max: 1, step: 0.1 },
+//   });
+
+//   return (
+//     <>
+//       <color args={["#fffff"]} attach={"background"}></color>
+//       <EffectComposer multisampling={8}>
+//         <Drunk
+//           frequency={effectFrequency}
+//           amplitude={effectAmplitude}
+//           blendFunction={BlendFunction.DARKEN}
+//           ref={drunkRef}
+//         ></Drunk>
+//         {/* <DepthOfField focalLength={0.02} /> */}
+
+//         {/* <Bloom /> */}
+//         {/* <Noise premultiply blendFunction={BlendFunction.SOFT_LIGHT} /> */}
+//         {/* <Vignette
+//           offset={0.3}
+//           darkness={0.9}
+//           blendFunction={BlendFunction.NORMAL}
+//         />
+//         <Glitch
+//           delay={new THREE.Vector2(0.5, 1)}
+//           duration={new THREE.Vector2(0.1, 0.3)}
+//           strength={new THREE.Vector2(0.2, 0.4)}
+//           mode={GlitchMode.CONSTANT_MILD}
+//         /> */}
+//       </EffectComposer>
+//       <OrbitControls makeDefault />
+
+//       <directionalLight castShadow position={[1, 2, 3]} intensity={4.5} />
+//       <ambientLight intensity={1.5} />
+
+//       <mesh castShadow position-x={-2}>
+//         <sphereGeometry />
+//         <meshStandardMaterial color="orange" />
+//       </mesh>
+
+//       <mesh castShadow position-x={2} scale={1.5}>
+//         <boxGeometry />
+//         <meshStandardMaterial color={"mediumpurple"} />
+//       </mesh>
+
+//       <mesh receiveShadow position-y={-1} rotation-x={-Math.PI * 0.5} scale={10}>
+//         <planeGeometry />
+//         <meshStandardMaterial color="greenyellow" />
+//       </mesh>
+//     </>
+//   );
+// };
+
+// export default Experience;
+
+// // Drunk component
+
+// export default forwardRef(function Drunk(
+//   props: {
+//     frequency?: number;
+//     amplitude?: number;
+//     blendFunction?: BlendFunction;
+//   },
+//   ref,
+// ) {
+//   const effect = new DrunkEffect(props);
+//   return <primitive ref={ref} object={effect}></primitive>;
+// });
+
+// // DrunkEffect component
+
+// const fragmentShader = /* glsl */ `
+
+// uniform float frequency;
+// uniform float amplitude;
+// uniform float offset;
+
+// void mainUv(inout vec2 uv){
+//   uv.y += sin(uv.x * frequency + offset) * amplitude;
+// }
+//     void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {
+//         // vec4 color = inputColor;
+//         // color.rgb *= vec3(0.7, 1.0, 0.5);
+//         outputColor = vec4(0.8, 1.0, 0.5, inputColor.a);
+//     }
+// `;
+
+// export default class DrunkEffect extends Effect {
+//   constructor({
+//     frequency = 2,
+//     amplitude = 0.1,
+//     blendFunction = BlendFunction.DARKEN,
+//   }: {
+//     frequency?: number;
+//     amplitude?: number;
+//     blendFunction?: BlendFunction;
+//   }) {
+//     super("DrunkEffect", fragmentShader, {
+//       blendFunction: blendFunction,
+//       uniforms: new Map([
+//         ["frequency", new Uniform(frequency)],
+//         ["amplitude", new Uniform(amplitude)],
+//         ["offset", new Uniform(0)],
+//       ]),
+//     });
+//   }
+//   update(renderer: WebGLRenderer, inputBuffer: WebGLRenderTarget, deltaTime?: number): void {
+//     const offsetUniform = this.uniforms.get("offset");
+//     if (offsetUniform === undefined) return;
+//     offsetUniform.value += deltaTime;
+//   }
+// }
