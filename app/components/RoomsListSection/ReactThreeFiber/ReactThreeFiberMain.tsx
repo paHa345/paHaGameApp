@@ -21,7 +21,12 @@ const ReactThreeFiberMain = () => {
 
   return (
     <>
-      <div className=" pt-5 h-full w-full absolute">
+      <div
+        onKeyDown={() => {
+          console.log("KeyDownEvent");
+        }}
+        className=" pt-5 h-full w-full absolute"
+      >
         <Leva collapsed></Leva>
         <Canvas
           className=" touch-none"
