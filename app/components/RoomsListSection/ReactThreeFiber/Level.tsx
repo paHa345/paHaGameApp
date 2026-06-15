@@ -1,6 +1,6 @@
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { RapierRigidBody, RigidBody } from "@react-three/rapier";
+import { CuboidCollider, RapierRigidBody, RigidBody } from "@react-three/rapier";
 import React, { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
@@ -178,7 +178,7 @@ export function BlockAxe({ position = [0, 0, 0] }: any) {
   );
 }
 
-function BlockEnd({ position = [0, 0, 0] }: any) {
+export function BlockEnd({ position = [0, 0, 0] }: any) {
   const hamburger = useGLTF("./models/burger.glb");
 
   hamburger.scene.children.forEach((mesh) => {
@@ -212,6 +212,44 @@ function BlockEnd({ position = [0, 0, 0] }: any) {
   );
 }
 
+export function Bounds({ length = 1 }) {
+  return (
+    <>
+      <RigidBody type="fixed" restitution={0.2} friction={0}>
+        <mesh
+          castShadow
+          geometry={boxGeometry}
+          material={wallMaterial}
+          position={[2.15, 0.75, -(length * 2) + 2]}
+          scale={[0.3, 1.5, 4 * length]}
+        ></mesh>
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={boxGeometry}
+          material={wallMaterial}
+          position={[-2.15, 0.75, -(length * 2) + 2]}
+          scale={[0.3, 1.5, 4 * length]}
+        ></mesh>
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={boxGeometry}
+          material={wallMaterial}
+          position={[0, 0.75, -(length * 4) + 2]}
+          scale={[4, 1.5, 0.3]}
+        ></mesh>
+        <CuboidCollider
+          args={[2, 0.1, 2 * length]}
+          position={[0, -0.1, -(length * 2) + 2]}
+          restitution={0.2}
+          friction={1}
+        />
+      </RigidBody>
+    </>
+  );
+}
+
 const Level = ({ count = 5, types = [BlockSpinner, BlockAxe, BlockLimbo] }) => {
   // const count = 5
   // const types = [BlockSpinner, BlockAxe, BlockLimbo]
@@ -226,8 +264,6 @@ const Level = ({ count = 5, types = [BlockSpinner, BlockAxe, BlockLimbo] }) => {
     return blocks;
   }, [count, types]);
 
-  console.log(blocks);
-
   return (
     <>
       <BlockStart position={[0, 0, 0]}></BlockStart>
@@ -235,6 +271,7 @@ const Level = ({ count = 5, types = [BlockSpinner, BlockAxe, BlockLimbo] }) => {
         <Block key={index} position={[0, 0, -(index + 1) * 4]} />
       ))}
       <BlockEnd position={[0, 0, -(count + 1) * 4]}></BlockEnd>
+      <Bounds length={count + 2}></Bounds>
     </>
   );
 };

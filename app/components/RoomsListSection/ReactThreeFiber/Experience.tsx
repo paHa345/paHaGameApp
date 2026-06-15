@@ -76,6 +76,7 @@ import {
 } from "@react-three/rapier";
 import Lights from "./Lights";
 import Level from "./Level";
+import Player from "./Player";
 
 const Experience = () => {
   return (
@@ -85,6 +86,7 @@ const Experience = () => {
       <Physics debug={true}>
         <Lights />
         <Level></Level>
+        <Player></Player>
       </Physics>
     </>
   );
