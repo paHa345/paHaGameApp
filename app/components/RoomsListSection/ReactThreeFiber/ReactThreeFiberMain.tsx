@@ -51,7 +51,7 @@ const ReactThreeFiberMain = () => {
             <Experience></Experience>
             {performanceMonitoring && <PerfMonitor position="top-left" />}
           </Canvas>
-          <Interface></Interface>
+          {/* <Interface></Interface> */}
         </KeyboardControls>
       </div>
     </>

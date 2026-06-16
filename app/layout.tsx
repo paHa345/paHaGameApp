@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-// import "./globals.css";
+import "./globals.css";
 import { Inter } from "next/font/google";
 import ReduxProvider from "./ReduxProvider";
 import MainLayout from "./components/Layout/MainLayout";
 import { config } from "@fortawesome/fontawesome-svg-core";
-// import "@fortawesome/fontawesome-svg-core/styles.css";
+import "@fortawesome/fontawesome-svg-core/styles.css";
 import Head from "next/head";
 import { TelegramProvider } from "./telegramProvider";
 import Script from "next/script";
