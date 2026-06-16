@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
+// import "./globals.css";
 import { Inter } from "next/font/google";
 import ReduxProvider from "./ReduxProvider";
 import MainLayout from "./components/Layout/MainLayout";
 import { config } from "@fortawesome/fontawesome-svg-core";
-import "@fortawesome/fontawesome-svg-core/styles.css";
+// import "@fortawesome/fontawesome-svg-core/styles.css";
 import Head from "next/head";
 import { TelegramProvider } from "./telegramProvider";
 import Script from "next/script";
@@ -51,17 +51,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${roboto_Slab.className} bg-gradient-to-tr from-slate-50 to-lime-50`}
-      >
-        <TelegramProvider>
-          <MainLayout>
-            <ReduxProvider>{children}</ReduxProvider>
-          </MainLayout>
-        </TelegramProvider>
-        {/* <Script src="https://telegram.org/js/telegram-web-app.js?56" strategy="beforeInteractive" /> */}
-      </body>
-    </html>
+    <>
+      <html lang="en">
+        <body className={`${roboto_Slab.className} bg-gradient-to-tr from-slate-50 to-lime-50`}>
+          <TelegramProvider>
+            <MainLayout>
+              <ReduxProvider>{children}</ReduxProvider>
+            </MainLayout>
+          </TelegramProvider>
+          {/* <Script src="https://telegram.org/js/telegram-web-app.js?56" strategy="beforeInteractive" /> */}
+        </body>
+      </html>
+    </>
   );
 }

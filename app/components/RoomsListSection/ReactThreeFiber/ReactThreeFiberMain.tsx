@@ -7,6 +7,7 @@ import { Leva, useControls } from "leva";
 import { PerfMonitor } from "r3f-monitor";
 import Experience from "./Experience";
 import { KeyboardControls } from "@react-three/drei";
+import Interface from "./Interface";
 
 const ReactThreeFiberMain = () => {
   const cameraSettings: CameraProps = {
@@ -50,6 +51,7 @@ const ReactThreeFiberMain = () => {
             <Experience></Experience>
             {performanceMonitoring && <PerfMonitor position="top-left" />}
           </Canvas>
+          <Interface></Interface>
         </KeyboardControls>
       </div>
     </>

@@ -81,9 +81,11 @@ import Player from "./Player";
 const Experience = () => {
   return (
     <>
-      <OrbitControls makeDefault />
+      {/* <OrbitControls makeDefault /> */}
 
-      <Physics debug={true}>
+      <Physics
+      //  debug={true}
+      >
         <Lights />
         <Level></Level>
         <Player></Player>
