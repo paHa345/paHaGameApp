@@ -45,6 +45,12 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+const BebasNeue = localFont({
+  src: "./fonts/BebasNeue-Regular.ttf",
+  variable: "--font-geist-mono",
+  weight: "100 900",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{

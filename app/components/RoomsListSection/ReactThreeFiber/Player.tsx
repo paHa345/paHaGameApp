@@ -1,7 +1,13 @@
+import { AppDispatch } from "@/app/store";
+import {
+  IReactThreeFiberGameSlice,
+  ReactThreeFiberGameActions,
+} from "@/app/store/ReactThreeFiberGameSlice";
 import { useKeyboardControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { RapierRigidBody, RigidBody, useRapier } from "@react-three/rapier";
 import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
 
 const Player = () => {
@@ -11,11 +17,53 @@ const Player = () => {
   const [smoothedCameraPosition] = useState(() => new THREE.Vector3(10, 10, 10));
   const [smoothedCameraTarget] = useState(() => new THREE.Vector3());
 
+  const dispatch = useDispatch<AppDispatch>();
+  const blockCounts = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.blocksCount,
+  );
+
+  const phase = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.phase,
+  );
+
   const [subscribeKeys, getKeys] = useKeyboardControls();
+
+  const reset = () => {
+    body.current?.setTranslation(
+      {
+        x: 0,
+        y: 1,
+        z: 0,
+      },
+      true,
+    );
+    body.current?.setLinvel(
+      {
+        x: 0,
+        y: 0,
+        z: 0,
+      },
+      true,
+    );
+    body.current?.setAngvel(
+      {
+        x: 0,
+        y: 1,
+        z: 0,
+      },
+      true,
+    );
+  };
 
   useEffect(() => {
     body.current?.setAdditionalMass(0.2, true);
   }, []);
+
+  useEffect(() => {
+    if (phase === "ready") {
+      reset();
+    }
+  }, [phase]);
 
   const jump = () => {
     if (!body.current) return;
@@ -32,7 +80,6 @@ const Player = () => {
 
     const hit = world.castRay(ray, 10, true);
 
-    console.log(hit);
     if (hit === null) return;
 
     if (hit.timeOfImpact === undefined) return;
@@ -60,8 +107,14 @@ const Player = () => {
         }
       },
     );
+
+    const unsubscribeAny = subscribeKeys(() => {
+      dispatch(ReactThreeFiberGameActions.start());
+    });
+
     return () => {
       unsubscribeJump();
+      unsubscribeAny();
     };
   }, []);
 
@@ -127,6 +180,18 @@ const Player = () => {
 
     state.camera.position.copy(smoothedCameraPosition);
     state.camera.lookAt(smoothedCameraTarget);
+
+    /**
+     * Phases
+     */
+
+    if (bodyPosition.z < -(blockCounts * 4 + 2)) {
+      dispatch(ReactThreeFiberGameActions.end());
+    }
+
+    if (bodyPosition.y < -4) {
+      dispatch(ReactThreeFiberGameActions.restart());
+    }
   });
 
   return (

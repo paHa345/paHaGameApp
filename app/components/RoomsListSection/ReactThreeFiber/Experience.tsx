@@ -77,8 +77,13 @@ import {
 import Lights from "./Lights";
 import Level from "./Level";
 import Player from "./Player";
+import { useSelector } from "react-redux";
+import { IReactThreeFiberGameSlice } from "@/app/store/ReactThreeFiberGameSlice";
 
 const Experience = () => {
+  const blocksCount = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.blocksCount,
+  );
   return (
     <>
       {/* <OrbitControls makeDefault /> */}
@@ -87,7 +92,7 @@ const Experience = () => {
       //  debug={true}
       >
         <Lights />
-        <Level></Level>
+        <Level count={blocksCount}></Level>
         <Player></Player>
       </Physics>
     </>

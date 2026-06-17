@@ -10,6 +10,7 @@ import { GTSCreateGameSlice } from "./GTSCreateGameSlice";
 import { EditSongAppSlice } from "./EditSongAppSlice";
 import { userSlice } from "./userSlice";
 import { CoopGamesSlice } from "./CoopGamesSlice";
+import { ReactThreeFiberGameSlice } from "./ReactThreeFiberGameSlice";
 
 const store = configureStore({
   reducer: {
@@ -23,6 +24,7 @@ const store = configureStore({
     EditSongAppState: EditSongAppSlice.reducer,
     userState: userSlice.reducer,
     CoopGamesState: CoopGamesSlice.reducer,
+    ReactThreeFiberGameState: ReactThreeFiberGameSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
