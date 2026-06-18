@@ -1,6 +1,7 @@
-import { useGLTF } from "@react-three/drei";
+import { Float, Text, useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { CuboidCollider, RapierRigidBody, RigidBody } from "@react-three/rapier";
+import localFont from "next/font/local";
 import React, { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
@@ -11,9 +12,30 @@ const floor2Material = new THREE.MeshStandardMaterial({ color: "greenyellow" });
 const obstacMaterial = new THREE.MeshStandardMaterial({ color: "orangered" });
 const wallMaterial = new THREE.MeshStandardMaterial({ color: "slategrey" });
 
+const Shonen = localFont({
+  src: "../../../../public/fonts/Shonen.ttf",
+  variable: "--font-geist-mono",
+  weight: "100 900",
+});
+
 export function BlockStart({ position = [0, 0, 0] }: any) {
   return (
     <>
+      <Float floatIntensity={0.25} rotationIntensity={0.25}>
+        <Text
+          font="./fonts/Shonen.ttf"
+          scale={0.3}
+          maxWidth={3}
+          lineHeight={0.85}
+          textAlign="right"
+          position={[0.75, 0.65, 0]}
+          rotation-y={-0.25}
+        >
+          {" "}
+          Крафт Орг 3D
+        </Text>
+        <meshBasicMaterial toneMapped={false} />
+      </Float>
       <group position={position}>
         <mesh
           position={[0, -0.1, 0]}
@@ -188,6 +210,9 @@ export function BlockEnd({ position = [0, 0, 0] }: any) {
   return (
     <>
       <group position={position}>
+        <Text font="./fonts/Shonen.ttf" position={[0, 2.25, 2]} scale={1}>
+          Финиш
+        </Text>
         <mesh
           position={[0, 0, 0]}
           geometry={boxGeometry}
@@ -250,7 +275,7 @@ export function Bounds({ length = 1 }) {
   );
 }
 
-const Level = ({ count = 5, types = [BlockSpinner, BlockAxe, BlockLimbo] }) => {
+const Level = ({ count = 5, types = [BlockSpinner, BlockAxe, BlockLimbo], seed = 0 }) => {
   // const count = 5
   // const types = [BlockSpinner, BlockAxe, BlockLimbo]
 
@@ -262,7 +287,7 @@ const Level = ({ count = 5, types = [BlockSpinner, BlockAxe, BlockLimbo] }) => {
       blocks.push(type);
     }
     return blocks;
-  }, [count, types]);
+  }, [count, types, seed]);
 
   return (
     <>

@@ -36,9 +36,6 @@ const ReactThreeFiberMain = () => {
         >
           <Canvas
             className=" touch-none"
-            // onPointerMissed={() => {
-            //   console.log("You missed");
-            // }}
             shadows
             flat
             camera={{

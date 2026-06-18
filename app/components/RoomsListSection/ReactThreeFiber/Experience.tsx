@@ -84,15 +84,19 @@ const Experience = () => {
   const blocksCount = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.blocksCount,
   );
+  const blocksSeed = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.blockSeed,
+  );
   return (
     <>
-      {/* <OrbitControls makeDefault /> */}
+      <OrbitControls makeDefault />
 
+      <color args={["#bdedfc"]} attach={"background"}></color>
       <Physics
       //  debug={true}
       >
         <Lights />
-        <Level count={blocksCount}></Level>
+        <Level count={blocksCount} seed={blocksSeed}></Level>
         <Player></Player>
       </Physics>
     </>
