@@ -38,12 +38,12 @@ const ReactThreeFiberMain = () => {
             className=" touch-none"
             shadows
             flat
-            camera={{
-              fov: 45,
-              near: 0.1,
-              far: 200,
-              position: [-4, 3, 6],
-            }}
+            // camera={{
+            //   fov: 45,
+            //   near: 0.1,
+            //   far: 200,
+            //   position: [-4, 3, 6],
+            // }}
           >
             <Experience></Experience>
             {performanceMonitoring && <PerfMonitor position="top-left" />}

@@ -11,13 +11,16 @@ import {
   Center,
   ContactShadows,
   Environment,
+  FirstPersonControls,
   Float,
+  FlyControls,
   Html,
   Lightformer,
   meshBounds,
   MeshReflectorMaterial,
   OrbitControls,
   PivotControls,
+  PointerLockControls,
   PresentationControls,
   RandomizedLight,
   shaderMaterial,
@@ -89,7 +92,7 @@ const Experience = () => {
   );
   return (
     <>
-      <OrbitControls makeDefault />
+      {/* <OrbitControls makeDefault /> */}
 
       <color args={["#bdedfc"]} attach={"background"}></color>
       <Physics

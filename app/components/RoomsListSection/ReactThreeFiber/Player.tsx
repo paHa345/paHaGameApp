@@ -3,7 +3,7 @@ import {
   IReactThreeFiberGameSlice,
   ReactThreeFiberGameActions,
 } from "@/app/store/ReactThreeFiberGameSlice";
-import { useKeyboardControls } from "@react-three/drei";
+import { OrbitControls, PerspectiveCamera, useKeyboardControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { RapierRigidBody, RigidBody, useRapier } from "@react-three/rapier";
 import React, { useEffect, useRef, useState } from "react";
@@ -12,6 +12,7 @@ import * as THREE from "three";
 
 const Player = () => {
   const body = useRef<RapierRigidBody>(null);
+  const cameraPoint = useRef<THREE.Mesh>(null);
   const { rapier, world } = useRapier();
 
   const [smoothedCameraPosition] = useState(() => new THREE.Vector3(10, 10, 10));
@@ -160,26 +161,37 @@ const Player = () => {
     body.current?.applyImpulse(impulse, true);
     body.current?.applyTorqueImpulse(torque, true);
 
+    // console.log(body.current.translation());
+
+    cameraPoint.current?.position.copy(body.current.translation());
+
+    if (!cameraPoint.current) return;
+    state.camera.lookAt(cameraPoint.current.position);
+
     /**
      * Camera
      */
 
     const bodyPosition = body.current?.translation();
 
-    const cameraPosition = new THREE.Vector3();
-    cameraPosition.copy(bodyPosition);
-    cameraPosition.z += 2.25;
-    cameraPosition.y += 0.65;
+    // console.log(state.camera.position);
 
-    const cameraTarget = new THREE.Vector3();
-    cameraTarget.copy(bodyPosition);
-    cameraTarget.y += 0.25;
+    // state.camera.position.setY(bodyPosition.z);
 
-    smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
-    smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
+    // const cameraPosition = new THREE.Vector3();
+    // cameraPosition.copy(bodyPosition);
+    // cameraPosition.z += 2.25;
+    // cameraPosition.y += 0.65;
 
-    state.camera.position.copy(smoothedCameraPosition);
-    state.camera.lookAt(smoothedCameraTarget);
+    // const cameraTarget = new THREE.Vector3();
+    // cameraTarget.copy(bodyPosition);
+    // cameraTarget.y += 0.25;
+
+    // smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
+    // smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
+
+    // state.camera.position.copy(smoothedCameraPosition);
+    // state.camera.lookAt(smoothedCameraTarget);
 
     /**
      * Phases
@@ -195,20 +207,32 @@ const Player = () => {
   });
 
   return (
-    <RigidBody
-      ref={body}
-      position={[0, 1, 0]}
-      colliders="ball"
-      restitution={0.2}
-      linearDamping={0.5}
-      angularDamping={0.5}
-      friction={1}
-    >
-      <mesh castShadow>
-        <icosahedronGeometry args={[0.3, 1]} />
-        <meshStandardMaterial flatShading color={"mediumPurple"} />
+    <>
+      <mesh ref={cameraPoint} position={[0, 0, 0]}>
+        <PerspectiveCamera
+          fov={75}
+          // rotation={[0, Math.PI, 0]}
+          makeDefault={true}
+          position={[-2, 0, 0]}
+        >
+          <OrbitControls />
+        </PerspectiveCamera>
       </mesh>
-    </RigidBody>
+      <RigidBody
+        ref={body}
+        position={[0, 1, 0]}
+        colliders="ball"
+        restitution={0.2}
+        linearDamping={0.5}
+        angularDamping={0.5}
+        friction={1}
+      >
+        <mesh castShadow>
+          <icosahedronGeometry args={[0.3, 1]} />
+          <meshStandardMaterial flatShading color={"mediumPurple"} />
+        </mesh>
+      </RigidBody>
+    </>
   );
 };
 
