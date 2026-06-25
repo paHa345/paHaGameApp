@@ -94,8 +94,10 @@ const Experience = () => {
     <>
       {/* <OrbitControls makeDefault /> */}
 
-      <color args={["#bdedfc"]} attach={"background"}></color>
+      {/* <color args={["#bdedfc"]} attach={"background"}></color> */}
+      <Sky sunPosition={[20, 20, 0]}></Sky>
       <Physics
+
       //  debug={true}
       >
         <Lights />

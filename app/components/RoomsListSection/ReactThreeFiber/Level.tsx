@@ -1,4 +1,4 @@
-import { Float, Text, useGLTF } from "@react-three/drei";
+import { Float, Text, useGLTF, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { CuboidCollider, RapierRigidBody, RigidBody } from "@react-three/rapier";
 import localFont from "next/font/local";
@@ -201,9 +201,19 @@ export function BlockAxe({ position = [0, 0, 0] }: any) {
 }
 
 export function BlockEnd({ position = [0, 0, 0] }: any) {
-  const hamburger = useGLTF("./models/burger.glb");
+  const burger = useGLTF("./models/burger.glb");
 
-  hamburger.scene.children.forEach((mesh) => {
+  const ketchup = useGLTF("./models/Food/bottle-ketchup.glb");
+  const donut = useGLTF("./models/Food/donut-sprinkles.glb");
+  const foodTexture = useTexture("./models/Food/Textures/colormap.png");
+
+  burger.scene.children.forEach((mesh) => {
+    mesh.castShadow = true;
+  });
+  ketchup.scene.children.forEach((mesh) => {
+    mesh.castShadow = true;
+  });
+  donut.scene.children.forEach((mesh) => {
     mesh.castShadow = true;
   });
 
@@ -226,11 +236,35 @@ export function BlockEnd({ position = [0, 0, 0] }: any) {
         <RigidBody
           type="fixed"
           colliders="hull"
-          position={[0, 0.25, 0]}
+          position={[1.5, 0.25, 0]}
           restitution={0.2}
           friction={0}
         >
-          <primitive object={hamburger.scene} scale={0.2} castShadow></primitive>
+          <primitive object={ketchup.scene} scale={2} castShadow>
+            <meshBasicMaterial map={foodTexture} />
+          </primitive>
+        </RigidBody>
+
+        <RigidBody
+          type="fixed"
+          colliders="hull"
+          position={[-1.1, 0.25, 0]}
+          restitution={0.2}
+          friction={0}
+        >
+          <primitive object={donut.scene} scale={6} castShadow>
+            <meshBasicMaterial map={foodTexture} />
+          </primitive>
+        </RigidBody>
+
+        <RigidBody
+          type="fixed"
+          colliders="hull"
+          position={[0.4, 0.25, 0]}
+          restitution={0.2}
+          friction={0}
+        >
+          <primitive object={burger.scene} scale={0.15} castShadow></primitive>
         </RigidBody>
       </group>
     </>
