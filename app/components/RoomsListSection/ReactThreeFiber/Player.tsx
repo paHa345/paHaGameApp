@@ -182,11 +182,13 @@ const Player = () => {
     // }
 
     if (forward) {
-      moveDirectionVector.set(-state.camera.position.x, 0, -state.camera.position.z).normalize();
+      moveDirectionVector.set(-state.camera.position.x / 10, 0, -state.camera.position.z / 10);
+      // .normalize();
 
       //   moveDirectionVector.z -= impulseStrength;w
       //   moveDirectionVector.x -= impulseStrength;
       //   torque.x -= torqueStrength;
+      console.log(moveDirectionVector);
     }
 
     if (rightward) {
@@ -194,7 +196,8 @@ const Player = () => {
       //   torque.z -= torqueStrength;
     }
     if (backward) {
-      moveDirectionVector.set(state.camera.position.x, 0, state.camera.position.z).normalize();
+      moveDirectionVector.set(state.camera.position.x / 10, 0, state.camera.position.z / 10);
+      //   .normalize();
 
       //   impulse.z += impulseStrength;
       //   torque.x += torqueStrength;
