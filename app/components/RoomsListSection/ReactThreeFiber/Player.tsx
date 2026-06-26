@@ -36,9 +36,10 @@ const Player = () => {
   playerTexture.flipY = false;
 
   const animations = useAnimations(player.animations, player.scene);
+  console.log(animations);
 
-  if (animations.actions.walk !== null) {
-    animations.actions.walk.play();
+  if (animations.actions["holding-left"] !== null) {
+    animations.actions["holding-left"].play();
   }
 
   const [smoothedCameraPosition] = useState(() => new THREE.Vector3(0, 0, 0));
@@ -102,7 +103,7 @@ const Player = () => {
   const jump = () => {
     if (!body.current) return;
     const origin = body.current.translation();
-    origin.y -= 0.31;
+    origin.y -= 0.1;
 
     const direction = {
       x: 0,
@@ -114,6 +115,8 @@ const Player = () => {
 
     const hit = world.castRay(ray, 10, true);
 
+    console.log(hit);
+
     if (hit === null) return;
 
     if (hit.timeOfImpact === undefined) return;
@@ -122,7 +125,7 @@ const Player = () => {
       body.current?.applyImpulse(
         {
           x: 0,
-          y: 1,
+          y: 3,
           z: 0,
         },
         true,
@@ -188,11 +191,14 @@ const Player = () => {
       //   moveDirectionVector.z -= impulseStrength;w
       //   moveDirectionVector.x -= impulseStrength;
       //   torque.x -= torqueStrength;
-      console.log(moveDirectionVector);
+      //   console.log(moveDirectionVector);
     }
 
     if (rightward) {
-      impulse.x += impulseStrength;
+      moveDirectionVector.set(-state.camera.position.x / 10, 0, -state.camera.position.z / 10);
+
+      moveDirectionVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(-90));
+      //   impulse.x += impulseStrength;
       //   torque.z -= torqueStrength;
     }
     if (backward) {
@@ -203,7 +209,10 @@ const Player = () => {
       //   torque.x += torqueStrength;
     }
     if (leftward) {
-      impulse.x -= impulseStrength;
+      moveDirectionVector.set(state.camera.position.x / 10, 0, state.camera.position.z / 10);
+      moveDirectionVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(-90));
+
+      //   impulse.x -= impulseStrength;
       //   torque.z += torqueStrength;
     }
 
