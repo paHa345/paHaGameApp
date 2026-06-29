@@ -97,8 +97,7 @@ const Experience = () => {
       {/* <color args={["#bdedfc"]} attach={"background"}></color> */}
       <Sky sunPosition={[20, 20, 0]}></Sky>
       <Physics
-
-      //  debug={true}
+      // debug={true}
       >
         <Lights />
         <Level count={blocksCount} seed={blocksSeed}></Level>

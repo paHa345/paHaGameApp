@@ -19,6 +19,7 @@ import {
 } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { CuboidCollider, RapierRigidBody, RigidBody, useRapier } from "@react-three/rapier";
+import { useControls } from "leva";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
@@ -35,13 +36,14 @@ const Player = () => {
   const playerTexture = useTexture("./models/characters/2/texture-a.png");
   playerTexture.flipY = false;
 
+  const currentAnimationName = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.animationsName,
+  );
+
   const animations = useAnimations(player.animations, player.scene);
-  console.log(animations);
-
-  if (animations.actions["holding-left"] !== null) {
-    animations.actions["holding-left"].play();
-  }
-
+  const rotationPlayerModel = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.rotatePlayerModel,
+  );
   const [smoothedCameraPosition] = useState(() => new THREE.Vector3(0, 0, 0));
   const [smoothedCameraTarget] = useState(() => new THREE.Vector3());
 
@@ -94,6 +96,28 @@ const Player = () => {
   //     body.current?.setAdditionalMass(500, true);
   //   }, []);
 
+  /**
+   * Animations
+   */
+
+  const { playerAnimations } = useControls("playerAnimations", {
+    playerAnimations: {
+      options: animations.names,
+    },
+  });
+
+  useEffect(() => {
+    const action = animations.actions[currentAnimationName];
+
+    if (animations.actions[currentAnimationName] !== null) {
+      animations.actions[currentAnimationName].play();
+      action?.reset().fadeIn(0.5).play();
+    }
+    return () => {
+      action?.fadeOut(0.5);
+    };
+  }, [currentAnimationName]);
+
   useEffect(() => {
     if (phase === "ready") {
       reset();
@@ -112,10 +136,7 @@ const Player = () => {
     };
 
     const ray = new rapier.Ray(origin, direction);
-
     const hit = world.castRay(ray, 10, true);
-
-    console.log(hit);
 
     if (hit === null) return;
 
@@ -140,6 +161,7 @@ const Player = () => {
       },
       (value) => {
         if (value) {
+          dispatch(ReactThreeFiberGameActions.setJumpAnimation());
           jump();
         }
       },
@@ -158,16 +180,40 @@ const Player = () => {
   useFrame((state, delta) => {
     if (!body.current) return;
 
+    const origin = body.current.translation();
+    origin.y -= 0.1;
+
+    const rayDirection = {
+      x: 0,
+      y: -1,
+      z: 0,
+    };
+
+    const ray = new rapier.Ray(origin, rayDirection);
+    const hit = world.castRay(ray, 10, true);
+
     /**
      * Controls
      */
     const { forward, backward, leftward, rightward } = getKeys();
+
+    // set idle animation if player not move
+
+    if (!forward && !backward && !leftward && !rightward && hit?.timeOfImpact === 0) {
+      dispatch(ReactThreeFiberGameActions.setIdleAnimation());
+    }
+
+    if (hit !== null && hit?.timeOfImpact > 0) {
+      dispatch(ReactThreeFiberGameActions.setJumpAnimation());
+    }
+
     const impulse = {
       x: 0,
       y: 0,
       z: 0,
     };
     const moveDirectionVector = new THREE.Vector3(0, 0, 0);
+    body.current.applyImpulse(moveDirectionVector, true);
 
     // const torque = {
     //   x: 0,
@@ -180,21 +226,28 @@ const Player = () => {
 
     // if (state.clock.getElapsedTime() - time > 3) {
     //   moveDirectionVector.set(state.camera.position.x, 0, state.camera.position.z).normalize();
-    //   console.log(moveDirectionVector);
     //   time = state.clock.getElapsedTime();
     // }
 
+    if (!forward && !backward && rotationPlayerModel !== 0) {
+      dispatch(ReactThreeFiberGameActions.setRotatePlayerModel(0));
+    }
+
     if (forward) {
+      dispatch(ReactThreeFiberGameActions.setWalkAnimation());
       moveDirectionVector.set(-state.camera.position.x / 10, 0, -state.camera.position.z / 10);
+      //   moveDirectionVector.normalize();
       // .normalize();
 
       //   moveDirectionVector.z -= impulseStrength;w
       //   moveDirectionVector.x -= impulseStrength;
       //   torque.x -= torqueStrength;
-      //   console.log(moveDirectionVector);
     }
 
     if (rightward) {
+      dispatch(ReactThreeFiberGameActions.setWalkAnimation());
+      dispatch(ReactThreeFiberGameActions.setRotatePlayerModel(-0.2));
+
       moveDirectionVector.set(-state.camera.position.x / 10, 0, -state.camera.position.z / 10);
 
       moveDirectionVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(-90));
@@ -202,6 +255,7 @@ const Player = () => {
       //   torque.z -= torqueStrength;
     }
     if (backward) {
+      dispatch(ReactThreeFiberGameActions.setWalkAnimation());
       moveDirectionVector.set(state.camera.position.x / 10, 0, state.camera.position.z / 10);
       //   .normalize();
 
@@ -209,6 +263,9 @@ const Player = () => {
       //   torque.x += torqueStrength;
     }
     if (leftward) {
+      dispatch(ReactThreeFiberGameActions.setWalkAnimation());
+      dispatch(ReactThreeFiberGameActions.setRotatePlayerModel(0.2));
+
       moveDirectionVector.set(state.camera.position.x / 10, 0, state.camera.position.z / 10);
       moveDirectionVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(-90));
 
@@ -217,6 +274,11 @@ const Player = () => {
     }
 
     // body.current.setLinvel(impulse, true);
+
+    // if (state.clock.elapsedTime - time > 2) {
+    //   time = state.clock.elapsedTime;
+    // }
+
     body.current.applyImpulse(moveDirectionVector, true);
 
     /**
@@ -254,8 +316,6 @@ const Player = () => {
      */
 
     const bodyPosition = body.current?.translation();
-
-    // console.log(state.camera.position);
 
     // state.camera.position.setY(bodyPosition.z);
 
@@ -314,9 +374,11 @@ const Player = () => {
         enabledRotations={[false, true, false]}
       >
         <CuboidCollider position={[0, 0.6, 0]} args={[0.4, 0.6, 0.4]}>
-          <primitive position={[0, -0.6, 0]} object={player.scene} scale={0.4} castShadow>
-            <meshBasicMaterial map={playerTexture} />
-          </primitive>
+          <group rotation-y={rotationPlayerModel}>
+            <primitive position={[0, -0.6, 0]} object={player.scene} scale={0.4} castShadow>
+              <meshBasicMaterial map={playerTexture} />
+            </primitive>
+          </group>
         </CuboidCollider>
 
         {/* <mesh castShadow>

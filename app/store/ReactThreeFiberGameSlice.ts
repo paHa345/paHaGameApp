@@ -16,6 +16,12 @@ export interface IReactThreeFiberGameSlice {
      * Phases
      */
     phase: "ready" | "playing" | "ended";
+
+    /**
+     * Animations
+     */
+    animationsName: "idle" | "walk" | "holding-both";
+    rotatePlayerModel: number;
   };
 }
 
@@ -26,6 +32,8 @@ interface IReactThreeFiberGameState {
   startTime: number;
   endTime: number;
   phase: "ready" | "playing" | "ended";
+  animationsName: "idle" | "walk" | "holding-both";
+  rotatePlayerModel: number;
 }
 
 const initReactThreeFiberGameState: IReactThreeFiberGameState = {
@@ -35,6 +43,8 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
   startTime: 0,
   endTime: 0,
   phase: "ready",
+  animationsName: "idle",
+  rotatePlayerModel: 0,
 };
 
 export const ReactThreeFiberGameSlice = createSlice({
@@ -61,6 +71,24 @@ export const ReactThreeFiberGameSlice = createSlice({
         state.phase = "ended";
         state.endTime = Date.now();
       }
+    },
+    setIdleAnimation(state) {
+      if (state.animationsName !== "idle") {
+        state.animationsName = "idle";
+      }
+    },
+    setJumpAnimation(state) {
+      if (state.animationsName !== "holding-both") {
+        state.animationsName = "holding-both";
+      }
+    },
+    setWalkAnimation(state) {
+      if (state.animationsName !== "walk") {
+        state.animationsName = "walk";
+      }
+    },
+    setRotatePlayerModel(state, action) {
+      state.rotatePlayerModel = action.payload;
     },
   },
 });
