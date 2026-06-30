@@ -282,6 +282,13 @@ const Player = () => {
     body.current.applyImpulse(moveDirectionVector, true);
 
     /**
+     * Поворот камеры по движению мыши
+     */
+
+    // получаем координаты указателя мыши
+    // console.log(state.pointer);
+
+    /**
      * Поворот RigidBody игрока в ту сторону, куда направлена камера
      */
 
@@ -290,7 +297,7 @@ const Player = () => {
 
     // 2. Вычисляем вектор направления камеры
     //устанавливаем в direction координаты вектора камеры
-    direction.set(camPos.x, camPos.y, camPos.z);
+    direction.set(state.pointer.x * -1.9, 1, state.pointer.y * 2);
 
     // Нормализуем, чтобы получить чистое направление
     if (direction.length() < 0.001) return;
@@ -306,7 +313,12 @@ const Player = () => {
     // Это сообщает физическому движку: "В этом кадре поверни тело именно так".
     body.current.setRotation(targetQuaternion, true);
 
+    // console.log(body.current.translation());
     cameraPoint.current?.position.copy(body.current.translation());
+
+    state.camera.position.x = state.pointer.x * -1.9;
+    state.camera.position.y = camPos.y;
+    state.camera.position.z = state.pointer.y * 2;
 
     if (!cameraPoint.current) return;
     state.camera.lookAt(cameraPoint.current.position);
@@ -358,6 +370,7 @@ const Player = () => {
           position={[-2, 0, 0]}
         >
           <OrbitControls />
+          {/* <PointerLockControls makeDefault={true}></PointerLockControls> */}
         </PerspectiveCamera>
       </mesh>
       <RigidBody

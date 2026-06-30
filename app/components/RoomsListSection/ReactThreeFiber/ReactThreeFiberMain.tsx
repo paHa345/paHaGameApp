@@ -6,7 +6,7 @@ import * as THREE from "three";
 import { Leva, useControls } from "leva";
 import { PerfMonitor } from "r3f-monitor";
 import Experience from "./Experience";
-import { KeyboardControls } from "@react-three/drei";
+import { KeyboardControls, PointerLockControls } from "@react-three/drei";
 import Interface from "./Interface";
 
 const ReactThreeFiberMain = () => {
