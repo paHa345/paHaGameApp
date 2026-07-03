@@ -7,7 +7,7 @@ import {
   ReactThreeFiberGameActions,
 } from "@/app/store/ReactThreeFiberGameSlice";
 import { AppDispatch } from "@/app/store";
-import { addEffect } from "@react-three/fiber";
+import { addEffect, useThree } from "@react-three/fiber";
 
 const BebasNeue = localFont({
   src: "../../../../public/fonts/BebasNeue-Regular.ttf",
@@ -27,6 +27,7 @@ const Shonen = localFont({
 
 const Interface = () => {
   const dispatch = useDispatch<AppDispatch>();
+  // const threeState = useThree();
 
   const time = useRef<HTMLDivElement>(null);
 
@@ -56,6 +57,10 @@ const Interface = () => {
   const jump = useKeyboardControls((state) => {
     return state.jump;
   });
+
+  // const startGameButtonHandler = () => {
+  //   threeState.gl.domElement.requestPointerLock();
+  // };
 
   const restartButtonHandler = () => {
     dispatch(ReactThreeFiberGameActions.restart());

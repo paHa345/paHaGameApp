@@ -17,12 +17,13 @@ import {
   useKeyboardControls,
   useTexture,
 } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { CuboidCollider, RapierRigidBody, RigidBody, useRapier } from "@react-three/rapier";
 import { useControls } from "leva";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
+import GameMenu from "./GameMenu";
 
 const Player = () => {
   const body = useRef<RapierRigidBody>(null);
@@ -30,14 +31,31 @@ const Player = () => {
   const userMain = useRef<THREE.Mesh>(null);
   const { rapier, world } = useRapier();
 
+  const { gl, pointer } = useThree();
+
   const player = useGLTF("./models/characters/2/character-a.glb");
   //   const player = useFBX("./models/characters/1/Model/characterMedium.fbx");
 
   const playerTexture = useTexture("./models/characters/2/texture-a.png");
   playerTexture.flipY = false;
 
+  const cameraPosition = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.cameraPosition,
+  );
+  const gamePauseStatus = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.gamePauseStatus,
+  );
+
   const currentAnimationName = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.animationsName,
+  );
+
+  const canvas = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.canvasRef,
+  );
+
+  const mouseCoords = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.mouseCoords,
   );
 
   const animations = useAnimations(player.animations, player.scene);
@@ -92,9 +110,47 @@ const Player = () => {
     );
   };
 
+  useEffect(() => {
+    const subscribeMouseMove = (e: MouseEvent) => {
+      if (document.pointerLockElement && document) {
+        const mouseVector = {
+          x: (e.movementX / gl.domElement.height) * 2,
+          y: (e.movementY / gl.domElement.width) * 2,
+        };
+        dispatch(ReactThreeFiberGameActions.setMouseCoords(mouseVector));
+      }
+    };
+    document.addEventListener("mousemove", subscribeMouseMove);
+
+    return () => {
+      document.removeEventListener("mousemove", subscribeMouseMove);
+    };
+  }, []);
+
   //   useEffect(() => {
   //     body.current?.setAdditionalMass(500, true);
   //   }, []);
+
+  /**
+   * Show/hide menu, lock pointer
+   */
+
+  useEffect(() => {
+    if (!gamePauseStatus) {
+      gl.domElement.requestPointerLock({
+        unadjustedMovement: true,
+      });
+    }
+    // else{
+    //         threeState.gl.domElement.
+
+    // }
+  }, [gamePauseStatus]);
+
+  //   const startGameButtonHandler = () => {
+  //     console.log("Start game");
+  //     threeState.gl.domElement.requestPointerLock();
+  //   };
 
   /**
    * Animations
@@ -167,17 +223,31 @@ const Player = () => {
       },
     );
 
+    const unsunscribleEscapeButton = subscribeKeys(
+      (state) => {
+        return state.escape;
+      },
+      (value) => {
+        if (value) {
+          console.log("Menu");
+          dispatch(ReactThreeFiberGameActions.setGamePauseStatus());
+        }
+      },
+    );
+
     const unsubscribeAny = subscribeKeys(() => {
       dispatch(ReactThreeFiberGameActions.start());
     });
 
     return () => {
       unsubscribeJump();
+      unsunscribleEscapeButton();
       unsubscribeAny();
     };
   }, []);
 
   useFrame((state, delta) => {
+    if (gamePauseStatus) return;
     if (!body.current) return;
 
     const origin = body.current.translation();
@@ -297,7 +367,14 @@ const Player = () => {
 
     // 2. Вычисляем вектор направления камеры
     //устанавливаем в direction координаты вектора камеры
-    direction.set(state.pointer.x * -1.9, 1, state.pointer.y * 2);
+    // direction.set(state.pointer.x * -1.9, 1, state.pointer.y * 2);
+    direction.set(mouseCoords.x, 1, mouseCoords.y);
+
+    // if (state.clock.elapsedTime - time > 2) {
+    //   console.log(`Pointer: ${state.pointer.x}:${state.pointer.y}`);
+    //   console.log(`MouseCoords: ${mouseCoords.x / 100}:${mouseCoords.y / 100}`);
+    //   time = state.clock.getElapsedTime();
+    // }
 
     // Нормализуем, чтобы получить чистое направление
     if (direction.length() < 0.001) return;
@@ -316,9 +393,15 @@ const Player = () => {
     // console.log(body.current.translation());
     cameraPoint.current?.position.copy(body.current.translation());
 
-    state.camera.position.x = state.pointer.x * -1.9;
+    // state.camera.position.x = state.pointer.x * -1.9;
+    // state.camera.position.y = camPos.y;
+    // state.camera.position.z = state.pointer.y * 2;
+
+    // console.log(camPos.y);
+
+    state.camera.position.x = mouseCoords.x;
     state.camera.position.y = camPos.y;
-    state.camera.position.z = state.pointer.y * 2;
+    state.camera.position.z = mouseCoords.y;
 
     if (!cameraPoint.current) return;
     state.camera.lookAt(cameraPoint.current.position);
@@ -361,45 +444,48 @@ const Player = () => {
 
   return (
     <>
-      {/* <mesh ref={userMain}> */}
-      <mesh ref={cameraPoint}>
-        <PerspectiveCamera
-          fov={75}
-          // rotation={[0, Math.PI, 0]}
-          makeDefault={true}
-          position={[-2, 0, 0]}
+      <mesh ref={userMain}>
+        <mesh ref={cameraPoint}>
+          <PerspectiveCamera
+            fov={75}
+            // rotation={[0, Math.PI, 0]}
+            makeDefault={true}
+            position={cameraPosition}
+          >
+            <OrbitControls />
+            {/* <PointerLockControls makeDefault={true}></PointerLockControls> */}
+          </PerspectiveCamera>
+          <mesh position={[0, 8, 0]} rotation-x={-Math.PI / 2}>
+            {gamePauseStatus && <GameMenu></GameMenu>}
+          </mesh>
+        </mesh>
+        <RigidBody
+          ref={body}
+          mass={5}
+          position={[0, 0.75, 0]}
+          // colliders="ball"
+          colliders={false}
+          restitution={0.2}
+          linearDamping={0.5}
+          angularDamping={0.5}
+          friction={1}
+          type="dynamic"
+          enabledRotations={[false, true, false]}
         >
-          <OrbitControls />
-          {/* <PointerLockControls makeDefault={true}></PointerLockControls> */}
-        </PerspectiveCamera>
-      </mesh>
-      <RigidBody
-        ref={body}
-        mass={5}
-        position={[0, 0.75, 0]}
-        // colliders="ball"
-        colliders={false}
-        restitution={0.2}
-        linearDamping={0.5}
-        angularDamping={0.5}
-        friction={1}
-        type="dynamic"
-        enabledRotations={[false, true, false]}
-      >
-        <CuboidCollider position={[0, 0.6, 0]} args={[0.4, 0.6, 0.4]}>
-          <group rotation-y={rotationPlayerModel}>
-            <primitive position={[0, -0.6, 0]} object={player.scene} scale={0.4} castShadow>
-              <meshBasicMaterial map={playerTexture} />
-            </primitive>
-          </group>
-        </CuboidCollider>
+          <CuboidCollider position={[0, 0.6, 0]} args={[0.4, 0.6, 0.4]}>
+            <group rotation-y={rotationPlayerModel}>
+              <primitive position={[0, -0.6, 0]} object={player.scene} scale={0.4} castShadow>
+                <meshBasicMaterial map={playerTexture} />
+              </primitive>
+            </group>
+          </CuboidCollider>
 
-        {/* <mesh castShadow>
+          {/* <mesh castShadow>
           <icosahedronGeometry args={[0.3, 1]} />
           <meshStandardMaterial flatShading color={"mediumPurple"} />
         </mesh> */}
-      </RigidBody>
-      {/* </mesh> */}
+        </RigidBody>
+      </mesh>
     </>
   );
 };

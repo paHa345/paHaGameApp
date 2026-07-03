@@ -1,6 +1,6 @@
 "use client";
 
-import { ThreeEvent, useFrame, useLoader } from "@react-three/fiber";
+import { ReactThreeFiber, ThreeEvent, useFrame, useLoader, useThree } from "@react-three/fiber";
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
@@ -80,10 +80,28 @@ import {
 import Lights from "./Lights";
 import Level from "./Level";
 import Player from "./Player";
-import { useSelector } from "react-redux";
-import { IReactThreeFiberGameSlice } from "@/app/store/ReactThreeFiberGameSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  IReactThreeFiberGameSlice,
+  ReactThreeFiberGameActions,
+} from "@/app/store/ReactThreeFiberGameSlice";
+import GameMenu from "./GameMenu";
+import { AppDispatch } from "@/app/store";
+import { width } from "@fortawesome/free-regular-svg-icons/faSave";
 
 const Experience = () => {
+  const { gl } = useThree();
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(
+      ReactThreeFiberGameActions.setCanvasWidthHeight({
+        width: gl.domElement.clientWidth,
+        height: gl.domElement.clientHeight,
+      }),
+    );
+  }, [gl.domElement.clientHeight, gl.domElement.clientWidth]);
+
   const blocksCount = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.blocksCount,
   );
