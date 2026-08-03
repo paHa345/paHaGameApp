@@ -18,49 +18,107 @@ import {
   useTexture,
 } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { CuboidCollider, RapierRigidBody, RigidBody, useRapier } from "@react-three/rapier";
+import {
+  CuboidCollider,
+  RapierRigidBody,
+  RigidBody,
+  useRapier,
+} from "@react-three/rapier";
 import { useControls } from "leva";
-import React, { useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
 import GameMenu from "./GameMenu";
+import Camera from "./Camera";
 
 const Player = () => {
+  const Scratches005Color = useTexture("./textures/Moss002/Moss002Color.jpg");
+  // const rock061Normal = useTexture("./textures/Rock061/Rock061NormalGL.jpg");
+  // const rock061Roughness = useTexture(
+  //   "./textures/Rock061/Rock061Roughness.jpg",
+  // );
+  // const rock061Displacement = useTexture(
+  //   "./textures/Rock061/Rock061Displacement.jpg",
+  // );
+  // const rock061AmbientOcclusion = useTexture(
+  //   "./textures/Rock061/Rock061Occlusion.jpg",
+  // );
+
+  Scratches005Color.repeat.set(24, 1);
+  Scratches005Color.wrapS = THREE.RepeatWrapping;
+  Scratches005Color.wrapT = THREE.RepeatWrapping;
+  // rock061Normal.repeat.set(24, 1);
+  // rock061Normal.wrapS = THREE.RepeatWrapping;
+  // rock061Normal.wrapT = THREE.RepeatWrapping;
+  // rock061Roughness.repeat.set(24, 1);
+  // rock061Roughness.wrapS = THREE.RepeatWrapping;
+  // rock061Roughness.wrapT = THREE.RepeatWrapping;
+  // rock061Displacement.repeat.set(24, 1);
+  // rock061Displacement.wrapS = THREE.RepeatWrapping;
+  // rock061Displacement.wrapT = THREE.RepeatWrapping;
+  // rock061AmbientOcclusion.repeat.set(24, 1);
+  // rock061AmbientOcclusion.wrapS = THREE.RepeatWrapping;
+  // rock061AmbientOcclusion.wrapT = THREE.RepeatWrapping;
+
+  Scratches005Color.needsUpdate = true;
+  // rock061Normal.needsUpdate = true;
+  // rock061Roughness.needsUpdate = true;
+  // rock061Displacement.needsUpdate = true;
+  // rock061AmbientOcclusion.needsUpdate = true;
+
+  const { camera } = useThree();
+  const targetPos = useRef(new THREE.Vector3());
+  const desiredPos = useRef(new THREE.Vector3());
+  const dir = useRef(new THREE.Vector3());
+
+  const distance = useRef(1);
+
   const body = useRef<RapierRigidBody>(null);
   const cameraPoint = useRef<THREE.Mesh>(null);
   const userMain = useRef<THREE.Mesh>(null);
+  const borderUserSphere = useRef<THREE.Mesh>(null);
+  const playerModelRef = useRef<THREE.Mesh>(null);
   const { rapier, world } = useRapier();
 
   const { gl, pointer } = useThree();
 
   const player = useGLTF("./models/characters/2/character-a.glb");
-  //   const player = useFBX("./models/characters/1/Model/characterMedium.fbx");
+  for (const name in player.nodes) {
+    player.nodes[name].castShadow = true;
+  }
 
   const playerTexture = useTexture("./models/characters/2/texture-a.png");
   playerTexture.flipY = false;
 
   const cameraPosition = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.cameraPosition,
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.cameraPosition,
   );
   const gamePauseStatus = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.gamePauseStatus,
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.gamePauseStatus,
   );
 
   const currentAnimationName = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.animationsName,
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.animationsName,
   );
 
   const canvas = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.canvasRef,
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.canvasRef,
   );
 
   const mouseCoords = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.mouseCoords,
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.mouseCoords,
   );
 
   const animations = useAnimations(player.animations, player.scene);
+
   const rotationPlayerModel = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.rotatePlayerModel,
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.rotatePlayerModel,
   );
   const [smoothedCameraPosition] = useState(() => new THREE.Vector3(0, 0, 0));
   const [smoothedCameraTarget] = useState(() => new THREE.Vector3());
@@ -74,7 +132,8 @@ const Player = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const blockCounts = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.blocksCount,
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.blocksCount,
   );
 
   const phase = useSelector(
@@ -110,22 +169,24 @@ const Player = () => {
     );
   };
 
-  useEffect(() => {
-    const subscribeMouseMove = (e: MouseEvent) => {
-      if (document.pointerLockElement && document) {
-        const mouseVector = {
-          x: (e.movementX / gl.domElement.height) * 2,
-          y: (e.movementY / gl.domElement.width) * 2,
-        };
-        dispatch(ReactThreeFiberGameActions.setMouseCoords(mouseVector));
-      }
-    };
-    document.addEventListener("mousemove", subscribeMouseMove);
+  console.log("asdasd");
 
-    return () => {
-      document.removeEventListener("mousemove", subscribeMouseMove);
-    };
-  }, []);
+  // useEffect(() => {
+  //   const subscribeMouseMove = (e: MouseEvent) => {
+  //     if (document.pointerLockElement && document) {
+  //       const mouseVector = {
+  //         x: (e.movementX / gl.domElement.height) * 2,
+  //         y: (e.movementY / gl.domElement.width) * 2,
+  //       };
+  //       dispatch(ReactThreeFiberGameActions.setMouseCoords(mouseVector));
+  //     }
+  //   };
+  //   document.addEventListener("mousemove", subscribeMouseMove);
+
+  //   return () => {
+  //     document.removeEventListener("mousemove", subscribeMouseMove);
+  //   };
+  // });
 
   //   useEffect(() => {
   //     body.current?.setAdditionalMass(500, true);
@@ -156,13 +217,8 @@ const Player = () => {
    * Animations
    */
 
-  const { playerAnimations } = useControls("playerAnimations", {
-    playerAnimations: {
-      options: animations.names,
-    },
-  });
-
   useEffect(() => {
+    console.log(currentAnimationName);
     const action = animations.actions[currentAnimationName];
 
     if (animations.actions[currentAnimationName] !== null) {
@@ -250,6 +306,14 @@ const Player = () => {
     if (gamePauseStatus) return;
     if (!body.current) return;
 
+    // console.log(state.pointer);
+
+    // borderUserSphere.current?.position.set(
+    //   state.camera.position.x,
+    //   borderUserSphere.current.position.y,
+    //   state.camera.position.z,
+    // );
+
     const origin = body.current.translation();
     origin.y -= 0.1;
 
@@ -269,7 +333,13 @@ const Player = () => {
 
     // set idle animation if player not move
 
-    if (!forward && !backward && !leftward && !rightward && hit?.timeOfImpact === 0) {
+    if (
+      !forward &&
+      !backward &&
+      !leftward &&
+      !rightward &&
+      hit?.timeOfImpact === 0
+    ) {
       dispatch(ReactThreeFiberGameActions.setIdleAnimation());
     }
 
@@ -299,14 +369,20 @@ const Player = () => {
     //   time = state.clock.getElapsedTime();
     // }
 
-    if (!forward && !backward && rotationPlayerModel !== 0) {
-      dispatch(ReactThreeFiberGameActions.setRotatePlayerModel(0));
+    if (!playerModelRef.current) return;
+    if (!forward && !backward) {
+      // dispatch(ReactThreeFiberGameActions.setRotatePlayerModel(0));
+      playerModelRef.current.rotation.y = 0;
     }
 
     if (forward) {
       dispatch(ReactThreeFiberGameActions.setWalkAnimation());
-      moveDirectionVector.set(-state.camera.position.x / 10, 0, -state.camera.position.z / 10);
-      //   moveDirectionVector.normalize();
+      moveDirectionVector.set(
+        origin.x - state.camera.position.x,
+        0,
+        origin.z - state.camera.position.z,
+      );
+      // moveDirectionVector.normalize();
       // .normalize();
 
       //   moveDirectionVector.z -= impulseStrength;w
@@ -316,17 +392,34 @@ const Player = () => {
 
     if (rightward) {
       dispatch(ReactThreeFiberGameActions.setWalkAnimation());
-      dispatch(ReactThreeFiberGameActions.setRotatePlayerModel(-0.2));
+      // dispatch(ReactThreeFiberGameActions.setRotatePlayerModel(-0.2));
+      playerModelRef.current.rotation.y = -Math.PI / 8;
 
-      moveDirectionVector.set(-state.camera.position.x / 10, 0, -state.camera.position.z / 10);
+      moveDirectionVector.set(
+        origin.x - state.camera.position.x,
+        0,
+        origin.z - state.camera.position.z,
+      );
 
-      moveDirectionVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(-90));
+      moveDirectionVector.applyAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        THREE.MathUtils.degToRad(-90),
+      );
       //   impulse.x += impulseStrength;
       //   torque.z -= torqueStrength;
     }
     if (backward) {
       dispatch(ReactThreeFiberGameActions.setWalkAnimation());
-      moveDirectionVector.set(state.camera.position.x / 10, 0, state.camera.position.z / 10);
+      moveDirectionVector.set(
+        origin.x - state.camera.position.x,
+        0,
+        origin.z - state.camera.position.z,
+      );
+      moveDirectionVector.applyAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        THREE.MathUtils.degToRad(180),
+      );
+
       //   .normalize();
 
       //   impulse.z += impulseStrength;
@@ -334,10 +427,18 @@ const Player = () => {
     }
     if (leftward) {
       dispatch(ReactThreeFiberGameActions.setWalkAnimation());
-      dispatch(ReactThreeFiberGameActions.setRotatePlayerModel(0.2));
+      // dispatch(ReactThreeFiberGameActions.setRotatePlayerModel(0.2));
+      playerModelRef.current.rotation.y = Math.PI / 8;
 
-      moveDirectionVector.set(state.camera.position.x / 10, 0, state.camera.position.z / 10);
-      moveDirectionVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(-90));
+      moveDirectionVector.set(
+        origin.x - state.camera.position.x,
+        0,
+        origin.z - state.camera.position.z,
+      );
+      moveDirectionVector.applyAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        THREE.MathUtils.degToRad(90),
+      );
 
       //   impulse.x -= impulseStrength;
       //   torque.z += torqueStrength;
@@ -346,10 +447,19 @@ const Player = () => {
     // body.current.setLinvel(impulse, true);
 
     // if (state.clock.elapsedTime - time > 2) {
+    //   console.log("Tick");
     //   time = state.clock.elapsedTime;
     // }
 
-    body.current.applyImpulse(moveDirectionVector, true);
+    // console.log(moveDirectionVector);
+    body.current.applyImpulse(
+      new THREE.Vector3(
+        moveDirectionVector.x / 12,
+        0,
+        moveDirectionVector.z / 12,
+      ),
+      true,
+    );
 
     /**
      * Поворот камеры по движению мыши
@@ -362,19 +472,29 @@ const Player = () => {
      * Поворот RigidBody игрока в ту сторону, куда направлена камера
      */
 
+    /**
+     *
+     */
+
     // 1. Получаем позицию камеры
     const camPos = state.camera.position;
+
+    const translation = body.current.translation();
+    targetPos.current.set(translation.x, translation.y, translation.z);
 
     // 2. Вычисляем вектор направления камеры
     //устанавливаем в direction координаты вектора камеры
     // direction.set(state.pointer.x * -1.9, 1, state.pointer.y * 2);
-    direction.set(mouseCoords.x, 1, mouseCoords.y);
+    const coords = new THREE.Vector2(mouseCoords.x, mouseCoords.y);
+    coords.normalize();
 
-    // if (state.clock.elapsedTime - time > 2) {
-    //   console.log(`Pointer: ${state.pointer.x}:${state.pointer.y}`);
-    //   console.log(`MouseCoords: ${mouseCoords.x / 100}:${mouseCoords.y / 100}`);
-    //   time = state.clock.getElapsedTime();
-    // }
+    const eulerAngles = new THREE.Euler(mouseCoords.x, 0, 0, "XYZ");
+    const vector = new THREE.Vector3(1, 1, 1);
+
+    const rotatedVector = vector.applyEuler(eulerAngles);
+    rotatedVector.normalize();
+
+    direction.set(rotatedVector.y, 2, rotatedVector.z);
 
     // Нормализуем, чтобы получить чистое направление
     if (direction.length() < 0.001) return;
@@ -390,21 +510,54 @@ const Player = () => {
     // Это сообщает физическому движку: "В этом кадре поверни тело именно так".
     body.current.setRotation(targetQuaternion, true);
 
-    // console.log(body.current.translation());
-    cameraPoint.current?.position.copy(body.current.translation());
+    dir.current
+      .set(0, 2, -distance.current - 1)
+      .applyAxisAngle(new THREE.Vector3(0, 1, 0), 0); // базовый offset
 
-    // state.camera.position.x = state.pointer.x * -1.9;
-    // state.camera.position.y = camPos.y;
-    // state.camera.position.z = state.pointer.y * 2;
+    const q = body.current.rotation();
+    dir.current.applyQuaternion(q);
 
-    // console.log(camPos.y);
+    desiredPos.current.copy(targetPos.current).add(dir.current);
 
-    state.camera.position.x = mouseCoords.x;
-    state.camera.position.y = camPos.y;
-    state.camera.position.z = mouseCoords.y;
+    camera.position.lerp(desiredPos.current, 0.15);
 
     if (!cameraPoint.current) return;
-    state.camera.lookAt(cameraPoint.current.position);
+
+    state.camera.lookAt(
+      new THREE.Vector3(
+        targetPos.current.x,
+        targetPos.current.y + 1.5,
+        targetPos.current.z,
+      ),
+    );
+
+    /**
+     *
+     */
+
+    // // Получаем позицию RigidBody из физики (Rapier)
+    // const translation = body.current.translation();
+    // targetPos.current.set(translation.x, translation.y, translation.z);
+
+    // //  Вектор от цели к камере (направление «сзади сверху»)
+    // // Пример: камера чуть выше и сзади игрока
+    // dir.current
+    //   .set(0, 2, -distance.current)
+    //   .applyAxisAngle(new THREE.Vector3(0, 1, 0), 0); // базовый offset
+
+    // // Если хочешь, чтобы камера поворачивалась вместе с игроком — используй кватернион тела:
+    // // const q = targetBodyRef.current.rotation();
+    // // dir.current.applyQuaternion(q);
+
+    // desiredPos.current.copy(targetPos.current).add(dir.current);
+
+    // // Плавно двигаем камеру к желаемой позиции
+    // camera.position.lerp(desiredPos.current, 0.15);
+
+    // // Камера всегда смотрит на цель
+    // camera.lookAt(targetPos.current);
+
+    state.camera.updateMatrixWorld();
 
     /**
      * Camera
@@ -433,9 +586,9 @@ const Player = () => {
      * Phases
      */
 
-    if (bodyPosition.z < -(blockCounts * 4 + 2)) {
-      dispatch(ReactThreeFiberGameActions.end());
-    }
+    // if (bodyPosition.z < -(blockCounts * 4 + 2)) {
+    //   dispatch(ReactThreeFiberGameActions.end());
+    // }
 
     if (bodyPosition.y < -4) {
       dispatch(ReactThreeFiberGameActions.restart());
@@ -445,23 +598,34 @@ const Player = () => {
   return (
     <>
       <mesh ref={userMain}>
+        {/* <mesh
+          ref={borderUserSphere}
+          position={[1, 1, 1]}
+          rotation={[0, 0, 0]}
+          scale={1.2}
+        >
+          <meshStandardMaterial
+            side={2}
+            // map={Scratches005Color}
+            color={"#b7d5e6"}
+            emissive={"#a5a1a1"}
+            lightMapIntensity={100.5}
+            // metalness={1}
+            // roughness={0}
+            envMapIntensity={1.8}
+          ></meshStandardMaterial>
+          <sphereGeometry
+            args={[28, 28, 16, 0, Math.PI * 2, 1.5, 0.55]}
+          ></sphereGeometry>
+        </mesh> */}
         <mesh ref={cameraPoint}>
-          <PerspectiveCamera
-            fov={75}
-            // rotation={[0, Math.PI, 0]}
-            makeDefault={true}
-            position={cameraPosition}
-          >
-            <OrbitControls />
-            {/* <PointerLockControls makeDefault={true}></PointerLockControls> */}
-          </PerspectiveCamera>
           <mesh position={[0, 8, 0]} rotation-x={-Math.PI / 2}>
             {gamePauseStatus && <GameMenu></GameMenu>}
           </mesh>
         </mesh>
         <RigidBody
+          // userData={{ type: "player", id: "player" }}
           ref={body}
-          mass={5}
           position={[0, 0.75, 0]}
           // colliders="ball"
           colliders={false}
@@ -472,9 +636,20 @@ const Player = () => {
           type="dynamic"
           enabledRotations={[false, true, false]}
         >
-          <CuboidCollider position={[0, 0.6, 0]} args={[0.4, 0.6, 0.4]}>
+          <CuboidCollider
+            mass={1}
+            position={[0, 0.6, 0]}
+            args={[0.4, 0.6, 0.35]}
+          >
             <group rotation-y={rotationPlayerModel}>
-              <primitive position={[0, -0.6, 0]} object={player.scene} scale={0.4} castShadow>
+              <primitive
+                ref={playerModelRef}
+                position={[0, -0.6, 0]}
+                object={player.scene}
+                scale={0.4}
+                castShadow
+                dispose={null}
+              >
                 <meshBasicMaterial map={playerTexture} />
               </primitive>
             </group>
@@ -490,4 +665,4 @@ const Player = () => {
   );
 };
 
-export default Player;
+export default memo(Player);

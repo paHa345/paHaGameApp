@@ -29,6 +29,15 @@ export interface IReactThreeFiberGameSlice {
     canvasRef?: HTMLCanvasElement;
     canvasHeight: number;
     canvasWidth: number;
+
+    /**
+     * Enemyes
+     */
+    rotateZombieTimer: number;
+    rotateZombiesTimer: {
+      [id: string]: number;
+    };
+    zombieWalkStatus: boolean;
   };
 }
 
@@ -47,6 +56,12 @@ interface IReactThreeFiberGameState {
   canvasRef?: HTMLCanvasElement;
   canvasHeight: number;
   canvasWidth: number;
+  rotateZombieTimer: number;
+
+  rotateZombiesTimer: {
+    [id: string]: number;
+  };
+  zombieWalkStatus: boolean;
 }
 
 const initReactThreeFiberGameState: IReactThreeFiberGameState = {
@@ -63,6 +78,9 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
   rotatePlayerModel: 0,
   canvasHeight: 0,
   canvasWidth: 0,
+  rotateZombieTimer: 0,
+  rotateZombiesTimer: {},
+  zombieWalkStatus: false,
 };
 
 export const ReactThreeFiberGameSlice = createSlice({
@@ -117,17 +135,50 @@ export const ReactThreeFiberGameSlice = createSlice({
       state.canvasWidth = action.payload.width;
     },
     setMouseCoords(state, action) {
-      state.mouseCoords.x = state.mouseCoords.x + action.payload.x / 10;
-      state.mouseCoords.y = state.mouseCoords.y + action.payload.y / 10;
+      // if (state.mouseCoords.x > 0.09) {
+      //   state.mouseCoords.x = -0.09;
+      // }
+      state.mouseCoords.x = state.mouseCoords.x + action.payload.x / 3;
+
+      if (
+        state.mouseCoords.y + action.payload.y / 10 < 0.005 &&
+        state.mouseCoords.y + action.payload.y / 10 > -0.1
+      ) {
+        state.mouseCoords.y = state.mouseCoords.y + action.payload.y / 10;
+      }
     },
     setGamePauseStatus(state) {
       if (state.gamePauseStatus) {
         state.gamePauseStatus = false;
-        state.cameraPosition = [0, 2, -2];
+        state.cameraPosition = [0, 0, 0];
       } else {
         state.gamePauseStatus = true;
         state.cameraPosition = [0, 10, 0];
       }
+    },
+    setRotateZombieTimer(state, action) {
+      state.rotateZombieTimer = action.payload;
+    },
+    setRotatesCurrentZombieTime(
+      state,
+      action: {
+        payload: { id: string; time: number };
+        type: string;
+      },
+    ) {
+      state.rotateZombiesTimer[action.payload.id] = action.payload.time;
+    },
+    setCurrentZombieRotateTimestamp(
+      state,
+      action: {
+        payload: { id: string; elapsedTime: number };
+        type: string;
+      },
+    ) {
+      state.rotateZombiesTimer[action.payload.id] = action.payload.elapsedTime;
+    },
+    setZombieWalkStatus(state) {
+      state.zombieWalkStatus = true;
     },
   },
 });

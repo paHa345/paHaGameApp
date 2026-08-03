@@ -6,7 +6,11 @@ import * as THREE from "three";
 import { Leva, useControls } from "leva";
 import { PerfMonitor } from "r3f-monitor";
 import Experience from "./Experience";
-import { KeyboardControls, PointerLockControls, useKeyboardControls } from "@react-three/drei";
+import {
+  KeyboardControls,
+  PointerLockControls,
+  useKeyboardControls,
+} from "@react-three/drei";
 import Interface from "./Interface";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/store";
@@ -69,6 +73,7 @@ const ReactThreeFiberMain = () => {
             //   position: [-4, 3, 6],
             // }}
           >
+            <fog attach="fog" args={["white", 20, 50]} />
             <Experience></Experience>
             {performanceMonitoring && <PerfMonitor position="top-left" />}
           </Canvas>

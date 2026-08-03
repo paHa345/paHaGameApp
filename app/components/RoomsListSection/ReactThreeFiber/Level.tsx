@@ -1,6 +1,10 @@
 import { Float, Text, useGLTF, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { CuboidCollider, RapierRigidBody, RigidBody } from "@react-three/rapier";
+import {
+  CuboidCollider,
+  RapierRigidBody,
+  RigidBody,
+} from "@react-three/rapier";
 import localFont from "next/font/local";
 import React, { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
@@ -19,6 +23,67 @@ const Shonen = localFont({
 });
 
 export function BlockStart({ position = [0, 0, 0] }: any) {
+  const treeHigh = useGLTF("./models/MiniForest/tree-high.glb");
+  const patchGrass = useGLTF("./models/MiniForest/patch-grass.glb");
+
+  const rocksHigh = useGLTF("./models/MiniForest/rocks-high.glb");
+  // const forestTexture = useTexture("./models/MiniForest/Textures/colormap.png");
+  const zombie = useGLTF("./models/characters/2/character-o.glb");
+  const beaver = useGLTF("./models/CubePetsModels/animal-beaver.glb");
+  // const grassPixelTexture = useTexture("./textures/grassPixelTexture.jpg");
+  // const grass5Texture = useTexture("./textures/grass5/grass-5-color.jpg");
+  // const grass5AmbientOcclusion = useTexture(
+  //   "./textures/grass5/grass-5-ambientOcclusion.jpg",
+  // );
+  // const grass5Normal = useTexture("./textures/grass5/grass-5-normal.jpg");
+  // const grass5Roughness = useTexture("./textures/grass5/grass-5-roughness.jpg");
+
+  // const grassColor = useTexture("./textures/grass/color.jpg");
+  // const grassambientOcclusion = useTexture(
+  //   "./textures/grass/ambientOcclusion.jpg",
+  // );
+  // const grassnormal = useTexture("./textures/grass/normal.jpg");
+  // const grassroughness = useTexture("./textures/grass/roughness.jpg");
+  const grass001Color = useTexture(
+    "./textures/Grass001/Grass001_1K-JPG_Color.jpg",
+  );
+  const grass001Normal = useTexture(
+    "./textures/Grass001/Grass001_1K-JPG_NormalGL.jpg",
+  );
+  const grass001Roughness = useTexture(
+    "./textures/Grass001/Grass001_1K-JPG_Roughness.jpg",
+  );
+  const grass001Displacement = useTexture(
+    "./textures/Grass001/Grass001_1K-JPG_Displacement.jpg",
+  );
+  const grass001AmbientOcclusion = useTexture(
+    "./textures/Grass001/Grass001_1K-JPG_AmbientOcclusion.jpg",
+  );
+  // grass001Color.wrapS = THREE.RepeatWrapping;
+  // grass001Color.wrapT = THREE.RepeatWrapping;
+  // grass001Color.repeat.set(1, 1);
+
+  beaver.scene.children.forEach((mesh) => {
+    mesh.castShadow = true;
+  });
+
+  patchGrass.scene.children.forEach((mesh) => {
+    mesh.receiveShadow = true;
+  });
+
+  zombie.nodes.torso.castShadow = true;
+  for (const name in zombie.nodes) {
+    zombie.nodes[name].castShadow = true;
+  }
+
+  treeHigh.scene.children.forEach((mesh) => {
+    mesh.castShadow = true;
+  });
+  console.log(treeHigh);
+
+  rocksHigh.scene.children.forEach((mesh) => {
+    mesh.castShadow = true;
+  });
   return (
     <>
       <Float floatIntensity={0.25} rotationIntensity={0.25}>
@@ -28,7 +93,7 @@ export function BlockStart({ position = [0, 0, 0] }: any) {
           maxWidth={3}
           lineHeight={0.85}
           textAlign="right"
-          position={[0.75, 0.65, 0]}
+          position={[0.75, 1, 0]}
           rotation-y={-0.25}
         >
           {" "}
@@ -41,12 +106,60 @@ export function BlockStart({ position = [0, 0, 0] }: any) {
           position={[0, -0.1, 0]}
           geometry={boxGeometry}
           scale={[4, 0.2, 4]}
-          material={floor1Material}
+          // material={grassTexture}
           receiveShadow
         >
           {/* <boxGeometry args={[4, 0.2, 4]} /> */}
-          {/* <meshStandardMaterial color={"limegreen"} /> */}
+          <meshStandardMaterial
+            map={grass001Color}
+            normalMap={grass001Normal}
+            roughnessMap={grass001Roughness}
+            displacementMap={grass001Displacement}
+            aoMap={grass001AmbientOcclusion}
+            roughness={0.7}
+            displacementScale={0.1}
+          />
         </mesh>
+
+        <mesh position={[0, -0.01, -1.2]}>
+          <primitive
+            object={patchGrass.scene}
+            scale={1}
+            receiveShadow
+          ></primitive>
+        </mesh>
+
+        <RigidBody
+          type="fixed"
+          colliders="hull"
+          position={[-1, 0, -1]}
+          restitution={0.2}
+          friction={0}
+        >
+          <primitive object={zombie.scene} scale={0.5} castShadow></primitive>
+        </RigidBody>
+        <RigidBody
+          type="fixed"
+          colliders="hull"
+          position={[0, 0.01, -1.2]}
+          restitution={0.2}
+          friction={0}
+        >
+          <primitive object={treeHigh.scene} scale={1} castShadow>
+            {/* <meshBasicMaterial map={forestTexture} /> */}
+          </primitive>
+        </RigidBody>
+        <RigidBody
+          type="fixed"
+          colliders="hull"
+          position={[1, 0.1, 0]}
+          restitution={0.2}
+          friction={0}
+        >
+          <primitive object={rocksHigh.scene} scale={0.75} castShadow>
+            {/* <meshBasicMaterial map={forestTexture} /> */}
+          </primitive>
+        </RigidBody>
       </group>
     </>
   );
@@ -309,9 +422,15 @@ export function Bounds({ length = 1 }) {
   );
 }
 
-const Level = ({ count = 5, types = [BlockSpinner, BlockAxe, BlockLimbo], seed = 0 }) => {
+const Level = ({
+  count = 5,
+  types = [BlockSpinner, BlockAxe, BlockLimbo],
+  seed = 0,
+}) => {
   // const count = 5
   // const types = [BlockSpinner, BlockAxe, BlockLimbo]
+
+  
 
   const blocks = useMemo(() => {
     const blocks: any = [];
