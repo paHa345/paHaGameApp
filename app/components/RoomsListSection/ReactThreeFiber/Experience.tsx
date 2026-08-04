@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  ReactThreeFiber,
-  ThreeEvent,
-  useFrame,
-  useLoader,
-  useThree,
-} from "@react-three/fiber";
+import { ReactThreeFiber, ThreeEvent, useFrame, useLoader, useThree } from "@react-three/fiber";
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
@@ -113,12 +107,10 @@ const Experience = () => {
   }, [gl.domElement.clientHeight, gl.domElement.clientWidth]);
 
   const blocksCount = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.blocksCount,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.blocksCount,
   );
   const blocksSeed = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.blockSeed,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.blockSeed,
   );
   return (
     <>
@@ -126,7 +118,9 @@ const Experience = () => {
 
       {/* <color args={["#bdedfc"]} attach={"background"}></color> */}
       <Sky sunPosition={[20, 20, 0]}></Sky>
-      <Physics debug={true}>
+      <Physics
+      // debug={true}
+      >
         <Lights />
         {/* <Level count={blocksCount} seed={blocksSeed}></Level> */}
         <ForestLevel></ForestLevel>

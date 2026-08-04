@@ -1,11 +1,6 @@
 import { Clone, Line, useAnimations, useGLTF } from "@react-three/drei";
 import { ObjectMap, useFrame, useThree } from "@react-three/fiber";
-import {
-  CuboidCollider,
-  RapierRigidBody,
-  RigidBody,
-  useRapier,
-} from "@react-three/rapier";
+import { CuboidCollider, RapierRigidBody, RigidBody, useRapier } from "@react-three/rapier";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { GLTF } from "three/addons/loaders/GLTFLoader.js";
 import * as THREE from "three";
@@ -40,16 +35,14 @@ const ZombieEnemy = ({
   //   model,
   modelAnimationState,
 }: IZombieEnemyProps) => {
+  // console.log(`Redraw zombie ${id}`);
   const dispatch = useDispatch<AppDispatch>();
   const zombie1Ref = useRef<RapierRigidBody>(null);
   const { world } = useRapier();
 
   const corners = useRef<THREE.Vector3[]>([]).current;
 
-  const { scene, animations, nodes } = useGLTF(
-    "./models/characters/2/character-o.glb",
-    true,
-  );
+  const { scene, animations, nodes } = useGLTF("./models/characters/2/character-o.glb", true);
   for (const name in nodes) {
     nodes[name].castShadow = true;
   }
@@ -73,13 +66,11 @@ const ZombieEnemy = ({
   //    actions['walk']?.reset().fadeIn(0.5).play();
 
   const timer = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.rotateZombiesTimer,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.rotateZombiesTimer,
   );
 
   const zombieWalkStatus = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.zombieWalkStatus,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.zombieWalkStatus,
   );
 
   const currentQuat = new THREE.Quaternion();
@@ -91,8 +82,7 @@ const ZombieEnemy = ({
   const meshRef = useRef<THREE.Group>(null);
 
   const currentAnimationName = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.animationsName,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.animationsName,
   );
 
   const lookDir = new THREE.Vector3();
@@ -171,16 +161,21 @@ const ZombieEnemy = ({
         .add(forwardPos.clone().multiplyScalar(halfSize * 4))
         .add(right.clone().multiplyScalar(-halfSize)); // левый дальний
 
-      // console.log(corners);
-      // console.log(
-      //   world.bodies.forEach((body) => {
-      //     if (!body.userData) return;
-      //     const userData = body?.userData as any;
-      //     if (userData.type === "player") {
-      //       console.log(body.translation());
-      //     }
-      //   }),
-      // );
+      world.bodies.forEach((body) => {
+        if (!body.userData) return;
+        const userData = body?.userData as any;
+        if (userData.type === "player") {
+          const player = body.translation();
+          if (
+            player.x < corners[1].x &&
+            player.x > corners[0].x &&
+            player.z < corners[3].z &&
+            player.z > corners[0].z
+          ) {
+            console.log(`Zombie ${id} see player`);
+          }
+        }
+      });
 
       // world.forEachRigidBody((body) => {
       //   const id = body;
@@ -258,11 +253,7 @@ const ZombieEnemy = ({
             castShadow
             dispose={null}
           ></primitive>
-          <CuboidCollider
-            mass={2}
-            position={[0, 0.7, 0]}
-            args={[0.4, 0.7, 0.3]}
-          />
+          <CuboidCollider mass={2} position={[0, 0.7, 0]} args={[0.4, 0.7, 0.3]} />
         </RigidBody>
       </group>
     </>

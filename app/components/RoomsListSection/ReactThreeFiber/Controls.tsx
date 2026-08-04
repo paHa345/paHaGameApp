@@ -10,8 +10,6 @@ const Controls = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const { gl } = useThree();
-  const lastPos = useRef<{ x: number; y: number } | null>(null);
-  const delta = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const canvas = gl.domElement;

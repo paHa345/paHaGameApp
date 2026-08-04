@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import * as THREE from "three";
 
 export interface IReactThreeFiberGameSlice {
   ReactThreeFiberGameState: {
@@ -135,9 +136,6 @@ export const ReactThreeFiberGameSlice = createSlice({
       state.canvasWidth = action.payload.width;
     },
     setMouseCoords(state, action) {
-      // if (state.mouseCoords.x > 0.09) {
-      //   state.mouseCoords.x = -0.09;
-      // }
       state.mouseCoords.x = state.mouseCoords.x + action.payload.x / 3;
 
       if (
@@ -148,6 +146,7 @@ export const ReactThreeFiberGameSlice = createSlice({
       }
     },
     setGamePauseStatus(state) {
+      console.log(state.gamePauseStatus);
       if (state.gamePauseStatus) {
         state.gamePauseStatus = false;
         state.cameraPosition = [0, 0, 0];
@@ -155,6 +154,15 @@ export const ReactThreeFiberGameSlice = createSlice({
         state.gamePauseStatus = true;
         state.cameraPosition = [0, 10, 0];
       }
+    },
+    setCameraPosition(
+      state,
+      action: {
+        payload: THREE.Vector3;
+        type: string;
+      },
+    ) {
+      state.cameraPosition = [action.payload.x, action.payload.y, action.payload.z];
     },
     setRotateZombieTimer(state, action) {
       state.rotateZombieTimer = action.payload;

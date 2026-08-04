@@ -28,15 +28,9 @@ const wallMaterial = new THREE.MeshStandardMaterial({ color: "slategrey" });
 export function Bounds({ length = 1 }) {
   const rock061Color = useTexture("./textures/Rock061/Rock061Color.jpg");
   const rock061Normal = useTexture("./textures/Rock061/Rock061NormalGL.jpg");
-  const rock061Roughness = useTexture(
-    "./textures/Rock061/Rock061Roughness.jpg",
-  );
-  const rock061Displacement = useTexture(
-    "./textures/Rock061/Rock061Displacement.jpg",
-  );
-  const rock061AmbientOcclusion = useTexture(
-    "./textures/Rock061/Rock061Occlusion.jpg",
-  );
+  const rock061Roughness = useTexture("./textures/Rock061/Rock061Roughness.jpg");
+  const rock061Displacement = useTexture("./textures/Rock061/Rock061Displacement.jpg");
+  const rock061AmbientOcclusion = useTexture("./textures/Rock061/Rock061Occlusion.jpg");
 
   rock061Color.repeat.set(24, 1);
   rock061Color.wrapS = THREE.RepeatWrapping;
@@ -116,29 +110,17 @@ export function Bounds({ length = 1 }) {
 }
 
 export function Grass() {
-  const {
-    grassRoughtness,
-    grassMetalness,
-    grassAOMapIntensity,
-    grassDisplacementScale,
-  } = useControls("Grass", {
-    grassRoughtness: { value: 0.85, min: 0.1, max: 1 },
-    grassMetalness: { value: 0.1, min: 0.1, max: 1 },
-    grassAOMapIntensity: { value: 0.5, min: 0.1, max: 1 },
-    grassDisplacementScale: { value: 0, min: 0.01, max: 1 },
-  });
-  const grass001Color = useTexture(
-    "./textures/Grass001/Grass001_1K-JPG_Color.jpg",
-  );
-  const grass001Normal = useTexture(
-    "./textures/Grass001/Grass001_1K-JPG_NormalGL.jpg",
-  );
-  const grass001Roughness = useTexture(
-    "./textures/Grass001/Grass001_1K-JPG_Roughness.jpg",
-  );
-  const grass001Displacement = useTexture(
-    "./textures/Grass001/Grass001_1K-JPG_Displacement.jpg",
-  );
+  const { grassRoughtness, grassMetalness, grassAOMapIntensity, grassDisplacementScale } =
+    useControls("Grass", {
+      grassRoughtness: { value: 0.85, min: 0.1, max: 1 },
+      grassMetalness: { value: 0.1, min: 0.1, max: 1 },
+      grassAOMapIntensity: { value: 0.5, min: 0.1, max: 1 },
+      grassDisplacementScale: { value: 0, min: 0.01, max: 1 },
+    });
+  const grass001Color = useTexture("./textures/Grass001/Grass001_1K-JPG_Color.jpg");
+  const grass001Normal = useTexture("./textures/Grass001/Grass001_1K-JPG_NormalGL.jpg");
+  const grass001Roughness = useTexture("./textures/Grass001/Grass001_1K-JPG_Roughness.jpg");
+  const grass001Displacement = useTexture("./textures/Grass001/Grass001_1K-JPG_Displacement.jpg");
   const grass001AmbientOcclusion = useTexture(
     "./textures/Grass001/Grass001_1K-JPG_AmbientOcclusion.jpg",
   );
@@ -208,11 +190,7 @@ export function Trees() {
   return (
     <>
       <mesh position={[0, -0.1, -1.2]}>
-        <primitive
-          object={patchGrass.scene}
-          scale={3}
-          receiveShadow
-        ></primitive>
+        <primitive object={patchGrass.scene} scale={3} receiveShadow></primitive>
       </mesh>
       <RigidBody
         type="fixed"
@@ -226,13 +204,7 @@ export function Trees() {
         </primitive>
       </RigidBody>
 
-      <RigidBody
-        type="fixed"
-        colliders="hull"
-        position={[5, 1, 0]}
-        restitution={0.2}
-        friction={0}
-      >
+      <RigidBody type="fixed" colliders="hull" position={[5, 1, 0]} restitution={0.2} friction={0}>
         <primitive object={rocksHigh.scene} scale={2} castShadow>
           {/* <meshBasicMaterial map={forestTexture} /> */}
         </primitive>
@@ -249,8 +221,7 @@ export function Enemyes() {
   const dispatch = useDispatch<AppDispatch>();
 
   const zombie1RotateTimer = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.rotateZombieTimer,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.rotateZombieTimer,
   );
 
   const currentQuat = new THREE.Quaternion();
@@ -262,14 +233,13 @@ export function Enemyes() {
   for (const name in zombie.nodes) {
     zombie.nodes[name].castShadow = true;
   }
-  const sceneClone = zombie.scene.clone()
+  const sceneClone = zombie.scene.clone();
 
-    const currentModelAnimations = useAnimations(zombie.animations, zombie.scene);
-      currentModelAnimations.actions["walk"]?.reset().play()
+  const currentModelAnimations = useAnimations(zombie.animations, zombie.scene);
+  currentModelAnimations.actions["walk"]?.reset().play();
 
-      console.log(currentModelAnimations.actions["walk"])
+  console.log(currentModelAnimations.actions["walk"]);
 
-  
   const tempQuat = useRef(new THREE.Quaternion()).current;
   let progress = 0;
 
@@ -295,11 +265,7 @@ export function Enemyes() {
     const animateZombie = setInterval(() => {
       if (zombie1RotateTimer + 8 < data.clock.getElapsedTime()) {
         console.log("Check");
-        dispatch(
-          ReactThreeFiberGameActions.setRotateZombieTimer(
-            data.clock.getElapsedTime(),
-          ),
-        );
+        dispatch(ReactThreeFiberGameActions.setRotateZombieTimer(data.clock.getElapsedTime()));
         startRotation();
       }
     }, 1000);
@@ -334,17 +300,8 @@ export function Enemyes() {
           position={[0, 0, 0]}
           args={[0.3, 0.4]}
         ></CapsuleCollider> */}
-        <primitive
-          position={[0, 0, 0]}
-          object={zombie.scene}
-          scale={0.5}
-          castShadow
-        ></primitive>
-        <CuboidCollider
-          mass={2}
-          position={[0, 0.7, 0]}
-          args={[0.4, 0.7, 0.3]}
-        />
+        <primitive position={[0, 0, 0]} object={zombie.scene} scale={0.5} castShadow></primitive>
+        <CuboidCollider mass={2} position={[0, 0.7, 0]} args={[0.4, 0.7, 0.3]} />
       </RigidBody>
     </>
   );
@@ -364,16 +321,14 @@ const ForestLevel = () => {
   // }, [world])
 
   const zombiesArr = [
-    { name: "zombie1", position: { x: -5, y: 0, z: -2 }, rotationTimer: 5, state: 'walk' },
-    { name: "zombie2", position: { x: 2, y: 0, z: -2 }, rotationTimer: 8, state: 'idle' },
-    { name: "zombie3", position: { x: 5, y: 0, z: -2 }, rotationTimer: 4 , state: 'walk'},
+    { name: "zombie1", position: { x: -5, y: 0, z: -2 }, rotationTimer: 5, state: "walk" },
+    { name: "zombie2", position: { x: 2, y: 0, z: -2 }, rotationTimer: 8, state: "idle" },
+    { name: "zombie3", position: { x: 5, y: 0, z: -2 }, rotationTimer: 4, state: "walk" },
   ];
   // const zombie = useGLTF("./models/characters/2/character-o.glb", true);
   // for (const name in zombie.nodes) {
   //   zombie.nodes[name].castShadow = true;
   // }
-
-
 
   // console.log(zombie.animations[2])
   //   const currentModelAnimations = useAnimations(zombie.animations, zombie.scene);
@@ -399,7 +354,7 @@ const ForestLevel = () => {
         // model={zombie}
         // animations={animations}
         // nodes={nodesArray}
-        modelAnimationState={enemyData.state} 
+        modelAnimationState={enemyData.state}
       ></ZombieEnemy>
     );
   });
