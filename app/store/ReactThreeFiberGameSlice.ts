@@ -1,5 +1,7 @@
+import { RapierRigidBody } from "@react-three/rapier";
 import { createSlice } from "@reduxjs/toolkit";
 import * as THREE from "three";
+import { conditionPatternStatus } from "../types";
 
 export interface IReactThreeFiberGameSlice {
   ReactThreeFiberGameState: {
@@ -9,6 +11,12 @@ export interface IReactThreeFiberGameSlice {
     cameraPosition: [number, number, number];
 
     mouseCoords: { x: number; y: number };
+
+    /**
+     * Players
+     */
+
+    playerBodyRef?: RapierRigidBody | null;
 
     /**
      * Time
@@ -35,8 +43,11 @@ export interface IReactThreeFiberGameSlice {
      * Enemyes
      */
     rotateZombieTimer: number;
-    rotateZombiesTimer: {
-      [id: string]: number;
+    enemyNPCData: {
+      [id: string]: {
+        rotationTimer: number;
+        conditionPatternStatus: conditionPatternStatus;
+      };
     };
     zombieWalkStatus: boolean;
   };
@@ -49,6 +60,8 @@ interface IReactThreeFiberGameState {
   cameraPosition: [number, number, number];
   mouseCoords: { x: number; y: number };
 
+  playerBodyRef?: RapierRigidBody | null;
+
   startTime: number;
   endTime: number;
   phase: "ready" | "playing" | "ended";
@@ -59,8 +72,11 @@ interface IReactThreeFiberGameState {
   canvasWidth: number;
   rotateZombieTimer: number;
 
-  rotateZombiesTimer: {
-    [id: string]: number;
+  enemyNPCData: {
+    [id: string]: {
+      rotationTimer: number;
+      conditionPatternStatus: conditionPatternStatus;
+    };
   };
   zombieWalkStatus: boolean;
 }
@@ -80,7 +96,8 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
   canvasHeight: 0,
   canvasWidth: 0,
   rotateZombieTimer: 0,
-  rotateZombiesTimer: {},
+  enemyNPCData: {},
+
   zombieWalkStatus: false,
 };
 
@@ -167,14 +184,25 @@ export const ReactThreeFiberGameSlice = createSlice({
     setRotateZombieTimer(state, action) {
       state.rotateZombieTimer = action.payload;
     },
-    setRotatesCurrentZombieTime(
+    setCurrentEnemyObjData(
       state,
       action: {
-        payload: { id: string; time: number };
+        payload: {
+          id: string;
+          rotationTimer: number;
+          conditionPatternStatus: conditionPatternStatus;
+        };
         type: string;
       },
     ) {
-      state.rotateZombiesTimer[action.payload.id] = action.payload.time;
+      state.enemyNPCData[action.payload.id] = {
+        rotationTimer: action.payload.rotationTimer,
+        conditionPatternStatus: action.payload.conditionPatternStatus,
+      };
+    },
+    setCurrentEnemyConditionStatus(state, action) {
+      state.enemyNPCData[action.payload.id].conditionPatternStatus =
+        action.payload.conditionPatternStatus;
     },
     setCurrentZombieRotateTimestamp(
       state,
@@ -183,10 +211,15 @@ export const ReactThreeFiberGameSlice = createSlice({
         type: string;
       },
     ) {
-      state.rotateZombiesTimer[action.payload.id] = action.payload.elapsedTime;
+      state.enemyNPCData[action.payload.id].rotationTimer = action.payload.elapsedTime;
     },
     setZombieWalkStatus(state) {
       state.zombieWalkStatus = true;
+    },
+
+    setPlayerBodyRef(state, action) {
+      console.log(action.payload);
+      state.playerBodyRef = action.payload;
     },
   },
 });

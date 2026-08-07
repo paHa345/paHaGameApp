@@ -544,3 +544,9 @@ export interface IUserInventoryAndEquipmentObj {
   armour: number;
   HP: number;
 }
+
+export enum conditionPatternStatus {
+  Peaceful = "peaceful",
+  Agressive = "agressive",
+  InSeek = "inSeek",
+}

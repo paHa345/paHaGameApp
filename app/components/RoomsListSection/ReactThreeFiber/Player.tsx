@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
 import GameMenu from "./GameMenu";
 import UpdateMouseCoordsAndCameraPosition from "./UpdateMouseCoordsAndCameraPosition";
+import PlayerAnimationsController from "./PlayerAnimationsController";
 
 const Player = () => {
   const Scratches005Color = useTexture("./textures/Moss002/Moss002Color.jpg");
@@ -48,7 +49,6 @@ const Player = () => {
   // rock061Displacement.needsUpdate = true;
   // rock061AmbientOcclusion.needsUpdate = true;
 
-  const { camera } = useThree();
   const targetPos = useRef(new THREE.Vector3());
   const desiredPos = useRef(new THREE.Vector3());
   const dir = useRef(new THREE.Vector3());
@@ -62,7 +62,7 @@ const Player = () => {
   const playerModelRef = useRef<THREE.Mesh>(null);
   const { rapier, world } = useRapier();
 
-  const { gl, pointer } = useThree();
+  const { gl } = useThree();
 
   const player = useGLTF("./models/characters/2/character-a.glb");
   for (const name in player.nodes) {
@@ -72,41 +72,15 @@ const Player = () => {
   const playerTexture = useTexture("./models/characters/2/texture-a.png");
   playerTexture.flipY = false;
 
-  // const cameraPosition = useSelector(
-  //   (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.cameraPosition,
-  // );
-
   const gamePauseStatus = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.gamePauseStatus,
   );
 
-  const currentAnimationName = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.animationsName,
-  );
-
-  // const canvas = useSelector(
-  //   (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.canvasRef,
-  // );
-
-  // const mouseCoords = useSelector(
-  //   (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.mouseCoords,
+  // const currentAnimationName = useSelector(
+  //   (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.animationsName,
   // );
 
   const animations = useAnimations(player.animations, player.scene);
-
-  const rotationPlayerModel = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.rotatePlayerModel,
-  );
-  // const [smoothedCameraPosition] = useState(() => new THREE.Vector3(0, 0, 0));
-  // const [smoothedCameraTarget] = useState(() => new THREE.Vector3());
-
-  // Rotate to camera helper vectors
-  const direction = new THREE.Vector3();
-  const targetQuaternion = new THREE.Quaternion();
-  const lookAtVector = new THREE.Vector3(0, 0, -1);
-
-  let time = 0;
-
   const dispatch = useDispatch<AppDispatch>();
   const blockCounts = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.blocksCount,
@@ -117,6 +91,10 @@ const Player = () => {
   );
 
   const [subscribeKeys, getKeys] = useKeyboardControls();
+
+  useEffect(() => {
+    dispatch(ReactThreeFiberGameActions.setPlayerBodyRef(body.current));
+  }, [body]);
 
   const reset = () => {
     body.current?.setTranslation(
@@ -193,17 +171,17 @@ const Player = () => {
    * Animations
    */
 
-  useEffect(() => {
-    const action = animations.actions[currentAnimationName];
+  // useEffect(() => {
+  //   const action = animations.actions[currentAnimationName];
 
-    if (animations.actions[currentAnimationName] !== null) {
-      animations.actions[currentAnimationName].play();
-      action?.reset().fadeIn(0.5).play();
-    }
-    return () => {
-      action?.fadeOut(0.5);
-    };
-  }, [currentAnimationName]);
+  //   if (animations.actions[currentAnimationName] !== null) {
+  //     animations.actions[currentAnimationName].play();
+  //     action?.reset().fadeIn(0.5).play();
+  //   }
+  //   return () => {
+  //     action?.fadeOut(0.5);
+  //   };
+  // }, [currentAnimationName]);
 
   useEffect(() => {
     if (phase === "ready") {
@@ -286,8 +264,8 @@ const Player = () => {
     //   borderUserSphere.current.position.y,
     //   state.camera.position.z,
     // );
-
     const origin = body.current.translation();
+
     origin.y -= 0.1;
 
     const rayDirection = {
@@ -481,6 +459,7 @@ const Player = () => {
         targetPos={targetPos}
         desiredPos={desiredPos}
       ></UpdateMouseCoordsAndCameraPosition>
+      <PlayerAnimationsController player={player}></PlayerAnimationsController>
     </>
   );
 };

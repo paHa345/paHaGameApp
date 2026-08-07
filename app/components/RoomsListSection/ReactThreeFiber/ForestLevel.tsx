@@ -17,7 +17,8 @@ import {
   IReactThreeFiberGameSlice,
   ReactThreeFiberGameActions,
 } from "@/app/store/ReactThreeFiberGameSlice";
-import ZombieEnemy from "./ZombieEnemy";
+import AncientOrc from "./AncientOrcEnemy";
+import { conditionPatternStatus } from "@/app/types";
 
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 
@@ -310,52 +311,47 @@ export function Enemyes() {
 const ForestLevel = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  //     const { world } = useRapier()
-  // useEffect(() => {
-  //   world.forEachRigidBody((body) => {
-  //     const id = body
-  //     const pos = body.translation()
-  //     const rot = body.rotation()
-  //     console.log(`Zombie`, { pos, rot })
-  //   })
-  // }, [world])
-
   const zombiesArr = [
-    { name: "zombie1", position: { x: -5, y: 0, z: -2 }, rotationTimer: 5, state: "walk" },
-    { name: "zombie2", position: { x: 2, y: 0, z: -2 }, rotationTimer: 8, state: "idle" },
-    { name: "zombie3", position: { x: 5, y: 0, z: -2 }, rotationTimer: 4, state: "walk" },
+    {
+      name: "orc1",
+      position: { x: -5, y: 0, z: -2 },
+      rotationTimer: 5,
+      state: "walk",
+      conditionPatternStatus: conditionPatternStatus.Peaceful,
+    },
+    // {
+    //   name: "orc2",
+    //   position: { x: 2, y: 0, z: -2 },
+    //   rotationTimer: 8,
+    //   state: "idle",
+    //   conditionPatternStatus: conditionPatternStatus.Peaceful,
+    // },
+    // {
+    //   name: "orc3",
+    //   position: { x: 5, y: 0, z: -2 },
+    //   rotationTimer: 4,
+    //   state: "walk",
+    //   conditionPatternStatus: conditionPatternStatus.Peaceful,
+    // },
   ];
-  // const zombie = useGLTF("./models/characters/2/character-o.glb", true);
-  // for (const name in zombie.nodes) {
-  //   zombie.nodes[name].castShadow = true;
-  // }
 
-  // console.log(zombie.animations[2])
-  //   const currentModelAnimations = useAnimations(zombie.animations, zombie.scene);
-  //     console.log(currentModelAnimations);
   const zombies = zombiesArr.map((enemyData) => {
-    // const modelClone = zombie.scene.clone();
-    // const animations = useAnimations(zombie.animations, modelClone)
     dispatch(
-      ReactThreeFiberGameActions.setRotatesCurrentZombieTime({
+      ReactThreeFiberGameActions.setCurrentEnemyObjData({
         id: enemyData.name,
-        time: enemyData.rotationTimer,
+        rotationTimer: enemyData.rotationTimer,
+        conditionPatternStatus: enemyData.conditionPatternStatus,
       }),
     );
 
     return (
-      <ZombieEnemy
+      <AncientOrc
         key={enemyData.name}
         position={enemyData.position}
-        // zombieModel={modelClone}
         id={enemyData.name}
         rotationTimer={enemyData.rotationTimer}
-        // animations={zombie.animations}
-        // model={zombie}
-        // animations={animations}
-        // nodes={nodesArray}
         modelAnimationState={enemyData.state}
-      ></ZombieEnemy>
+      ></AncientOrc>
     );
   });
 
