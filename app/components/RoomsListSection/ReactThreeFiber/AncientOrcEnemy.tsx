@@ -306,7 +306,10 @@ const AncientOrc = ({
 
     if (!currentTarget.current || !meshRef.current) return;
 
-    if (currentObjConditionPatternStatus === conditionPatternStatus.Peaceful) {
+    if (
+      currentObjConditionPatternStatus === conditionPatternStatus.Peaceful ||
+      currentObjConditionPatternStatus === conditionPatternStatus.Agressive
+    ) {
       // if (tempQuat.angleTo(currentQuat) > 0.001) {
 
       /**

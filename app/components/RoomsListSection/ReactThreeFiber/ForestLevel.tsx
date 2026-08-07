@@ -319,20 +319,20 @@ const ForestLevel = () => {
       state: "walk",
       conditionPatternStatus: conditionPatternStatus.Peaceful,
     },
-    // {
-    //   name: "orc2",
-    //   position: { x: 2, y: 0, z: -2 },
-    //   rotationTimer: 8,
-    //   state: "idle",
-    //   conditionPatternStatus: conditionPatternStatus.Peaceful,
-    // },
-    // {
-    //   name: "orc3",
-    //   position: { x: 5, y: 0, z: -2 },
-    //   rotationTimer: 4,
-    //   state: "walk",
-    //   conditionPatternStatus: conditionPatternStatus.Peaceful,
-    // },
+    {
+      name: "orc2",
+      position: { x: 2, y: 0, z: -2 },
+      rotationTimer: 8,
+      state: "idle",
+      conditionPatternStatus: conditionPatternStatus.Peaceful,
+    },
+    {
+      name: "orc3",
+      position: { x: 5, y: 0, z: -2 },
+      rotationTimer: 4,
+      state: "walk",
+      conditionPatternStatus: conditionPatternStatus.Peaceful,
+    },
   ];
 
   const zombies = zombiesArr.map((enemyData) => {
