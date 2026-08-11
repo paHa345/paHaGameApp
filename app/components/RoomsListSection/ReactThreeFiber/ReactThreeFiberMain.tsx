@@ -6,15 +6,12 @@ import * as THREE from "three";
 import { Leva, useControls } from "leva";
 import { PerfMonitor } from "r3f-monitor";
 import Experience from "./Experience";
-import {
-  KeyboardControls,
-  PointerLockControls,
-  useKeyboardControls,
-} from "@react-three/drei";
+import { KeyboardControls, PointerLockControls, useKeyboardControls } from "@react-three/drei";
 import Interface from "./Interface";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/store";
 import { ReactThreeFiberGameActions } from "@/app/store/ReactThreeFiberGameSlice";
+import PreloadModelsComponent from "./PreloadModelsComponent";
 
 const ReactThreeFiberMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -79,6 +76,7 @@ const ReactThreeFiberMain = () => {
           </Canvas>
           <Interface></Interface>
         </KeyboardControls>
+        {/* <PreloadModelsComponent></PreloadModelsComponent> */}
       </div>
     </>
   );

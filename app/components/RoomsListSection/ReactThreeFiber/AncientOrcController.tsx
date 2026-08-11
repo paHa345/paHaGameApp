@@ -1,0 +1,331 @@
+import { AppDispatch } from "@/app/store";
+import {
+  IReactThreeFiberGameSlice,
+  ReactThreeFiberGameActions,
+} from "@/app/store/ReactThreeFiberGameSlice";
+import { conditionPatternStatus } from "@/app/types";
+import { Line } from "@react-three/drei";
+import { useFrame, useThree } from "@react-three/fiber";
+import { RapierRigidBody } from "@react-three/rapier";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import * as THREE from "three";
+
+interface IAncientOrcController {
+  currentTarget: React.RefObject<RapierRigidBody | null>;
+  id: string;
+  rotationTimer: number;
+}
+
+const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcController) => {
+  const playerBodyRef = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerBodyRef,
+  );
+
+  const currentObjConditionPatternStatus = useSelector(
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.enemyNPCData[id].conditionPatternStatus,
+  );
+
+  const currentQuat = new THREE.Quaternion();
+  const startQuat = new THREE.Quaternion();
+  const data = useThree();
+  const tempQuat = useRef(new THREE.Quaternion()).current;
+  const [restInterval, setRestInterval] = useState(10);
+  const [restStatus, setRestStatus] = useState(false);
+
+  let timer = rotationTimer;
+
+  const corners = useRef<THREE.Vector3[]>([]).current;
+  const lookDir = new THREE.Vector3();
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const rotateToPlayer = () => {
+    /**
+     * Поворот в сторону игрока, который попал в зону видимости
+     */
+
+    if (!currentTarget.current) return;
+
+    const playerCoords = playerBodyRef?.translation();
+    if (!playerCoords) return;
+
+    const directionFromCurrentToPlayer = new THREE.Vector3()
+      .fromArray([playerCoords.x, 0, playerCoords.z])
+      .sub(currentTarget.current.translation())
+      .normalize();
+
+    const rotationQuaternion = new THREE.Quaternion().setFromUnitVectors(
+      new THREE.Vector3(0, 0, 1),
+      directionFromCurrentToPlayer,
+    );
+
+    const currentOrcBody = currentTarget.current.rotation();
+
+    const smoothRotationQuaternion = new THREE.Quaternion().slerpQuaternions(
+      new THREE.Quaternion(currentOrcBody.x, currentOrcBody.y, 0, currentOrcBody.w),
+      rotationQuaternion,
+      0.08,
+    );
+    currentTarget.current.setRotation(smoothRotationQuaternion, true);
+  };
+
+  function startRotation() {
+    /**
+     * Поворот при мирном режиме
+     */
+    if (!currentTarget.current) return;
+    // 1. Получаем кватернион из Rapier-тела
+    const rapierQuat = currentTarget.current.rotation();
+    // 2. Конвертируем в Three.js Quaternion
+    startQuat.set(rapierQuat.x, rapierQuat.y, 0, rapierQuat.w);
+    const rotate90Y = new THREE.Quaternion().setFromEuler(
+      new THREE.Euler(0, Math.PI, 0, "XYZ"), // 90 градусов = PI/2 радиан
+    );
+    // 3. Создаем кватернион на который будем поворачивать
+    tempQuat.multiplyQuaternions(startQuat, rotate90Y);
+  }
+
+  useEffect(() => {
+    const animateZombie = setInterval(() => {
+      if (timer < data.clock.getElapsedTime()) {
+        timer = data.clock.getElapsedTime() + rotationTimer;
+
+        if (currentObjConditionPatternStatus === conditionPatternStatus.Peaceful) {
+          startRotation();
+        }
+      }
+      if (
+        data.clock.getElapsedTime() > restInterval &&
+        (currentObjConditionPatternStatus === conditionPatternStatus.Peaceful ||
+          currentObjConditionPatternStatus === conditionPatternStatus.Rest)
+      ) {
+        if (!restStatus) {
+          setRestInterval(data.clock.getElapsedTime() + Math.floor(Math.random() * 8) + 5);
+          setRestStatus(true);
+          dispatch(
+            ReactThreeFiberGameActions.setCurrentEnemyAnimationName({
+              id: id,
+              animationName: "idle",
+            }),
+          );
+        }
+        if (restStatus) {
+          setRestInterval(data.clock.getElapsedTime() + Math.floor(Math.random() * 8) + 15);
+          setRestStatus(false);
+          dispatch(
+            ReactThreeFiberGameActions.setCurrentEnemyAnimationName({
+              id: id,
+              animationName: "walk",
+            }),
+          );
+        }
+      }
+      if (restStatus) {
+        console.log("Отдых");
+      }
+    }, 1000);
+
+    return () => clearTimeout(animateZombie);
+  });
+
+  useEffect(() => {
+    const calculateViewArea = setInterval(() => {
+      const center = new THREE.Vector3(
+        currentTarget.current?.translation().x,
+        currentTarget.current?.translation().y,
+        currentTarget.current?.translation().z,
+      );
+
+      const quat = currentTarget.current?.rotation();
+      if (!quat) return;
+
+      const forwardPos = new THREE.Vector3(0, 0, 1);
+      forwardPos.applyQuaternion(quat);
+      const right = new THREE.Vector3(1, 0, 0);
+      right.applyQuaternion(quat);
+
+      const halfSize = 2;
+
+      // Вычисляем 4 угла квадрата (плоскость перпендикулярна forward)
+      corners[0] = center
+        .clone()
+        .add(forwardPos.clone().multiplyScalar(halfSize - 2))
+        .add(right.clone().multiplyScalar(-halfSize)); // левый ближний
+      corners[1] = center
+        .clone()
+        .add(forwardPos.clone().multiplyScalar(halfSize - 2))
+        .add(right.clone().multiplyScalar(halfSize)); // правый ближний
+      corners[2] = center
+        .clone()
+        .add(forwardPos.clone().multiplyScalar(halfSize * 4))
+        .add(right.clone().multiplyScalar(halfSize + 4)); // правый дальний (если нужно вытянуть)
+      corners[3] = center
+        .clone()
+        .add(forwardPos.clone().multiplyScalar(halfSize * 4))
+        .add(right.clone().multiplyScalar(-halfSize - 4)); // левый дальний
+
+      const playerCoords = playerBodyRef?.translation();
+      if (!playerCoords) return;
+
+      const playerInOrcViewArea =
+        pointInTriangle2D(
+          playerCoords?.x,
+          playerCoords?.z,
+          corners[0].x,
+          corners[0].z,
+          corners[1].x,
+          corners[1].z,
+          corners[3].x,
+          corners[3].z,
+        ) ||
+        pointInTriangle2D(
+          playerCoords?.x,
+          playerCoords?.z,
+          corners[1].x,
+          corners[1].z,
+          corners[2].x,
+          corners[2].z,
+          corners[3].x,
+          corners[3].z,
+        );
+
+      if (
+        playerInOrcViewArea &&
+        currentObjConditionPatternStatus !== conditionPatternStatus.Agressive
+      ) {
+        dispatch(
+          ReactThreeFiberGameActions.setCurrentEnemyConditionStatus({
+            id: id,
+            conditionPatternStatus: conditionPatternStatus.Agressive,
+          }),
+        );
+        dispatch(
+          ReactThreeFiberGameActions.setCurrentEnemyAnimationName({
+            id: id,
+            animationName: "walk",
+          }),
+        );
+        setRestStatus(false);
+      }
+      if (
+        !playerInOrcViewArea &&
+        currentObjConditionPatternStatus !== conditionPatternStatus.Peaceful
+      ) {
+        dispatch(
+          ReactThreeFiberGameActions.setCurrentEnemyConditionStatus({
+            id: id,
+            conditionPatternStatus: conditionPatternStatus.Peaceful,
+          }),
+        );
+        dispatch(
+          ReactThreeFiberGameActions.setCurrentEnemyAnimationName({
+            id: id,
+            animationName: "walk",
+          }),
+        );
+        setRestStatus(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(calculateViewArea);
+  });
+
+  const pointInTriangle2D = (
+    pointX: number,
+    pointZ: number,
+    aX: number,
+    aZ: number,
+    bX: number,
+    bZ: number,
+    cX: number,
+    cZ: number,
+  ): boolean => {
+    const d1 = sign(pointX, pointZ, aX, aZ, bX, bZ);
+    const d2 = sign(pointX, pointZ, bX, bZ, cX, cZ);
+    const d3 = sign(pointX, pointZ, cX, cZ, aX, aZ);
+
+    if (d1 < 0 || d2 < 0 || d3 < 0) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  const sign = (px: number, py: number, x1: number, y1: number, x2: number, y2: number): number => {
+    return (px - x2) * (y1 - y2) - (x1 - x2) * (py - y2);
+  };
+
+  const points = [
+    corners[0],
+    corners[1],
+    corners[2],
+    corners[3],
+    corners[0], // замыкаем контур
+  ];
+
+  useFrame((state, delta) => {
+    if (!currentTarget.current) return;
+
+    if (
+      !currentTarget.current
+      // || !meshRef.current
+    )
+      return;
+
+    if (restStatus) return;
+
+    if (
+      currentObjConditionPatternStatus === conditionPatternStatus.Peaceful ||
+      currentObjConditionPatternStatus === conditionPatternStatus.Agressive
+    ) {
+      // if (tempQuat.angleTo(currentQuat) > 0.001) {
+
+      /**
+       * Поворот в мирном режиме
+       */
+
+      const rapierQuat = currentTarget.current.rotation();
+      currentQuat.set(rapierQuat.x, rapierQuat.y, rapierQuat.z, rapierQuat.w);
+      currentQuat.slerp(tempQuat, delta);
+      currentTarget.current.setRotation(currentQuat, true);
+
+      /**
+       * Движение в сторону направления взгляда в мирном и агрессивном режимах
+       */
+
+      // if (!zombie1Ref.current) return;
+      const rotationQuat = new THREE.Quaternion(
+        currentTarget.current.rotation().x,
+        currentTarget.current.rotation().y,
+        currentTarget.current.rotation().z,
+        currentTarget.current.rotation().w,
+      );
+
+      const forward = new THREE.Vector3(0, 0, -1);
+      forward.applyQuaternion(rotationQuat); // повернём вектор вперёд на ориентацию тела
+      lookDir.copy(forward).normalize();
+
+      currentTarget.current.applyImpulse(
+        new THREE.Vector3(-lookDir.x * 0.17, 0, -lookDir.z * 0.17),
+        true,
+      );
+      // }
+    }
+    if (currentObjConditionPatternStatus === conditionPatternStatus.Agressive) {
+      /**
+       * Поворотв сторону игрока в агрессивном режиме
+       */
+      rotateToPlayer();
+    }
+  });
+
+  return (
+    <>
+      <Line points={points} color="red" linewidth={1} />
+    </>
+  );
+};
+
+export default AncientOrcController;

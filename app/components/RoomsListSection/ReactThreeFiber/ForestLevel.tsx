@@ -19,6 +19,7 @@ import {
 } from "@/app/store/ReactThreeFiberGameSlice";
 import AncientOrc from "./AncientOrcEnemy";
 import { conditionPatternStatus } from "@/app/types";
+import MainTreesComponent from "./MainTreesComponent";
 
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 
@@ -316,21 +317,21 @@ const ForestLevel = () => {
       name: "orc1",
       position: { x: -5, y: 0, z: -2 },
       rotationTimer: 5,
-      state: "walk",
+      animation: "walk",
       conditionPatternStatus: conditionPatternStatus.Peaceful,
     },
     {
       name: "orc2",
       position: { x: 2, y: 0, z: -2 },
       rotationTimer: 8,
-      state: "idle",
+      animation: "walk",
       conditionPatternStatus: conditionPatternStatus.Peaceful,
     },
     {
       name: "orc3",
       position: { x: 5, y: 0, z: -2 },
       rotationTimer: 4,
-      state: "walk",
+      animation: "walk",
       conditionPatternStatus: conditionPatternStatus.Peaceful,
     },
   ];
@@ -341,6 +342,7 @@ const ForestLevel = () => {
         id: enemyData.name,
         rotationTimer: enemyData.rotationTimer,
         conditionPatternStatus: enemyData.conditionPatternStatus,
+        animationName: enemyData.animation,
       }),
     );
 
@@ -350,7 +352,6 @@ const ForestLevel = () => {
         position={enemyData.position}
         id={enemyData.name}
         rotationTimer={enemyData.rotationTimer}
-        modelAnimationState={enemyData.state}
       ></AncientOrc>
     );
   });
@@ -360,6 +361,7 @@ const ForestLevel = () => {
       <Bounds length={2 + 2}></Bounds>
       <Grass></Grass>
       <Trees></Trees>
+      <MainTreesComponent></MainTreesComponent>
       {/* <Enemyes></Enemyes> */}
       {zombies}
     </>

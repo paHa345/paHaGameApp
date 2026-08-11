@@ -549,4 +549,5 @@ export enum conditionPatternStatus {
   Peaceful = "peaceful",
   Agressive = "agressive",
   InSeek = "inSeek",
+  Rest = "rest",
 }

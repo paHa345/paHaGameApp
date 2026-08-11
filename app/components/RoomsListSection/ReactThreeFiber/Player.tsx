@@ -7,7 +7,7 @@ import { useAnimations, useGLTF, useKeyboardControls, useTexture } from "@react-
 import { useFrame, useThree } from "@react-three/fiber";
 import { CuboidCollider, RapierRigidBody, RigidBody, useRapier } from "@react-three/rapier";
 import { useControls } from "leva";
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { memo, Suspense, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
 import GameMenu from "./GameMenu";
@@ -15,39 +15,13 @@ import UpdateMouseCoordsAndCameraPosition from "./UpdateMouseCoordsAndCameraPosi
 import PlayerAnimationsController from "./PlayerAnimationsController";
 
 const Player = () => {
-  const Scratches005Color = useTexture("./textures/Moss002/Moss002Color.jpg");
-  // const rock061Normal = useTexture("./textures/Rock061/Rock061NormalGL.jpg");
-  // const rock061Roughness = useTexture(
-  //   "./textures/Rock061/Rock061Roughness.jpg",
-  // );
-  // const rock061Displacement = useTexture(
-  //   "./textures/Rock061/Rock061Displacement.jpg",
-  // );
-  // const rock061AmbientOcclusion = useTexture(
-  //   "./textures/Rock061/Rock061Occlusion.jpg",
-  // );
+  // const Scratches005Color = useTexture("./textures/Moss002/Moss002Color.jpg");
 
-  Scratches005Color.repeat.set(24, 1);
-  Scratches005Color.wrapS = THREE.RepeatWrapping;
-  Scratches005Color.wrapT = THREE.RepeatWrapping;
-  // rock061Normal.repeat.set(24, 1);
-  // rock061Normal.wrapS = THREE.RepeatWrapping;
-  // rock061Normal.wrapT = THREE.RepeatWrapping;
-  // rock061Roughness.repeat.set(24, 1);
-  // rock061Roughness.wrapS = THREE.RepeatWrapping;
-  // rock061Roughness.wrapT = THREE.RepeatWrapping;
-  // rock061Displacement.repeat.set(24, 1);
-  // rock061Displacement.wrapS = THREE.RepeatWrapping;
-  // rock061Displacement.wrapT = THREE.RepeatWrapping;
-  // rock061AmbientOcclusion.repeat.set(24, 1);
-  // rock061AmbientOcclusion.wrapS = THREE.RepeatWrapping;
-  // rock061AmbientOcclusion.wrapT = THREE.RepeatWrapping;
+  // Scratches005Color.repeat.set(24, 1);
+  // Scratches005Color.wrapS = THREE.RepeatWrapping;
+  // Scratches005Color.wrapT = THREE.RepeatWrapping;
 
-  Scratches005Color.needsUpdate = true;
-  // rock061Normal.needsUpdate = true;
-  // rock061Roughness.needsUpdate = true;
-  // rock061Displacement.needsUpdate = true;
-  // rock061AmbientOcclusion.needsUpdate = true;
+  // Scratches005Color.needsUpdate = true;
 
   const targetPos = useRef(new THREE.Vector3());
   const desiredPos = useRef(new THREE.Vector3());
@@ -64,13 +38,13 @@ const Player = () => {
 
   const { gl } = useThree();
 
-  const player = useGLTF("./models/characters/2/character-a.glb");
+  const player = useGLTF("./models/characters/2/character-a.glb", true);
   for (const name in player.nodes) {
     player.nodes[name].castShadow = true;
   }
 
-  const playerTexture = useTexture("./models/characters/2/texture-a.png");
-  playerTexture.flipY = false;
+  // const playerTexture = useTexture("./models/characters/2/texture-a.png");
+  // playerTexture.flipY = false;
 
   const gamePauseStatus = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.gamePauseStatus,
@@ -80,11 +54,11 @@ const Player = () => {
   //   (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.animationsName,
   // );
 
-  const animations = useAnimations(player.animations, player.scene);
+  // const animations = useAnimations(player.animations, player.scene);
   const dispatch = useDispatch<AppDispatch>();
-  const blockCounts = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.blocksCount,
-  );
+  // const blockCounts = useSelector(
+  //   (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.blocksCount,
+  // );
 
   const phase = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.phase,
@@ -390,8 +364,9 @@ const Player = () => {
 
   return (
     <>
-      <mesh ref={userMain}>
-        {/* <mesh
+      <Suspense fallback={null}>
+        <mesh ref={userMain}>
+          {/* <mesh
           ref={borderUserSphere}
           position={[1, 1, 1]}
           rotation={[0, 0, 0]}
@@ -411,55 +386,56 @@ const Player = () => {
             args={[28, 28, 16, 0, Math.PI * 2, 1.5, 0.55]}
           ></sphereGeometry>
         </mesh> */}
-        <mesh ref={cameraPoint}>
-          <mesh position={[0, 8, 0]} rotation-x={-Math.PI / 2}>
-            {gamePauseStatus && <GameMenu></GameMenu>}
+          <mesh ref={cameraPoint}>
+            <mesh position={[0, 8, 0]} rotation-x={-Math.PI / 2}>
+              {gamePauseStatus && <GameMenu></GameMenu>}
+            </mesh>
           </mesh>
-        </mesh>
-        <RigidBody
-          userData={{ type: "player", id: "player" }}
-          ref={body}
-          position={[0, 0.75, 0]}
-          // colliders="ball"
-          colliders={false}
-          restitution={0.2}
-          linearDamping={0.5}
-          angularDamping={0.5}
-          friction={1}
-          type="dynamic"
-          enabledRotations={[false, true, false]}
-        >
-          <CuboidCollider mass={1} position={[0, 0.6, 0]} args={[0.4, 0.6, 0.35]}>
-            <group
-            // rotation-y={rotationPlayerModel}
-            >
-              <primitive
-                ref={playerModelRef}
-                position={[0, -0.6, 0]}
-                object={player.scene}
-                scale={0.4}
-                castShadow
-                dispose={null}
+          <RigidBody
+            userData={{ type: "player", id: "player" }}
+            ref={body}
+            position={[0, 0.75, 0]}
+            // colliders="ball"
+            colliders={false}
+            restitution={0.2}
+            linearDamping={0.5}
+            angularDamping={0.5}
+            friction={1}
+            type="dynamic"
+            enabledRotations={[false, true, false]}
+          >
+            <CuboidCollider mass={1} position={[0, 0.6, 0]} args={[0.4, 0.6, 0.35]}>
+              <group
+              // rotation-y={rotationPlayerModel}
               >
-                <meshBasicMaterial map={playerTexture} />
-              </primitive>
-            </group>
-          </CuboidCollider>
+                <primitive
+                  ref={playerModelRef}
+                  position={[0, -0.6, 0]}
+                  object={player.scene}
+                  scale={0.4}
+                  castShadow
+                  dispose={null}
+                >
+                  {/* <meshBasicMaterial map={playerTexture} /> */}
+                </primitive>
+              </group>
+            </CuboidCollider>
 
-          {/* <mesh castShadow>
+            {/* <mesh castShadow>
           <icosahedronGeometry args={[0.3, 1]} />
           <meshStandardMaterial flatShading color={"mediumPurple"} />
         </mesh> */}
-        </RigidBody>
-      </mesh>
-      <UpdateMouseCoordsAndCameraPosition
-        cameraPoint={cameraPoint}
-        dir={dir}
-        playerBody={body}
-        targetPos={targetPos}
-        desiredPos={desiredPos}
-      ></UpdateMouseCoordsAndCameraPosition>
-      <PlayerAnimationsController player={player}></PlayerAnimationsController>
+          </RigidBody>
+        </mesh>
+        <UpdateMouseCoordsAndCameraPosition
+          cameraPoint={cameraPoint}
+          dir={dir}
+          playerBody={body}
+          targetPos={targetPos}
+          desiredPos={desiredPos}
+        ></UpdateMouseCoordsAndCameraPosition>
+        <PlayerAnimationsController player={player}></PlayerAnimationsController>
+      </Suspense>
     </>
   );
 };

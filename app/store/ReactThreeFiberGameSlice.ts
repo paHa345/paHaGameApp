@@ -47,6 +47,7 @@ export interface IReactThreeFiberGameSlice {
       [id: string]: {
         rotationTimer: number;
         conditionPatternStatus: conditionPatternStatus;
+        currentAnimationName: string;
       };
     };
     zombieWalkStatus: boolean;
@@ -76,6 +77,7 @@ interface IReactThreeFiberGameState {
     [id: string]: {
       rotationTimer: number;
       conditionPatternStatus: conditionPatternStatus;
+      currentAnimationName: string;
     };
   };
   zombieWalkStatus: boolean;
@@ -191,6 +193,7 @@ export const ReactThreeFiberGameSlice = createSlice({
           id: string;
           rotationTimer: number;
           conditionPatternStatus: conditionPatternStatus;
+          animationName: string;
         };
         type: string;
       },
@@ -198,11 +201,15 @@ export const ReactThreeFiberGameSlice = createSlice({
       state.enemyNPCData[action.payload.id] = {
         rotationTimer: action.payload.rotationTimer,
         conditionPatternStatus: action.payload.conditionPatternStatus,
+        currentAnimationName: action.payload.animationName,
       };
     },
     setCurrentEnemyConditionStatus(state, action) {
       state.enemyNPCData[action.payload.id].conditionPatternStatus =
         action.payload.conditionPatternStatus;
+    },
+    setCurrentEnemyAnimationName(state, action) {
+      state.enemyNPCData[action.payload.id].currentAnimationName = action.payload.animationName;
     },
     setCurrentZombieRotateTimestamp(
       state,
