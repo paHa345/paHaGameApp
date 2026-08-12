@@ -125,7 +125,9 @@ const Experience = () => {
         {/* <Level count={blocksCount} seed={blocksSeed}></Level> */}
         <ForestLevel></ForestLevel>
 
-        <Player></Player>
+        <Suspense fallback={null}>
+          <Player></Player>
+        </Suspense>
         <Camera />
         <Controls></Controls>
       </Physics>
