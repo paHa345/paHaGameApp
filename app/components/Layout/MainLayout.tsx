@@ -25,8 +25,8 @@ const MainLayout = (props: any) => {
           {pathname !== "/wsGamesRoomList" && pathname !== "/threejsTest" && <Header></Header>}
         </ReduxProvider>
         <main
-          className=" relative text-headerButtonColor min-h-[80vh] w-11/12
-          mx-auto"
+          className={` relative text-headerButtonColor ${pathname === "/threejsTest" ? "min-h-[95vh]" : "min-h-[80vh]"}  w-11/12
+          mx-auto`}
         >
           {props.children}
         </main>
