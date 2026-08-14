@@ -20,6 +20,7 @@ import {
 import AncientOrc from "./AncientOrcEnemy";
 import { conditionPatternStatus } from "@/app/types";
 import MainTreesComponent from "./MainTreesComponent";
+import MainTreeLog from "./MainTreeLog";
 
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 
@@ -362,6 +363,7 @@ const ForestLevel = () => {
       <Grass></Grass>
       <Trees></Trees>
       <MainTreesComponent></MainTreesComponent>
+      <MainTreeLog></MainTreeLog>
       {/* <Enemyes></Enemyes> */}
       {zombies}
     </>
