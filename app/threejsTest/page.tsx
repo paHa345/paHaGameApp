@@ -12,6 +12,7 @@ const page = () => {
     "./models/MiniForest/rocks-high.glb",
     "./models/characters/2/character-a.glb",
     "./models/SurvivalKit/tree-log.glb",
+    "./models/SurvivalKit/tool-axe-upgraded.glb",
   ]);
   return (
     <>

@@ -1,6 +1,17 @@
 import { Clone, Line, useAnimations, useGLTF } from "@react-three/drei";
-import { ObjectMap, useFrame, useThree } from "@react-three/fiber";
-import { CuboidCollider, RapierRigidBody, RigidBody, useRapier } from "@react-three/rapier";
+import {
+  createPortal,
+  ObjectMap,
+  useFrame,
+  useGraph,
+  useThree,
+} from "@react-three/fiber";
+import {
+  CuboidCollider,
+  RapierRigidBody,
+  RigidBody,
+  useRapier,
+} from "@react-three/rapier";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { GLTF } from "three/addons/loaders/GLTFLoader.js";
 import * as THREE from "three";
@@ -29,14 +40,26 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const currentTarget = useRef<RapierRigidBody>(null);
 
-  const { scene, animations, nodes } = useGLTF("./models/characters/2/character-o.glb", true);
+  const { scene, animations, nodes } = useGLTF(
+    "./models/characters/2/character-o.glb",
+    true,
+  );
   for (const name in nodes) {
     nodes[name].castShadow = true;
   }
+  const cloneModel = useMemo(() => scene.clone(), [scene]);
+
+  const { nodes: clonedNodes, materials } = useGraph(cloneModel);
+
+  const { scene: axeScene } = useGLTF(
+    "./models/SurvivalKit/tool-axe-upgraded.glb",
+    true,
+  );
+
+  const cloneAxe = useMemo(() => axeScene.clone(), [axeScene]);
 
   // const [lastSeenPlayerCoords, setLastSeenPlayerCoords] = useState<THREE.Vector3 | null>(null);
 
-  const cloneModel = useMemo(() => scene.clone(), [scene]);
   // const { actions } = useAnimations(animations, cloneModel);
 
   // const clonedScene = useMemo(() => {
@@ -79,6 +102,7 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
             position={[0, 0, 0]}
             args={[0.3, 0.4]}
           ></CapsuleCollider> */}
+
           <primitive
             position={[0, 0, 0]}
             object={cloneModel}
@@ -86,7 +110,24 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
             castShadow
             dispose={null}
           ></primitive>
-          <CuboidCollider mass={2} position={[0, 0.7, 0]} args={[0.4, 0.7, 0.3]} />
+
+          {createPortal(
+            <primitive
+              object={cloneAxe}
+              scale={4}
+              position={[0, -0.8, 0]}
+              rotation-x={Math.PI / 2}
+              dispose={null}
+            >
+              {" "}
+            </primitive>,
+            clonedNodes["arm-right"],
+          )}
+          <CuboidCollider
+            mass={2}
+            position={[0, 0.7, 0]}
+            args={[0.4, 0.7, 0.3]}
+          />
         </RigidBody>
       </group>
       <AncientOrcController
