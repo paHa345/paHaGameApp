@@ -6,6 +6,7 @@ import {
   faChessBoard,
   faDungeon,
   faHeadphonesAlt,
+  faPenFancy,
 } from "@fortawesome/free-solid-svg-icons";
 
 interface IGameSectionProps {
@@ -37,6 +38,7 @@ const GameSectionCard = ({ gameData }: IGameSectionProps) => {
           )}
           {image === "car" && <FontAwesomeIcon className="fa-fw fa-2x" icon={faCarOn} />}
           {image === "dungeon" && <FontAwesomeIcon className="fa-fw fa-2x" icon={faDungeon} />}
+          {image === "faPenFancy" && <FontAwesomeIcon className="fa-fw fa-2x" icon={faPenFancy} />}
 
           <div>
             <h1 className=" text-3xl lg:text-2xl text-center font-bold pb-2">{gameData.title}</h1>

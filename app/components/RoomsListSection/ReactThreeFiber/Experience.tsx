@@ -34,6 +34,7 @@ import {
   useFBX,
   useGLTF,
   useHelper,
+  useKeyboardControls,
   useMatcapTexture,
   useTexture,
 } from "@react-three/drei";
@@ -94,8 +95,28 @@ import Camera from "./Camera";
 import Controls from "./Controls";
 
 const Experience = () => {
-  const { gl } = useThree();
+  const { gl, camera } = useThree();
   const dispatch = useDispatch<AppDispatch>();
+
+  const [subscribeKeys] = useKeyboardControls();
+
+  useEffect(() => {
+    const unsunscribleRotateCameraButton = subscribeKeys(
+      (state) => {
+        return state.rotateCamera;
+      },
+      (value) => {
+        if (value) {
+          console.log("RotateCamera");
+          dispatch(ReactThreeFiberGameActions.setCameraRotationStatus());
+        }
+      },
+    );
+
+    return () => {
+      unsunscribleRotateCameraButton();
+    };
+  }, []);
 
   useEffect(() => {
     dispatch(

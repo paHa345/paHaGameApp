@@ -3,28 +3,11 @@ import {
   IReactThreeFiberGameSlice,
   ReactThreeFiberGameActions,
 } from "@/app/store/ReactThreeFiberGameSlice";
-import {
-  useAnimations,
-  useGLTF,
-  useKeyboardControls,
-  useTexture,
-} from "@react-three/drei";
+import { useAnimations, useGLTF, useKeyboardControls, useTexture } from "@react-three/drei";
 import { createPortal, useFrame, useThree } from "@react-three/fiber";
-import {
-  CuboidCollider,
-  RapierRigidBody,
-  RigidBody,
-  useRapier,
-} from "@react-three/rapier";
+import { CuboidCollider, RapierRigidBody, RigidBody, useRapier } from "@react-three/rapier";
 import { useControls } from "leva";
-import React, {
-  memo,
-  Suspense,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { memo, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
 import GameMenu from "./GameMenu";
@@ -60,22 +43,15 @@ const Player = () => {
     player.nodes[name].castShadow = true;
   }
 
-  const { scene: axeScene } = useGLTF(
-    "./models/SurvivalKit/tool-axe-upgraded.glb",
-    true,
-  );
+  const { scene: axeScene } = useGLTF("./models/SurvivalKit/tool-axe-upgraded.glb", true);
 
   const cloneAxe = useMemo(() => axeScene.clone(), [axeScene]);
-  //tool-axe-upgraded_1
-
-  //"arm-right"
 
   // const playerTexture = useTexture("./models/characters/2/texture-a.png");
   // playerTexture.flipY = false;
 
   const gamePauseStatus = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.gamePauseStatus,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.gamePauseStatus,
   );
 
   // const currentAnimationName = useSelector(
@@ -153,18 +129,6 @@ const Player = () => {
   /**
    * Show/hide menu, lock pointer
    */
-
-  useEffect(() => {
-    if (!gamePauseStatus) {
-      gl.domElement.requestPointerLock({
-        unadjustedMovement: true,
-      });
-    }
-    // else{
-    //         threeState.gl.domElement.
-
-    // }
-  }, [gamePauseStatus]);
 
   //   const startGameButtonHandler = () => {
   //     console.log("Start game");
@@ -288,14 +252,8 @@ const Player = () => {
 
     // set idle animation if player not move
 
-    if (
-      !forward &&
-      !backward &&
-      !leftward &&
-      !rightward &&
-      hit?.timeOfImpact === 0
-    ) {
-      dispatch(ReactThreeFiberGameActions.setIdleAnimation());
+    if (!forward && !backward && !leftward && !rightward && hit?.timeOfImpact === 0) {
+      dispatch(ReactThreeFiberGameActions.setPlayerNotMove());
     }
 
     // if (hit !== null && hit?.timeOfImpact > 0) {
@@ -339,10 +297,7 @@ const Player = () => {
         origin.z - state.camera.position.z,
       );
 
-      moveDirectionVector.applyAxisAngle(
-        new THREE.Vector3(0, 1, 0),
-        THREE.MathUtils.degToRad(-90),
-      );
+      moveDirectionVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(-90));
       //   impulse.x += impulseStrength;
       //   torque.z -= torqueStrength;
     }
@@ -353,10 +308,7 @@ const Player = () => {
         0,
         origin.z - state.camera.position.z,
       );
-      moveDirectionVector.applyAxisAngle(
-        new THREE.Vector3(0, 1, 0),
-        THREE.MathUtils.degToRad(180),
-      );
+      moveDirectionVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(180));
 
       //   .normalize();
 
@@ -373,18 +325,11 @@ const Player = () => {
         0,
         origin.z - state.camera.position.z,
       );
-      moveDirectionVector.applyAxisAngle(
-        new THREE.Vector3(0, 1, 0),
-        THREE.MathUtils.degToRad(90),
-      );
+      moveDirectionVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(90));
     }
 
     body.current.applyImpulse(
-      new THREE.Vector3(
-        moveDirectionVector.x / 12,
-        0,
-        moveDirectionVector.z / 12,
-      ),
+      new THREE.Vector3(moveDirectionVector.x / 12, 0, moveDirectionVector.z / 12),
       true,
     );
 
@@ -453,11 +398,7 @@ const Player = () => {
             type="dynamic"
             enabledRotations={[false, true, false]}
           >
-            <CuboidCollider
-              mass={1}
-              position={[0, 0.6, 0]}
-              args={[0.4, 0.6, 0.35]}
-            >
+            <CuboidCollider mass={1} position={[0, 0.6, 0]} args={[0.4, 0.6, 0.35]}>
               <group
               // rotation-y={rotationPlayerModel}
               >
@@ -474,8 +415,8 @@ const Player = () => {
                 {createPortal(
                   <primitive
                     object={cloneAxe}
-                    scale={19}
-                    position={[0, -0.8, 0]}
+                    scale={4}
+                    position={[-0.2, -1, 0]}
                     rotation-x={Math.PI / 2}
                     rotation-y={Math.PI / 2}
                   ></primitive>,
@@ -497,9 +438,7 @@ const Player = () => {
           targetPos={targetPos}
           desiredPos={desiredPos}
         ></UpdateMouseCoordsAndCameraPosition>
-        <PlayerAnimationsController
-          player={player}
-        ></PlayerAnimationsController>
+        <PlayerAnimationsController player={player}></PlayerAnimationsController>
       </Suspense>
     </>
   );

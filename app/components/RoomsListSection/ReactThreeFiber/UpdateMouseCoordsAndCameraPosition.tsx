@@ -34,11 +34,16 @@ const UpdateMouseCoordsAndCameraPosition = ({
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.mouseCoords,
   );
 
+  const cameraRotationStatus = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.cameraRotationStatus,
+  );
+
   const gamePauseStatus = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.gamePauseStatus,
   );
 
   useFrame((state) => {
+    // console.log(mouseCoords);
     if (gamePauseStatus) {
       state.camera.position.set(0, 10, 0);
       return;
@@ -74,7 +79,13 @@ const UpdateMouseCoordsAndCameraPosition = ({
     playerBody.current.setRotation(targetQuaternion, true);
     dir.current.set(0, 2, -distance.current - 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), 0); // базовый offset
     const q = playerBody.current.rotation();
-    dir.current.applyQuaternion(q);
+    const rotatQuat = new THREE.Quaternion(q.x, q.y, q.z, q.w);
+
+    if (cameraRotationStatus) {
+      rotatQuat.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 3);
+    }
+
+    dir.current.applyQuaternion(rotatQuat);
     desiredPos.current.copy(targetPos.current).add(dir.current);
     state.camera.position.lerp(desiredPos.current, 0.15);
     // state.camera.position.set(desiredPos.current.x, desiredPos.current.y, desiredPos.current.z);

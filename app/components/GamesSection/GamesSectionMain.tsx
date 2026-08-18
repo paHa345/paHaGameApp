@@ -82,6 +82,17 @@ const GamesSectionMain = () => {
           }}
         ></GameSectionCard>
 
+        <GameSectionCard
+          gameData={{
+            title: "Выставка",
+            link: "artGallery",
+            description: "Персональная выставка Рыхта Ильи",
+            image: "faPenFancy",
+
+            backgroundColor: "indigo",
+          }}
+        ></GameSectionCard>
+
         {/* <GameSectionCard></GameSectionCard>
         <GameSectionCard></GameSectionCard>
         <GameSectionCard></GameSectionCard> */}

@@ -1,5 +1,5 @@
 import { IReactThreeFiberGameSlice } from "@/app/store/ReactThreeFiberGameSlice";
-import { useAnimations } from "@react-three/drei";
+import { useAnimations, useKeyboardControls } from "@react-three/drei";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 
@@ -9,6 +9,10 @@ interface IPlayerAnimationsController {
 
 const PlayerAnimationsController = ({ player }: IPlayerAnimationsController) => {
   const animations = useAnimations(player.animations, player.scene);
+
+  const [subscribeKeys, getKeys] = useKeyboardControls();
+
+  const { forward, backward, leftward, rightward } = getKeys();
 
   const currentAnimationName = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.animationsName,

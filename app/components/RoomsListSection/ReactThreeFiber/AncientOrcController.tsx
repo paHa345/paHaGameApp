@@ -17,14 +17,9 @@ interface IAncientOrcController {
   rotationTimer: number;
 }
 
-const AncientOrcController = ({
-  currentTarget,
-  id,
-  rotationTimer,
-}: IAncientOrcController) => {
+const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcController) => {
   const playerBodyRef = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.playerBodyRef,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerBodyRef,
   );
 
   const currentObjConditionPatternStatus = useSelector(
@@ -69,12 +64,7 @@ const AncientOrcController = ({
     const currentOrcBody = currentTarget.current.rotation();
 
     const smoothRotationQuaternion = new THREE.Quaternion().slerpQuaternions(
-      new THREE.Quaternion(
-        currentOrcBody.x,
-        currentOrcBody.y,
-        0,
-        currentOrcBody.w,
-      ),
+      new THREE.Quaternion(currentOrcBody.x, currentOrcBody.y, 0, currentOrcBody.w),
       rotationQuaternion,
       0.08,
     );
@@ -102,9 +92,7 @@ const AncientOrcController = ({
       if (timer < data.clock.getElapsedTime()) {
         timer = data.clock.getElapsedTime() + rotationTimer;
 
-        if (
-          currentObjConditionPatternStatus === conditionPatternStatus.Peaceful
-        ) {
+        if (currentObjConditionPatternStatus === conditionPatternStatus.Peaceful) {
           startRotation();
         }
       }
@@ -114,9 +102,7 @@ const AncientOrcController = ({
           currentObjConditionPatternStatus === conditionPatternStatus.Rest)
       ) {
         if (!restStatus) {
-          setRestInterval(
-            data.clock.getElapsedTime() + Math.floor(Math.random() * 8) + 5,
-          );
+          setRestInterval(data.clock.getElapsedTime() + Math.floor(Math.random() * 8) + 5);
           setRestStatus(true);
           dispatch(
             ReactThreeFiberGameActions.setCurrentEnemyAnimationName({
@@ -126,9 +112,7 @@ const AncientOrcController = ({
           );
         }
         if (restStatus) {
-          setRestInterval(
-            data.clock.getElapsedTime() + Math.floor(Math.random() * 8) + 15,
-          );
+          setRestInterval(data.clock.getElapsedTime() + Math.floor(Math.random() * 8) + 15);
           setRestStatus(false);
           dispatch(
             ReactThreeFiberGameActions.setCurrentEnemyAnimationName({
@@ -137,9 +121,6 @@ const AncientOrcController = ({
             }),
           );
         }
-      }
-      if (restStatus) {
-        console.log("Отдых");
       }
     }, 1000);
 
@@ -269,14 +250,7 @@ const AncientOrcController = ({
     }
   };
 
-  const sign = (
-    px: number,
-    py: number,
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-  ): number => {
+  const sign = (px: number, py: number, x1: number, y1: number, x2: number, y2: number): number => {
     return (px - x2) * (y1 - y2) - (x1 - x2) * (py - y2);
   };
 

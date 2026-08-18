@@ -1,15 +1,33 @@
 import { AppDispatch } from "@/app/store";
-import { ReactThreeFiberGameActions } from "@/app/store/ReactThreeFiberGameSlice";
+import {
+  IReactThreeFiberGameSlice,
+  ReactThreeFiberGameActions,
+} from "@/app/store/ReactThreeFiberGameSlice";
 import { PointerLockControls } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import React, { useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Controls = () => {
   const controls = useRef(null);
   const dispatch = useDispatch<AppDispatch>();
+  const gamePauseStatus = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.gamePauseStatus,
+  );
 
   const { gl } = useThree();
+
+  useEffect(() => {
+    console.log("Pause");
+    if (!gamePauseStatus) {
+      gl.domElement.requestPointerLock({
+        unadjustedMovement: true,
+      });
+    }
+    if (gamePauseStatus) {
+      document.exitPointerLock();
+    }
+  }, [gamePauseStatus]);
 
   useEffect(() => {
     const canvas = gl.domElement;
@@ -25,10 +43,13 @@ const Controls = () => {
     };
 
     canvas.addEventListener("mousemove", handleMouseMove);
-    return () => canvas.removeEventListener("mousemove", handleMouseMove);
+    return () => {
+      canvas.removeEventListener("mousemove", handleMouseMove);
+    };
   }, [gl]);
 
-  return <PointerLockControls ref={controls} />;
+  return <></>;
+  // <PointerLockControls ref={controls} />;
 };
 
 export default Controls;

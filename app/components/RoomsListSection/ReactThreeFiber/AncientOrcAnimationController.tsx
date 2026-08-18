@@ -21,10 +21,6 @@ const AncientOrcAnimationController = ({
       state.ReactThreeFiberGameState.enemyNPCData[id].currentAnimationName,
   );
 
-  console.log(animationName);
-
-  //   actions[animationName]?.play();
-
   useEffect(() => {
     const action = actions[animationName];
 

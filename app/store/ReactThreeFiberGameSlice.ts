@@ -9,6 +9,7 @@ export interface IReactThreeFiberGameSlice {
     blockSeed: number;
     gamePauseStatus: boolean;
     cameraPosition: [number, number, number];
+    cameraRotationStatus: boolean;
 
     mouseCoords: { x: number; y: number };
 
@@ -17,6 +18,8 @@ export interface IReactThreeFiberGameSlice {
      */
 
     playerBodyRef?: RapierRigidBody | null;
+    playerAttackStatus: boolean;
+    playerMoveStatus: boolean;
 
     /**
      * Time
@@ -33,7 +36,7 @@ export interface IReactThreeFiberGameSlice {
     /**
      * Animations
      */
-    animationsName: "idle" | "walk" | "holding-both";
+    animationsName: "idle" | "walk" | "holding-both" | "attack-melee-right";
     rotatePlayerModel: number;
     canvasRef?: HTMLCanvasElement;
     canvasHeight: number;
@@ -59,14 +62,18 @@ interface IReactThreeFiberGameState {
   blockSeed: number;
   gamePauseStatus: boolean;
   cameraPosition: [number, number, number];
+  cameraRotationStatus: boolean;
+
   mouseCoords: { x: number; y: number };
 
   playerBodyRef?: RapierRigidBody | null;
+  playerAttackStatus: boolean;
+  playerMoveStatus: boolean;
 
   startTime: number;
   endTime: number;
   phase: "ready" | "playing" | "ended";
-  animationsName: "idle" | "walk" | "holding-both";
+  animationsName: "idle" | "walk" | "holding-both" | "attack-melee-right";
   rotatePlayerModel: number;
   canvasRef?: HTMLCanvasElement;
   canvasHeight: number;
@@ -88,7 +95,11 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
   blockSeed: 0,
   gamePauseStatus: true,
   cameraPosition: [0, 10, 0],
+  cameraRotationStatus: false,
+
   mouseCoords: { x: 0, y: 0 },
+  playerAttackStatus: false,
+  playerMoveStatus: false,
 
   startTime: 0,
   endTime: 0,
@@ -165,7 +176,6 @@ export const ReactThreeFiberGameSlice = createSlice({
       }
     },
     setGamePauseStatus(state) {
-      console.log(state.gamePauseStatus);
       if (state.gamePauseStatus) {
         state.gamePauseStatus = false;
         state.cameraPosition = [0, 0, 0];
@@ -227,6 +237,40 @@ export const ReactThreeFiberGameSlice = createSlice({
     setPlayerBodyRef(state, action) {
       console.log(action.payload);
       state.playerBodyRef = action.payload;
+    },
+    setCameraRotationStatus(state) {
+      if (state.cameraRotationStatus) {
+        state.cameraRotationStatus = false;
+      } else {
+        state.cameraRotationStatus = true;
+      }
+    },
+    setPlayerStartAttack(state) {
+      if (!state.gamePauseStatus && !state.playerAttackStatus) {
+        state.animationsName = "attack-melee-right";
+        state.playerAttackStatus = true;
+      }
+    },
+    setPlayerEndAttack(state) {
+      if (!state.gamePauseStatus && state.playerAttackStatus) {
+        state.animationsName = "idle";
+        state.playerAttackStatus = false;
+      }
+    },
+    setPlayerMove(state) {
+      if (state.playerMoveStatus) return;
+      state.playerMoveStatus = true;
+      if (!state.playerAttackStatus) {
+        state.animationsName = "walk";
+      }
+    },
+    setPlayerNotMove(state) {
+      if (!state.playerAttackStatus) {
+        state.animationsName = "idle";
+      }
+
+      if (!state.playerMoveStatus) return;
+      state.playerMoveStatus = false;
     },
   },
 });
