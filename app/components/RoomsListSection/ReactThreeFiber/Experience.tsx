@@ -93,6 +93,7 @@ import { width } from "@fortawesome/free-regular-svg-icons/faSave";
 import ForestLevel from "./ForestLevel";
 import Camera from "./Camera";
 import Controls from "./Controls";
+import AttackPlayerHandler from "./AttackPlayerHandler";
 
 const Experience = () => {
   const { gl, camera } = useThree();
@@ -149,6 +150,7 @@ const Experience = () => {
         </Suspense>
         <Camera />
         <Controls></Controls>
+        <AttackPlayerHandler></AttackPlayerHandler>
       </Physics>
     </>
   );

@@ -150,7 +150,7 @@ export const ReactThreeFiberGameSlice = createSlice({
       }
     },
     setWalkAnimation(state) {
-      if (state.animationsName !== "walk") {
+      if (state.animationsName !== "walk" && !state.playerAttackStatus) {
         state.animationsName = "walk";
       }
     },

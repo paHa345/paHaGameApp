@@ -12,7 +12,6 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/store";
 import { ReactThreeFiberGameActions } from "@/app/store/ReactThreeFiberGameSlice";
 import PreloadModelsComponent from "./PreloadModelsComponent";
-import AttackPlayerHandler from "./AttackPlayerHandler";
 
 const ReactThreeFiberMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -85,8 +84,6 @@ const ReactThreeFiberMain = () => {
           </Canvas>
           <Interface></Interface>
         </KeyboardControls>
-
-        <AttackPlayerHandler />
 
         {/* <PreloadModelsComponent></PreloadModelsComponent> */}
       </div>
