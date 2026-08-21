@@ -53,6 +53,11 @@ export interface IReactThreeFiberGameSlice {
         currentAnimationName: string;
       };
     };
+    enemyNPCRefs: {
+      [id: string]: {
+        enemyBodyRef?: RapierRigidBody | null;
+      };
+    };
     zombieWalkStatus: boolean;
   };
 }
@@ -87,6 +92,12 @@ interface IReactThreeFiberGameState {
       currentAnimationName: string;
     };
   };
+  enemyNPCRefs: {
+    [id: string]: {
+      enemyBodyRef?: RapierRigidBody | null;
+    };
+  };
+
   zombieWalkStatus: boolean;
 }
 
@@ -110,6 +121,8 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
   canvasWidth: 0,
   rotateZombieTimer: 0,
   enemyNPCData: {},
+
+  enemyNPCRefs: {},
 
   zombieWalkStatus: false,
 };
@@ -214,6 +227,12 @@ export const ReactThreeFiberGameSlice = createSlice({
         currentAnimationName: action.payload.animationName,
       };
     },
+    setEnemyBodyRef(state, action) {
+      if (!state.enemyNPCRefs[action.payload.id]) {
+        state.enemyNPCRefs[action.payload.id] = {};
+      }
+      state.enemyNPCRefs[action.payload.id].enemyBodyRef = action.payload.enemyBodyRef;
+    },
     setCurrentEnemyConditionStatus(state, action) {
       state.enemyNPCData[action.payload.id].conditionPatternStatus =
         action.payload.conditionPatternStatus;
@@ -235,7 +254,6 @@ export const ReactThreeFiberGameSlice = createSlice({
     },
 
     setPlayerBodyRef(state, action) {
-      console.log(action.payload);
       state.playerBodyRef = action.payload;
     },
     setCameraRotationStatus(state) {

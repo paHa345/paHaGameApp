@@ -21,7 +21,13 @@ const AttackPlayerHandler = () => {
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerBodyRef,
   );
 
+  const enemyesRefs = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.enemyNPCRefs,
+  );
+
   const { world } = useRapier();
+
+  console.log("redrew attack handler");
 
   function DrawLine() {
     if (!player) return;
@@ -127,9 +133,33 @@ const AttackPlayerHandler = () => {
       const ray = new rapier.Ray(playerCenterBody, direction);
 
       // Запускаем этот луч с установленной длинной
-      const hit = world.castRay(ray, 2, false);
-      console.log(hit);
+      const hit = world.castRay(ray, 2, true);
+      if (hit !== null) {
+        const collider = hit.collider;
+        if (!collider) return;
+        const enemyUserData = collider.parent()?.userData as { id: string; type: string };
+        if (!enemyUserData) return;
+        if (enemyUserData.type === "npc") {
+          console.log(enemyUserData.id);
+          const handle = enemyesRefs[enemyUserData.id].enemyBodyRef?.handle;
 
+          const playerPos = player.translation();
+          const enemyPos = enemyesRefs[enemyUserData.id].enemyBodyRef?.translation();
+          if (!enemyPos) return;
+
+          const direction = new THREE.Vector3().copy(enemyPos).sub(playerPos).normalize();
+
+          enemyesRefs[enemyUserData.id].enemyBodyRef?.applyImpulse(
+            direction.multiplyScalar(8),
+            true,
+          );
+
+          if (!handle) return;
+          const underAttackEnemy = world.getRigidBody(handle);
+
+          //   console.log(underAttackEnemy)
+        }
+      }
       setTimeout(() => {
         dispatch(ReactThreeFiberGameActions.setPlayerEndAttack());
       }, 500);

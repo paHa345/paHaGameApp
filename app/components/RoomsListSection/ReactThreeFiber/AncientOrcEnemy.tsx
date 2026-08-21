@@ -1,17 +1,6 @@
 import { Clone, Line, useAnimations, useGLTF } from "@react-three/drei";
-import {
-  createPortal,
-  ObjectMap,
-  useFrame,
-  useGraph,
-  useThree,
-} from "@react-three/fiber";
-import {
-  CuboidCollider,
-  RapierRigidBody,
-  RigidBody,
-  useRapier,
-} from "@react-three/rapier";
+import { createPortal, ObjectMap, useFrame, useGraph, useThree } from "@react-three/fiber";
+import { CuboidCollider, RapierRigidBody, RigidBody, useRapier } from "@react-three/rapier";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { GLTF } from "three/addons/loaders/GLTFLoader.js";
 import * as THREE from "three";
@@ -40,10 +29,7 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const currentTarget = useRef<RapierRigidBody>(null);
 
-  const { scene, animations, nodes } = useGLTF(
-    "./models/characters/2/character-o.glb",
-    true,
-  );
+  const { scene, animations, nodes } = useGLTF("./models/characters/2/character-o.glb", true);
   for (const name in nodes) {
     nodes[name].castShadow = true;
   }
@@ -51,10 +37,7 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
 
   const { nodes: clonedNodes, materials } = useGraph(cloneModel);
 
-  const { scene: axeScene } = useGLTF(
-    "./models/SurvivalKit/tool-axe-upgraded.glb",
-    true,
-  );
+  const { scene: axeScene } = useGLTF("./models/SurvivalKit/tool-axe-upgraded.glb", true);
 
   const cloneAxe = useMemo(() => axeScene.clone(), [axeScene]);
 
@@ -83,6 +66,12 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
   //   useEffect(() => {
   //     dispatch(ReactThreeFiberGameActions.setZombieWalkStatus());
   //   });
+
+  useEffect(() => {
+    dispatch(
+      ReactThreeFiberGameActions.setEnemyBodyRef({ id: id, enemyBodyRef: currentTarget.current }),
+    );
+  }, []);
 
   return (
     <>
@@ -123,11 +112,7 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
             </primitive>,
             clonedNodes["arm-right"],
           )}
-          <CuboidCollider
-            mass={2}
-            position={[0, 0.7, 0]}
-            args={[0.4, 0.7, 0.3]}
-          />
+          <CuboidCollider mass={2} position={[0, 0.7, 0]} args={[0.4, 0.7, 0.3]} />
         </RigidBody>
       </group>
       <AncientOrcController
