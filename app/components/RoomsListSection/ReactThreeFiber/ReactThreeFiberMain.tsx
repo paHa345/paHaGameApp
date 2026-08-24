@@ -10,7 +10,10 @@ import { KeyboardControls, PointerLockControls, useKeyboardControls } from "@rea
 import Interface from "./Interface";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/store";
-import { ReactThreeFiberGameActions } from "@/app/store/ReactThreeFiberGameSlice";
+import {
+  ReactThreeFiberGameActions,
+  setStartAttackStatus,
+} from "@/app/store/ReactThreeFiberGameSlice";
 import PreloadModelsComponent from "./PreloadModelsComponent";
 
 const ReactThreeFiberMain = () => {
@@ -47,7 +50,8 @@ const ReactThreeFiberMain = () => {
   const canvasClickHandler = (e: React.PointerEvent) => {
     e.preventDefault();
 
-    dispatch(ReactThreeFiberGameActions.setPlayerStartAttack());
+    // dispatch(ReactThreeFiberGameActions.setPlayerStartAttack());
+    dispatch(setStartAttackStatus({ page: 1, gameType: "werwer" }));
   };
 
   return (

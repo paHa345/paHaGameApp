@@ -1,7 +1,29 @@
 import { RapierRigidBody } from "@react-three/rapier";
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import * as THREE from "three";
 import { conditionPatternStatus } from "../types";
+import { useRapier, vec3 } from "@react-three/rapier";
+import * as rapier from "@dimforge/rapier3d-compat";
+
+export const setStartAttackStatus = createAsyncThunk(
+  "ReactThreeFiberGameState/setStartAttackStatus",
+  async function (
+    attackData: { page?: number; gameType: string | undefined },
+    { rejectWithValue, dispatch, getState },
+  ) {
+    try {
+      const state = getState() as IReactThreeFiberGameSlice;
+      if (state.ReactThreeFiberGameState.playerAttackStatus) return;
+
+      dispatch(ReactThreeFiberGameActions.setPlayerStartAttack());
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      dispatch(ReactThreeFiberGameActions.setPlayerEndAttack());
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
 
 export interface IReactThreeFiberGameSlice {
   ReactThreeFiberGameState: {
@@ -265,6 +287,7 @@ export const ReactThreeFiberGameSlice = createSlice({
     },
     setPlayerStartAttack(state) {
       if (!state.gamePauseStatus && !state.playerAttackStatus) {
+        console.log("Start attack");
         state.animationsName = "attack-melee-right";
         state.playerAttackStatus = true;
       }

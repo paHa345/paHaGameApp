@@ -2,6 +2,7 @@ import { AppDispatch } from "@/app/store";
 import {
   IReactThreeFiberGameSlice,
   ReactThreeFiberGameActions,
+  setStartAttackStatus,
 } from "@/app/store/ReactThreeFiberGameSlice";
 import { useThree } from "@react-three/fiber";
 import { useRapier, vec3 } from "@react-three/rapier";
@@ -135,34 +136,33 @@ const AttackPlayerHandler = () => {
       // Запускаем этот луч с установленной длинной
       const hit = world.castRay(ray, 2, true);
       if (hit !== null) {
+        // Определяем в какой объект попал луч
         const collider = hit.collider;
         if (!collider) return;
         const enemyUserData = collider.parent()?.userData as { id: string; type: string };
         if (!enemyUserData) return;
+        // Если он попал в NPC-врага
         if (enemyUserData.type === "npc") {
-          console.log(enemyUserData.id);
-          const handle = enemyesRefs[enemyUserData.id].enemyBodyRef?.handle;
-
+          // получаем позицию игрока и этого врага
           const playerPos = player.translation();
           const enemyPos = enemyesRefs[enemyUserData.id].enemyBodyRef?.translation();
           if (!enemyPos) return;
 
-          const direction = new THREE.Vector3().copy(enemyPos).sub(playerPos).normalize();
+          // Высчитываем направление вектора от игрока к врагу
+          const direction = new THREE.Vector3()
+            .copy(enemyPos)
+            .sub(new THREE.Vector3(playerPos.x, playerPos.y - 0.2, playerPos.z))
+            .normalize();
 
-          enemyesRefs[enemyUserData.id].enemyBodyRef?.applyImpulse(
-            direction.multiplyScalar(8),
-            true,
-          );
+          // Направляем импульс по данному вектору, который отталкивает врага
+          enemyesRefs[enemyUserData.id].enemyBodyRef?.setLinvel(direction.multiplyScalar(4), true);
 
-          if (!handle) return;
-          const underAttackEnemy = world.getRigidBody(handle);
-
-          //   console.log(underAttackEnemy)
+          //   enemyesRefs[enemyUserData.id].enemyBodyRef?.setRotation(
+          //     new THREE.Quaternion(0, 0, 0, 0),
+          //     true,
+          //   );
         }
       }
-      setTimeout(() => {
-        dispatch(ReactThreeFiberGameActions.setPlayerEndAttack());
-      }, 500);
     }
   }, [playerAttackStatus]);
 
