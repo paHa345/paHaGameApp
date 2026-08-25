@@ -25,6 +25,39 @@ export const setStartAttackStatus = createAsyncThunk(
   },
 );
 
+export const NPCAttackHandler = createAsyncThunk(
+  "ReactThreeFiberGameState/NPCAttackHandler",
+  async function (attackData: { id: string }, { rejectWithValue, dispatch, getState }) {
+    try {
+      const state = getState() as IReactThreeFiberGameSlice;
+      if (state.ReactThreeFiberGameState.enemyNPCData[attackData.id].attackStatus) return;
+
+      // Устанавливаем статус на атаку
+      dispatch(ReactThreeFiberGameActions.setNPCStartAttackPatternStatus({ id: attackData.id }));
+
+      dispatch(ReactThreeFiberGameActions.setNPCWeaponSwing({ id: attackData.id }));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Атака закончилась, устанавливаем статус на "агрессивный"
+
+      dispatch(ReactThreeFiberGameActions.setNPCFinishAttackPatternStatus({ id: attackData.id }));
+      dispatch(
+        ReactThreeFiberGameActions.setCurrentEnemyConditionStatus({
+          id: attackData.id,
+          conditionPatternStatus: conditionPatternStatus.Agressive,
+        }),
+      );
+      dispatch(
+        ReactThreeFiberGameActions.setCurrentEnemyAnimationName({
+          id: attackData.id,
+          animationName: "walk",
+        }),
+      );
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
 export interface IReactThreeFiberGameSlice {
   ReactThreeFiberGameState: {
     blocksCount: number;
@@ -58,7 +91,7 @@ export interface IReactThreeFiberGameSlice {
     /**
      * Animations
      */
-    animationsName: "idle" | "walk" | "holding-both" | "attack-melee-right";
+    animationsName: "idle" | "walk" | "holding-both" | "attack-melee-right" | "holding-right-shoot";
     rotatePlayerModel: number;
     canvasRef?: HTMLCanvasElement;
     canvasHeight: number;
@@ -73,6 +106,7 @@ export interface IReactThreeFiberGameSlice {
         rotationTimer: number;
         conditionPatternStatus: conditionPatternStatus;
         currentAnimationName: string;
+        attackStatus: boolean;
       };
     };
     enemyNPCRefs: {
@@ -100,7 +134,7 @@ interface IReactThreeFiberGameState {
   startTime: number;
   endTime: number;
   phase: "ready" | "playing" | "ended";
-  animationsName: "idle" | "walk" | "holding-both" | "attack-melee-right";
+  animationsName: "idle" | "walk" | "holding-both" | "attack-melee-right" | "holding-right-shoot";
   rotatePlayerModel: number;
   canvasRef?: HTMLCanvasElement;
   canvasHeight: number;
@@ -112,6 +146,7 @@ interface IReactThreeFiberGameState {
       rotationTimer: number;
       conditionPatternStatus: conditionPatternStatus;
       currentAnimationName: string;
+      attackStatus: boolean;
     };
   };
   enemyNPCRefs: {
@@ -247,6 +282,7 @@ export const ReactThreeFiberGameSlice = createSlice({
         rotationTimer: action.payload.rotationTimer,
         conditionPatternStatus: action.payload.conditionPatternStatus,
         currentAnimationName: action.payload.animationName,
+        attackStatus: false,
       };
     },
     setEnemyBodyRef(state, action) {
@@ -312,6 +348,21 @@ export const ReactThreeFiberGameSlice = createSlice({
 
       if (!state.playerMoveStatus) return;
       state.playerMoveStatus = false;
+    },
+    setNPCStartAttackPatternStatus(state, action) {
+      if (state.enemyNPCData[action.payload.id].attackStatus) return;
+      state.enemyNPCData[action.payload.id].attackStatus = true;
+      console.log("StartNPCAttack");
+    },
+    setNPCFinishAttackPatternStatus(state, action) {
+      if (state.enemyNPCData[action.payload.id].attackStatus) {
+        state.enemyNPCData[action.payload.id].attackStatus = false;
+
+        console.log("FinishNPCAttack");
+      }
+    },
+    setNPCWeaponSwing(state, action) {
+      state.enemyNPCData[action.payload.id].currentAnimationName = "holding-right-shoot";
     },
   },
 });

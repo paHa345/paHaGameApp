@@ -1,5 +1,6 @@
 import { IReactThreeFiberGameSlice } from "@/app/store/ReactThreeFiberGameSlice";
 import { useAnimations } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import * as THREE from "three";
@@ -15,6 +16,7 @@ const AncientOrcAnimationController = ({
   id,
 }: IAncientOrcAnimationController) => {
   const { actions } = useAnimations(animations, cloneModel);
+  const stopAtProgress = 0.95;
 
   const animationName = useSelector(
     (state: IReactThreeFiberGameSlice) =>
@@ -24,14 +26,49 @@ const AncientOrcAnimationController = ({
   useEffect(() => {
     const action = actions[animationName];
 
-    if (actions[animationName] !== null) {
-      actions[animationName].play();
+    if (action !== null) {
+      action.play();
+
+      //   if (animationName === "holding-right-shoot") {
+      //     action.timeScale = 0.2;
+      //   } else {
+      //     action.timeScale = 1;
+      //   }
+
       action?.reset().fadeIn(0.5).play();
     }
     return () => {
       action?.fadeOut(0.5);
     };
   }, [animationName]);
+
+  useFrame(() => {
+    const action = actions[animationName];
+    if (!action) return;
+
+    if (animationName !== "holding-right-shoot") return;
+
+    const duration = action.getClip().duration;
+    const progress = action.time / duration;
+
+    if (progress >= stopAtProgress) {
+      // Останавливаем анимацию
+      action.paused = true;
+      action.time = duration * stopAtProgress;
+      return;
+    }
+
+    // Плавное замедление перед остановкой
+    const distanceToStop = stopAtProgress - progress;
+    const slowdownZone = 0.3; // замедление в последних 30%
+
+    if (distanceToStop < slowdownZone) {
+      const slowdownFactor = distanceToStop / slowdownZone;
+      action.timeScale = Math.max(0.05, slowdownFactor);
+    } else {
+      action.timeScale = 1;
+    }
+  });
 
   return <></>;
 };

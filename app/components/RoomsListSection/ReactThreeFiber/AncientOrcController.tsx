@@ -1,6 +1,7 @@
 import { AppDispatch } from "@/app/store";
 import {
   IReactThreeFiberGameSlice,
+  NPCAttackHandler,
   ReactThreeFiberGameActions,
 } from "@/app/store/ReactThreeFiberGameSlice";
 import { conditionPatternStatus } from "@/app/types";
@@ -28,6 +29,10 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
   const currentObjConditionPatternStatus = useSelector(
     (state: IReactThreeFiberGameSlice) =>
       state.ReactThreeFiberGameState.enemyNPCData[id].conditionPatternStatus,
+  );
+  const currentObjAttackStatus = useSelector(
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.enemyNPCData[id].attackStatus,
   );
 
   const currentQuat = new THREE.Quaternion();
@@ -105,7 +110,7 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
         (currentObjConditionPatternStatus === conditionPatternStatus.Peaceful ||
           currentObjConditionPatternStatus === conditionPatternStatus.Rest)
       ) {
-        if (!restStatus) {
+        if (!restStatus && !currentObjAttackStatus) {
           setRestInterval(data.clock.getElapsedTime() + Math.floor(Math.random() * 8) + 5);
           setRestStatus(true);
           dispatch(
@@ -115,7 +120,7 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
             }),
           );
         }
-        if (restStatus) {
+        if (restStatus && !currentObjAttackStatus) {
           setRestInterval(data.clock.getElapsedTime() + Math.floor(Math.random() * 8) + 15);
           setRestStatus(false);
           dispatch(
@@ -194,7 +199,8 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
 
       if (
         playerInOrcViewArea &&
-        currentObjConditionPatternStatus !== conditionPatternStatus.Agressive
+        currentObjConditionPatternStatus !== conditionPatternStatus.Agressive &&
+        !currentObjAttackStatus
       ) {
         dispatch(
           ReactThreeFiberGameActions.setCurrentEnemyConditionStatus({
@@ -212,7 +218,8 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
       }
       if (
         !playerInOrcViewArea &&
-        currentObjConditionPatternStatus !== conditionPatternStatus.Peaceful
+        currentObjConditionPatternStatus !== conditionPatternStatus.Peaceful &&
+        !currentObjAttackStatus
       ) {
         dispatch(
           ReactThreeFiberGameActions.setCurrentEnemyConditionStatus({
@@ -283,20 +290,19 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
           if (!underAttackObjectData) return;
           // Если он попал в NPC-врага
           if (underAttackObjectData.type === "player") {
-            // получаем позицию игрока и этого врага
+            dispatch(NPCAttackHandler({ id: id }));
 
-            const NPCPos = currentTarget.current.translation();
-            const enemyPos = playerBodyRef?.translation();
-            if (!enemyPos) return;
-
-            // Высчитываем направление вектора от игрока к врагу
-            const direction = new THREE.Vector3()
-              .copy(enemyPos)
-              .sub(new THREE.Vector3(NPCPos.x, NPCPos.y - 0.2, NPCPos.z))
-              .normalize();
-
-            // Направляем импульс по данному вектору, который отталкивает врага
-            playerBodyRef?.setLinvel(direction.multiplyScalar(8), true);
+            // // получаем позицию игрока и этого врага
+            // const NPCPos = currentTarget.current.translation();
+            // const enemyPos = playerBodyRef?.translation();
+            // if (!enemyPos) return;
+            // // Высчитываем направление вектора от игрока к врагу
+            // const direction = new THREE.Vector3()
+            //   .copy(enemyPos)
+            //   .sub(new THREE.Vector3(NPCPos.x, NPCPos.y - 0.2, NPCPos.z))
+            //   .normalize();
+            // // Направляем импульс по данному вектору, который отталкивает врага
+            // playerBodyRef?.setLinvel(direction.multiplyScalar(8), true);
           }
         }
       }
@@ -350,8 +356,9 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
     if (restStatus) return;
 
     if (
-      currentObjConditionPatternStatus === conditionPatternStatus.Peaceful ||
-      currentObjConditionPatternStatus === conditionPatternStatus.Agressive
+      (currentObjConditionPatternStatus === conditionPatternStatus.Peaceful ||
+        currentObjConditionPatternStatus === conditionPatternStatus.Agressive) &&
+      !currentObjAttackStatus
     ) {
       // if (tempQuat.angleTo(currentQuat) > 0.001) {
 
@@ -381,7 +388,7 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
       lookDir.copy(forward).normalize();
 
       currentTarget.current.applyImpulse(
-        new THREE.Vector3(-lookDir.x * 0.17, 0, -lookDir.z * 0.17),
+        new THREE.Vector3(-lookDir.x * 0.19, 0, -lookDir.z * 0.19),
         true,
       );
       // }
