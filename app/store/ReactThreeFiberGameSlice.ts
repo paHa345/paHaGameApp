@@ -37,7 +37,12 @@ export const NPCAttackHandler = createAsyncThunk(
 
       dispatch(ReactThreeFiberGameActions.setNPCWeaponSwing({ id: attackData.id }));
       await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      dispatch(ReactThreeFiberGameActions.setNPCStartHitAttack({ id: attackData.id }));
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       // Атака закончилась, устанавливаем статус на "агрессивный"
+      dispatch(ReactThreeFiberGameActions.setNPCFinishHitAttack({ id: attackData.id }));
 
       dispatch(ReactThreeFiberGameActions.setNPCFinishAttackPatternStatus({ id: attackData.id }));
       dispatch(
@@ -107,6 +112,7 @@ export interface IReactThreeFiberGameSlice {
         conditionPatternStatus: conditionPatternStatus;
         currentAnimationName: string;
         attackStatus: boolean;
+        hitStatus: boolean;
       };
     };
     enemyNPCRefs: {
@@ -147,6 +153,7 @@ interface IReactThreeFiberGameState {
       conditionPatternStatus: conditionPatternStatus;
       currentAnimationName: string;
       attackStatus: boolean;
+      hitStatus: boolean;
     };
   };
   enemyNPCRefs: {
@@ -283,6 +290,7 @@ export const ReactThreeFiberGameSlice = createSlice({
         conditionPatternStatus: action.payload.conditionPatternStatus,
         currentAnimationName: action.payload.animationName,
         attackStatus: false,
+        hitStatus: false,
       };
     },
     setEnemyBodyRef(state, action) {
@@ -359,6 +367,17 @@ export const ReactThreeFiberGameSlice = createSlice({
         state.enemyNPCData[action.payload.id].attackStatus = false;
 
         console.log("FinishNPCAttack");
+      }
+    },
+    setNPCStartHitAttack(state, action) {
+      if (!state.enemyNPCData[action.payload.id].hitStatus) {
+        state.enemyNPCData[action.payload.id].hitStatus = true;
+        state.enemyNPCData[action.payload.id].currentAnimationName = "attack-melee-right";
+      }
+    },
+    setNPCFinishHitAttack(state, action) {
+      if (state.enemyNPCData[action.payload.id].hitStatus) {
+        state.enemyNPCData[action.payload.id].hitStatus = false;
       }
     },
     setNPCWeaponSwing(state, action) {

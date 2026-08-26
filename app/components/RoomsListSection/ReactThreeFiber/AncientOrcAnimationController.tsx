@@ -30,10 +30,16 @@ const AncientOrcAnimationController = ({
       action.play();
 
       //   if (animationName === "holding-right-shoot") {
-      //     action.timeScale = 0.2;
+      //     action.timeScale = 0.5;
       //   } else {
       //     action.timeScale = 1;
       //   }
+
+      if (animationName === "attack-melee-right") {
+        action.timeScale = 0.5;
+      } else {
+        action.timeScale = 1;
+      }
 
       action?.reset().fadeIn(0.5).play();
     }

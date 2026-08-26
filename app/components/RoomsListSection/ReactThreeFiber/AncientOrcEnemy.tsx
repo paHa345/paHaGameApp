@@ -35,10 +35,8 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
   }
   const cloneModel = useMemo(() => scene.clone(), [scene]);
 
-  const { nodes: clonedNodes, materials } = useGraph(cloneModel);
-
+  const { nodes: clonedNodes } = useGraph(cloneModel);
   const { scene: axeScene } = useGLTF("./models/SurvivalKit/tool-axe-upgraded.glb", true);
-
   const cloneAxe = useMemo(() => axeScene.clone(), [axeScene]);
 
   // const [lastSeenPlayerCoords, setLastSeenPlayerCoords] = useState<THREE.Vector3 | null>(null);
@@ -104,8 +102,9 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
             <primitive
               object={cloneAxe}
               scale={4}
-              position={[0, -0.8, 0]}
+              position={[-0.2, -1, 0]}
               rotation-x={Math.PI / 2}
+              rotation-y={Math.PI / 2}
               dispose={null}
             >
               {" "}
