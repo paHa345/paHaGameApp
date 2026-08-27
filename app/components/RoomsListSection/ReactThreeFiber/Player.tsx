@@ -328,8 +328,14 @@ const Player = () => {
       moveDirectionVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(90));
     }
 
+    const normalizedDelta = delta * 60;
+
     body.current.applyImpulse(
-      new THREE.Vector3(moveDirectionVector.x / 12, 0, moveDirectionVector.z / 12),
+      new THREE.Vector3(
+        (moveDirectionVector.x / 12) * normalizedDelta,
+        0,
+        (moveDirectionVector.z / 12) * normalizedDelta,
+      ),
       true,
     );
 

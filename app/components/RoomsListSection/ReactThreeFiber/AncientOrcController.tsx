@@ -386,9 +386,14 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
       const forward = new THREE.Vector3(0, 0, -1);
       forward.applyQuaternion(rotationQuat); // повернём вектор вперёд на ориентацию тела
       lookDir.copy(forward).normalize();
+      const normalizedDelta = delta * 60;
 
       currentTarget.current.applyImpulse(
-        new THREE.Vector3(-lookDir.x * 0.19, 0, -lookDir.z * 0.19),
+        new THREE.Vector3(
+          -lookDir.x * 0.19 * normalizedDelta,
+          0,
+          -lookDir.z * 0.19 * normalizedDelta,
+        ),
         true,
       );
       // }
