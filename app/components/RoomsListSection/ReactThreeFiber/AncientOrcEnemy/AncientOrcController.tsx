@@ -237,7 +237,7 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
       }
       if (playerInOrcViewArea) {
         if (!currentTarget.current) return;
-        // Координаты игрока, центр масс
+        // Координаты NPC, центр масс
         const NPCCenterBody = vec3({
           x: currentTarget.current.translation().x,
           y: currentTarget.current.translation().y,
@@ -247,7 +247,7 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
         // Поднимаем точку запуска луча на 0,5 метра вверх
         NPCCenterBody.add(new THREE.Vector3(0, 1, 0).multiplyScalar(0.5));
 
-        // Получаем угол поворота игрока
+        // Получаем угол поворота NPC
         const NPCRotation = currentTarget.current.rotation();
         const quat = new THREE.Quaternion(
           NPCRotation.x,
@@ -269,7 +269,7 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
         // прибавляем 180 град по вертикали к повороту модели
         const newQuat = quat.multiply(deltaQuat);
 
-        // Получаем направление луча, который направлен прямо от модели игрока
+        // Получаем направление луча, который направлен прямо от модели NPC
         const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(newQuat);
 
         // Немного смещаем начальную точку луча, чтобы он не шёл из модели
@@ -386,6 +386,7 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
       const forward = new THREE.Vector3(0, 0, -1);
       forward.applyQuaternion(rotationQuat); // повернём вектор вперёд на ориентацию тела
       lookDir.copy(forward).normalize();
+
       const normalizedDelta = delta * 60;
 
       currentTarget.current.applyImpulse(

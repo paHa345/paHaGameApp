@@ -17,7 +17,7 @@ import {
   IReactThreeFiberGameSlice,
   ReactThreeFiberGameActions,
 } from "@/app/store/ReactThreeFiberGameSlice";
-import AncientOrc from "./AncientOrcEnemy";
+import AncientOrc from "./AncientOrcEnemy/AncientOrcEnemy";
 import { conditionPatternStatus } from "@/app/types";
 import MainTreesComponent from "./MainTreesComponent";
 import MainTreeLog from "./MainTreeLog";
@@ -216,6 +216,39 @@ export function Trees() {
   );
 }
 
+export function Platforms() {
+  const platform = useGLTF("./models/PlatformerKit/block-grass-large-slope-narrow.glb");
+  const barrel = useGLTF("./models/PlatformerKit/barrel.glb");
+
+  return (
+    <>
+      <RigidBody
+        type="fixed"
+        colliders="hull"
+        position={[30, -0.5, 18]}
+        restitution={0.2}
+        friction={0}
+      >
+        <primitive object={platform.scene} scale={3}>
+          {/* <meshBasicMaterial map={forestTexture} /> */}
+        </primitive>
+      </RigidBody>
+
+      <RigidBody
+        type="dynamic"
+        colliders="hull"
+        position={[35, 1, 33]}
+        restitution={0.2}
+        friction={0}
+      >
+        <primitive object={barrel.scene} scale={2}>
+          {/* <meshBasicMaterial map={forestTexture} /> */}
+        </primitive>
+      </RigidBody>
+    </>
+  );
+}
+
 export function Enemyes() {
   const zombie1Ref = useRef<RapierRigidBody>(null);
   // const [zombie1RotateTimer, setZombie1RotateTimer] = useState(0);
@@ -364,6 +397,7 @@ const ForestLevel = () => {
       <Trees></Trees>
       <MainTreesComponent></MainTreesComponent>
       <MainTreeLog></MainTreeLog>
+      <Platforms></Platforms>
       {/* <Enemyes></Enemyes> */}
       {zombies}
     </>

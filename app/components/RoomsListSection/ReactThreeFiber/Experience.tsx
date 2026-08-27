@@ -81,7 +81,7 @@ import {
 } from "@react-three/rapier";
 import Lights from "./Lights";
 import Level from "./Level";
-import Player from "./Player";
+import Player from "./Player/Player";
 import { useDispatch, useSelector } from "react-redux";
 import {
   IReactThreeFiberGameSlice,
@@ -93,7 +93,7 @@ import { width } from "@fortawesome/free-regular-svg-icons/faSave";
 import ForestLevel from "./ForestLevel";
 import Camera from "./Camera";
 import Controls from "./Controls";
-import AttackPlayerHandler from "./AttackPlayerHandler";
+import AttackPlayerHandler from "./Player/AttackPlayerHandler";
 
 const Experience = () => {
   const { gl, camera } = useThree();

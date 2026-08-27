@@ -10,8 +10,8 @@ import { useControls } from "leva";
 import React, { memo, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
-import GameMenu from "./GameMenu";
-import UpdateMouseCoordsAndCameraPosition from "./UpdateMouseCoordsAndCameraPosition";
+import GameMenu from "../GameMenu";
+import UpdateMouseCoordsAndCameraPosition from "../UpdateMouseCoordsAndCameraPosition";
 import PlayerAnimationsController from "./PlayerAnimationsController";
 
 const Player = () => {

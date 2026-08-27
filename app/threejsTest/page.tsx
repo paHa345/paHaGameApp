@@ -13,6 +13,8 @@ const page = () => {
     "./models/characters/2/character-a.glb",
     "./models/SurvivalKit/tree-log.glb",
     "./models/SurvivalKit/tool-axe-upgraded.glb",
+    "./models/PlatformerKit/block-grass-large-slope-narrow.glb",
+    "./models/PlatformerKit/barrel.glb",
   ]);
   return (
     <>

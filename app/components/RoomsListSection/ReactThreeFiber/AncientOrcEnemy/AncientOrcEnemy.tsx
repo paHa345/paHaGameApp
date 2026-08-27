@@ -14,6 +14,7 @@ import { Api } from "@react-three/postprocessing";
 import { conditionPatternStatus } from "@/app/types";
 import AncientOrcController from "./AncientOrcController";
 import AncientOrcAnimationController from "./AncientOrcAnimationController";
+import CalculateAttackImpactHandler from "./CalculateAttackImpactHandler";
 
 interface IAncientOrcProps {
   position: {
@@ -124,6 +125,10 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
         cloneModel={cloneModel}
         id={id}
       ></AncientOrcAnimationController>
+      <CalculateAttackImpactHandler
+        id={id}
+        currentTarget={currentTarget}
+      ></CalculateAttackImpactHandler>
     </>
   );
 };
