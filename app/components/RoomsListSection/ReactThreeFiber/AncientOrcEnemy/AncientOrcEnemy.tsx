@@ -1,4 +1,4 @@
-import { Clone, Line, useAnimations, useGLTF } from "@react-three/drei";
+import { Billboard, Clone, Line, useAnimations, useGLTF } from "@react-three/drei";
 import { createPortal, ObjectMap, useFrame, useGraph, useThree } from "@react-three/fiber";
 import { CuboidCollider, RapierRigidBody, RigidBody, useRapier } from "@react-three/rapier";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -15,7 +15,7 @@ import { conditionPatternStatus } from "@/app/types";
 import AncientOrcController from "./AncientOrcController";
 import AncientOrcAnimationController from "./AncientOrcAnimationController";
 import CalculateAttackImpactHandler from "./CalculateAttackImpactHandler";
-
+import DynamicNPCHealthBar from "./DynamicNPCHealthBar";
 interface IAncientOrcProps {
   position: {
     x: number;
@@ -113,6 +113,7 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
             clonedNodes["arm-right"],
           )}
           <CuboidCollider mass={2} position={[0, 0.7, 0]} args={[0.4, 0.7, 0.3]} />
+          <DynamicNPCHealthBar></DynamicNPCHealthBar>
         </RigidBody>
       </group>
       <AncientOrcController
