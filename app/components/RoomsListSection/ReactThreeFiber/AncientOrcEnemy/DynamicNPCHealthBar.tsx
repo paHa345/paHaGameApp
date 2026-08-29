@@ -7,23 +7,34 @@ const DynamicNPCHealthBar = () => {
 
   useEffect(() => {
     const canvas = document.createElement("canvas");
-    canvas.width = 20;
-    canvas.height = 200;
+    canvas.width = 400;
+    canvas.height = 40;
     const ctx = canvas.getContext("2d");
 
     // Функция отрисовки
     function drawIcon() {
       if (!ctx) return;
       // Очищаем canvas
-      ctx.clearRect(0, 0, 20, 200);
+      ctx.clearRect(0, 0, 400, 40);
 
-      // Фон
-      ctx.fillStyle = "rgba(20, 20, 40, 0.8)";
-      ctx.fillRect(0, 0, 20, 200);
+      // // Фон
+      // ctx.fillStyle = "rgba(20, 20, 40, 0.8)";
+      // ctx.fillRect(0, 0, 200, 20);
 
-      //   const image = new HTMLImageElement();
-      //   image.src = "/RPGUI/character_pannel2.2.png";
+      const img = new Image();
+      img.src = "/RPGUI/NPCHealthBar.png";
       //   ctx.drawImage(image, 50, 50, 50, 50, 50, 50, 50, 50);
+
+      img.onload = () => {
+        // Отрисовываем изображение на canvas
+        ctx.drawImage(img, 10, 10, 250, 30, 0, 0, 400, 40);
+        ctx.drawImage(img, 10, 55, 250, 16, 6, 18, 390, 20);
+
+        // Создаем текстуру
+        const newTexture = new THREE.CanvasTexture(canvas);
+        newTexture.needsUpdate = true;
+        setTexture(newTexture);
+      };
 
       // Обновляем текстуру
       if (texture) {
