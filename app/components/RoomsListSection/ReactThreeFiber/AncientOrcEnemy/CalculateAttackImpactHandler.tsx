@@ -1,4 +1,7 @@
-import { IReactThreeFiberGameSlice } from "@/app/store/ReactThreeFiberGameSlice";
+import {
+  IReactThreeFiberGameSlice,
+  ReactThreeFiberGameActions,
+} from "@/app/store/ReactThreeFiberGameSlice";
 import { RapierRigidBody } from "@react-three/rapier";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -74,19 +77,21 @@ const CalculateAttackImpactHandler = ({ id, currentTarget }: ICalculateAttack) =
         if (!collider) return;
         const underAttackObjectData = collider.parent()?.userData as { id: string; type: string };
         if (!underAttackObjectData) return;
-        // Если он попал в NPC-врага
+        // Если он попал в игрока
         if (underAttackObjectData.type === "player") {
-          // получаем позицию игрока и этого врага
+          // получаем позицию NPC и этого игрока
           const NPCPos = currentTarget.current.translation();
           const enemyPos = playerBodyRef?.translation();
           if (!enemyPos) return;
-          // Высчитываем направление вектора от игрока к врагу
+          // Высчитываем направление вектора от NPC к игроку
           const direction = new THREE.Vector3()
             .copy(enemyPos)
             .sub(new THREE.Vector3(NPCPos.x, NPCPos.y - 0.5, NPCPos.z))
             .normalize();
           // Направляем импульс по данному вектору, который отталкивает игрока
           playerBodyRef?.setLinvel(direction.multiplyScalar(8), true);
+          // вычитаем из HP игрока урон
+          dispatch(ReactThreeFiberGameActions.setCurrentPlayerReduceHP(50));
         }
       }
     }

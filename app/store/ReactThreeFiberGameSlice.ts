@@ -80,6 +80,10 @@ export interface IReactThreeFiberGameSlice {
     playerBodyRef?: RapierRigidBody | null;
     playerAttackStatus: boolean;
     playerMoveStatus: boolean;
+    playerStat: {
+      baseHP: number;
+      currentHP: number;
+    };
 
     /**
      * Time
@@ -120,6 +124,12 @@ export interface IReactThreeFiberGameSlice {
         enemyBodyRef?: RapierRigidBody | null;
       };
     };
+    enemyNPCStat: {
+      [id: string]: {
+        baseHP: number;
+        currentHP: number;
+      };
+    };
     zombieWalkStatus: boolean;
   };
 }
@@ -136,6 +146,10 @@ interface IReactThreeFiberGameState {
   playerBodyRef?: RapierRigidBody | null;
   playerAttackStatus: boolean;
   playerMoveStatus: boolean;
+  playerStat: {
+    baseHP: number;
+    currentHP: number;
+  };
 
   startTime: number;
   endTime: number;
@@ -162,6 +176,13 @@ interface IReactThreeFiberGameState {
     };
   };
 
+  enemyNPCStat: {
+    [id: string]: {
+      baseHP: number;
+      currentHP: number;
+    };
+  };
+
   zombieWalkStatus: boolean;
 }
 
@@ -175,6 +196,10 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
   mouseCoords: { x: 0, y: 0 },
   playerAttackStatus: false,
   playerMoveStatus: false,
+  playerStat: {
+    baseHP: 500,
+    currentHP: 500,
+  },
 
   startTime: 0,
   endTime: 0,
@@ -187,6 +212,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
   enemyNPCData: {},
 
   enemyNPCRefs: {},
+  enemyNPCStat: {},
 
   zombieWalkStatus: false,
 };
@@ -382,6 +408,11 @@ export const ReactThreeFiberGameSlice = createSlice({
     },
     setNPCWeaponSwing(state, action) {
       state.enemyNPCData[action.payload.id].currentAnimationName = "holding-right-shoot";
+    },
+
+    setCurrentPlayerReduceHP(state, action) {
+      console.log((state.playerStat.currentHP / state.playerStat.baseHP) * 100);
+      state.playerStat.currentHP = state.playerStat.currentHP - action.payload;
     },
   },
 });

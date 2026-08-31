@@ -27,8 +27,8 @@ const DynamicNPCHealthBar = () => {
 
       img.onload = () => {
         // Отрисовываем изображение на canvas
-        ctx.drawImage(img, 10, 10, 250, 30, 0, 0, 400, 40);
-        ctx.drawImage(img, 10, 55, 250, 16, 6, 18, 390, 20);
+        ctx.drawImage(img, 20, 14, 250, 30, 0, 0, 400, 40);
+        ctx.drawImage(img, 24, 55, 250, 16, 9, 12, 390, 20);
 
         // Создаем текстуру
         const newTexture = new THREE.CanvasTexture(canvas);

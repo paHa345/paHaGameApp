@@ -15,6 +15,7 @@ import {
   setStartAttackStatus,
 } from "@/app/store/ReactThreeFiberGameSlice";
 import PreloadModelsComponent from "./PreloadModelsComponent";
+import PlayerHealthPanel from "./Player/PlayerHealthPanel";
 
 const ReactThreeFiberMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -88,7 +89,7 @@ const ReactThreeFiberMain = () => {
           </Canvas>
           <Interface></Interface>
         </KeyboardControls>
-
+        <PlayerHealthPanel></PlayerHealthPanel>
         {/* <PreloadModelsComponent></PreloadModelsComponent> */}
       </div>
     </>
