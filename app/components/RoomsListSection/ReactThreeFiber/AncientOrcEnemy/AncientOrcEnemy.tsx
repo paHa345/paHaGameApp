@@ -1,23 +1,6 @@
-import {
-  Billboard,
-  Clone,
-  Line,
-  useAnimations,
-  useGLTF,
-} from "@react-three/drei";
-import {
-  createPortal,
-  ObjectMap,
-  useFrame,
-  useGraph,
-  useThree,
-} from "@react-three/fiber";
-import {
-  CuboidCollider,
-  RapierRigidBody,
-  RigidBody,
-  useRapier,
-} from "@react-three/rapier";
+import { Billboard, Clone, Line, useAnimations, useGLTF } from "@react-three/drei";
+import { createPortal, ObjectMap, useFrame, useGraph, useThree } from "@react-three/fiber";
+import { CuboidCollider, RapierRigidBody, RigidBody, useRapier } from "@react-three/rapier";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { GLTF } from "three/addons/loaders/GLTFLoader.js";
 import * as THREE from "three";
@@ -47,20 +30,14 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const currentTarget = useRef<RapierRigidBody>(null);
 
-  const { scene, animations, nodes } = useGLTF(
-    "./models/characters/2/character-o.glb",
-    true,
-  );
+  const { scene, animations, nodes } = useGLTF("./models/characters/2/character-o.glb", true);
   for (const name in nodes) {
     nodes[name].castShadow = true;
   }
   const cloneModel = useMemo(() => scene.clone(), [scene]);
 
   const { nodes: clonedNodes } = useGraph(cloneModel);
-  const { scene: axeScene } = useGLTF(
-    "./models/SurvivalKit/tool-axe-upgraded.glb",
-    true,
-  );
+  const { scene: axeScene } = useGLTF("./models/SurvivalKit/tool-axe-upgraded.glb", true);
   const cloneAxe = useMemo(() => axeScene.clone(), [axeScene]);
 
   // const [lastSeenPlayerCoords, setLastSeenPlayerCoords] = useState<THREE.Vector3 | null>(null);
@@ -138,12 +115,8 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
             </primitive>,
             clonedNodes["arm-right"],
           )}
-          <CuboidCollider
-            mass={2}
-            position={[0, 0.7, 0]}
-            args={[0.4, 0.7, 0.3]}
-          />
-          <DynamicNPCHealthBar></DynamicNPCHealthBar>
+          <CuboidCollider mass={2} position={[0, 0.7, 0]} args={[0.4, 0.7, 0.3]} />
+          <DynamicNPCHealthBar id={id}></DynamicNPCHealthBar>
         </RigidBody>
       </group>
       <AncientOrcController

@@ -157,6 +157,7 @@ const AttackPlayerHandler = () => {
           // Направляем импульс по данному вектору, который отталкивает врага
           enemyesRefs[enemyUserData.id].enemyBodyRef?.setLinvel(direction.multiplyScalar(4), true);
 
+          dispatch(ReactThreeFiberGameActions.setNPCReduceHP({ id: enemyUserData.id, damage: 50 }));
           //   enemyesRefs[enemyUserData.id].enemyBodyRef?.setRotation(
           //     new THREE.Quaternion(0, 0, 0, 0),
           //     true,

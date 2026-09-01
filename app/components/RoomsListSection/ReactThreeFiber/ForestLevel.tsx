@@ -378,6 +378,13 @@ const ForestLevel = () => {
         conditionPatternStatus: enemyData.conditionPatternStatus,
         animationName: enemyData.animation,
       }),
+      dispatch(
+        ReactThreeFiberGameActions.setNPCStat({
+          id: enemyData.name,
+          baseHP: 300,
+          currentHP: 150,
+        }),
+      ),
     );
 
     return (

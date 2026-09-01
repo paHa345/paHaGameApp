@@ -126,8 +126,8 @@ export interface IReactThreeFiberGameSlice {
     };
     enemyNPCStat: {
       [id: string]: {
-        baseHP: number;
-        currentHP: number;
+        baseHP?: number;
+        currentHP?: number;
       };
     };
     zombieWalkStatus: boolean;
@@ -178,8 +178,8 @@ interface IReactThreeFiberGameState {
 
   enemyNPCStat: {
     [id: string]: {
-      baseHP: number;
-      currentHP: number;
+      baseHP?: number;
+      currentHP?: number;
     };
   };
 
@@ -325,6 +325,13 @@ export const ReactThreeFiberGameSlice = createSlice({
       }
       state.enemyNPCRefs[action.payload.id].enemyBodyRef = action.payload.enemyBodyRef;
     },
+    setNPCStat(state, action) {
+      if (!state.enemyNPCStat[action.payload.id]) {
+        state.enemyNPCStat[action.payload.id] = {};
+      }
+      state.enemyNPCStat[action.payload.id].baseHP = action.payload.baseHP;
+      state.enemyNPCStat[action.payload.id].currentHP = action.payload.currentHP;
+    },
     setCurrentEnemyConditionStatus(state, action) {
       state.enemyNPCData[action.payload.id].conditionPatternStatus =
         action.payload.conditionPatternStatus;
@@ -413,6 +420,12 @@ export const ReactThreeFiberGameSlice = createSlice({
     setCurrentPlayerReduceHP(state, action) {
       console.log((state.playerStat.currentHP / state.playerStat.baseHP) * 100);
       state.playerStat.currentHP = state.playerStat.currentHP - action.payload;
+    },
+    setNPCReduceHP(state, action) {
+      const NPCHP = state.enemyNPCStat[action.payload.id].currentHP;
+      if (NPCHP) {
+        state.enemyNPCStat[action.payload.id].currentHP = NPCHP - action.payload.damage;
+      }
     },
   },
 });
