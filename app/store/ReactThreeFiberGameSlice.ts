@@ -107,9 +107,18 @@ export interface IReactThreeFiberGameSlice {
     canvasWidth: number;
 
     /**
-     * Enemyes
+     * NPC
      */
     rotateZombieTimer: number;
+
+    NPCArr: {
+      name: string;
+      position: { x: number; y: number; z: number };
+      rotationTimer: number;
+      animation: string;
+      conditionPatternStatus: conditionPatternStatus;
+    }[];
+
     enemyNPCData: {
       [id: string]: {
         rotationTimer: number;
@@ -161,6 +170,14 @@ interface IReactThreeFiberGameState {
   canvasWidth: number;
   rotateZombieTimer: number;
 
+  NPCArr: {
+    name: string;
+    position: { x: number; y: number; z: number };
+    rotationTimer: number;
+    animation: string;
+    conditionPatternStatus: conditionPatternStatus;
+  }[];
+
   enemyNPCData: {
     [id: string]: {
       rotationTimer: number;
@@ -209,6 +226,45 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
   canvasHeight: 0,
   canvasWidth: 0,
   rotateZombieTimer: 0,
+
+  NPCArr: [
+    {
+      name: "orc1",
+      position: { x: -5, y: 0, z: -2 },
+      rotationTimer: 5,
+      animation: "walk",
+      conditionPatternStatus: conditionPatternStatus.Peaceful,
+    },
+    {
+      name: "orc2",
+      position: { x: 2, y: 0, z: -2 },
+      rotationTimer: 8,
+      animation: "walk",
+      conditionPatternStatus: conditionPatternStatus.Peaceful,
+    },
+    {
+      name: "orc3",
+      position: { x: 5, y: 0, z: -2 },
+      rotationTimer: 4,
+      animation: "walk",
+      conditionPatternStatus: conditionPatternStatus.Peaceful,
+    },
+
+    {
+      name: "orc4",
+      position: { x: 15, y: 0, z: 20 },
+      rotationTimer: 6,
+      animation: "walk",
+      conditionPatternStatus: conditionPatternStatus.Peaceful,
+    },
+    {
+      name: "orc5",
+      position: { x: 22, y: 0, z: 22 },
+      rotationTimer: 7,
+      animation: "walk",
+      conditionPatternStatus: conditionPatternStatus.Peaceful,
+    },
+  ],
   enemyNPCData: {},
 
   enemyNPCRefs: {},
@@ -261,7 +317,6 @@ export const ReactThreeFiberGameSlice = createSlice({
       state.rotatePlayerModel = action.payload;
     },
     setCanvasElement(state, action) {
-      console.log(action.payload);
       state.canvasRef = action.payload;
     },
     setCanvasWidthHeight(state, action) {
@@ -364,7 +419,6 @@ export const ReactThreeFiberGameSlice = createSlice({
     },
     setPlayerStartAttack(state) {
       if (!state.gamePauseStatus && !state.playerAttackStatus) {
-        console.log("Start attack");
         state.animationsName = "attack-melee-right";
         state.playerAttackStatus = true;
       }
@@ -393,13 +447,10 @@ export const ReactThreeFiberGameSlice = createSlice({
     setNPCStartAttackPatternStatus(state, action) {
       if (state.enemyNPCData[action.payload.id].attackStatus) return;
       state.enemyNPCData[action.payload.id].attackStatus = true;
-      console.log("StartNPCAttack");
     },
     setNPCFinishAttackPatternStatus(state, action) {
       if (state.enemyNPCData[action.payload.id].attackStatus) {
         state.enemyNPCData[action.payload.id].attackStatus = false;
-
-        console.log("FinishNPCAttack");
       }
     },
     setNPCStartHitAttack(state, action) {
@@ -418,14 +469,25 @@ export const ReactThreeFiberGameSlice = createSlice({
     },
 
     setCurrentPlayerReduceHP(state, action) {
-      console.log((state.playerStat.currentHP / state.playerStat.baseHP) * 100);
       state.playerStat.currentHP = state.playerStat.currentHP - action.payload;
     },
     setNPCReduceHP(state, action) {
       const NPCHP = state.enemyNPCStat[action.payload.id].currentHP;
       if (NPCHP) {
         state.enemyNPCStat[action.payload.id].currentHP = NPCHP - action.payload.damage;
+
+        const NPCHPAfterReduce = state.enemyNPCStat[action.payload.id].currentHP;
+        console.log(NPCHPAfterReduce);
+        if (NPCHPAfterReduce === undefined) return;
+        if (NPCHPAfterReduce <= 0) {
+          console.log("Delete orc");
+          state.NPCArr = state.NPCArr.filter((NPC) => NPC.name !== action.payload.id);
+          console.log(state.NPCArr.length);
+        }
       }
+    },
+    deleteNPCFromArr(state, action) {
+      state.NPCArr = state.NPCArr.filter((NPC) => NPC.name !== action.payload.id);
     },
   },
 });

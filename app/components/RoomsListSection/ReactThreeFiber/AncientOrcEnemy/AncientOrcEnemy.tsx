@@ -39,25 +39,6 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
   const { nodes: clonedNodes } = useGraph(cloneModel);
   const { scene: axeScene } = useGLTF("./models/SurvivalKit/tool-axe-upgraded.glb", true);
   const cloneAxe = useMemo(() => axeScene.clone(), [axeScene]);
-
-  // const [lastSeenPlayerCoords, setLastSeenPlayerCoords] = useState<THREE.Vector3 | null>(null);
-
-  // const { actions } = useAnimations(animations, cloneModel);
-
-  // const clonedScene = useMemo(() => {
-  //   const cloned = scene.clone();
-  //   // Глубоко клонируем все зависимые объекты
-  //   cloned.traverse((child: any) => {
-  //     if (child.isMesh) {
-  //       child.material = child.material.clone();
-  //     }
-  //   });
-  //   return cloned;
-  // }, [scene]);
-
-  // actions["walk"]?.play();
-  //    actions['walk']?.reset().fadeIn(0.5).play();
-
   const meshRef = useRef<THREE.Group>(null);
 
   console.log("Orc redraw");

@@ -90,12 +90,16 @@ import {
 import GameMenu from "./GameMenu";
 import { AppDispatch } from "@/app/store";
 import { width } from "@fortawesome/free-regular-svg-icons/faSave";
-import ForestLevel from "./ForestLevel";
+import ForestLevel from "./Level/ForestLevel";
 import Camera from "./Camera";
 import Controls from "./Controls";
 import AttackPlayerHandler from "./Player/AttackPlayerHandler";
 
 const Experience = () => {
+  const { debugPhysics } = useControls({
+    debugPhysics: true,
+  });
+
   const { gl, camera } = useThree();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -140,7 +144,7 @@ const Experience = () => {
 
       {/* <color args={["#bdedfc"]} attach={"background"}></color> */}
       <Sky sunPosition={[20, 20, 0]}></Sky>
-      <Physics debug={true}>
+      <Physics debug={debugPhysics}>
         <Lights />
         {/* <Level count={blocksCount} seed={blocksSeed}></Level> */}
         <ForestLevel></ForestLevel>

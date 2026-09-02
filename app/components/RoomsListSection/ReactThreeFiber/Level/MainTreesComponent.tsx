@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 import React, { Suspense, useEffect, useMemo, useRef } from "react";
 import { RoundedBoxGeometry, useGLTF } from "@react-three/drei";
-import Tree from "./Tree";
+import Tree from "../Tree";
 import { InstancedRigidBodies } from "@react-three/rapier";
 import { useFrame } from "@react-three/fiber";
 

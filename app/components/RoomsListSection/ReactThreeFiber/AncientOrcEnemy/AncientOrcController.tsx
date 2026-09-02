@@ -407,11 +407,7 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
     }
   });
 
-  return (
-    <>
-      <Line points={points} color="red" linewidth={1} />
-    </>
-  );
+  return <>{/* <Line points={points} color="red" linewidth={1} /> */}</>;
 };
 
 export default AncientOrcController;
