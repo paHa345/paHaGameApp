@@ -8,6 +8,8 @@ const page = () => {
   const modelPaths = [
     "./models/DesertMountain/Hill_desert_001.fbx",
     "./models/DesertMountain/Plateau_desert_004.fbx",
+    "./models/Houses/house_15_full.fbx",
+    "./models/Houses/house_15_1.fbx",
   ];
 
   useGLTF.preload([

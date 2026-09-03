@@ -5,29 +5,25 @@ import { InstancedRigidBodies } from "@react-three/rapier";
 
 const MainDesertMountainsComponent = () => {
   const mountainsArr = [
-    // {
-    //   id: "desertMountain1",
-    //   position: new THREE.Vector3(-20, 0.01, -30),
-    // },
     {
       id: "desertMountain1",
-      position: new THREE.Vector3(40, 0.01, 40),
+      position: new THREE.Vector3(40, 0.01, 45),
     },
     {
       id: "desertMountain2",
-      position: new THREE.Vector3(20, 0.01, 40),
+      position: new THREE.Vector3(20, 0.01, 45),
     },
     {
       id: "desertMountain3",
-      position: new THREE.Vector3(0, 0.01, 40),
+      position: new THREE.Vector3(0, 0.01, 45),
     },
     {
       id: "desertMountain4",
-      position: new THREE.Vector3(-20, 0.01, 40),
+      position: new THREE.Vector3(-20, 0.01, 45),
     },
     {
       id: "desertMountain5",
-      position: new THREE.Vector3(-40, 0.01, 40),
+      position: new THREE.Vector3(-40, 0.01, 45),
     },
   ];
 
@@ -42,15 +38,8 @@ const MainDesertMountainsComponent = () => {
       map: colorMap,
     });
 
-    console.log(mountainNode);
-
     const instancedMeshRef = React.useRef<THREE.InstancedMesh>(null);
-
     const positions: [number, number, number][] = [];
-
-    //   // if (instancedMeshRef.current) {
-    //   //   instancedMeshRef.current.frustumCulled = false;
-    //   // }
 
     mountainsArr.forEach((mountainData) => {
       positions.push([mountainData.position.x, mountainData.position.y, mountainData.position.z]);
@@ -62,11 +51,11 @@ const MainDesertMountainsComponent = () => {
         position: pos.position,
         angularDamping: 0.5,
         linearDamping: 0.5,
-        "scale-x": 0.008,
-        "scale-y": 0.005,
-        "scale-z": 0.004,
-        "rotation-x": Math.random() / 16,
-        // "rotation-y": Math.random() / 16,
+        "scale-x": 0.011 + 0.003 * Math.random(),
+        "scale-y": 0.01 + 0.003 * Math.random(),
+        "scale-z": 0.006 + 0.003 * Math.random(),
+        // "rotation-x": Math.random() / 16,
+        "rotation-y": Math.random() * 4,
       }));
     }, [mountainsArr]);
 
@@ -79,7 +68,6 @@ const MainDesertMountainsComponent = () => {
         />
       </InstancedRigidBodies>
     );
-    // return <></>;
   }
 
   return (
