@@ -16,6 +16,8 @@ import AncientOrcController from "./AncientOrcController";
 import AncientOrcAnimationController from "./AncientOrcAnimationController";
 import CalculateAttackImpactHandler from "./CalculateAttackImpactHandler";
 import DynamicNPCHealthBar from "./DynamicNPCHealthBar";
+import RightHandWeapon from "./RightHandWeapon";
+
 interface IAncientOrcProps {
   position: {
     x: number;
@@ -37,8 +39,7 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
   const cloneModel = useMemo(() => scene.clone(), [scene]);
 
   const { nodes: clonedNodes } = useGraph(cloneModel);
-  const { scene: axeScene } = useGLTF("./models/SurvivalKit/tool-axe-upgraded.glb", true);
-  const cloneAxe = useMemo(() => axeScene.clone(), [axeScene]);
+
   const meshRef = useRef<THREE.Group>(null);
 
   console.log("Orc redraw");
@@ -83,19 +84,7 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
             dispose={null}
           ></primitive>
 
-          {createPortal(
-            <primitive
-              object={cloneAxe}
-              scale={4}
-              position={[-0.2, -1, 0]}
-              rotation-x={Math.PI / 2}
-              rotation-y={Math.PI / 2}
-              dispose={null}
-            >
-              {" "}
-            </primitive>,
-            clonedNodes["arm-right"],
-          )}
+          {createPortal(<RightHandWeapon></RightHandWeapon>, clonedNodes["arm-right"])}
           <CuboidCollider mass={2} position={[0, 0.7, 0]} args={[0.4, 0.7, 0.3]} />
           <DynamicNPCHealthBar id={id}></DynamicNPCHealthBar>
         </RigidBody>

@@ -28,8 +28,6 @@ const AttackPlayerHandler = () => {
 
   const { world } = useRapier();
 
-  console.log("redrew attack handler");
-
   function DrawLine() {
     if (!player) return;
 

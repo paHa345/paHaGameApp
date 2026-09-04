@@ -13,6 +13,8 @@ import * as THREE from "three";
 import GameMenu from "../GameMenu";
 import UpdateMouseCoordsAndCameraPosition from "../UpdateMouseCoordsAndCameraPosition";
 import PlayerAnimationsController from "./PlayerAnimationsController";
+import RightHandWeapon from "./RightHandWeapon";
+import LeftHandShield from "./LeftHandShield";
 
 const Player = () => {
   // const Scratches005Color = useTexture("./textures/Moss002/Moss002Color.jpg");
@@ -42,11 +44,6 @@ const Player = () => {
   for (const name in player.nodes) {
     player.nodes[name].castShadow = true;
   }
-
-  const { scene: axeScene } = useGLTF("./models/SurvivalKit/tool-axe-upgraded.glb", true);
-
-  const cloneAxe = useMemo(() => axeScene.clone(), [axeScene]);
-
   // const playerTexture = useTexture("./models/characters/2/texture-a.png");
   // playerTexture.flipY = false;
 
@@ -54,16 +51,7 @@ const Player = () => {
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.gamePauseStatus,
   );
 
-  // const currentAnimationName = useSelector(
-  //   (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.animationsName,
-  // );
-
-  // const animations = useAnimations(player.animations, player.scene);
   const dispatch = useDispatch<AppDispatch>();
-  // const blockCounts = useSelector(
-  //   (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.blocksCount,
-  // );
-
   const phase = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.phase,
   );
@@ -102,54 +90,6 @@ const Player = () => {
       true,
     );
   };
-
-  console.log("asdasd");
-
-  // useEffect(() => {
-  //   const subscribeMouseMove = (e: MouseEvent) => {
-  //     if (document.pointerLockElement && document) {
-  //       const mouseVector = {
-  //         x: (e.movementX / gl.domElement.height) * 2,
-  //         y: (e.movementY / gl.domElement.width) * 2,
-  //       };
-  //       dispatch(ReactThreeFiberGameActions.setMouseCoords(mouseVector));
-  //     }
-  //   };
-  //   document.addEventListener("mousemove", subscribeMouseMove);
-
-  //   return () => {
-  //     document.removeEventListener("mousemove", subscribeMouseMove);
-  //   };
-  // });
-
-  //   useEffect(() => {
-  //     body.current?.setAdditionalMass(500, true);
-  //   }, []);
-
-  /**
-   * Show/hide menu, lock pointer
-   */
-
-  //   const startGameButtonHandler = () => {
-  //     console.log("Start game");
-  //     threeState.gl.domElement.requestPointerLock();
-  //   };
-
-  /**
-   * Animations
-   */
-
-  // useEffect(() => {
-  //   const action = animations.actions[currentAnimationName];
-
-  //   if (animations.actions[currentAnimationName] !== null) {
-  //     animations.actions[currentAnimationName].play();
-  //     action?.reset().fadeIn(0.5).play();
-  //   }
-  //   return () => {
-  //     action?.fadeOut(0.5);
-  //   };
-  // }, [currentAnimationName]);
 
   useEffect(() => {
     if (phase === "ready") {
@@ -418,16 +358,8 @@ const Player = () => {
                 >
                   {/* <meshBasicMaterial map={playerTexture} /> */}
                 </primitive>
-                {createPortal(
-                  <primitive
-                    object={cloneAxe}
-                    scale={4}
-                    position={[-0.2, -1, 0]}
-                    rotation-x={Math.PI / 2}
-                    rotation-y={Math.PI / 2}
-                  ></primitive>,
-                  player.nodes["arm-right"],
-                )}
+                {createPortal(<RightHandWeapon></RightHandWeapon>, player.nodes["arm-right"])}
+                {createPortal(<LeftHandShield></LeftHandShield>, player.nodes["arm-left"])}
               </group>
             </CuboidCollider>
 
