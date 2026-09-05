@@ -9,31 +9,31 @@ const LeftHandShield = () => {
   console.log(model);
   const mesh = model.children[0].clone() as THREE.Mesh;
 
-  useEffect(() => {
-    if (!model || !model.children[0]) return;
+  // useEffect(() => {
+  //   if (!model || !model.children[0]) return;
 
-    // Очищаем старую геометрию
-    if (meshRef.current) {
-      meshRef.current.geometry.dispose();
-    }
+  //   // Очищаем старую геометрию
+  //   if (meshRef.current) {
+  //     meshRef.current.geometry.dispose();
+  //   }
 
-    const mesh = model.children[0].clone() as THREE.Mesh;
-    mesh.geometry = mesh.geometry.clone();
-    mesh.geometry.applyMatrix4(model.children[0].matrixWorld);
-    mesh.matrix.identity();
+  //   const mesh = model.children[0].clone() as THREE.Mesh;
+  //   mesh.geometry = mesh.geometry.clone();
+  //   mesh.geometry.applyMatrix4(model.children[0].matrixWorld);
+  //   mesh.matrix.identity();
 
-    meshRef.current = mesh;
-  }, [model]);
+  //   meshRef.current = mesh;
+  // }, [model]);
 
-  //   const clonedShield = useMemo(() => {
-  //     // Применяем матрицу трансформации к геометрии
-  //     mesh.geometry.applyMatrix4(model.children[0].matrixWorld);
-  //     return mesh;
-  //   }, [model]);
-  useEffect(() => {
-    // Применяем матрицу трансформации к геометрии
-    mesh.geometry.applyMatrix4(model.children[0].matrixWorld);
-  }, [model]);
+  // //   const clonedShield = useMemo(() => {
+  // //     // Применяем матрицу трансформации к геометрии
+  // //     mesh.geometry.applyMatrix4(model.children[0].matrixWorld);
+  // //     return mesh;
+  // //   }, [model]);
+  // useEffect(() => {
+  //   // Применяем матрицу трансформации к геометрии
+  //   mesh.geometry.applyMatrix4(model.children[0].matrixWorld);
+  // }, [model]);
 
   const material = new THREE.MeshStandardMaterial({
     map: colorMap,
@@ -42,6 +42,17 @@ const LeftHandShield = () => {
   return (
     <>
       <primitive
+        scale={0.00015}
+        position={[0.48, -1.2, 0.2]}
+        // rotation-x={-Math.PI / 2}
+        // rotation-y={Math.PI}
+        rotation-z={-Math.PI / 2 + 0.5}
+        dispose={null}
+        material={material}
+        object={mesh}
+      ></primitive>
+
+      {/* <primitive
         material={material}
         object={mesh}
         scale={1.6}
@@ -50,7 +61,7 @@ const LeftHandShield = () => {
         // rotation-y={Math.PI}
         rotation-z={Math.PI / 2 + 0.25}
         dispose={null}
-      ></primitive>
+      ></primitive> */}
     </>
   );
 };
