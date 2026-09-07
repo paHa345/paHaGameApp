@@ -63,6 +63,24 @@ export const NPCAttackHandler = createAsyncThunk(
   },
 );
 
+export const setStartBlockAction = createAsyncThunk(
+  "ReactThreeFiberGameState/setStartBlockAction",
+  async function (attackData: { id: string }, { rejectWithValue, dispatch, getState }) {
+    try {
+      const state = getState() as IReactThreeFiberGameSlice;
+      if (state.ReactThreeFiberGameState.playerBlockStatus) return;
+
+      dispatch(ReactThreeFiberGameActions.setPlayerBlockStatus(true));
+      dispatch(ReactThreeFiberGameActions.setPlayerStartBlock());
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      dispatch(ReactThreeFiberGameActions.setPlayerBlockStatus(false));
+      dispatch(ReactThreeFiberGameActions.setPlayerEndBlock());
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
 export interface IReactThreeFiberGameSlice {
   ReactThreeFiberGameState: {
     blocksCount: number;
@@ -84,6 +102,7 @@ export interface IReactThreeFiberGameSlice {
       baseHP: number;
       currentHP: number;
     };
+    playerBlockStatus: boolean;
 
     /**
      * Time
@@ -100,7 +119,13 @@ export interface IReactThreeFiberGameSlice {
     /**
      * Animations
      */
-    animationsName: "idle" | "walk" | "holding-both" | "attack-melee-right" | "holding-right-shoot";
+    animationsName:
+      | "idle"
+      | "walk"
+      | "holding-both"
+      | "attack-melee-right"
+      | "holding-right-shoot"
+      | "holding-left";
     rotatePlayerModel: number;
     canvasRef?: HTMLCanvasElement;
     canvasHeight: number;
@@ -159,11 +184,18 @@ interface IReactThreeFiberGameState {
     baseHP: number;
     currentHP: number;
   };
+  playerBlockStatus: boolean;
 
   startTime: number;
   endTime: number;
   phase: "ready" | "playing" | "ended";
-  animationsName: "idle" | "walk" | "holding-both" | "attack-melee-right" | "holding-right-shoot";
+  animationsName:
+    | "idle"
+    | "walk"
+    | "holding-both"
+    | "attack-melee-right"
+    | "holding-right-shoot"
+    | "holding-left";
   rotatePlayerModel: number;
   canvasRef?: HTMLCanvasElement;
   canvasHeight: number;
@@ -217,6 +249,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
     baseHP: 500,
     currentHP: 500,
   },
+  playerBlockStatus: false,
 
   startTime: 0,
   endTime: 0,
@@ -429,15 +462,21 @@ export const ReactThreeFiberGameSlice = createSlice({
         state.playerAttackStatus = false;
       }
     },
+    setPlayerStartBlock(state) {
+      state.animationsName = "holding-left";
+    },
+    setPlayerEndBlock(state) {
+      state.animationsName = "idle";
+    },
     setPlayerMove(state) {
       if (state.playerMoveStatus) return;
       state.playerMoveStatus = true;
-      if (!state.playerAttackStatus) {
+      if (!state.playerAttackStatus && !state.playerBlockStatus) {
         state.animationsName = "walk";
       }
     },
     setPlayerNotMove(state) {
-      if (!state.playerAttackStatus) {
+      if (!state.playerAttackStatus && !state.playerBlockStatus) {
         state.animationsName = "idle";
       }
 
@@ -488,6 +527,9 @@ export const ReactThreeFiberGameSlice = createSlice({
     },
     deleteNPCFromArr(state, action) {
       state.NPCArr = state.NPCArr.filter((NPC) => NPC.name !== action.payload.id);
+    },
+    setPlayerBlockStatus(state, action) {
+      state.playerBlockStatus = action.payload;
     },
   },
 });

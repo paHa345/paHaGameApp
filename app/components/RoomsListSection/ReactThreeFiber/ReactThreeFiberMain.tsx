@@ -13,6 +13,7 @@ import { AppDispatch } from "@/app/store";
 import {
   ReactThreeFiberGameActions,
   setStartAttackStatus,
+  setStartBlockAction,
 } from "@/app/store/ReactThreeFiberGameSlice";
 import PreloadModelsComponent from "./PreloadModelsComponent";
 import PlayerHealthPanel from "./Player/PlayerHealthPanel";
@@ -50,9 +51,15 @@ const ReactThreeFiberMain = () => {
 
   const canvasClickHandler = (e: React.PointerEvent) => {
     e.preventDefault();
-
     // dispatch(ReactThreeFiberGameActions.setPlayerStartAttack());
-    dispatch(setStartAttackStatus({ page: 1, gameType: "werwer" }));
+    //левый клик
+    if (e.button === 0) {
+      dispatch(setStartAttackStatus({ page: 1, gameType: "werwer" }));
+    }
+    //правый клик
+    if (e.button === 2) {
+      dispatch(setStartBlockAction({ id: "player" }));
+    }
   };
 
   return (
@@ -71,6 +78,9 @@ const ReactThreeFiberMain = () => {
           ]}
         >
           <Canvas
+            gl={{
+              toneMapping: THREE.NoToneMapping, // Отключаем тонирование
+            }}
             onPointerDown={canvasClickHandler}
             ref={canvasRef}
             className=" touch-none"

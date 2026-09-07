@@ -1,14 +1,16 @@
-import { useFBX, useTexture } from "@react-three/drei";
+import { IReactThreeFiberGameSlice } from "@/app/store/ReactThreeFiberGameSlice";
+import { useFBX, useGLTF, useTexture } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef } from "react";
+import { useSelector } from "react-redux";
 import * as THREE from "three";
 
 const LeftHandShield = () => {
-  const model = useFBX("./models/Shields/shield_20.fbx");
-  const [colorMap] = useTexture(["./models/Shields/Texture_MAp_shields.png"]);
+  const model = useGLTF("./models/Shields/shield_13.glb");
   const meshRef = useRef<THREE.Mesh>(null);
-  console.log(model);
-  const mesh = model.children[0].clone() as THREE.Mesh;
+  const currentRotation = useRef(0);
 
+  //   const mesh = model.children[0].clone() as THREE.Mesh;
   // useEffect(() => {
   //   if (!model || !model.children[0]) return;
 
@@ -35,33 +37,51 @@ const LeftHandShield = () => {
   //   mesh.geometry.applyMatrix4(model.children[0].matrixWorld);
   // }, [model]);
 
-  const material = new THREE.MeshStandardMaterial({
-    map: colorMap,
+  //   model.traverse((child: any) => {
+  //     if (child.isMesh) {
+  //       // Заменяем стандартный материал на более продвинутый
+  //       const oldMat = child.material;
+  //       child.material = new THREE.MeshStandardMaterial({
+  //         map: colorMap,
+  //         color: oldMat.color,
+  //         roughness: 0.5,
+  //         metalness: 0.1,
+  //       });
+  //       child.material.needsUpdate = true;
+  //     }
+  //   });
+
+  //   const material = new THREE.MeshStandardMaterial({
+  //     map: colorMap,
+  //   });
+
+  const blockStatus = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerBlockStatus,
+  );
+
+  useFrame(() => {
+    if (meshRef.current && blockStatus) {
+      currentRotation.current -= (Math.PI * 2 - Math.PI / 3 + currentRotation.current) * 0.1;
+      meshRef.current.rotation.x = currentRotation.current;
+    }
+    if (meshRef.current && !blockStatus) {
+      currentRotation.current -= (currentRotation.current + Math.PI * 2) * 0.1;
+      meshRef.current.rotation.x = currentRotation.current;
+    }
   });
 
   return (
     <>
       <primitive
-        scale={0.00015}
-        position={[0.48, -1.2, 0.2]}
-        // rotation-x={-Math.PI / 2}
-        // rotation-y={Math.PI}
-        rotation-z={-Math.PI / 2 + 0.5}
+        ref={meshRef}
+        scale={1}
+        position={[0.48, `${blockStatus ? -1.05 : -1.2}`, `${blockStatus ? 0 : 0.2}`]}
+        // rotation-x={`${blockStatus ? Math.PI / 4 : Math.PI * 2}`}
+        rotation-y={Math.PI / 6}
+        rotation-z={-Math.PI * 2}
         dispose={null}
-        material={material}
-        object={mesh}
+        object={model.scene}
       ></primitive>
-
-      {/* <primitive
-        material={material}
-        object={mesh}
-        scale={1.6}
-        position={[0.48, -1.1, 0]}
-        rotation-x={-Math.PI / 2}
-        // rotation-y={Math.PI}
-        rotation-z={Math.PI / 2 + 0.25}
-        dispose={null}
-      ></primitive> */}
     </>
   );
 };

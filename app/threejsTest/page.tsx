@@ -12,6 +12,10 @@ const page = () => {
     "./models/Houses/house_15_1.fbx",
     "./models/Shields/shield_20.fbx",
     "./models/Shields/shield_1.fbx",
+    "./models/Swords/sword_19.fbx",
+    "./models/Swords/sword_1.fbx",
+    "./models/Swords/sword_24.fbx",
+    "./models/Swords/sword_23.fbx",
   ];
 
   useGLTF.preload([
@@ -24,6 +28,7 @@ const page = () => {
     "./models/SurvivalKit/tool-axe-upgraded.glb",
     "./models/PlatformerKit/block-grass-large-slope-narrow.glb",
     "./models/PlatformerKit/barrel.glb",
+    "./models/Shields/shield_13.glb",
   ]),
     modelPaths.forEach((path) => useFBX.preload(path));
 

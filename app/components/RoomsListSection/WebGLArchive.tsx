@@ -8630,7 +8630,7 @@
 //        * Textures
 //        */
 
-//       const bakesTexture = textureLoader.load("baked.jpg");
+//   const bakesTexture = textureLoader.load("baked.jpg");
 //       bakesTexture.flipY = false;
 //       bakesTexture.colorSpace = THREE.SRGBColorSpace;
 
