@@ -1,5 +1,6 @@
 import {
   IReactThreeFiberGameSlice,
+  NPCAttackImpact,
   ReactThreeFiberGameActions,
 } from "@/app/store/ReactThreeFiberGameSlice";
 import { RapierRigidBody } from "@react-three/rapier";
@@ -89,9 +90,21 @@ const CalculateAttackImpactHandler = ({ id, currentTarget }: ICalculateAttack) =
             .sub(new THREE.Vector3(NPCPos.x, NPCPos.y - 0.5, NPCPos.z))
             .normalize();
           // Направляем импульс по данному вектору, который отталкивает игрока
-          playerBodyRef?.setLinvel(direction.multiplyScalar(8), true);
           // вычитаем из HP игрока урон
-          dispatch(ReactThreeFiberGameActions.setCurrentPlayerReduceHP(50));
+          const calculateAttackRes = async () => {
+            const attackRes = (await dispatch(NPCAttackImpact({ id: id }))).payload as {
+              attackInBlock: boolean;
+            };
+            console.log(attackRes.attackInBlock);
+
+            if (attackRes.attackInBlock) {
+              playerBodyRef?.setLinvel(direction.multiplyScalar(2), true);
+            } else {
+              playerBodyRef?.setLinvel(direction.multiplyScalar(8), true);
+            }
+          };
+          calculateAttackRes();
+          // dispatch(ReactThreeFiberGameActions.setCurrentPlayerReduceHP(50));
         }
       }
     }

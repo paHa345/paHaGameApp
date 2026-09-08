@@ -4,6 +4,7 @@ import * as THREE from "three";
 import { conditionPatternStatus } from "../types";
 import { useRapier, vec3 } from "@react-three/rapier";
 import * as rapier from "@dimforge/rapier3d-compat";
+import { RootState } from "@react-three/fiber";
 
 export const setStartAttackStatus = createAsyncThunk(
   "ReactThreeFiberGameState/setStartAttackStatus",
@@ -57,6 +58,24 @@ export const NPCAttackHandler = createAsyncThunk(
           animationName: "walk",
         }),
       );
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const NPCAttackImpact = createAsyncThunk(
+  "ReactThreeFiberGameState/NPCAttackImpact",
+  async function (attackData: { id: string }, { rejectWithValue, dispatch, getState }) {
+    try {
+      const state = getState() as IReactThreeFiberGameSlice;
+
+      if (!state.ReactThreeFiberGameState.playerBlockStatus) {
+        dispatch(ReactThreeFiberGameActions.setCurrentPlayerReduceHP(50));
+        return { attackInBlock: false };
+      } else {
+        return { attackInBlock: true };
+      }
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -342,7 +361,11 @@ export const ReactThreeFiberGameSlice = createSlice({
       }
     },
     setWalkAnimation(state) {
-      if (state.animationsName !== "walk" && !state.playerAttackStatus) {
+      if (
+        state.animationsName !== "walk" &&
+        !state.playerAttackStatus &&
+        !state.playerBlockStatus
+      ) {
         state.animationsName = "walk";
       }
     },
@@ -508,15 +531,17 @@ export const ReactThreeFiberGameSlice = createSlice({
     },
 
     setCurrentPlayerReduceHP(state, action) {
+      if (state.playerBlockStatus) {
+        console.log(`Block NPC attack ${Date.now()}`);
+      }
       state.playerStat.currentHP = state.playerStat.currentHP - action.payload;
     },
+
     setNPCReduceHP(state, action) {
       const NPCHP = state.enemyNPCStat[action.payload.id].currentHP;
       if (NPCHP) {
         state.enemyNPCStat[action.payload.id].currentHP = NPCHP - action.payload.damage;
-
         const NPCHPAfterReduce = state.enemyNPCStat[action.payload.id].currentHP;
-        console.log(NPCHPAfterReduce);
         if (NPCHPAfterReduce === undefined) return;
         if (NPCHPAfterReduce <= 0) {
           console.log("Delete orc");

@@ -75,7 +75,11 @@ const LeftHandShield = () => {
       <primitive
         ref={meshRef}
         scale={1}
-        position={[0.48, `${blockStatus ? -1.05 : -1.2}`, `${blockStatus ? 0 : 0.2}`]}
+        position={[
+          `${blockStatus ? 0.2 : 0.48}`,
+          `${blockStatus ? -1.05 : -1.2}`,
+          `${blockStatus ? 0 : 0.2}`,
+        ]}
         // rotation-x={`${blockStatus ? Math.PI / 4 : Math.PI * 2}`}
         rotation-y={Math.PI / 6}
         rotation-z={-Math.PI * 2}
