@@ -74,6 +74,14 @@ export const NPCAttackImpact = createAsyncThunk(
         dispatch(ReactThreeFiberGameActions.setCurrentPlayerReduceHP(50));
         return { attackInBlock: false };
       } else {
+        const position = state.ReactThreeFiberGameState.playerBodyRef?.translation();
+        if (!position) return;
+        dispatch(
+          createAndControlSparks({
+            id: String(Date.now() + attackData.id),
+            position: [position?.x, position?.y, position?.z],
+          }),
+        );
         return { attackInBlock: true };
       }
     } catch (error: any) {
@@ -95,6 +103,30 @@ export const setStartBlockAction = createAsyncThunk(
       await new Promise((resolve) => setTimeout(resolve, 500));
       dispatch(ReactThreeFiberGameActions.setPlayerBlockStatus(false));
       dispatch(ReactThreeFiberGameActions.setPlayerEndBlock());
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const createAndControlSparks = createAsyncThunk(
+  "ReactThreeFiberGameState/createAndControlSparks",
+  async function (
+    sparkElData: { id: string; position: [number, number, number] },
+    { rejectWithValue, dispatch, getState },
+  ) {
+    try {
+      const state = getState() as IReactThreeFiberGameSlice;
+      dispatch(
+        ReactThreeFiberGameActions.createSparkEffectEl({
+          id: sparkElData.id,
+          position: sparkElData.position,
+        }),
+      );
+
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      dispatch(ReactThreeFiberGameActions.deleteSparkEffectEl({ id: sparkElData.id }));
+      return state.ReactThreeFiberGameState.effects.sparks;
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -184,6 +216,17 @@ export interface IReactThreeFiberGameSlice {
       };
     };
     zombieWalkStatus: boolean;
+    /**
+     * Effects
+     */
+    effects: {
+      sparks: {
+        [id: string]: {
+          id: string;
+          position: [number, number, number];
+        };
+      };
+    };
   };
 }
 
@@ -252,6 +295,15 @@ interface IReactThreeFiberGameState {
   };
 
   zombieWalkStatus: boolean;
+
+  effects: {
+    sparks: {
+      [id: string]: {
+        id: string;
+        position: [number, number, number];
+      };
+    };
+  };
 }
 
 const initReactThreeFiberGameState: IReactThreeFiberGameState = {
@@ -323,6 +375,9 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
   enemyNPCStat: {},
 
   zombieWalkStatus: false,
+  effects: {
+    sparks: {},
+  },
 };
 
 export const ReactThreeFiberGameSlice = createSlice({
@@ -546,7 +601,6 @@ export const ReactThreeFiberGameSlice = createSlice({
         if (NPCHPAfterReduce <= 0) {
           console.log("Delete orc");
           state.NPCArr = state.NPCArr.filter((NPC) => NPC.name !== action.payload.id);
-          console.log(state.NPCArr.length);
         }
       }
     },
@@ -555,6 +609,23 @@ export const ReactThreeFiberGameSlice = createSlice({
     },
     setPlayerBlockStatus(state, action) {
       state.playerBlockStatus = action.payload;
+    },
+    createSparkEffectEl(
+      state,
+      action: {
+        payload: { id: string; position: [number, number, number] };
+        type: string;
+      },
+    ) {
+      if (state.effects.sparks[action.payload.id]) return;
+      state.effects.sparks[action.payload.id] = {
+        id: action.payload.id,
+        position: action.payload.position,
+      };
+    },
+    deleteSparkEffectEl(state, action) {
+      if (!state.effects.sparks[action.payload.id]) return;
+      delete state.effects.sparks[action.payload.id];
     },
   },
 });

@@ -25,6 +25,7 @@ import NPCMain from "./NPCMain";
 import MainDesertMountainsComponent from "./MainDesertMountainsComponent";
 import Platforms from "./Platforms";
 import Houses from "./Houses";
+import SparksMain from "../Effects/Sparks/SparksMain";
 
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 
@@ -378,6 +379,7 @@ const ForestLevel = () => {
       <NPCMain></NPCMain>
       <MainDesertMountainsComponent></MainDesertMountainsComponent>
       <Houses></Houses>
+      <SparksMain></SparksMain>
     </>
   );
 };
