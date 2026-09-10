@@ -11,6 +11,7 @@ import { useRapier, vec3 } from "@react-three/rapier";
 
 import * as rapier from "@dimforge/rapier3d-compat";
 import { AppDispatch } from "@/app/store";
+import { useThree } from "@react-three/fiber";
 
 interface ICalculateAttack {
   id: string;
@@ -20,6 +21,7 @@ interface ICalculateAttack {
 const CalculateAttackImpactHandler = ({ id, currentTarget }: ICalculateAttack) => {
   const dispatch = useDispatch<AppDispatch>();
   const { world } = useRapier();
+  const threeData = useThree();
 
   const enemyHitStatus = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.enemyNPCData[id].hitStatus,
@@ -92,7 +94,9 @@ const CalculateAttackImpactHandler = ({ id, currentTarget }: ICalculateAttack) =
           // Направляем импульс по данному вектору, который отталкивает игрока
           // вычитаем из HP игрока урон
           const calculateAttackRes = async () => {
-            const attackRes = (await dispatch(NPCAttackImpact({ id: id }))).payload as {
+            const attackRes = (
+              await dispatch(NPCAttackImpact({ id: id, timestamp: threeData.clock.elapsedTime }))
+            ).payload as {
               attackInBlock: boolean;
             };
             console.log(attackRes.attackInBlock);

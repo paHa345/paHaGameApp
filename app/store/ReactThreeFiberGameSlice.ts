@@ -66,7 +66,10 @@ export const NPCAttackHandler = createAsyncThunk(
 
 export const NPCAttackImpact = createAsyncThunk(
   "ReactThreeFiberGameState/NPCAttackImpact",
-  async function (attackData: { id: string }, { rejectWithValue, dispatch, getState }) {
+  async function (
+    attackData: { id: string; timestamp: number },
+    { rejectWithValue, dispatch, getState },
+  ) {
     try {
       const state = getState() as IReactThreeFiberGameSlice;
 
@@ -79,6 +82,7 @@ export const NPCAttackImpact = createAsyncThunk(
         dispatch(
           createAndControlSparks({
             id: String(Date.now() + attackData.id),
+            timestamp: attackData.timestamp,
             position: [position?.x, position?.y, position?.z],
           }),
         );
@@ -112,7 +116,7 @@ export const setStartBlockAction = createAsyncThunk(
 export const createAndControlSparks = createAsyncThunk(
   "ReactThreeFiberGameState/createAndControlSparks",
   async function (
-    sparkElData: { id: string; position: [number, number, number] },
+    sparkElData: { id: string; position: [number, number, number]; timestamp: number },
     { rejectWithValue, dispatch, getState },
   ) {
     try {
@@ -120,6 +124,7 @@ export const createAndControlSparks = createAsyncThunk(
       dispatch(
         ReactThreeFiberGameActions.createSparkEffectEl({
           id: sparkElData.id,
+          timestamp: sparkElData.timestamp,
           position: sparkElData.position,
         }),
       );
@@ -223,6 +228,7 @@ export interface IReactThreeFiberGameSlice {
       sparks: {
         [id: string]: {
           id: string;
+          timestamp: number;
           position: [number, number, number];
         };
       };
@@ -300,6 +306,8 @@ interface IReactThreeFiberGameState {
     sparks: {
       [id: string]: {
         id: string;
+        timestamp: number;
+
         position: [number, number, number];
       };
     };
@@ -491,12 +499,23 @@ export const ReactThreeFiberGameSlice = createSlice({
       }
       state.enemyNPCRefs[action.payload.id].enemyBodyRef = action.payload.enemyBodyRef;
     },
-    setNPCStat(state, action) {
+    setNPCStat(
+      state,
+      action: {
+        payload: { id: string; baseHP: number; currentHP: number };
+        type: string;
+      },
+    ) {
       if (!state.enemyNPCStat[action.payload.id]) {
         state.enemyNPCStat[action.payload.id] = {};
       }
-      state.enemyNPCStat[action.payload.id].baseHP = action.payload.baseHP;
-      state.enemyNPCStat[action.payload.id].currentHP = action.payload.currentHP;
+      state.enemyNPCStat[action.payload.id].baseHP = state.enemyNPCStat[action.payload.id].baseHP
+        ? state.enemyNPCStat[action.payload.id].baseHP
+        : action.payload.baseHP;
+      state.enemyNPCStat[action.payload.id].currentHP = state.enemyNPCStat[action.payload.id]
+        .currentHP
+        ? state.enemyNPCStat[action.payload.id].currentHP
+        : action.payload.currentHP;
     },
     setCurrentEnemyConditionStatus(state, action) {
       state.enemyNPCData[action.payload.id].conditionPatternStatus =
@@ -600,7 +619,13 @@ export const ReactThreeFiberGameSlice = createSlice({
         if (NPCHPAfterReduce === undefined) return;
         if (NPCHPAfterReduce <= 0) {
           console.log("Delete orc");
+          //delete npc from position arr
           state.NPCArr = state.NPCArr.filter((NPC) => NPC.name !== action.payload.id);
+          //delete npc stat
+          delete state.enemyNPCStat[action.payload.id];
+          //delete npc ref
+
+          delete state.enemyNPCRefs[action.payload.id];
         }
       }
     },
@@ -613,13 +638,14 @@ export const ReactThreeFiberGameSlice = createSlice({
     createSparkEffectEl(
       state,
       action: {
-        payload: { id: string; position: [number, number, number] };
+        payload: { id: string; position: [number, number, number]; timestamp: number };
         type: string;
       },
     ) {
       if (state.effects.sparks[action.payload.id]) return;
       state.effects.sparks[action.payload.id] = {
         id: action.payload.id,
+        timestamp: action.payload.timestamp,
         position: action.payload.position,
       };
     },

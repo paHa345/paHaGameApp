@@ -16,7 +16,7 @@ const DynamicNPCHealthBar = ({ id }: IDynamicNPCHealthBar) => {
       state.ReactThreeFiberGameState.enemyNPCStat[id]?.currentHP,
   );
   const baseHP = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.enemyNPCStat[id].baseHP,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.enemyNPCStat[id]?.baseHP,
   );
 
   const canvas = document.createElement("canvas");

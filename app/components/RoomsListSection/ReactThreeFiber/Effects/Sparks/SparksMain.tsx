@@ -9,7 +9,14 @@ const SparksMain = () => {
   );
 
   const sparksEls = Object.entries(sparksEffects).map((el) => {
-    return <Spark key={el[1].id} id={el[1].id} position={el[1].position}></Spark>;
+    return (
+      <Spark
+        key={el[1].id}
+        id={el[1].id}
+        timestamp={el[1].timestamp}
+        position={el[1].position}
+      ></Spark>
+    );
   });
 
   return <>{sparksEls}</>;

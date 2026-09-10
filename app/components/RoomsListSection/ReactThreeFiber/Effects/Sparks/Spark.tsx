@@ -1,14 +1,19 @@
 import React, { useMemo, useRef } from "react";
 
 import * as THREE from "three";
-import { BufferAttribute } from "three";
+import sparksFragmentShader from "./../../shaders/SparksShader/fragment.glsl";
+import sparksVertexShader from "./../../shaders/SparksShader/vertex.glsl";
+import { useFrame } from "@react-three/fiber";
 
 interface ISparkProps {
   id: string;
   position: [number, number, number];
+  timestamp: number;
 }
 
-const Spark = ({ id, position }: ISparkProps) => {
+const Spark = ({ id, position, timestamp }: ISparkProps) => {
+  //   const materialRef = useRef<THREE.ShaderMaterial>(null);
+
   const pointRef = useRef(null);
   const particlesCount = 50;
 
@@ -18,18 +23,40 @@ const Spark = ({ id, position }: ISparkProps) => {
     const sizes = new Float32Array(particlesCount);
 
     for (let i = 0; i < particlesCount; i++) {
-      positions[i * 3 + 0] = (Math.random() - 0.5) * 3;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 3;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 3;
+      positions[i * 3 + 0] = (Math.random() - 0.5) * 2;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 2;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 2;
       colors[i * 3 + 0] = 0.88 + (Math.random() - 0.5 / 5);
       colors[i * 3 + 1] = 0.54 + (Math.random() - 0.5 / 5);
       colors[i * 3 + 2] = 0.03 + (Math.random() - 0.5 / 5);
 
-      sizes[i] = 0.01;
+      sizes[i] = Math.random();
     }
 
     return { positions, colors, sizes };
   }, []);
+
+  const materialRef = useRef<THREE.ShaderMaterial>(
+    new THREE.ShaderMaterial({
+      uniforms: {
+        uScale: { value: 1 },
+        uTime: { value: 0 },
+      },
+      vertexShader: sparksVertexShader,
+      fragmentShader: sparksFragmentShader,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      vertexColors: true,
+    }),
+  );
+
+  useFrame((state) => {
+    console.log(timestamp);
+    if (materialRef.current) {
+      materialRef.current.uniforms.uTime.value = state.clock.elapsedTime - timestamp;
+    }
+  });
 
   return (
     <>
@@ -46,10 +73,10 @@ const Spark = ({ id, position }: ISparkProps) => {
             count={particlesCount}
           />
           <bufferAttribute args={[colors, 3]} attach="attributes-color" count={particlesCount} />
-          {/* <bufferAttribute args={[sizes, 1]} attach="attributes-size" count={particlesCount} /> */}
+          <bufferAttribute args={[sizes, 1]} attach="attributes-size" count={particlesCount} />
         </bufferGeometry>
 
-        <pointsMaterial
+        {/* <pointsMaterial
           size={0.04}
           vertexColors
           transparent
@@ -57,7 +84,8 @@ const Spark = ({ id, position }: ISparkProps) => {
           sizeAttenuation
           blending={THREE.AdditiveBlending}
           depthWrite={false}
-        />
+        /> */}
+        <primitive object={materialRef.current} attach="material"></primitive>
       </points>
 
       {/* <mesh position-z={-5} scale={10}>
