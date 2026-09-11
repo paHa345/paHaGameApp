@@ -24,7 +24,8 @@ const CalculateAttackImpactHandler = ({ id, currentTarget }: ICalculateAttack) =
   const threeData = useThree();
 
   const enemyHitStatus = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.enemyNPCData[id].hitStatus,
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.enemyNPCData[id]?.hitStatus,
   );
 
   const playerBodyRef = useSelector(
@@ -94,8 +95,49 @@ const CalculateAttackImpactHandler = ({ id, currentTarget }: ICalculateAttack) =
           // Направляем импульс по данному вектору, который отталкивает игрока
           // вычитаем из HP игрока урон
           const calculateAttackRes = async () => {
+            // const position = state.ReactThreeFiberGameState.playerBodyRef?.translation();
+            // const pos = new THREE.Vector3(position?.x, position?.y, position?.z);
+
+            // const rotation = state.ReactThreeFiberGameState.playerBodyRef?.rotation();
+            // const quat = new THREE.Quaternion(rotation?.x, rotation?.y, rotation?.z, rotation?.w);
+            // const offset = new THREE.Vector3(0, 0.5, -0.5);
+            // if (!position) return;
+            // if (!rotation) return;
+
+            // // тут угол поворота на 180 градусов по горизонтали
+            // const deltaQuat = new THREE.Quaternion().setFromAxisAngle(
+            //   new THREE.Vector3(0, 1, 0),
+            //   Math.PI,
+            // );
+            // // offset.applyQuaternion(deltaQuat);
+            // quat.multiply(deltaQuat);
+            // offset.applyQuaternion(quat);
+            // console.log(state.ReactThreeFiberGameState.playerMesh?.position);
+
+            // // const targetPos = pos.clone().add(offset);
+            // if (!state.ReactThreeFiberGameState.playerMesh?.matrixWorld) return;
+            // state.ReactThreeFiberGameState.playerMesh?.updateMatrixWorld();
+
+            // const targetPos = offset
+            //   .clone()
+            //   .applyMatrix4(state.ReactThreeFiberGameState.playerMesh?.matrixWorld);
+
+            const playerCoords = playerBodyRef?.translation();
+            if (!playerCoords) return;
+            const coords = new THREE.Vector3(
+              playerBodyRef?.translation().x,
+              playerBodyRef?.translation().y,
+              playerBodyRef?.translation().z,
+            );
+
             const attackRes = (
-              await dispatch(NPCAttackImpact({ id: id, timestamp: threeData.clock.elapsedTime }))
+              await dispatch(
+                NPCAttackImpact({
+                  id: id,
+                  timestamp: threeData.clock.elapsedTime,
+                  targetPos: coords,
+                }),
+              )
             ).payload as {
               attackInBlock: boolean;
             };

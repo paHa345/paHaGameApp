@@ -67,7 +67,7 @@ export const NPCAttackHandler = createAsyncThunk(
 export const NPCAttackImpact = createAsyncThunk(
   "ReactThreeFiberGameState/NPCAttackImpact",
   async function (
-    attackData: { id: string; timestamp: number },
+    attackData: { id: string; timestamp: number; targetPos: THREE.Vector3 },
     { rejectWithValue, dispatch, getState },
   ) {
     try {
@@ -77,18 +77,17 @@ export const NPCAttackImpact = createAsyncThunk(
         dispatch(ReactThreeFiberGameActions.setCurrentPlayerReduceHP(50));
         return { attackInBlock: false };
       } else {
-        const position = state.ReactThreeFiberGameState.playerBodyRef?.translation();
-        if (!position) return;
         dispatch(
           createAndControlSparks({
             id: String(Date.now() + attackData.id),
             timestamp: attackData.timestamp,
-            position: [position?.x, position?.y, position?.z],
+            position: [attackData.targetPos?.x, attackData.targetPos?.y, attackData.targetPos?.z],
           }),
         );
         return { attackInBlock: true };
       }
     } catch (error: any) {
+      console.log(error);
       return rejectWithValue(error.message);
     }
   },
@@ -152,6 +151,7 @@ export interface IReactThreeFiberGameSlice {
      */
 
     playerBodyRef?: RapierRigidBody | null;
+    playerMesh?: THREE.Mesh;
     playerAttackStatus: boolean;
     playerMoveStatus: boolean;
     playerStat: {
@@ -246,6 +246,8 @@ interface IReactThreeFiberGameState {
   mouseCoords: { x: number; y: number };
 
   playerBodyRef?: RapierRigidBody | null;
+  playerMesh?: THREE.Mesh;
+
   playerAttackStatus: boolean;
   playerMoveStatus: boolean;
   playerStat: {
@@ -539,6 +541,9 @@ export const ReactThreeFiberGameSlice = createSlice({
 
     setPlayerBodyRef(state, action) {
       state.playerBodyRef = action.payload;
+    },
+    setPlayerMeshRef(state, action) {
+      state.playerMesh = action.payload;
     },
     setCameraRotationStatus(state) {
       if (state.cameraRotationStatus) {

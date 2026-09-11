@@ -64,6 +64,13 @@ const Player = () => {
     }
   }, [body.current]);
 
+  useEffect(() => {
+    if (userMain.current !== null) {
+      console.log(userMain.current);
+      dispatch(ReactThreeFiberGameActions.setPlayerMeshRef(userMain.current));
+    }
+  }, [userMain.current]);
+
   const reset = () => {
     body.current?.setTranslation(
       {

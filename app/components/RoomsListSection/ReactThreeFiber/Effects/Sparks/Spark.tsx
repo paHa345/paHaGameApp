@@ -52,7 +52,6 @@ const Spark = ({ id, position, timestamp }: ISparkProps) => {
   );
 
   useFrame((state) => {
-    console.log(timestamp);
     if (materialRef.current) {
       materialRef.current.uniforms.uTime.value = state.clock.elapsedTime - timestamp;
     }
@@ -65,7 +64,7 @@ const Spark = ({ id, position, timestamp }: ISparkProps) => {
         <meshBasicMaterial color={"red"}></meshBasicMaterial>
       </mesh> */}
 
-      <points position={[position[0], position[1], position[2]]} ref={pointRef}>
+      <points position={[position[0], position[1] + 0.5, position[2] + 0.5]} ref={pointRef}>
         <bufferGeometry>
           <bufferAttribute
             args={[positions, 3]}

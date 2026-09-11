@@ -28,11 +28,11 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
 
   const currentObjConditionPatternStatus = useSelector(
     (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.enemyNPCData[id].conditionPatternStatus,
+      state.ReactThreeFiberGameState.enemyNPCData[id]?.conditionPatternStatus,
   );
   const currentObjAttackStatus = useSelector(
     (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.enemyNPCData[id].attackStatus,
+      state.ReactThreeFiberGameState.enemyNPCData[id]?.attackStatus,
   );
 
   const currentQuat = new THREE.Quaternion();

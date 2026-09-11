@@ -20,14 +20,14 @@ const AncientOrcAnimationController = ({
 
   const animationName = useSelector(
     (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.enemyNPCData[id].currentAnimationName,
+      state.ReactThreeFiberGameState.enemyNPCData[id]?.currentAnimationName,
   );
 
   useEffect(() => {
     const action = actions[animationName];
 
     if (action !== null) {
-      action.play();
+      action?.play();
 
       //   if (animationName === "holding-right-shoot") {
       //     action.timeScale = 0.5;
