@@ -28,24 +28,44 @@ export const setStartAttackStatus = createAsyncThunk(
 
 export const NPCAttackHandler = createAsyncThunk(
   "ReactThreeFiberGameState/NPCAttackHandler",
-  async function (attackData: { id: string }, { rejectWithValue, dispatch, getState }) {
+  async function (
+    attackData: { id: string },
+    { rejectWithValue, dispatch, getState },
+  ) {
     try {
       const state = getState() as IReactThreeFiberGameSlice;
-      if (state.ReactThreeFiberGameState.enemyNPCData[attackData.id].attackStatus) return;
+      if (
+        state.ReactThreeFiberGameState.enemyNPCData[attackData.id].attackStatus
+      )
+        return;
 
       // Устанавливаем статус на атаку
-      dispatch(ReactThreeFiberGameActions.setNPCStartAttackPatternStatus({ id: attackData.id }));
+      dispatch(
+        ReactThreeFiberGameActions.setNPCStartAttackPatternStatus({
+          id: attackData.id,
+        }),
+      );
 
-      dispatch(ReactThreeFiberGameActions.setNPCWeaponSwing({ id: attackData.id }));
+      dispatch(
+        ReactThreeFiberGameActions.setNPCWeaponSwing({ id: attackData.id }),
+      );
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      dispatch(ReactThreeFiberGameActions.setNPCStartHitAttack({ id: attackData.id }));
+      dispatch(
+        ReactThreeFiberGameActions.setNPCStartHitAttack({ id: attackData.id }),
+      );
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       // Атака закончилась, устанавливаем статус на "агрессивный"
-      dispatch(ReactThreeFiberGameActions.setNPCFinishHitAttack({ id: attackData.id }));
+      dispatch(
+        ReactThreeFiberGameActions.setNPCFinishHitAttack({ id: attackData.id }),
+      );
 
-      dispatch(ReactThreeFiberGameActions.setNPCFinishAttackPatternStatus({ id: attackData.id }));
+      dispatch(
+        ReactThreeFiberGameActions.setNPCFinishAttackPatternStatus({
+          id: attackData.id,
+        }),
+      );
       dispatch(
         ReactThreeFiberGameActions.setCurrentEnemyConditionStatus({
           id: attackData.id,
@@ -67,7 +87,12 @@ export const NPCAttackHandler = createAsyncThunk(
 export const NPCAttackImpact = createAsyncThunk(
   "ReactThreeFiberGameState/NPCAttackImpact",
   async function (
-    attackData: { id: string; timestamp: number; targetPos: THREE.Vector3 },
+    attackData: {
+      playerID: string;
+      id: string;
+      timestamp: number;
+      targetPos: THREE.Vector3;
+    },
     { rejectWithValue, dispatch, getState },
   ) {
     try {
@@ -79,9 +104,14 @@ export const NPCAttackImpact = createAsyncThunk(
       } else {
         dispatch(
           createAndControlSparks({
+            playerID: attackData.playerID,
             id: String(Date.now() + attackData.id),
             timestamp: attackData.timestamp,
-            position: [attackData.targetPos?.x, attackData.targetPos?.y, attackData.targetPos?.z],
+            position: [
+              attackData.targetPos?.x,
+              attackData.targetPos?.y,
+              attackData.targetPos?.z,
+            ],
           }),
         );
         return { attackInBlock: true };
@@ -95,7 +125,10 @@ export const NPCAttackImpact = createAsyncThunk(
 
 export const setStartBlockAction = createAsyncThunk(
   "ReactThreeFiberGameState/setStartBlockAction",
-  async function (attackData: { id: string }, { rejectWithValue, dispatch, getState }) {
+  async function (
+    attackData: { id: string },
+    { rejectWithValue, dispatch, getState },
+  ) {
     try {
       const state = getState() as IReactThreeFiberGameSlice;
       if (state.ReactThreeFiberGameState.playerBlockStatus) return;
@@ -115,13 +148,20 @@ export const setStartBlockAction = createAsyncThunk(
 export const createAndControlSparks = createAsyncThunk(
   "ReactThreeFiberGameState/createAndControlSparks",
   async function (
-    sparkElData: { id: string; position: [number, number, number]; timestamp: number },
+    sparkElData: {
+      playerID: string;
+      id: string;
+      position: [number, number, number];
+      timestamp: number;
+    },
     { rejectWithValue, dispatch, getState },
   ) {
     try {
       const state = getState() as IReactThreeFiberGameSlice;
       dispatch(
         ReactThreeFiberGameActions.createSparkEffectEl({
+          playerID: sparkElData.playerID,
+
           id: sparkElData.id,
           timestamp: sparkElData.timestamp,
           position: sparkElData.position,
@@ -129,7 +169,12 @@ export const createAndControlSparks = createAsyncThunk(
       );
 
       await new Promise((resolve) => setTimeout(resolve, 5000));
-      dispatch(ReactThreeFiberGameActions.deleteSparkEffectEl({ id: sparkElData.id }));
+      dispatch(
+        ReactThreeFiberGameActions.deleteSparkEffectEl({
+          playerID: sparkElData.playerID,
+          id: sparkElData.id,
+        }),
+      );
       return state.ReactThreeFiberGameState.effects.sparks;
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -226,10 +271,12 @@ export interface IReactThreeFiberGameSlice {
      */
     effects: {
       sparks: {
-        [id: string]: {
-          id: string;
-          timestamp: number;
-          position: [number, number, number];
+        [playerID: string]: {
+          [id: string]: {
+            id: string;
+            timestamp: number;
+            position: [number, number, number];
+          };
         };
       };
     };
@@ -306,11 +353,12 @@ interface IReactThreeFiberGameState {
 
   effects: {
     sparks: {
-      [id: string]: {
-        id: string;
-        timestamp: number;
-
-        position: [number, number, number];
+      [playerID: string]: {
+        [id: string]: {
+          id: string;
+          timestamp: number;
+          position: [number, number, number];
+        };
       };
     };
   };
@@ -386,7 +434,9 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
 
   zombieWalkStatus: false,
   effects: {
-    sparks: {},
+    sparks: {
+      player: {},
+    },
   },
 };
 
@@ -470,7 +520,11 @@ export const ReactThreeFiberGameSlice = createSlice({
         type: string;
       },
     ) {
-      state.cameraPosition = [action.payload.x, action.payload.y, action.payload.z];
+      state.cameraPosition = [
+        action.payload.x,
+        action.payload.y,
+        action.payload.z,
+      ];
     },
     setRotateZombieTimer(state, action) {
       state.rotateZombieTimer = action.payload;
@@ -499,7 +553,8 @@ export const ReactThreeFiberGameSlice = createSlice({
       if (!state.enemyNPCRefs[action.payload.id]) {
         state.enemyNPCRefs[action.payload.id] = {};
       }
-      state.enemyNPCRefs[action.payload.id].enemyBodyRef = action.payload.enemyBodyRef;
+      state.enemyNPCRefs[action.payload.id].enemyBodyRef =
+        action.payload.enemyBodyRef;
     },
     setNPCStat(
       state,
@@ -511,11 +566,14 @@ export const ReactThreeFiberGameSlice = createSlice({
       if (!state.enemyNPCStat[action.payload.id]) {
         state.enemyNPCStat[action.payload.id] = {};
       }
-      state.enemyNPCStat[action.payload.id].baseHP = state.enemyNPCStat[action.payload.id].baseHP
+      state.enemyNPCStat[action.payload.id].baseHP = state.enemyNPCStat[
+        action.payload.id
+      ].baseHP
         ? state.enemyNPCStat[action.payload.id].baseHP
         : action.payload.baseHP;
-      state.enemyNPCStat[action.payload.id].currentHP = state.enemyNPCStat[action.payload.id]
-        .currentHP
+      state.enemyNPCStat[action.payload.id].currentHP = state.enemyNPCStat[
+        action.payload.id
+      ].currentHP
         ? state.enemyNPCStat[action.payload.id].currentHP
         : action.payload.currentHP;
     },
@@ -524,7 +582,8 @@ export const ReactThreeFiberGameSlice = createSlice({
         action.payload.conditionPatternStatus;
     },
     setCurrentEnemyAnimationName(state, action) {
-      state.enemyNPCData[action.payload.id].currentAnimationName = action.payload.animationName;
+      state.enemyNPCData[action.payload.id].currentAnimationName =
+        action.payload.animationName;
     },
     setCurrentZombieRotateTimestamp(
       state,
@@ -533,7 +592,8 @@ export const ReactThreeFiberGameSlice = createSlice({
         type: string;
       },
     ) {
-      state.enemyNPCData[action.payload.id].rotationTimer = action.payload.elapsedTime;
+      state.enemyNPCData[action.payload.id].rotationTimer =
+        action.payload.elapsedTime;
     },
     setZombieWalkStatus(state) {
       state.zombieWalkStatus = true;
@@ -597,7 +657,8 @@ export const ReactThreeFiberGameSlice = createSlice({
     setNPCStartHitAttack(state, action) {
       if (!state.enemyNPCData[action.payload.id].hitStatus) {
         state.enemyNPCData[action.payload.id].hitStatus = true;
-        state.enemyNPCData[action.payload.id].currentAnimationName = "attack-melee-right";
+        state.enemyNPCData[action.payload.id].currentAnimationName =
+          "attack-melee-right";
       }
     },
     setNPCFinishHitAttack(state, action) {
@@ -606,7 +667,8 @@ export const ReactThreeFiberGameSlice = createSlice({
       }
     },
     setNPCWeaponSwing(state, action) {
-      state.enemyNPCData[action.payload.id].currentAnimationName = "holding-right-shoot";
+      state.enemyNPCData[action.payload.id].currentAnimationName =
+        "holding-right-shoot";
     },
 
     setCurrentPlayerReduceHP(state, action) {
@@ -619,13 +681,17 @@ export const ReactThreeFiberGameSlice = createSlice({
     setNPCReduceHP(state, action) {
       const NPCHP = state.enemyNPCStat[action.payload.id].currentHP;
       if (NPCHP) {
-        state.enemyNPCStat[action.payload.id].currentHP = NPCHP - action.payload.damage;
-        const NPCHPAfterReduce = state.enemyNPCStat[action.payload.id].currentHP;
+        state.enemyNPCStat[action.payload.id].currentHP =
+          NPCHP - action.payload.damage;
+        const NPCHPAfterReduce =
+          state.enemyNPCStat[action.payload.id].currentHP;
         if (NPCHPAfterReduce === undefined) return;
         if (NPCHPAfterReduce <= 0) {
           console.log("Delete orc");
           //delete npc from position arr
-          state.NPCArr = state.NPCArr.filter((NPC) => NPC.name !== action.payload.id);
+          state.NPCArr = state.NPCArr.filter(
+            (NPC) => NPC.name !== action.payload.id,
+          );
           //delete npc stat
           delete state.enemyNPCStat[action.payload.id];
           //delete npc ref
@@ -635,7 +701,9 @@ export const ReactThreeFiberGameSlice = createSlice({
       }
     },
     deleteNPCFromArr(state, action) {
-      state.NPCArr = state.NPCArr.filter((NPC) => NPC.name !== action.payload.id);
+      state.NPCArr = state.NPCArr.filter(
+        (NPC) => NPC.name !== action.payload.id,
+      );
     },
     setPlayerBlockStatus(state, action) {
       state.playerBlockStatus = action.payload;
@@ -643,20 +711,32 @@ export const ReactThreeFiberGameSlice = createSlice({
     createSparkEffectEl(
       state,
       action: {
-        payload: { id: string; position: [number, number, number]; timestamp: number };
+        payload: {
+          playerID: string;
+          id: string;
+          position: [number, number, number];
+          timestamp: number;
+        };
         type: string;
       },
     ) {
-      if (state.effects.sparks[action.payload.id]) return;
-      state.effects.sparks[action.payload.id] = {
+      if (state.effects.sparks[action.payload.playerID][action.payload.id])
+        return;
+
+      if (!state.effects.sparks[action.payload.playerID]) {
+        state.effects.sparks[action.payload.playerID] = {};
+      }
+
+      state.effects.sparks[action.payload.playerID][action.payload.id] = {
         id: action.payload.id,
         timestamp: action.payload.timestamp,
         position: action.payload.position,
       };
     },
     deleteSparkEffectEl(state, action) {
-      if (!state.effects.sparks[action.payload.id]) return;
-      delete state.effects.sparks[action.payload.id];
+      if (!state.effects.sparks[action.payload.playerID][action.payload.id])
+        return;
+      delete state.effects.sparks[action.payload.playerID][action.payload.id];
     },
   },
 });

@@ -1,6 +1,7 @@
 import { AppDispatch } from "@/app/store";
 import {
   IReactThreeFiberGameSlice,
+  NPCAttackImpact,
   ReactThreeFiberGameActions,
   setStartAttackStatus,
 } from "@/app/store/ReactThreeFiberGameSlice";
@@ -11,19 +12,23 @@ import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
 import * as rapier from "@dimforge/rapier3d-compat"; // или '@rapier3d', зависит от версии
 import { Line } from "@react-three/drei";
+import { castRayFromUser } from "@/app/utils/castRay";
 
 const AttackPlayerHandler = () => {
   const dispatch = useDispatch<AppDispatch>();
   const playerAttackStatus = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerAttackStatus,
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.playerAttackStatus,
   );
 
   const player = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerBodyRef,
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.playerBodyRef,
   );
 
   const enemyesRefs = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.enemyNPCRefs,
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.enemyNPCRefs,
   );
 
   const { world } = useRapier();
@@ -55,9 +60,12 @@ const AttackPlayerHandler = () => {
      */
 
     // тут угол поворота на 180 градусов по вертикали
-    const deltaQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI);
+    const deltaQuat = new THREE.Quaternion().setFromAxisAngle(
+      new THREE.Vector3(0, 1, 0),
+      Math.PI,
+    );
     // прибавляем 180 град по вертикали к повороту модели
-    const newQuat = quat.multiply(deltaQuat);
+    const newQuat = quat.clone().multiply(deltaQuat);
 
     // Получаем направление луча, который направлен прямо от модели игрока
     const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(newQuat);
@@ -89,61 +97,85 @@ const AttackPlayerHandler = () => {
      */
 
     if (playerAttackStatus) {
-      // Координаты игрока, центр масс
-      const playerCenterBody = vec3({
-        x: player.translation().x,
-        y: player.translation().y,
-        z: player.translation().z,
-      });
+      // // Координаты игрока, центр масс
+      // const playerCenterBody = vec3({
+      //   x: player.translation().x,
+      //   y: player.translation().y,
+      //   z: player.translation().z,
+      // });
 
-      // Поднимаем точку запуска луча на 0,5 метра вверх
-      playerCenterBody.add(new THREE.Vector3(0, 1, 0).multiplyScalar(0.5));
+      // // Поднимаем точку запуска луча на 0,5 метра вверх
+      // playerCenterBody.add(new THREE.Vector3(0, 1, 0).multiplyScalar(0.5));
 
-      // Получаем угол поворота игрока
+      // // Получаем угол поворота игрока
+      // const playerRotation = player.rotation();
+      // const quat = new THREE.Quaternion(
+      //   playerRotation.x,
+      //   playerRotation.y,
+      //   playerRotation.z,
+      //   playerRotation.w,
+      // );
+
+      // /**
+      //  * Поворачиваем этот угол поворота на 180 градусов,
+      //  * у нас модель изначально развернута задом наперёд
+      //  */
+
+      // // тут угол поворота на 180 градусов по вертикали
+      // const deltaQuat = new THREE.Quaternion().setFromAxisAngle(
+      //   new THREE.Vector3(0, 1, 0),
+      //   Math.PI,
+      // );
+      // // прибавляем 180 град по вертикали к повороту модели
+      // const newQuat = quat.clone().multiply(deltaQuat);
+
+      // // Получаем направление луча, который направлен прямо от модели игрока
+      // const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(newQuat);
+
+      // // Немного смещаем начальную точку луча, чтобы он не шёл из модели
+      // // а немного перед ней
+      // playerCenterBody.add(direction.clone().multiplyScalar(0.4));
+
+      // // Получаем луч, который идёт из вычисленной точки по заданному направлению вперёд
+      // const ray = new rapier.Ray(playerCenterBody, direction);
+
+      // // Запускаем этот луч с установленной длинной
+      // const hit = world.castRay(ray, 2, true);
+
+      const playerCenterBody = player.translation();
       const playerRotation = player.rotation();
-      const quat = new THREE.Quaternion(
-        playerRotation.x,
-        playerRotation.y,
-        playerRotation.z,
-        playerRotation.w,
-      );
-
-      /**
-       * Поворачиваем этот угол поворота на 180 градусов,
-       * у нас модель изначально развернута задом наперёд
-       */
-
-      // тут угол поворота на 180 градусов по вертикали
-      const deltaQuat = new THREE.Quaternion().setFromAxisAngle(
-        new THREE.Vector3(0, 1, 0),
-        Math.PI,
-      );
-      // прибавляем 180 град по вертикали к повороту модели
-      const newQuat = quat.multiply(deltaQuat);
-
-      // Получаем направление луча, который направлен прямо от модели игрока
-      const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(newQuat);
-
-      // Немного смещаем начальную точку луча, чтобы он не шёл из модели
-      // а немного перед ней
-      playerCenterBody.add(direction.clone().multiplyScalar(0.4));
-
-      // Получаем луч, который идёт из вычисленной точки по заданному направлению вперёд
-      const ray = new rapier.Ray(playerCenterBody, direction);
-
+      const ray = castRayFromUser({
+        playerPosition: {
+          x: playerCenterBody.x,
+          y: playerCenterBody.y,
+          z: playerCenterBody.z,
+        },
+        playerRotation: {
+          x: playerRotation.x,
+          y: playerRotation.y,
+          z: playerRotation.z,
+          w: playerRotation.w,
+        },
+        moveUpRay: 0.5,
+        moveForwardRay: 0.4,
+      });
       // Запускаем этот луч с установленной длинной
       const hit = world.castRay(ray, 2, true);
       if (hit !== null) {
         // Определяем в какой объект попал луч
         const collider = hit.collider;
         if (!collider) return;
-        const enemyUserData = collider.parent()?.userData as { id: string; type: string };
+        const enemyUserData = collider.parent()?.userData as {
+          id: string;
+          type: string;
+        };
         if (!enemyUserData) return;
         // Если он попал в NPC-врага
         if (enemyUserData.type === "npc") {
           // получаем позицию игрока и этого врага
           const playerPos = player.translation();
-          const enemyPos = enemyesRefs[enemyUserData.id].enemyBodyRef?.translation();
+          const enemyPos =
+            enemyesRefs[enemyUserData.id].enemyBodyRef?.translation();
           if (!enemyPos) return;
 
           // Высчитываем направление вектора от игрока к врагу
@@ -153,9 +185,17 @@ const AttackPlayerHandler = () => {
             .normalize();
 
           // Направляем импульс по данному вектору, который отталкивает врага
-          enemyesRefs[enemyUserData.id].enemyBodyRef?.setLinvel(direction.multiplyScalar(4), true);
+          enemyesRefs[enemyUserData.id].enemyBodyRef?.setLinvel(
+            direction.multiplyScalar(4),
+            true,
+          );
 
-          dispatch(ReactThreeFiberGameActions.setNPCReduceHP({ id: enemyUserData.id, damage: 50 }));
+          dispatch(
+            ReactThreeFiberGameActions.setNPCReduceHP({
+              id: enemyUserData.id,
+              damage: 50,
+            }),
+          );
           //   enemyesRefs[enemyUserData.id].enemyBodyRef?.setRotation(
           //     new THREE.Quaternion(0, 0, 0, 0),
           //     true,

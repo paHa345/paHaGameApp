@@ -4,7 +4,7 @@ uniform float uTime;
 
 void main() {
     vColor = color;
-    vec4 mvPosition = modelViewMatrix * vec4(position[0] * uTime, position[1] * uTime, position[2] * uTime, 1.0);
+    vec4 mvPosition = modelViewMatrix * vec4(position[0] * uTime*5.0, position[1] * uTime*5.0, position[2] * uTime*5.0, 1.0);
     gl_PointSize = size * (100.0 / -mvPosition.z) * 0.5;
     gl_Position = projectionMatrix * mvPosition;
 }

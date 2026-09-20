@@ -21,9 +21,14 @@ interface IAncientOrcController {
   rotationTimer: number;
 }
 
-const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcController) => {
+const AncientOrcController = ({
+  currentTarget,
+  id,
+  rotationTimer,
+}: IAncientOrcController) => {
   const playerBodyRef = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerBodyRef,
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.playerBodyRef,
   );
 
   const currentObjConditionPatternStatus = useSelector(
@@ -73,7 +78,12 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
     const currentOrcBody = currentTarget.current.rotation();
 
     const smoothRotationQuaternion = new THREE.Quaternion().slerpQuaternions(
-      new THREE.Quaternion(currentOrcBody.x, currentOrcBody.y, 0, currentOrcBody.w),
+      new THREE.Quaternion(
+        currentOrcBody.x,
+        currentOrcBody.y,
+        0,
+        currentOrcBody.w,
+      ),
       rotationQuaternion,
       0.08,
     );
@@ -101,7 +111,9 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
       if (timer < data.clock.getElapsedTime()) {
         timer = data.clock.getElapsedTime() + rotationTimer;
 
-        if (currentObjConditionPatternStatus === conditionPatternStatus.Peaceful) {
+        if (
+          currentObjConditionPatternStatus === conditionPatternStatus.Peaceful
+        ) {
           startRotation();
         }
       }
@@ -111,7 +123,9 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
           currentObjConditionPatternStatus === conditionPatternStatus.Rest)
       ) {
         if (!restStatus && !currentObjAttackStatus) {
-          setRestInterval(data.clock.getElapsedTime() + Math.floor(Math.random() * 8) + 5);
+          setRestInterval(
+            data.clock.getElapsedTime() + Math.floor(Math.random() * 8) + 5,
+          );
           setRestStatus(true);
           dispatch(
             ReactThreeFiberGameActions.setCurrentEnemyAnimationName({
@@ -121,7 +135,9 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
           );
         }
         if (restStatus && !currentObjAttackStatus) {
-          setRestInterval(data.clock.getElapsedTime() + Math.floor(Math.random() * 8) + 15);
+          setRestInterval(
+            data.clock.getElapsedTime() + Math.floor(Math.random() * 8) + 15,
+          );
           setRestStatus(false);
           dispatch(
             ReactThreeFiberGameActions.setCurrentEnemyAnimationName({
@@ -286,7 +302,10 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
           // Определяем в какой объект попал луч
           const collider = hit.collider;
           if (!collider) return;
-          const underAttackObjectData = collider.parent()?.userData as { id: string; type: string };
+          const underAttackObjectData = collider.parent()?.userData as {
+            id: string;
+            type: string;
+          };
           if (!underAttackObjectData) return;
           // Если он попал в NPC-врага
           if (underAttackObjectData.type === "player") {
@@ -332,7 +351,14 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
     }
   };
 
-  const sign = (px: number, py: number, x1: number, y1: number, x2: number, y2: number): number => {
+  const sign = (
+    px: number,
+    py: number,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+  ): number => {
     return (px - x2) * (y1 - y2) - (x1 - x2) * (py - y2);
   };
 
@@ -346,18 +372,20 @@ const AncientOrcController = ({ currentTarget, id, rotationTimer }: IAncientOrcC
 
   useFrame((state, delta) => {
     if (!currentTarget.current) return;
+    currentTarget.current.rotation().y = 0;
 
-    if (
-      !currentTarget.current
-      // || !meshRef.current
-    )
-      return;
+    // if (
+    //   !currentTarget.current
+    //   // || !meshRef.current
+    // )
+    //   return;
 
     if (restStatus) return;
 
     if (
       (currentObjConditionPatternStatus === conditionPatternStatus.Peaceful ||
-        currentObjConditionPatternStatus === conditionPatternStatus.Agressive) &&
+        currentObjConditionPatternStatus ===
+          conditionPatternStatus.Agressive) &&
       !currentObjAttackStatus
     ) {
       // if (tempQuat.angleTo(currentQuat) > 0.001) {

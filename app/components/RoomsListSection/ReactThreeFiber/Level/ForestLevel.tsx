@@ -25,7 +25,7 @@ import NPCMain from "./NPCMain";
 import MainDesertMountainsComponent from "./MainDesertMountainsComponent";
 import Platforms from "./Platforms";
 import Houses from "./Houses";
-import SparksMain from "../Effects/Sparks/SparksMain";
+// import SparksMain from "../Effects/Sparks/SparksMain";
 
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 
@@ -36,9 +36,15 @@ const wallMaterial = new THREE.MeshStandardMaterial({ color: "slategrey" });
 export function Bounds({ length = 1 }) {
   const rock061Color = useTexture("./textures/Rock061/Rock061Color.jpg");
   const rock061Normal = useTexture("./textures/Rock061/Rock061NormalGL.jpg");
-  const rock061Roughness = useTexture("./textures/Rock061/Rock061Roughness.jpg");
-  const rock061Displacement = useTexture("./textures/Rock061/Rock061Displacement.jpg");
-  const rock061AmbientOcclusion = useTexture("./textures/Rock061/Rock061Occlusion.jpg");
+  const rock061Roughness = useTexture(
+    "./textures/Rock061/Rock061Roughness.jpg",
+  );
+  const rock061Displacement = useTexture(
+    "./textures/Rock061/Rock061Displacement.jpg",
+  );
+  const rock061AmbientOcclusion = useTexture(
+    "./textures/Rock061/Rock061Occlusion.jpg",
+  );
 
   rock061Color.repeat.set(24, 1);
   rock061Color.wrapS = THREE.RepeatWrapping;
@@ -118,17 +124,29 @@ export function Bounds({ length = 1 }) {
 }
 
 export function Grass() {
-  const { grassRoughtness, grassMetalness, grassAOMapIntensity, grassDisplacementScale } =
-    useControls("Grass", {
-      grassRoughtness: { value: 0.85, min: 0.1, max: 1 },
-      grassMetalness: { value: 0.1, min: 0.1, max: 1 },
-      grassAOMapIntensity: { value: 0.5, min: 0.1, max: 1 },
-      grassDisplacementScale: { value: 0, min: 0.01, max: 1 },
-    });
-  const grass001Color = useTexture("./textures/Grass001/Grass001_1K-JPG_Color.jpg");
-  const grass001Normal = useTexture("./textures/Grass001/Grass001_1K-JPG_NormalGL.jpg");
-  const grass001Roughness = useTexture("./textures/Grass001/Grass001_1K-JPG_Roughness.jpg");
-  const grass001Displacement = useTexture("./textures/Grass001/Grass001_1K-JPG_Displacement.jpg");
+  const {
+    grassRoughtness,
+    grassMetalness,
+    grassAOMapIntensity,
+    grassDisplacementScale,
+  } = useControls("Grass", {
+    grassRoughtness: { value: 0.85, min: 0.1, max: 1 },
+    grassMetalness: { value: 0.1, min: 0.1, max: 1 },
+    grassAOMapIntensity: { value: 0.5, min: 0.1, max: 1 },
+    grassDisplacementScale: { value: 0, min: 0.01, max: 1 },
+  });
+  const grass001Color = useTexture(
+    "./textures/Grass001/Grass001_1K-JPG_Color.jpg",
+  );
+  const grass001Normal = useTexture(
+    "./textures/Grass001/Grass001_1K-JPG_NormalGL.jpg",
+  );
+  const grass001Roughness = useTexture(
+    "./textures/Grass001/Grass001_1K-JPG_Roughness.jpg",
+  );
+  const grass001Displacement = useTexture(
+    "./textures/Grass001/Grass001_1K-JPG_Displacement.jpg",
+  );
   const grass001AmbientOcclusion = useTexture(
     "./textures/Grass001/Grass001_1K-JPG_AmbientOcclusion.jpg",
   );
@@ -198,7 +216,11 @@ export function Trees() {
   return (
     <>
       <mesh position={[0, -0.1, -1.2]}>
-        <primitive object={patchGrass.scene} scale={3} receiveShadow></primitive>
+        <primitive
+          object={patchGrass.scene}
+          scale={3}
+          receiveShadow
+        ></primitive>
       </mesh>
       <RigidBody
         type="fixed"
@@ -212,7 +234,13 @@ export function Trees() {
         </primitive>
       </RigidBody>
 
-      <RigidBody type="fixed" colliders="hull" position={[5, 1, 0]} restitution={0.2} friction={0}>
+      <RigidBody
+        type="fixed"
+        colliders="hull"
+        position={[5, 1, 0]}
+        restitution={0.2}
+        friction={0}
+      >
         <primitive object={rocksHigh.scene} scale={2} castShadow>
           {/* <meshBasicMaterial map={forestTexture} /> */}
         </primitive>
@@ -379,7 +407,7 @@ const ForestLevel = () => {
       <NPCMain></NPCMain>
       <MainDesertMountainsComponent></MainDesertMountainsComponent>
       <Houses></Houses>
-      <SparksMain></SparksMain>
+      {/* <SparksMain></SparksMain> */}
     </>
   );
 };
