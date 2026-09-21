@@ -8,11 +8,14 @@ interface IPlayerSparcsProps {
 }
 const PlayerSparksMain = ({ playerID }: IPlayerSparcsProps) => {
   const playerSparks = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.effects.sparks[playerID],
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.effects.sparks[playerID],
+  );
+  const player = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerBodyRef,
   );
 
-  console.log(playerSparks);
+  const playerPosition = player?.translation();
+  const playerRotation = player?.rotation();
 
   const sparksEls = Object.entries(playerSparks).map((el) => {
     return (
@@ -20,7 +23,17 @@ const PlayerSparksMain = ({ playerID }: IPlayerSparcsProps) => {
         key={el[1].id}
         id={el[1].id}
         timestamp={el[1].timestamp}
-        position={[0, 0, 0]}
+        position={[
+          playerPosition ? playerPosition.x : 0,
+          playerPosition ? playerPosition.y : 0,
+          playerPosition ? playerPosition.z : 0,
+        ]}
+        rotation={[
+          playerRotation ? playerRotation.x : 0,
+          playerRotation ? playerRotation.y : 0,
+          playerRotation ? playerRotation.z : 0,
+          playerRotation ? playerRotation.w : 0,
+        ]}
       ></Spark>
     );
   });

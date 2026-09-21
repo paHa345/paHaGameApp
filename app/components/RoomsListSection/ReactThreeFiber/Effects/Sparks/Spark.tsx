@@ -4,14 +4,16 @@ import * as THREE from "three";
 import sparksFragmentShader from "./../../shaders/SparksShader/fragment.glsl";
 import sparksVertexShader from "./../../shaders/SparksShader/vertex.glsl";
 import { useFrame } from "@react-three/fiber";
+import { useSelector } from "react-redux";
 
 interface ISparkProps {
   id: string;
   position: [number, number, number];
   timestamp: number;
+  rotation: [number, number, number, number];
 }
 
-const Spark = ({ id, position, timestamp }: ISparkProps) => {
+const Spark = ({ id, position, timestamp, rotation }: ISparkProps) => {
   //   const materialRef = useRef<THREE.ShaderMaterial>(null);
 
   const pointRef = useRef(null);
@@ -57,14 +59,25 @@ const Spark = ({ id, position, timestamp }: ISparkProps) => {
     }
   });
 
+  /**
+   * Смещаем искры немного вперёд и влевоо (localOffset) тносительно модели игрока
+   * при этом учитываем поворот модели
+   * чтобы правильно рассчитать смещение
+   */
+  const point = new THREE.Vector3(position[0], position[1], position[2]);
+  const quat = new THREE.Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]);
+  const localOffset = new THREE.Vector3(0.4, 0, 0.8);
+  localOffset.applyQuaternion(quat);
+  const newPoint = point.clone().add(localOffset);
+
   return (
     <>
-      {/* <mesh position={[position[0], position[1], position[2]]}>
-        <sphereGeometry args={[1]}></sphereGeometry>
+      {/* <mesh position={[newPoint.x, newPoint.y + 0.7, newPoint.z]}>
+        <sphereGeometry args={[0.2]}></sphereGeometry>
         <meshBasicMaterial color={"red"}></meshBasicMaterial>
       </mesh> */}
 
-      <points position={[position[0], position[1] + 0.5, position[2] + 0.5]} ref={pointRef}>
+      <points position={[newPoint.x, newPoint.y + 0.5, newPoint.z]} ref={pointRef}>
         <bufferGeometry>
           <bufferAttribute
             args={[positions, 3]}
@@ -75,15 +88,6 @@ const Spark = ({ id, position, timestamp }: ISparkProps) => {
           <bufferAttribute args={[sizes, 1]} attach="attributes-size" count={particlesCount} />
         </bufferGeometry>
 
-        {/* <pointsMaterial
-          size={0.04}
-          vertexColors
-          transparent
-          opacity={0.8}
-          sizeAttenuation
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        /> */}
         <primitive object={materialRef.current} attach="material"></primitive>
       </points>
 

@@ -3,28 +3,11 @@ import {
   IReactThreeFiberGameSlice,
   ReactThreeFiberGameActions,
 } from "@/app/store/ReactThreeFiberGameSlice";
-import {
-  useAnimations,
-  useGLTF,
-  useKeyboardControls,
-  useTexture,
-} from "@react-three/drei";
+import { useAnimations, useGLTF, useKeyboardControls, useTexture } from "@react-three/drei";
 import { createPortal, useFrame, useThree } from "@react-three/fiber";
-import {
-  CuboidCollider,
-  RapierRigidBody,
-  RigidBody,
-  useRapier,
-} from "@react-three/rapier";
+import { CuboidCollider, RapierRigidBody, RigidBody, useRapier } from "@react-three/rapier";
 import { useControls } from "leva";
-import React, {
-  memo,
-  Suspense,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { memo, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
 import GameMenu from "../GameMenu";
@@ -67,8 +50,7 @@ const Player = () => {
   // playerTexture.flipY = false;
 
   const gamePauseStatus = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.gamePauseStatus,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.gamePauseStatus,
   );
 
   const dispatch = useDispatch<AppDispatch>();
@@ -86,7 +68,6 @@ const Player = () => {
 
   useEffect(() => {
     if (userMain.current !== null) {
-      console.log(userMain.current);
       dispatch(ReactThreeFiberGameActions.setPlayerMeshRef(userMain.current));
     }
   }, [userMain.current]);
@@ -219,13 +200,7 @@ const Player = () => {
 
     // set idle animation if player not move
 
-    if (
-      !forward &&
-      !backward &&
-      !leftward &&
-      !rightward &&
-      hit?.timeOfImpact === 0
-    ) {
+    if (!forward && !backward && !leftward && !rightward && hit?.timeOfImpact === 0) {
       dispatch(ReactThreeFiberGameActions.setPlayerNotMove());
     }
 
@@ -270,10 +245,7 @@ const Player = () => {
         origin.z - state.camera.position.z,
       );
 
-      moveDirectionVector.applyAxisAngle(
-        new THREE.Vector3(0, 1, 0),
-        THREE.MathUtils.degToRad(-90),
-      );
+      moveDirectionVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(-90));
       //   impulse.x += impulseStrength;
       //   torque.z -= torqueStrength;
     }
@@ -284,10 +256,7 @@ const Player = () => {
         0,
         origin.z - state.camera.position.z,
       );
-      moveDirectionVector.applyAxisAngle(
-        new THREE.Vector3(0, 1, 0),
-        THREE.MathUtils.degToRad(180),
-      );
+      moveDirectionVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(180));
 
       //   .normalize();
 
@@ -304,10 +273,7 @@ const Player = () => {
         0,
         origin.z - state.camera.position.z,
       );
-      moveDirectionVector.applyAxisAngle(
-        new THREE.Vector3(0, 1, 0),
-        THREE.MathUtils.degToRad(90),
-      );
+      moveDirectionVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(90));
     }
 
     const normalizedDelta = delta * 60;
@@ -386,11 +352,7 @@ const Player = () => {
             type="dynamic"
             enabledRotations={[false, true, false]}
           >
-            <CuboidCollider
-              mass={1}
-              position={[0, 0.6, 0]}
-              args={[0.4, 0.6, 0.35]}
-            >
+            <CuboidCollider mass={1} position={[0, 0.6, 0]} args={[0.4, 0.6, 0.35]}>
               <group
               // rotation-y={rotationPlayerModel}
               >
@@ -407,15 +369,9 @@ const Player = () => {
                   </primitive>
                 </mesh>
 
-                {createPortal(
-                  <RightHandWeapon></RightHandWeapon>,
-                  player.nodes["arm-right"],
-                )}
-                {createPortal(
-                  <LeftHandShield></LeftHandShield>,
-                  player.nodes["arm-left"],
-                )}
-                <PlayerSparksMain playerID={"player"}></PlayerSparksMain>
+                {createPortal(<RightHandWeapon></RightHandWeapon>, player.nodes["arm-right"])}
+                {createPortal(<LeftHandShield></LeftHandShield>, player.nodes["arm-left"])}
+                {/* <PlayerSparksMain playerID={"player"}></PlayerSparksMain> */}
               </group>
             </CuboidCollider>
 
@@ -432,9 +388,7 @@ const Player = () => {
           targetPos={targetPos}
           desiredPos={desiredPos}
         ></UpdateMouseCoordsAndCameraPosition>
-        <PlayerAnimationsController
-          player={player}
-        ></PlayerAnimationsController>
+        <PlayerAnimationsController player={player}></PlayerAnimationsController>
       </Suspense>
     </>
   );
