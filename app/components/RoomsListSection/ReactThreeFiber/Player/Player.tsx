@@ -10,12 +10,14 @@ import { useControls } from "leva";
 import React, { memo, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
-import GameMenu from "../GameMenu";
+import GameMenu from "../Interface/GameMenu";
 import UpdateMouseCoordsAndCameraPosition from "../UpdateMouseCoordsAndCameraPosition";
 import PlayerAnimationsController from "./PlayerAnimationsController";
 import RightHandWeapon from "./RightHandWeapon";
 import LeftHandShield from "./LeftHandShield";
-import PlayerSparksMain from "../Effects/Sparks/PlayerSparksMain";
+import SetPlayerPickUpObjectStatus from "./SetPlayerPickUpObjectStatus";
+import PlayerPickUpObjectHandler from "./PlayerPickUpObjectHandler";
+import PlayerThrowObjectHandler from "./PlayerThrowObjectHandler";
 
 const Player = () => {
   // const Scratches005Color = useTexture("./textures/Moss002/Moss002Color.jpg");
@@ -389,6 +391,9 @@ const Player = () => {
           desiredPos={desiredPos}
         ></UpdateMouseCoordsAndCameraPosition>
         <PlayerAnimationsController player={player}></PlayerAnimationsController>
+        <SetPlayerPickUpObjectStatus></SetPlayerPickUpObjectStatus>
+        <PlayerPickUpObjectHandler></PlayerPickUpObjectHandler>
+        <PlayerThrowObjectHandler></PlayerThrowObjectHandler>
       </Suspense>
     </>
   );

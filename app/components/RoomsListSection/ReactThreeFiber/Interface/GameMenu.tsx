@@ -7,7 +7,7 @@ import { AppDispatch } from "@/app/store";
 import { ReactThreeFiberGameActions } from "@/app/store/ReactThreeFiberGameSlice";
 
 const Shonen = localFont({
-  src: "../../../../public/fonts/Shonen.ttf",
+  src: "../../../../../public/fonts/Shonen.ttf",
   variable: "--font-geist-mono",
   weight: "100 900",
 });

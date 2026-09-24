@@ -20,12 +20,13 @@ import {
 import AncientOrc from "../AncientOrcEnemy/AncientOrcEnemy";
 import { conditionPatternStatus } from "@/app/types";
 import MainTreesComponent from "./MainTreesComponent";
-import MainTreeLog from "../MainTreeLog";
+import MainTreeLog from "./MainTreeLog";
 import NPCMain from "./NPCMain";
 import MainDesertMountainsComponent from "./MainDesertMountainsComponent";
 import Platforms from "./Platforms";
 import Houses from "./Houses";
 import SparksMain from "../Effects/Sparks/SparksMain";
+import BarrelsMain from "./Barrels/BarrelsMain";
 
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 
@@ -380,6 +381,7 @@ const ForestLevel = () => {
       <MainDesertMountainsComponent></MainDesertMountainsComponent>
       <Houses></Houses>
       <SparksMain></SparksMain>
+      <BarrelsMain></BarrelsMain>
     </>
   );
 };

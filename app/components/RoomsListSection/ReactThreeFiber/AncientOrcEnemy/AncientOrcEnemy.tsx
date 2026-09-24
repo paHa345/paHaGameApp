@@ -1,22 +1,17 @@
-import { Billboard, Clone, Line, useAnimations, useGLTF } from "@react-three/drei";
-import { createPortal, ObjectMap, useFrame, useGraph, useThree } from "@react-three/fiber";
-import { CuboidCollider, RapierRigidBody, RigidBody, useRapier } from "@react-three/rapier";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { GLTF } from "three/addons/loaders/GLTFLoader.js";
+import { useGLTF } from "@react-three/drei";
+import { createPortal, useThree } from "@react-three/fiber";
+import { CuboidCollider, RapierRigidBody, RigidBody } from "@react-three/rapier";
+import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  IReactThreeFiberGameSlice,
-  ReactThreeFiberGameActions,
-} from "@/app/store/ReactThreeFiberGameSlice";
+import { useDispatch } from "react-redux";
+import { ReactThreeFiberGameActions } from "@/app/store/ReactThreeFiberGameSlice";
 import { AppDispatch } from "@/app/store";
-import { Api } from "@react-three/postprocessing";
-import { conditionPatternStatus } from "@/app/types";
 import AncientOrcController from "./AncientOrcController";
 import AncientOrcAnimationController from "./AncientOrcAnimationController";
 import CalculateAttackImpactHandler from "./CalculateAttackImpactHandler";
 import DynamicNPCHealthBar from "./DynamicNPCHealthBar";
 import RightHandWeapon from "./RightHandWeapon";
+import { useGraph } from "@react-three/fiber";
 
 interface IAncientOrcProps {
   position: {
@@ -41,12 +36,6 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
   const { nodes: clonedNodes } = useGraph(cloneModel);
 
   const meshRef = useRef<THREE.Group>(null);
-
-  console.log("Orc redraw");
-
-  //   useEffect(() => {
-  //     dispatch(ReactThreeFiberGameActions.setZombieWalkStatus());
-  //   });
 
   useEffect(() => {
     dispatch(

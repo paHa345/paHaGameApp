@@ -8,19 +8,21 @@ import {
 } from "@/app/store/ReactThreeFiberGameSlice";
 import { AppDispatch } from "@/app/store";
 import { addEffect, useThree } from "@react-three/fiber";
+import PickUpComponent from "./PickUpComponent";
+import ThrowObjectComponent from "./ThrowObjectComponent";
 
 const BebasNeue = localFont({
-  src: "../../../../public/fonts/BebasNeue-Regular.ttf",
+  src: "../../../../../public/fonts/BebasNeue-Regular.ttf",
   variable: "--font-geist-mono",
   weight: "100 900",
 });
 const Sol_Kol = localFont({
-  src: "../../../../public/fonts/Sol_Kol.ttf",
+  src: "../../../../../public/fonts/Sol_Kol.ttf",
   variable: "--font-geist-mono",
   weight: "100 900",
 });
 const Shonen = localFont({
-  src: "../../../../public/fonts/Shonen.ttf",
+  src: "../../../../../public/fonts/Shonen.ttf",
   variable: "--font-geist-mono",
   weight: "100 900",
 });
@@ -119,6 +121,8 @@ const Interface = () => {
       )}
 
       {/* Controls */}
+      <PickUpComponent></PickUpComponent>
+      <ThrowObjectComponent></ThrowObjectComponent>
 
       <div className=" absolute bottom-20 left-0 w-full ">
         <div className=" flex justify-center ">

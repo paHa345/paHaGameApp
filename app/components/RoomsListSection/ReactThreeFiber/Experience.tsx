@@ -87,7 +87,7 @@ import {
   IReactThreeFiberGameSlice,
   ReactThreeFiberGameActions,
 } from "@/app/store/ReactThreeFiberGameSlice";
-import GameMenu from "./GameMenu";
+import GameMenu from "./Interface/GameMenu";
 import { AppDispatch } from "@/app/store";
 import { width } from "@fortawesome/free-regular-svg-icons/faSave";
 import ForestLevel from "./Level/ForestLevel";

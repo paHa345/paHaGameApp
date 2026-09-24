@@ -7,7 +7,7 @@ import { Leva, useControls } from "leva";
 import { PerfMonitor } from "r3f-monitor";
 import Experience from "./Experience";
 import { KeyboardControls, PointerLockControls, useKeyboardControls } from "@react-three/drei";
-import Interface from "./Interface";
+import Interface from "./Interface/Interface";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/store";
 import {
@@ -75,6 +75,8 @@ const ReactThreeFiberMain = () => {
             { name: "jump", keys: ["Space"] },
             { name: "escape", keys: ["Escape"] },
             { name: "rotateCamera", keys: ["F2"] },
+            { name: "actionButton", keys: ["KeyE"] },
+            { name: "throwObjectButton", keys: ["KeyF"] },
           ]}
         >
           <Canvas

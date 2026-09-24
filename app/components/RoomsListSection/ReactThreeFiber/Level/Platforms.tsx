@@ -19,7 +19,7 @@ const Platforms = () => {
         </primitive>
       </RigidBody>
 
-      <RigidBody
+      {/* <RigidBody
         type="dynamic"
         colliders="hull"
         position={[35, 1, 33]}
@@ -27,9 +27,8 @@ const Platforms = () => {
         friction={0}
       >
         <primitive object={barrel.scene} scale={2}>
-          {/* <meshBasicMaterial map={forestTexture} /> */}
         </primitive>
-      </RigidBody>
+      </RigidBody> */}
     </>
   );
 };

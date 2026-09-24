@@ -18,7 +18,7 @@ const MainTreesComponent = () => {
     },
     {
       id: "tree3",
-      position: new THREE.Vector3(22, 0.01, 22),
+      position: new THREE.Vector3(18, 0.01, 22),
     },
     {
       id: "tree4",

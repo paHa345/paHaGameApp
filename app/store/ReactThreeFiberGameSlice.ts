@@ -28,16 +28,10 @@ export const setStartAttackStatus = createAsyncThunk(
 
 export const NPCAttackHandler = createAsyncThunk(
   "ReactThreeFiberGameState/NPCAttackHandler",
-  async function (
-    attackData: { id: string },
-    { rejectWithValue, dispatch, getState },
-  ) {
+  async function (attackData: { id: string }, { rejectWithValue, dispatch, getState }) {
     try {
       const state = getState() as IReactThreeFiberGameSlice;
-      if (
-        state.ReactThreeFiberGameState.enemyNPCData[attackData.id].attackStatus
-      )
-        return;
+      if (state.ReactThreeFiberGameState.enemyNPCData[attackData.id].attackStatus) return;
 
       // Устанавливаем статус на атаку
       dispatch(
@@ -46,20 +40,14 @@ export const NPCAttackHandler = createAsyncThunk(
         }),
       );
 
-      dispatch(
-        ReactThreeFiberGameActions.setNPCWeaponSwing({ id: attackData.id }),
-      );
+      dispatch(ReactThreeFiberGameActions.setNPCWeaponSwing({ id: attackData.id }));
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      dispatch(
-        ReactThreeFiberGameActions.setNPCStartHitAttack({ id: attackData.id }),
-      );
+      dispatch(ReactThreeFiberGameActions.setNPCStartHitAttack({ id: attackData.id }));
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       // Атака закончилась, устанавливаем статус на "агрессивный"
-      dispatch(
-        ReactThreeFiberGameActions.setNPCFinishHitAttack({ id: attackData.id }),
-      );
+      dispatch(ReactThreeFiberGameActions.setNPCFinishHitAttack({ id: attackData.id }));
 
       dispatch(
         ReactThreeFiberGameActions.setNPCFinishAttackPatternStatus({
@@ -107,11 +95,7 @@ export const NPCAttackImpact = createAsyncThunk(
             playerID: attackData.playerID,
             id: String(Date.now() + attackData.id),
             timestamp: attackData.timestamp,
-            position: [
-              attackData.targetPos?.x,
-              attackData.targetPos?.y,
-              attackData.targetPos?.z,
-            ],
+            position: [attackData.targetPos?.x, attackData.targetPos?.y, attackData.targetPos?.z],
           }),
         );
         return { attackInBlock: true };
@@ -125,10 +109,7 @@ export const NPCAttackImpact = createAsyncThunk(
 
 export const setStartBlockAction = createAsyncThunk(
   "ReactThreeFiberGameState/setStartBlockAction",
-  async function (
-    attackData: { id: string },
-    { rejectWithValue, dispatch, getState },
-  ) {
+  async function (attackData: { id: string }, { rejectWithValue, dispatch, getState }) {
     try {
       const state = getState() as IReactThreeFiberGameSlice;
       if (state.ReactThreeFiberGameState.playerBlockStatus) return;
@@ -181,6 +162,21 @@ export const createAndControlSparks = createAsyncThunk(
     }
   },
 );
+
+export const throwBarrelAction = createAsyncThunk(
+  "ReactThreeFiberGameState/throwBarrelAction",
+  async function (attackData: { id: string }, { rejectWithValue, dispatch, getState }) {
+    try {
+      const state = getState() as IReactThreeFiberGameSlice;
+      if (state.ReactThreeFiberGameState.playerBlockStatus) return;
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
 export interface IReactThreeFiberGameSlice {
   ReactThreeFiberGameState: {
     blocksCount: number;
@@ -204,6 +200,13 @@ export interface IReactThreeFiberGameSlice {
       currentHP: number;
     };
     playerBlockStatus: boolean;
+
+    playerCanPickUpBarrelStatus: {
+      canPickUp: boolean;
+      barrelID: string | undefined;
+    };
+    playerPickedUpBarrelID: undefined | string;
+    playerThrowBarrelStatus: boolean;
 
     /**
      * Time
@@ -280,6 +283,14 @@ export interface IReactThreeFiberGameSlice {
         };
       };
     };
+
+    /**
+     * Objects
+     */
+    barrelsArr: {
+      id: string;
+      position: THREE.Vector3;
+    }[];
   };
 }
 
@@ -302,6 +313,12 @@ interface IReactThreeFiberGameState {
     currentHP: number;
   };
   playerBlockStatus: boolean;
+  playerCanPickUpBarrelStatus: {
+    canPickUp: boolean;
+    barrelID: string | undefined;
+  };
+  playerPickedUpBarrelID: undefined | string;
+  playerThrowBarrelStatus: boolean;
 
   startTime: number;
   endTime: number;
@@ -362,6 +379,10 @@ interface IReactThreeFiberGameState {
       };
     };
   };
+  barrelsArr: {
+    id: string;
+    position: THREE.Vector3;
+  }[];
 }
 
 const initReactThreeFiberGameState: IReactThreeFiberGameState = {
@@ -379,6 +400,12 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
     currentHP: 500,
   },
   playerBlockStatus: false,
+  playerCanPickUpBarrelStatus: {
+    canPickUp: false,
+    barrelID: undefined,
+  },
+  playerPickedUpBarrelID: undefined,
+  playerThrowBarrelStatus: false,
 
   startTime: 0,
   endTime: 0,
@@ -438,6 +465,33 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       player: {},
     },
   },
+
+  barrelsArr: [
+    {
+      id: "barrel1",
+      position: new THREE.Vector3(20, 2, 20),
+    },
+    {
+      id: "barrel2",
+      position: new THREE.Vector3(21, 1, 20),
+    },
+    {
+      id: "barrel3",
+      position: new THREE.Vector3(20, 2, 21),
+    },
+    {
+      id: "barrel4",
+      position: new THREE.Vector3(20, 1, 20),
+    },
+    {
+      id: "barrel5",
+      position: new THREE.Vector3(22, 2, 22),
+    },
+    {
+      id: "barrel6",
+      position: new THREE.Vector3(22, 1, 22),
+    },
+  ],
 };
 
 export const ReactThreeFiberGameSlice = createSlice({
@@ -520,11 +574,7 @@ export const ReactThreeFiberGameSlice = createSlice({
         type: string;
       },
     ) {
-      state.cameraPosition = [
-        action.payload.x,
-        action.payload.y,
-        action.payload.z,
-      ];
+      state.cameraPosition = [action.payload.x, action.payload.y, action.payload.z];
     },
     setRotateZombieTimer(state, action) {
       state.rotateZombieTimer = action.payload;
@@ -553,8 +603,7 @@ export const ReactThreeFiberGameSlice = createSlice({
       if (!state.enemyNPCRefs[action.payload.id]) {
         state.enemyNPCRefs[action.payload.id] = {};
       }
-      state.enemyNPCRefs[action.payload.id].enemyBodyRef =
-        action.payload.enemyBodyRef;
+      state.enemyNPCRefs[action.payload.id].enemyBodyRef = action.payload.enemyBodyRef;
     },
     setNPCStat(
       state,
@@ -566,14 +615,11 @@ export const ReactThreeFiberGameSlice = createSlice({
       if (!state.enemyNPCStat[action.payload.id]) {
         state.enemyNPCStat[action.payload.id] = {};
       }
-      state.enemyNPCStat[action.payload.id].baseHP = state.enemyNPCStat[
-        action.payload.id
-      ].baseHP
+      state.enemyNPCStat[action.payload.id].baseHP = state.enemyNPCStat[action.payload.id].baseHP
         ? state.enemyNPCStat[action.payload.id].baseHP
         : action.payload.baseHP;
-      state.enemyNPCStat[action.payload.id].currentHP = state.enemyNPCStat[
-        action.payload.id
-      ].currentHP
+      state.enemyNPCStat[action.payload.id].currentHP = state.enemyNPCStat[action.payload.id]
+        .currentHP
         ? state.enemyNPCStat[action.payload.id].currentHP
         : action.payload.currentHP;
     },
@@ -582,8 +628,7 @@ export const ReactThreeFiberGameSlice = createSlice({
         action.payload.conditionPatternStatus;
     },
     setCurrentEnemyAnimationName(state, action) {
-      state.enemyNPCData[action.payload.id].currentAnimationName =
-        action.payload.animationName;
+      state.enemyNPCData[action.payload.id].currentAnimationName = action.payload.animationName;
     },
     setCurrentZombieRotateTimestamp(
       state,
@@ -592,8 +637,7 @@ export const ReactThreeFiberGameSlice = createSlice({
         type: string;
       },
     ) {
-      state.enemyNPCData[action.payload.id].rotationTimer =
-        action.payload.elapsedTime;
+      state.enemyNPCData[action.payload.id].rotationTimer = action.payload.elapsedTime;
     },
     setZombieWalkStatus(state) {
       state.zombieWalkStatus = true;
@@ -657,8 +701,7 @@ export const ReactThreeFiberGameSlice = createSlice({
     setNPCStartHitAttack(state, action) {
       if (!state.enemyNPCData[action.payload.id].hitStatus) {
         state.enemyNPCData[action.payload.id].hitStatus = true;
-        state.enemyNPCData[action.payload.id].currentAnimationName =
-          "attack-melee-right";
+        state.enemyNPCData[action.payload.id].currentAnimationName = "attack-melee-right";
       }
     },
     setNPCFinishHitAttack(state, action) {
@@ -667,8 +710,7 @@ export const ReactThreeFiberGameSlice = createSlice({
       }
     },
     setNPCWeaponSwing(state, action) {
-      state.enemyNPCData[action.payload.id].currentAnimationName =
-        "holding-right-shoot";
+      state.enemyNPCData[action.payload.id].currentAnimationName = "holding-right-shoot";
     },
 
     setCurrentPlayerReduceHP(state, action) {
@@ -681,17 +723,13 @@ export const ReactThreeFiberGameSlice = createSlice({
     setNPCReduceHP(state, action) {
       const NPCHP = state.enemyNPCStat[action.payload.id].currentHP;
       if (NPCHP) {
-        state.enemyNPCStat[action.payload.id].currentHP =
-          NPCHP - action.payload.damage;
-        const NPCHPAfterReduce =
-          state.enemyNPCStat[action.payload.id].currentHP;
+        state.enemyNPCStat[action.payload.id].currentHP = NPCHP - action.payload.damage;
+        const NPCHPAfterReduce = state.enemyNPCStat[action.payload.id].currentHP;
         if (NPCHPAfterReduce === undefined) return;
         if (NPCHPAfterReduce <= 0) {
           console.log("Delete orc");
           //delete npc from position arr
-          state.NPCArr = state.NPCArr.filter(
-            (NPC) => NPC.name !== action.payload.id,
-          );
+          state.NPCArr = state.NPCArr.filter((NPC) => NPC.name !== action.payload.id);
           //delete npc stat
           delete state.enemyNPCStat[action.payload.id];
           //delete npc ref
@@ -701,9 +739,7 @@ export const ReactThreeFiberGameSlice = createSlice({
       }
     },
     deleteNPCFromArr(state, action) {
-      state.NPCArr = state.NPCArr.filter(
-        (NPC) => NPC.name !== action.payload.id,
-      );
+      state.NPCArr = state.NPCArr.filter((NPC) => NPC.name !== action.payload.id);
     },
     setPlayerBlockStatus(state, action) {
       state.playerBlockStatus = action.payload;
@@ -720,8 +756,7 @@ export const ReactThreeFiberGameSlice = createSlice({
         type: string;
       },
     ) {
-      if (state.effects.sparks[action.payload.playerID][action.payload.id])
-        return;
+      if (state.effects.sparks[action.payload.playerID][action.payload.id]) return;
 
       if (!state.effects.sparks[action.payload.playerID]) {
         state.effects.sparks[action.payload.playerID] = {};
@@ -734,9 +769,40 @@ export const ReactThreeFiberGameSlice = createSlice({
       };
     },
     deleteSparkEffectEl(state, action) {
-      if (!state.effects.sparks[action.payload.playerID][action.payload.id])
-        return;
+      if (!state.effects.sparks[action.payload.playerID][action.payload.id]) return;
       delete state.effects.sparks[action.payload.playerID][action.payload.id];
+    },
+    setPlayerPickUpStatus(
+      state,
+      action: {
+        payload: {
+          barrelID: string | undefined;
+          canPickUpStatus: boolean;
+        };
+        type: string;
+      },
+    ) {
+      if (
+        action.payload.canPickUpStatus === state.playerCanPickUpBarrelStatus.canPickUp &&
+        state.playerCanPickUpBarrelStatus.barrelID === action.payload.barrelID
+      )
+        return;
+
+      console.log("Set Can Pick Up");
+      state.playerCanPickUpBarrelStatus = {
+        barrelID: action.payload.barrelID,
+        canPickUp: action.payload.canPickUpStatus,
+      };
+    },
+    setPlayerPickedUpBarrelID(state) {
+      if (!state.playerCanPickUpBarrelStatus.canPickUp) return;
+      if (state.playerCanPickUpBarrelStatus.barrelID === undefined) return;
+      console.log(state.playerCanPickUpBarrelStatus.barrelID);
+
+      state.playerPickedUpBarrelID = state.playerCanPickUpBarrelStatus.barrelID;
+    },
+    setPlayerThrowBarrelStatus(state, action) {
+      state.playerThrowBarrelStatus = action.payload;
     },
   },
 });

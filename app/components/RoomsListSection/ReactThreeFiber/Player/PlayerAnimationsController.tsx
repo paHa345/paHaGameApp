@@ -16,10 +16,6 @@ const PlayerAnimationsController = ({ player }: IPlayerAnimationsController) => 
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.animationsName,
   );
 
-  console.log(currentAnimationName);
-  // console.log(animations);
-  const initialized = useRef(false);
-
   useEffect(() => {
     const action = animations.actions[currentAnimationName];
 
