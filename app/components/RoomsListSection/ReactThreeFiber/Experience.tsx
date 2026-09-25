@@ -1,7 +1,7 @@
 "use client";
 
-import { ReactThreeFiber, ThreeEvent, useFrame, useLoader, useThree } from "@react-three/fiber";
-import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { useThree } from "@react-three/fiber";
+import React, { Suspense, useEffect } from "react";
 import * as THREE from "three";
 
 import { DirectionalLight, Mesh, Object3DEventMap } from "three";
@@ -31,7 +31,6 @@ import {
   Text,
   Text3D,
   TransformControls,
-  useFBX,
   useGLTF,
   useHelper,
   useKeyboardControls,
@@ -43,13 +42,6 @@ import { Object3D } from "three";
 import { button, useControls } from "leva";
 import { directPointLight } from "three/tsl";
 
-import Model from "./Model";
-import Placeholder from "./Placeholder";
-import Hamburger from "./Hamburger";
-import Fox from "./Fox";
-
-import portalVertexShader from "../shaders/portal/vertex.glsl";
-import portalFragmentShader from "../shaders/portal/fragment.glsl";
 import { extend } from "@react-three/fiber";
 
 import {
@@ -69,27 +61,15 @@ import {
 } from "postprocessing";
 import Drunk from "./Drunk";
 import DrunkEffect from "./DrunkEffect";
-import {
-  BallCollider,
-  CuboidCollider,
-  CylinderCollider,
-  Physics,
-  RapierRigidBody,
-  RigidBody,
-  InstancedRigidBodies,
-  useRapier,
-} from "@react-three/rapier";
+import { Physics } from "@react-three/rapier";
 import Lights from "./Lights";
-import Level from "./Level";
 import Player from "./Player/Player";
 import { useDispatch, useSelector } from "react-redux";
 import {
   IReactThreeFiberGameSlice,
   ReactThreeFiberGameActions,
 } from "@/app/store/ReactThreeFiberGameSlice";
-import GameMenu from "./Interface/GameMenu";
 import { AppDispatch } from "@/app/store";
-import { width } from "@fortawesome/free-regular-svg-icons/faSave";
 import ForestLevel from "./Level/ForestLevel";
 import Camera from "./Camera";
 import Controls from "./Controls";

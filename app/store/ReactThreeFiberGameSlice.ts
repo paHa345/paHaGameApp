@@ -165,12 +165,17 @@ export const createAndControlSparks = createAsyncThunk(
 
 export const throwBarrelAction = createAsyncThunk(
   "ReactThreeFiberGameState/throwBarrelAction",
-  async function (attackData: { id: string }, { rejectWithValue, dispatch, getState }) {
+  async function (_, { rejectWithValue, dispatch, getState }) {
     try {
       const state = getState() as IReactThreeFiberGameSlice;
-      if (state.ReactThreeFiberGameState.playerBlockStatus) return;
+      if (state.ReactThreeFiberGameState.playerThrowBarrelStatus) return;
+      if (!state.ReactThreeFiberGameState.playerPickedUpBarrel.id) return;
 
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      dispatch(ReactThreeFiberGameActions.setPlayerThrowBarrelStatus(true));
+
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      dispatch(ReactThreeFiberGameActions.deletePlayerPickedUpBarrelID());
+      dispatch(ReactThreeFiberGameActions.setPlayerThrowBarrelStatus(false));
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -205,7 +210,10 @@ export interface IReactThreeFiberGameSlice {
       canPickUp: boolean;
       barrelID: string | undefined;
     };
-    playerPickedUpBarrelID: undefined | string;
+    playerPickedUpBarrel: {
+      id: undefined | string;
+      index: number;
+    };
     playerThrowBarrelStatus: boolean;
 
     /**
@@ -317,7 +325,10 @@ interface IReactThreeFiberGameState {
     canPickUp: boolean;
     barrelID: string | undefined;
   };
-  playerPickedUpBarrelID: undefined | string;
+  playerPickedUpBarrel: {
+    id: undefined | string;
+    index: number;
+  };
   playerThrowBarrelStatus: boolean;
 
   startTime: number;
@@ -404,7 +415,10 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
     canPickUp: false,
     barrelID: undefined,
   },
-  playerPickedUpBarrelID: undefined,
+  playerPickedUpBarrel: {
+    id: undefined,
+    index: -1,
+  },
   playerThrowBarrelStatus: false,
 
   startTime: 0,
@@ -798,8 +812,20 @@ export const ReactThreeFiberGameSlice = createSlice({
       if (!state.playerCanPickUpBarrelStatus.canPickUp) return;
       if (state.playerCanPickUpBarrelStatus.barrelID === undefined) return;
       console.log(state.playerCanPickUpBarrelStatus.barrelID);
+      const index = state.barrelsArr.findIndex(
+        (el) => el.id === state.playerCanPickUpBarrelStatus.barrelID,
+      );
 
-      state.playerPickedUpBarrelID = state.playerCanPickUpBarrelStatus.barrelID;
+      state.playerPickedUpBarrel = {
+        id: state.playerCanPickUpBarrelStatus.barrelID,
+        index: index,
+      };
+    },
+    deletePlayerPickedUpBarrelID(state) {
+      state.playerPickedUpBarrel = {
+        id: undefined,
+        index: -1,
+      };
     },
     setPlayerThrowBarrelStatus(state, action) {
       state.playerThrowBarrelStatus = action.payload;

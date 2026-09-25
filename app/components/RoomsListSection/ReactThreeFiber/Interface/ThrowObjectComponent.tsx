@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 
 const ThrowObjectComponent = () => {
   const pickedUpBarrelID = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerPickedUpBarrelID,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerPickedUpBarrel.id,
   );
   const throwObject = useKeyboardControls((state) => {
     return state.throwObjectButton;

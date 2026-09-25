@@ -1,5 +1,8 @@
 import { AppDispatch } from "@/app/store";
-import { ReactThreeFiberGameActions } from "@/app/store/ReactThreeFiberGameSlice";
+import {
+  ReactThreeFiberGameActions,
+  throwBarrelAction,
+} from "@/app/store/ReactThreeFiberGameSlice";
 import { useKeyboardControls } from "@react-three/drei";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -15,7 +18,7 @@ const PlayerThrowObjectHandler = () => {
       },
       (value) => {
         if (value) {
-          console.log("throw object button");
+          dispatch(throwBarrelAction());
         }
       },
     );

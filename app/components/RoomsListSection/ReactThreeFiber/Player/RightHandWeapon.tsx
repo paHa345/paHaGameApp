@@ -1,4 +1,4 @@
-import { useFBX, useGLTF, useTexture } from "@react-three/drei";
+import { useGLTF, useTexture } from "@react-three/drei";
 import React, { useMemo, useRef } from "react";
 import * as THREE from "three";
 

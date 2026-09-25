@@ -1,5 +1,5 @@
 import { IReactThreeFiberGameSlice } from "@/app/store/ReactThreeFiberGameSlice";
-import { useFBX, useGLTF, useTexture } from "@react-three/drei";
+import { useGLTF, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef } from "react";
 import { useSelector } from "react-redux";

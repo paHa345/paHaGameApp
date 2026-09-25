@@ -5,6 +5,7 @@ import React, { useRef } from "react";
 import { useSelector } from "react-redux";
 import * as THREE from "three";
 import BarrelPickedUpMoveHandler from "./BarrelPickedUpMoveHandler";
+import ThrowPickedUpBarrelHandler from "./ThrowPickedUpBarrelHandler";
 
 const BarrelsMain = () => {
   const barrelsArr = useSelector(
@@ -58,6 +59,9 @@ const BarrelsMain = () => {
         <BarrelPickedUpMoveHandler
           instancedRapierBodies={instancedRapierBodies}
         ></BarrelPickedUpMoveHandler>
+        <ThrowPickedUpBarrelHandler
+          instancedRapierBodies={instancedRapierBodies}
+        ></ThrowPickedUpBarrelHandler>
       </>
     );
   }

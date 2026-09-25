@@ -10,8 +10,6 @@ const page = () => {
     "./models/DesertMountain/Plateau_desert_004.fbx",
     "./models/Houses/house_15_full.fbx",
     "./models/Houses/house_15_1.fbx",
-    "./models/Shields/shield_20.fbx",
-    "./models/Shields/shield_1.fbx",
   ];
 
   useGLTF.preload([

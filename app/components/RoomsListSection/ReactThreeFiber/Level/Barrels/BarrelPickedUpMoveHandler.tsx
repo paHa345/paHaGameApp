@@ -13,30 +13,27 @@ const BarrelPickedUpMoveHandler = ({ instancedRapierBodies }: IBarrelPickedUpPro
   const player = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerBodyRef,
   );
-  const pickedUpBarrelID = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerPickedUpBarrelID,
+  const pickedUpBarrel = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerPickedUpBarrel,
   );
 
   const barrelsArr = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.barrelsArr,
   );
-  const [pickedUpBarrelIndex, setPickedUpBarrelIndex] = useState(-1);
 
   useEffect(() => {
-    barrelsArr.forEach((el, index) => {
-      instancedRapierBodies.current[index].setBodyType(0, true);
-    });
-    const index = barrelsArr.findIndex((el) => el.id === pickedUpBarrelID);
-    setPickedUpBarrelIndex(index);
+    if (!pickedUpBarrel.id) return;
 
-    if (!instancedRapierBodies.current[pickedUpBarrelIndex]) return;
-    instancedRapierBodies.current[pickedUpBarrelIndex].setBodyType(2, true);
+    if (!instancedRapierBodies.current[pickedUpBarrel.index]) return;
+    instancedRapierBodies.current[pickedUpBarrel.index].setBodyType(2, true);
   });
 
   useFrame(() => {
+    if (!pickedUpBarrel.id) return;
+
     if (!player) return;
     if (!instancedRapierBodies.current) return;
-    const body = instancedRapierBodies.current[pickedUpBarrelIndex];
+    const body = instancedRapierBodies.current[pickedUpBarrel.index];
     if (!body) return;
     const playerPos = player?.translation();
     const playerQuat = player?.rotation();
