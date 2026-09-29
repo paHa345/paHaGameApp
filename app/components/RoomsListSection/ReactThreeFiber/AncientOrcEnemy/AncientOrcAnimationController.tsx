@@ -25,6 +25,7 @@ const AncientOrcAnimationController = ({
 
   useEffect(() => {
     const action = actions[animationName];
+    if (!action?.timeScale) return;
 
     if (action !== null) {
       action?.play();

@@ -1,20 +1,31 @@
 import { IReactThreeFiberGameSlice } from "@/app/store/ReactThreeFiberGameSlice";
 import { useGLTF } from "@react-three/drei";
-import { InstancedRigidBodies, RapierRigidBody, RigidBody } from "@react-three/rapier";
-import React, { useRef } from "react";
-import { useSelector } from "react-redux";
+import {
+  CuboidCollider,
+  InstancedRigidBodies,
+  RapierRigidBody,
+  RigidBody,
+} from "@react-three/rapier";
+import React, { useMemo, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
 import BarrelPickedUpMoveHandler from "./BarrelPickedUpMoveHandler";
 import ThrowPickedUpBarrelHandler from "./ThrowPickedUpBarrelHandler";
+import { useFrame } from "@react-three/fiber";
+import { collisionHandler } from "./BarrelsCollisionDetector";
+import { AppDispatch } from "@/app/store";
 
 const BarrelsMain = () => {
+  console.log("barrels redraw");
   const barrelsArr = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.barrelsArr,
   );
   const instancedRapierBodies = React.useRef<RapierRigidBody[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
 
   const bodies = React.useRef<any>([]);
   const instancedMeshRef = useRef<any>(null);
+  const barrelsCollisionHandler = useMemo(() => collisionHandler(dispatch), [dispatch]);
 
   function Barrels() {
     const { nodes } = useGLTF("./models/PlatformerKit/barrel.glb", true);
@@ -49,6 +60,7 @@ const BarrelsMain = () => {
           ref={instancedRapierBodies}
           instances={instances}
           colliders="hull"
+          onCollisionEnter={barrelsCollisionHandler}
         >
           <instancedMesh
             frustumCulled={false}
@@ -62,6 +74,7 @@ const BarrelsMain = () => {
         <ThrowPickedUpBarrelHandler
           instancedRapierBodies={instancedRapierBodies}
         ></ThrowPickedUpBarrelHandler>
+        {/* <BarrelsCollisionDetector></BarrelsCollisionDetector> */}
       </>
     );
   }

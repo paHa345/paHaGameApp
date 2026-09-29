@@ -1,8 +1,12 @@
-import { IReactThreeFiberGameSlice } from "@/app/store/ReactThreeFiberGameSlice";
+import { AppDispatch } from "@/app/store";
+import {
+  IReactThreeFiberGameSlice,
+  ReactThreeFiberGameActions,
+} from "@/app/store/ReactThreeFiberGameSlice";
 import { useFrame } from "@react-three/fiber";
 import { RapierRigidBody } from "@react-three/rapier";
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
 
 interface IThrowPickedUpBarrelProps {
@@ -12,6 +16,10 @@ interface IThrowPickedUpBarrelProps {
 const ThrowPickedUpBarrelHandler = ({ instancedRapierBodies }: IThrowPickedUpBarrelProps) => {
   const throwStatus = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerThrowBarrelStatus,
+  );
+  const dispatch = useDispatch<AppDispatch>();
+  const setPlayerThrowBarrelTimestamp = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerThrowBarrelTimestamp,
   );
 
   const pickedUpBarrel = useSelector(
@@ -26,11 +34,11 @@ const ThrowPickedUpBarrelHandler = ({ instancedRapierBodies }: IThrowPickedUpBar
   const pendingThrowRef = useRef(false);
 
   useEffect(() => {
-    if (!throwStatus) {
-      thrownRef.current = false;
-      pendingThrowRef.current = false;
-      return;
-    }
+    // if (!throwStatus) {
+    thrownRef.current = false;
+    pendingThrowRef.current = false;
+    //   return;
+    // }
 
     if (thrownRef.current) return;
     thrownRef.current = true;
@@ -44,10 +52,21 @@ const ThrowPickedUpBarrelHandler = ({ instancedRapierBodies }: IThrowPickedUpBar
 
     // ✅ Откладываем импульс на следующий кадр
     pendingThrowRef.current = true;
-  }, [throwStatus]);
+  }, [setPlayerThrowBarrelTimestamp]);
+
+  useFrame(() => {
+    if (throwStatus.status) {
+      const l = instancedRapierBodies.current?.[throwStatus.index].linvel();
+      const speed = Math.sqrt(l.x ** 2 + l.y ** 2 + l.z ** 2);
+
+      dispatch(ReactThreeFiberGameActions.setPlayerThrowedBarrelSpeed(speed));
+    }
+  });
 
   useFrame(() => {
     if (!pendingThrowRef.current) return;
+
+    dispatch(ReactThreeFiberGameActions.deletePlayerPickedUpBarrelID());
 
     const body = instancedRapierBodies.current?.[pickedUpBarrel.index];
     if (!body) return;

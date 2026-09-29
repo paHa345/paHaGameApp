@@ -17,10 +17,6 @@ const BarrelPickedUpMoveHandler = ({ instancedRapierBodies }: IBarrelPickedUpPro
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerPickedUpBarrel,
   );
 
-  const barrelsArr = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.barrelsArr,
-  );
-
   useEffect(() => {
     if (!pickedUpBarrel.id) return;
 

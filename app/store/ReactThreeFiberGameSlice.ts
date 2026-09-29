@@ -168,14 +168,14 @@ export const throwBarrelAction = createAsyncThunk(
   async function (_, { rejectWithValue, dispatch, getState }) {
     try {
       const state = getState() as IReactThreeFiberGameSlice;
-      if (state.ReactThreeFiberGameState.playerThrowBarrelStatus) return;
+      if (state.ReactThreeFiberGameState.playerThrowBarrelStatus.status) return;
       if (!state.ReactThreeFiberGameState.playerPickedUpBarrel.id) return;
 
       dispatch(ReactThreeFiberGameActions.setPlayerThrowBarrelStatus(true));
+      dispatch(ReactThreeFiberGameActions.setPlayerThrowBarrelTimestamp());
 
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      dispatch(ReactThreeFiberGameActions.deletePlayerPickedUpBarrelID());
-      dispatch(ReactThreeFiberGameActions.setPlayerThrowBarrelStatus(false));
+      // await new Promise((resolve) => setTimeout(resolve, 2000));
+      // dispatch(ReactThreeFiberGameActions.setPlayerThrowBarrelStatus(false));
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -214,7 +214,13 @@ export interface IReactThreeFiberGameSlice {
       id: undefined | string;
       index: number;
     };
-    playerThrowBarrelStatus: boolean;
+    playerThrowBarrelStatus: {
+      status: boolean;
+      index: number;
+      barrelID: string | undefined;
+    };
+    playerThrowBarrelTimestamp: string;
+    playerThrowedBarrelSpeed: number;
 
     /**
      * Time
@@ -329,7 +335,13 @@ interface IReactThreeFiberGameState {
     id: undefined | string;
     index: number;
   };
-  playerThrowBarrelStatus: boolean;
+  playerThrowBarrelStatus: {
+    status: boolean;
+    index: number;
+    barrelID: string | undefined;
+  };
+  playerThrowBarrelTimestamp: string;
+  playerThrowedBarrelSpeed: number;
 
   startTime: number;
   endTime: number;
@@ -419,7 +431,9 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
     id: undefined,
     index: -1,
   },
-  playerThrowBarrelStatus: false,
+  playerThrowBarrelStatus: { status: false, index: -1, barrelID: undefined },
+  playerThrowBarrelTimestamp: "",
+  playerThrowedBarrelSpeed: 0,
 
   startTime: 0,
   endTime: 0,
@@ -828,7 +842,30 @@ export const ReactThreeFiberGameSlice = createSlice({
       };
     },
     setPlayerThrowBarrelStatus(state, action) {
-      state.playerThrowBarrelStatus = action.payload;
+      state.playerThrowBarrelStatus = {
+        status: action.payload,
+        index: state.playerPickedUpBarrel.index,
+        barrelID: state.playerPickedUpBarrel.id,
+      };
+    },
+    stopPlayerThrowBarrel(state, action) {
+      if (
+        state.playerThrowBarrelStatus.barrelID === action.payload &&
+        state.playerThrowBarrelStatus.status
+      ) {
+        console.log(state.playerThrowedBarrelSpeed);
+        state.playerThrowBarrelStatus = {
+          status: false,
+          index: -1,
+          barrelID: undefined,
+        };
+      }
+    },
+    setPlayerThrowBarrelTimestamp(state) {
+      state.playerThrowBarrelTimestamp = String(`${Date.now()}_${state.playerPickedUpBarrel.id}`);
+    },
+    setPlayerThrowedBarrelSpeed(state, action) {
+      state.playerThrowedBarrelSpeed = action.payload;
     },
   },
 });
