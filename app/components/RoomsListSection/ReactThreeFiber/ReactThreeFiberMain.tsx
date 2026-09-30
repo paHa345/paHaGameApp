@@ -14,6 +14,7 @@ import {
   ReactThreeFiberGameActions,
   setStartAttackStatus,
   setStartBlockAction,
+  stopPlayerThrowBarrelAndCalculateImpact,
 } from "@/app/store/ReactThreeFiberGameSlice";
 import PreloadModelsComponent from "./PreloadModelsComponent";
 import PlayerHealthPanel from "./Player/PlayerHealthPanel";

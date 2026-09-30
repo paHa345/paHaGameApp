@@ -168,6 +168,9 @@ export const throwBarrelAction = createAsyncThunk(
   async function (_, { rejectWithValue, dispatch, getState }) {
     try {
       const state = getState() as IReactThreeFiberGameSlice;
+      console.log("Throw");
+      console.log(state.ReactThreeFiberGameState.playerThrowBarrelStatus.status);
+      console.log(state.ReactThreeFiberGameState.playerPickedUpBarrel.id);
       if (state.ReactThreeFiberGameState.playerThrowBarrelStatus.status) return;
       if (!state.ReactThreeFiberGameState.playerPickedUpBarrel.id) return;
 
@@ -176,6 +179,37 @@ export const throwBarrelAction = createAsyncThunk(
 
       // await new Promise((resolve) => setTimeout(resolve, 2000));
       // dispatch(ReactThreeFiberGameActions.setPlayerThrowBarrelStatus(false));
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const stopPlayerThrowBarrelAndCalculateImpact = createAsyncThunk(
+  "ReactThreeFiberGameState/stopPlayerThrowBarrelAndCalculateImpact",
+  async function (
+    barrelAndObjectData: {
+      barrelID: string;
+      enemyObjectData: { id: string | undefined; type: string | undefined };
+    },
+
+    { rejectWithValue, dispatch, getState },
+  ) {
+    try {
+      const state = getState() as IReactThreeFiberGameSlice;
+      if (state.ReactThreeFiberGameState.playerThrowedBarrelSpeed < 12) return;
+      if (!state.ReactThreeFiberGameState.playerThrowBarrelStatus.status) return;
+
+      dispatch(ReactThreeFiberGameActions.stopPlayerThrowBarrel());
+      console.log(state.ReactThreeFiberGameState.playerThrowedBarrelSpeed);
+
+      if (!barrelAndObjectData.enemyObjectData.id) return;
+      dispatch(
+        ReactThreeFiberGameActions.setNPCReduceHP({
+          id: barrelAndObjectData.enemyObjectData.id,
+          damage: 50,
+        }),
+      );
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -748,7 +782,21 @@ export const ReactThreeFiberGameSlice = createSlice({
       state.playerStat.currentHP = state.playerStat.currentHP - action.payload;
     },
 
-    setNPCReduceHP(state, action) {
+    // {
+    //           id: enemyUserData.id,
+    //           damage: 50,
+    //         }
+
+    setNPCReduceHP(
+      state,
+      action: {
+        payload: {
+          id: string;
+          damage: number;
+        };
+        type: string;
+      },
+    ) {
       const NPCHP = state.enemyNPCStat[action.payload.id].currentHP;
       if (NPCHP) {
         state.enemyNPCStat[action.payload.id].currentHP = NPCHP - action.payload.damage;
@@ -834,6 +882,11 @@ export const ReactThreeFiberGameSlice = createSlice({
         id: state.playerCanPickUpBarrelStatus.barrelID,
         index: index,
       };
+      state.playerThrowBarrelStatus = {
+        status: false,
+        index: -1,
+        barrelID: undefined,
+      };
     },
     deletePlayerPickedUpBarrelID(state) {
       state.playerPickedUpBarrel = {
@@ -848,17 +901,31 @@ export const ReactThreeFiberGameSlice = createSlice({
         barrelID: state.playerPickedUpBarrel.id,
       };
     },
-    stopPlayerThrowBarrel(state, action) {
+    stopPlayerThrowBarrel(
+      state,
+      // action,
+      // action: {
+      //   payload: {
+      //     barrelID: string;
+      //     enemyObjectData: { id: string | undefined; type: string | undefined };
+      //   };
+      //   type: string;
+      // },
+    ) {
+      console.log(state.playerThrowedBarrelSpeed);
       if (
-        state.playerThrowBarrelStatus.barrelID === action.payload &&
+        // state.playerThrowBarrelStatus.barrelID === action.payload.barrelID &&
         state.playerThrowBarrelStatus.status
       ) {
-        console.log(state.playerThrowedBarrelSpeed);
         state.playerThrowBarrelStatus = {
           status: false,
           index: -1,
           barrelID: undefined,
         };
+        console.log(state.playerThrowedBarrelSpeed);
+        // if (action.payload.enemyObjectData.id && action.payload.enemyObjectData.type === "npc") {
+        //   console.log(state.enemyNPCStat[action.payload.enemyObjectData.id].currentHP);
+        // }
       }
     },
     setPlayerThrowBarrelTimestamp(state) {

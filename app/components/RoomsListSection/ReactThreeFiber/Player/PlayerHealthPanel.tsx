@@ -1,4 +1,5 @@
 import { IReactThreeFiberGameSlice } from "@/app/store/ReactThreeFiberGameSlice";
+import { useThree } from "@react-three/fiber";
 import { polygon } from "framer-motion/client";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -26,6 +27,7 @@ const PlayerHealthPanel = () => {
     canvas.height = 250;
     const ctx = canvas.getContext("2d");
 
+    console.log(window.innerWidth);
     // Функция отрисовки
     function drawIcon() {
       if (!ctx) return;
@@ -67,7 +69,7 @@ const PlayerHealthPanel = () => {
         style={{
           clipPath: `polygon(0 ${100 - health}%, 100% ${100 - health}%, 100% 100%, 0 100%)`,
         }}
-        className=" absolute bottom-3 left-2 w-52 h-52 rounded-full bg-red-900  "
+        className="  lg:w-52 lg:h-52 w-28 h-28  absolute bottom-3 left-2 rounded-full bg-red-900  "
       ></div>
       <div className=" absolute bottom-[-270px] left-0">
         <img src="/RPGUI/PlayerHealthPanel.png" alt="" />
