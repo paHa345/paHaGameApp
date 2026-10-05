@@ -19,6 +19,15 @@ const PlayerHealthPanel = () => {
     console.log(health);
   }, [playerStat]);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   useEffect(() => {
     setHealth((playerStat.currentHP / playerStat.baseHP) * 100);
 
@@ -39,7 +48,17 @@ const PlayerHealthPanel = () => {
 
       img.onload = () => {
         // Отрисовываем изображение на canvas
-        ctx.drawImage(img, 0, 0, 530, 230, 0, 0, 530, 230);
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          window.innerWidth < 1024 ? 530 / 2 : 530,
+          window.innerWidth < 1024 ? 230 / 2 : 230,
+          0,
+          0,
+          window.innerWidth < 1024 ? 530 / 2 : 530,
+          window.innerWidth < 1024 ? 230 / 2 : 230,
+        );
         // Создаем текстуру
         const newTexture = new THREE.CanvasTexture(canvas);
         newTexture.needsUpdate = true;
@@ -69,10 +88,15 @@ const PlayerHealthPanel = () => {
         style={{
           clipPath: `polygon(0 ${100 - health}%, 100% ${100 - health}%, 100% 100%, 0 100%)`,
         }}
-        className="  lg:w-52 lg:h-52 w-28 h-28  absolute bottom-3 left-2 rounded-full bg-red-900  "
+        className="  lg:w-52 lg:h-52 w-[112px] h-[112px]  absolute bottom-[6px] left-[3px] lg:bottom-[15px] lg:left-[14.5px] rounded-full bg-red-900  "
       ></div>
-      <div className=" absolute bottom-[-270px] left-0">
-        <img src="/RPGUI/PlayerHealthPanel.png" alt="" />
+      <div className=" absolute bottom-[-140px] lg:bottom-[-280px] left-0">
+        <img
+          height={isMobile ? 530 / 2 : 530}
+          width={isMobile ? 550 / 2 : 550}
+          src="/RPGUI/PlayerHealthPanel.png"
+          alt=""
+        />
       </div>
     </>
   );

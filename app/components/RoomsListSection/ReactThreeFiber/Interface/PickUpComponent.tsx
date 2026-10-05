@@ -17,9 +17,9 @@ const PickUpComponent = () => {
       {pickUpStatus && (
         <div className=" flex justify-center ">
           <div
-            className={` flex text-center ${action ? "bg-opacity-80" : ""} bg-opacity-20  w-10 h-12 mx-1 my-1 bg-slate-400 border-solid border-2 border-slate-50 `}
+            className={` flex text-center ${action ? "bg-opacity-80" : ""} bg-opacity-20  w-[22px] h-[24px]   lg:w-10 lg:h-12 mx-1 my-1 bg-slate-400 border-solid border-2 border-slate-50 `}
           >
-            <p className=" text-slate-50 text-3xl">E</p>
+            <p className=" absolute top-[3px] text-slate-50 text-xl">E</p>
           </div>
         </div>
       )}

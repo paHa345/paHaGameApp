@@ -10,6 +10,7 @@ import { AppDispatch } from "@/app/store";
 import { addEffect, useThree } from "@react-three/fiber";
 import PickUpComponent from "./PickUpComponent";
 import ThrowObjectComponent from "./ThrowObjectComponent";
+import InventoryMain from "./InventoryMain";
 
 const BebasNeue = localFont({
   src: "../../../../../public/fonts/BebasNeue-Regular.ttf",
@@ -95,14 +96,14 @@ const Interface = () => {
     <div className={`${Shonen.className} fixed top-0 left-0 w-full h-full pointer-events-none`}>
       {/* Time */}
       {/* {phase === "playing" && ( */}
-      <div className=" absolute flex justify-center items-center top-20 left-0 w-full">
+      {/* <div className=" absolute flex justify-center items-center top-20 left-0 w-full">
         <div
           ref={time}
           className=" bg-opacity-20  w-2/3 text-slate-50 text-4xl bg-slate-300 pt-2 text-center "
         >
           0.00
         </div>
-      </div>
+      </div> */}
       {/* )} */}
 
       {/* Restart */}
@@ -120,6 +121,10 @@ const Interface = () => {
         </div>
       )}
 
+      {/* Inventory Menu */}
+
+      <InventoryMain></InventoryMain>
+
       {/* Controls */}
       <PickUpComponent></PickUpComponent>
       <ThrowObjectComponent></ThrowObjectComponent>
@@ -127,23 +132,23 @@ const Interface = () => {
       <div className=" absolute bottom-20 left-0 w-full ">
         <div className=" flex justify-center ">
           <div
-            className={`bg-opacity-20  ${forward ? "bg-opacity-80" : ""} w-10 h-12 mx-1 my-1 bg-slate-400 border-solid border-2 border-slate-50 `}
+            className={`bg-opacity-20  ${forward ? "bg-opacity-80" : ""} w-[20px] h-[24px] lg:w-10 lg:h-12 mx-1 my-1 bg-slate-400 border-solid border-2 border-slate-50 `}
           ></div>
         </div>
         <div className=" flex justify-center ">
           <div
-            className={`bg-opacity-20  ${leftward ? "bg-opacity-80" : ""} w-10 h-12 mx-1 my-1 bg-slate-400 border-solid border-2 border-slate-50 `}
+            className={`bg-opacity-20  ${leftward ? "bg-opacity-80" : ""} w-[20px] h-[24px] lg:w-10 lg:h-12 mx-1 my-1 bg-slate-400 border-solid border-2 border-slate-50 `}
           ></div>
           <div
-            className={`bg-opacity-20  ${backward ? "bg-opacity-80" : ""} w-10 h-12 mx-1 my-1 bg-slate-400 border-solid border-2 border-slate-50 `}
+            className={`bg-opacity-20  ${backward ? "bg-opacity-80" : ""} w-[20px] h-[24px] lg:w-10 lg:h-12 mx-1 my-1 bg-slate-400 border-solid border-2 border-slate-50 `}
           ></div>
           <div
-            className={`bg-opacity-20  ${rightward ? "bg-opacity-80" : ""} w-10 h-12 mx-1 my-1 bg-slate-400 border-solid border-2 border-slate-50 `}
+            className={`bg-opacity-20  ${rightward ? "bg-opacity-80" : ""} w-[20px] h-[24px] lg:w-10 lg:h-12 mx-1 my-1 bg-slate-400 border-solid border-2 border-slate-50 `}
           ></div>
         </div>
         <div className=" flex justify-center ">
           <div
-            className={`bg-opacity-20  ${jump ? "bg-opacity-80" : ""} w-36 h-12 mx-1 my-1 bg-slate-400 border-solid border-2 border-slate-50 `}
+            className={`bg-opacity-20  ${jump ? "bg-opacity-80" : ""} w-[72px] h-[24px] lg:w-36 lg:h-12 mx-1 my-1 bg-slate-400 border-solid border-2 border-slate-50 `}
           ></div>{" "}
         </div>
       </div>

@@ -339,6 +339,11 @@ export interface IReactThreeFiberGameSlice {
       id: string;
       position: THREE.Vector3;
     }[];
+
+    /**
+     * UI
+     */
+    showInventory: boolean;
   };
 }
 
@@ -440,6 +445,7 @@ interface IReactThreeFiberGameState {
     id: string;
     position: THREE.Vector3;
   }[];
+  showInventory: boolean;
 }
 
 const initReactThreeFiberGameState: IReactThreeFiberGameState = {
@@ -554,6 +560,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       position: new THREE.Vector3(22, 1, 22),
     },
   ],
+  showInventory: false,
 };
 
 export const ReactThreeFiberGameSlice = createSlice({
@@ -933,6 +940,10 @@ export const ReactThreeFiberGameSlice = createSlice({
     },
     setPlayerThrowedBarrelSpeed(state, action) {
       state.playerThrowedBarrelSpeed = action.payload;
+    },
+    setShowInventory(state, action) {
+      if (action.payload === state.showInventory) return;
+      state.showInventory = action.payload;
     },
   },
 });

@@ -78,6 +78,7 @@ const ReactThreeFiberMain = () => {
             { name: "rotateCamera", keys: ["F2"] },
             { name: "actionButton", keys: ["KeyE"] },
             { name: "throwObjectButton", keys: ["KeyF"] },
+            { name: "showInventoryButton", keys: ["KeyI"] },
           ]}
         >
           <Canvas
