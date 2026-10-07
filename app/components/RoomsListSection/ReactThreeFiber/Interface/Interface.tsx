@@ -10,7 +10,8 @@ import { AppDispatch } from "@/app/store";
 import { addEffect, useThree } from "@react-three/fiber";
 import PickUpComponent from "./PickUpComponent";
 import ThrowObjectComponent from "./ThrowObjectComponent";
-import InventoryMain from "./InventoryMain";
+import InventoryMain from "./Inventory/InventoryMain";
+import PointerMain from "./InterfacePointer/PointerMain";
 
 const BebasNeue = localFont({
   src: "../../../../../public/fonts/BebasNeue-Regular.ttf",
@@ -124,6 +125,9 @@ const Interface = () => {
       {/* Inventory Menu */}
 
       <InventoryMain></InventoryMain>
+
+      {/* Pointer */}
+      <PointerMain></PointerMain>
 
       {/* Controls */}
       <PickUpComponent></PickUpComponent>

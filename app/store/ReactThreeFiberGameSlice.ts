@@ -618,6 +618,7 @@ export const ReactThreeFiberGameSlice = createSlice({
       state.canvasWidth = action.payload.width;
     },
     setMouseCoords(state, action) {
+      // console.log(action.payload);
       state.mouseCoords.x = state.mouseCoords.x + action.payload.x / 3;
 
       if (
@@ -941,7 +942,8 @@ export const ReactThreeFiberGameSlice = createSlice({
     setPlayerThrowedBarrelSpeed(state, action) {
       state.playerThrowedBarrelSpeed = action.payload;
     },
-    setShowInventory(state, action) {
+    setShowHideInventory(state, action) {
+      console.log(action.payload);
       if (action.payload === state.showInventory) return;
       state.showInventory = action.payload;
     },

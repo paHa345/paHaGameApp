@@ -156,7 +156,6 @@ const Player = () => {
       },
       (value) => {
         if (value) {
-          console.log("Menu");
           dispatch(ReactThreeFiberGameActions.setGamePauseStatus());
         }
       },
