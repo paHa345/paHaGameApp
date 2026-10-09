@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import localFont from "next/font/local";
-import { useKeyboardControls } from "@react-three/drei";
+import { useKeyboardControls, useTexture } from "@react-three/drei";
 import { useDispatch, useSelector } from "react-redux";
 import {
   IReactThreeFiberGameSlice,
@@ -12,6 +12,7 @@ import PickUpComponent from "./PickUpComponent";
 import ThrowObjectComponent from "./ThrowObjectComponent";
 import InventoryMain from "./Inventory/InventoryMain";
 import PointerMain from "./InterfacePointer/PointerMain";
+import MoveButtonElMain from "./MoveButtonEl/MoveButtonElMain";
 
 const BebasNeue = localFont({
   src: "../../../../../public/fonts/BebasNeue-Regular.ttf",
@@ -31,36 +32,21 @@ const Shonen = localFont({
 
 const Interface = () => {
   const dispatch = useDispatch<AppDispatch>();
+  useTexture.preload("/RPGUI/InventoryMainMenu_001.png");
   // const threeState = useThree();
 
-  const time = useRef<HTMLDivElement>(null);
+  // const time = useRef<HTMLDivElement>(null);
 
-  const startTime = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.startTime,
-  );
-  const endTime = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.endTime,
-  );
+  // const startTime = useSelector(
+  //   (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.startTime,
+  // );
+  // const endTime = useSelector(
+  //   (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.endTime,
+  // );
 
-  const phase = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.phase,
-  );
-
-  const forward = useKeyboardControls((state) => {
-    return state.forward;
-  });
-  const backward = useKeyboardControls((state) => {
-    return state.backward;
-  });
-  const leftward = useKeyboardControls((state) => {
-    return state.leftward;
-  });
-  const rightward = useKeyboardControls((state) => {
-    return state.rightward;
-  });
-  const jump = useKeyboardControls((state) => {
-    return state.jump;
-  });
+  // const phase = useSelector(
+  //   (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.phase,
+  // );
 
   // const startGameButtonHandler = () => {
   //   threeState.gl.domElement.requestPointerLock();
@@ -70,28 +56,28 @@ const Interface = () => {
     dispatch(ReactThreeFiberGameActions.restart());
   };
 
-  useEffect(() => {
-    const unsubscibeEffect = addEffect(() => {
-      let elapsedTime: number | string = 0;
+  // useEffect(() => {
+  //   const unsubscibeEffect = addEffect(() => {
+  //     let elapsedTime: number | string = 0;
 
-      if (phase === "playing") {
-        elapsedTime = Date.now() - startTime;
-      } else if (phase === "ended") {
-        elapsedTime = endTime - startTime;
-      }
+  //     if (phase === "playing") {
+  //       elapsedTime = Date.now() - startTime;
+  //     } else if (phase === "ended") {
+  //       elapsedTime = endTime - startTime;
+  //     }
 
-      elapsedTime /= 1000;
-      elapsedTime = elapsedTime.toFixed(2);
+  //     elapsedTime /= 1000;
+  //     elapsedTime = elapsedTime.toFixed(2);
 
-      if (time.current) {
-        time.current.textContent = elapsedTime;
-      }
-    });
+  //     if (time.current) {
+  //       time.current.textContent = elapsedTime;
+  //     }
+  //   });
 
-    return () => {
-      unsubscibeEffect();
-    };
-  }, [phase]);
+  //   return () => {
+  //     unsubscibeEffect();
+  //   };
+  // }, [phase]);
 
   return (
     <div className={`${Shonen.className} fixed top-0 left-0 w-full h-full pointer-events-none`}>
@@ -108,7 +94,7 @@ const Interface = () => {
       {/* )} */}
 
       {/* Restart */}
-      {phase === "ended" && (
+      {/* {phase === "ended" && (
         <div
           onClick={restartButtonHandler}
           className=" pointer-events-auto cursor-pointer  absolute flex justify-center items-center top-1/4  left-0 w-full"
@@ -120,7 +106,7 @@ const Interface = () => {
             Заново
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Inventory Menu */}
 
@@ -129,33 +115,12 @@ const Interface = () => {
       {/* Pointer */}
       <PointerMain></PointerMain>
 
+      {/* Move buttons */}
+      <MoveButtonElMain></MoveButtonElMain>
+
       {/* Controls */}
       <PickUpComponent></PickUpComponent>
       <ThrowObjectComponent></ThrowObjectComponent>
-
-      <div className=" absolute bottom-20 left-0 w-full ">
-        <div className=" flex justify-center ">
-          <div
-            className={`bg-opacity-20  ${forward ? "bg-opacity-80" : ""} w-[20px] h-[24px] lg:w-10 lg:h-12 mx-1 my-1 bg-slate-400 border-solid border-2 border-slate-50 `}
-          ></div>
-        </div>
-        <div className=" flex justify-center ">
-          <div
-            className={`bg-opacity-20  ${leftward ? "bg-opacity-80" : ""} w-[20px] h-[24px] lg:w-10 lg:h-12 mx-1 my-1 bg-slate-400 border-solid border-2 border-slate-50 `}
-          ></div>
-          <div
-            className={`bg-opacity-20  ${backward ? "bg-opacity-80" : ""} w-[20px] h-[24px] lg:w-10 lg:h-12 mx-1 my-1 bg-slate-400 border-solid border-2 border-slate-50 `}
-          ></div>
-          <div
-            className={`bg-opacity-20  ${rightward ? "bg-opacity-80" : ""} w-[20px] h-[24px] lg:w-10 lg:h-12 mx-1 my-1 bg-slate-400 border-solid border-2 border-slate-50 `}
-          ></div>
-        </div>
-        <div className=" flex justify-center ">
-          <div
-            className={`bg-opacity-20  ${jump ? "bg-opacity-80" : ""} w-[72px] h-[24px] lg:w-36 lg:h-12 mx-1 my-1 bg-slate-400 border-solid border-2 border-slate-50 `}
-          ></div>{" "}
-        </div>
-      </div>
     </div>
   );
 };

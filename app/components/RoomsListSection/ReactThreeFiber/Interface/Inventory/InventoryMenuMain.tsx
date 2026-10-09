@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 interface IInventoryMenuProps {
   isMobile: boolean;
 }
+
 const InventoryMenuMain = ({ isMobile }: IInventoryMenuProps) => {
   return (
     <div>
@@ -10,34 +11,37 @@ const InventoryMenuMain = ({ isMobile }: IInventoryMenuProps) => {
         <img
           //   height={isMobile ? 400 : 800}
           //   width={isMobile ? 400 : 800}
-          src="/RPGUI/InventoryMainMenu_001.png"
+          src="/RPGUI/InventoryMainMenu_001.webp"
           alt=""
         />
+        <div
+          className={` z-10 bg-amber-400 absolute top-[100px] right-[100px] h-[50px] w-[50px] `}
+        ></div>
         <div className=" right-[107px] top-[50px] w-[55px] h-[63px] absolute overflow-hidden ">
           <img
             className={` h-[500%] relative max-w-none top-[-255px] left-[-29px]`}
-            src="/RPGUI/InventoryMainMenu_001.png"
+            src="/RPGUI/InventoryMainMenu_001.webp"
             alt=""
           />
         </div>
         <div className=" right-[271px] top-[50px] w-[25px] h-[80px] absolute overflow-hidden ">
           <img
             className={` h-[500%] relative max-w-none top-[-330px] left-[-9px]`}
-            src="/RPGUI/InventoryMainMenu_001.png"
+            src="/RPGUI/InventoryMainMenu_001.webp"
             alt=""
           />
         </div>
         <div className=" right-[199px] top-[28px] w-[36px] h-[40px] absolute overflow-hidden ">
           <img
             className={` h-[1200%] relative max-w-none top-[-407px] left-[-202px]`}
-            src="/RPGUI/InventoryMainMenu_001.png"
+            src="/RPGUI/InventoryMainMenu_001.webp"
             alt=""
           />
         </div>
         <div className=" right-[181px] top-[85px] w-[70px] h-[83px] absolute overflow-hidden ">
           <img
             className={` h-[500%] relative max-w-none top-[-340px] left-[-108px]`}
-            src="/RPGUI/InventoryMainMenu_001.png"
+            src="/RPGUI/InventoryMainMenu_001.webp"
             alt=""
           />
         </div>

@@ -50,6 +50,28 @@ const ReactThreeFiberMain = () => {
   //   });
   // });
 
+  useEffect(() => {
+    dispatch(
+      ReactThreeFiberGameActions.setWindowHeightWidth({
+        height: window.innerHeight,
+        width: innerWidth,
+      }),
+    );
+    const handleResize = () => {
+      dispatch(
+        ReactThreeFiberGameActions.setWindowHeightWidth({
+          height: window.innerHeight,
+          width: innerWidth,
+        }),
+      );
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const canvasClickHandler = (e: React.PointerEvent) => {
     e.preventDefault();
     // dispatch(ReactThreeFiberGameActions.setPlayerStartAttack());

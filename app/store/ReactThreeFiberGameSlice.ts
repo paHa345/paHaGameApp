@@ -224,7 +224,13 @@ export interface IReactThreeFiberGameSlice {
     cameraPosition: [number, number, number];
     cameraRotationStatus: boolean;
 
+    windowHeightWidth: {
+      height: number;
+      width: number;
+    };
+
     mouseCoords: { x: number; y: number };
+    pointerCoords: { x: number; y: number };
 
     /**
      * Players
@@ -353,8 +359,13 @@ interface IReactThreeFiberGameState {
   gamePauseStatus: boolean;
   cameraPosition: [number, number, number];
   cameraRotationStatus: boolean;
+  windowHeightWidth: {
+    height: number;
+    width: number;
+  };
 
   mouseCoords: { x: number; y: number };
+  pointerCoords: { x: number; y: number };
 
   playerBodyRef?: RapierRigidBody | null;
   playerMesh?: THREE.Mesh;
@@ -454,8 +465,14 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
   gamePauseStatus: true,
   cameraPosition: [0, 10, 0],
   cameraRotationStatus: false,
+  windowHeightWidth: {
+    height: 0,
+    width: 0,
+  },
 
   mouseCoords: { x: 0, y: 0 },
+  pointerCoords: { x: 0, y: 0 },
+
   playerAttackStatus: false,
   playerMoveStatus: false,
   playerStat: {
@@ -619,6 +636,31 @@ export const ReactThreeFiberGameSlice = createSlice({
     },
     setMouseCoords(state, action) {
       // console.log(action.payload);
+
+      if (state.showInventory) {
+        // if (state.pointerCoords.y + action.payload.y * 100 < 0) return;
+        // if (state.pointerCoords.x + action.payload.x * 100 < 0) return;
+
+        if (state.pointerCoords.x + action.payload.x * 100 > state.windowHeightWidth.width) {
+          state.pointerCoords.x = state.windowHeightWidth.width;
+        } else {
+          state.pointerCoords.x =
+            state.pointerCoords.x + action.payload.x * 100 < 0
+              ? 0
+              : state.pointerCoords.x + action.payload.x * 100;
+        }
+        if (state.pointerCoords.y + action.payload.y * 100 > state.windowHeightWidth.height) {
+          state.pointerCoords.y = state.windowHeightWidth.height;
+        } else {
+          state.pointerCoords.y =
+            state.pointerCoords.y + action.payload.y * 100 < 0
+              ? 0
+              : state.pointerCoords.y + action.payload.y * 100;
+        }
+      }
+
+      if (state.showInventory) return;
+
       state.mouseCoords.x = state.mouseCoords.x + action.payload.x / 3;
 
       if (
@@ -946,6 +988,10 @@ export const ReactThreeFiberGameSlice = createSlice({
       console.log(action.payload);
       if (action.payload === state.showInventory) return;
       state.showInventory = action.payload;
+    },
+    setWindowHeightWidth(state, action) {
+      state.windowHeightWidth.height = action.payload.height;
+      state.windowHeightWidth.width = action.payload.width;
     },
   },
 });

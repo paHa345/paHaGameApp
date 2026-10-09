@@ -2,7 +2,7 @@
 import React from "react";
 import WebGLTestMain from "../components/RoomsListSection/WebGLTestMain";
 import ReactThreeFiberMain from "../components/RoomsListSection/ReactThreeFiber/ReactThreeFiberMain";
-import { useFBX, useGLTF } from "@react-three/drei";
+import { useFBX, useGLTF, useTexture } from "@react-three/drei";
 
 const page = () => {
   const modelPaths = [

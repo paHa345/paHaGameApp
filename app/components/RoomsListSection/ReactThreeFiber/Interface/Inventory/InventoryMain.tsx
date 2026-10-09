@@ -3,7 +3,7 @@ import {
   IReactThreeFiberGameSlice,
   ReactThreeFiberGameActions,
 } from "@/app/store/ReactThreeFiberGameSlice";
-import { useKeyboardControls } from "@react-three/drei";
+import { useKeyboardControls, useTexture } from "@react-three/drei";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import InventoryMenuMain from "./InventoryMenuMain";
