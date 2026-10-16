@@ -15,9 +15,10 @@ const PointerMain = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       if (showInventory) {
-        console.log(pointerCoords);
-        console.log(window.innerWidth);
-        console.log(window.innerHeight);
+        const stack = document.elementsFromPoint(pointerCoords.x, pointerCoords.y).find((el) => {
+          return el.classList.contains("equipmentContainer");
+        });
+        console.log(stack?.getAttribute("data-equipmenttype"));
       }
     }, 1000);
 

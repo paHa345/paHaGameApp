@@ -32,7 +32,7 @@ const Shonen = localFont({
 
 const Interface = () => {
   const dispatch = useDispatch<AppDispatch>();
-  useTexture.preload("/RPGUI/InventoryMainMenu_001.png");
+  useTexture.preload("/RPGUI/InventoryMainMenu_002.png");
   // const threeState = useThree();
 
   // const time = useRef<HTMLDivElement>(null);
@@ -110,7 +110,9 @@ const Interface = () => {
 
       {/* Inventory Menu */}
 
-      <InventoryMain></InventoryMain>
+      <div className=" pointer-events-auto">
+        <InventoryMain></InventoryMain>
+      </div>
 
       {/* Pointer */}
       <PointerMain></PointerMain>

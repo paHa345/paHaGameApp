@@ -124,8 +124,8 @@ const ReactThreeFiberMain = () => {
             {performanceMonitoring && <PerfMonitor position="top-left" />}
           </Canvas>
           <Interface></Interface>
+          <PlayerHealthPanel></PlayerHealthPanel>
         </KeyboardControls>
-        <PlayerHealthPanel></PlayerHealthPanel>
         {/* <PreloadModelsComponent></PreloadModelsComponent> */}
       </div>
     </>
