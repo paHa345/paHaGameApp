@@ -216,6 +216,22 @@ export const stopPlayerThrowBarrelAndCalculateImpact = createAsyncThunk(
   },
 );
 
+export const getPointerCoords = createAsyncThunk(
+  "ReactThreeFiberGameState/getPointerCoords",
+  async function (
+    _,
+
+    { rejectWithValue, dispatch, getState },
+  ) {
+    try {
+      const state = getState() as IReactThreeFiberGameSlice;
+      return state.ReactThreeFiberGameState.pointerCoords;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
 export interface IReactThreeFiberGameSlice {
   ReactThreeFiberGameState: {
     blocksCount: number;
@@ -244,6 +260,28 @@ export interface IReactThreeFiberGameSlice {
       baseHP: number;
       currentHP: number;
     };
+
+    playerItems: {
+      equipment: {
+        weapon: { name?: string; id?: string };
+        shield: { name?: string; id?: string };
+        helmet: { name?: string; id?: string };
+        armour: { name?: string; id?: string };
+      };
+      inventory: {
+        type: string;
+        name: string;
+        id: string;
+        position: { top: number; left: number; xlTop: number; xlLeft: number };
+      }[];
+      dragItem: {
+        type: string;
+        name: string;
+        id: string;
+        position: { top: number; left: number; xlTop: number; xlLeft: number };
+      };
+    };
+
     playerBlockStatus: boolean;
 
     playerCanPickUpBarrelStatus: {
@@ -376,6 +414,27 @@ interface IReactThreeFiberGameState {
     baseHP: number;
     currentHP: number;
   };
+
+  playerItems: {
+    equipment: {
+      weapon: { name?: string; id?: string };
+      shield: { name?: string; id?: string };
+      helmet: { name?: string; id?: string };
+      armour: { name?: string; id?: string };
+    };
+    inventory: {
+      type: string;
+      name: string;
+      id: string;
+      position: { top: number; left: number; xlTop: number; xlLeft: number };
+    }[];
+    dragItem: {
+      type: string;
+      name: string;
+      id: string;
+      position: { top: number; left: number; xlTop: number; xlLeft: number };
+    };
+  };
   playerBlockStatus: boolean;
   playerCanPickUpBarrelStatus: {
     canPickUp: boolean;
@@ -478,6 +537,83 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
   playerStat: {
     baseHP: 500,
     currentHP: 500,
+  },
+
+  playerItems: {
+    equipment: {
+      weapon: {},
+      shield: {},
+      helmet: {},
+      armour: {},
+    },
+    inventory: [
+      {
+        type: "shield",
+        name: "shield11",
+        id: "shield11",
+        position: {
+          top: 5,
+          left: 2,
+          xlTop: 6,
+          xlLeft: 5,
+        },
+      },
+      {
+        type: "shield",
+        name: "shield1",
+        id: "shield1",
+        position: {
+          top: 5,
+          left: -44,
+          xlTop: 6,
+          xlLeft: -65,
+        },
+      },
+      {
+        type: "sword",
+        name: "sword23",
+        id: "sword23",
+        position: {
+          top: -44,
+          left: 2,
+          xlTop: -70,
+          xlLeft: 5,
+        },
+      },
+      {
+        type: "sword",
+        name: "sword7",
+        id: "sword7",
+        position: {
+          top: -44,
+          left: -44,
+          xlTop: -70,
+          xlLeft: -65,
+        },
+      },
+      {
+        type: "sword",
+        name: "sword7",
+        id: "sword7",
+        position: {
+          top: -44,
+          left: -44,
+          xlTop: -70,
+          xlLeft: -65,
+        },
+      },
+    ],
+    dragItem: {
+      type: "sword",
+      name: "sword7",
+      id: "sword7",
+      position: {
+        top: -44,
+        left: -44,
+        xlTop: -70,
+        xlLeft: -65,
+      },
+    },
   },
   playerBlockStatus: false,
   playerCanPickUpBarrelStatus: {
@@ -637,27 +773,27 @@ export const ReactThreeFiberGameSlice = createSlice({
     setMouseCoords(state, action) {
       // console.log(action.payload);
 
-      if (state.showInventory) {
-        // if (state.pointerCoords.y + action.payload.y * 100 < 0) return;
-        // if (state.pointerCoords.x + action.payload.x * 100 < 0) return;
+      // if (state.showInventory) {
+      //   // if (state.pointerCoords.y + action.payload.y * 100 < 0) return;
+      //   // if (state.pointerCoords.x + action.payload.x * 100 < 0) return;
 
-        if (state.pointerCoords.x + action.payload.x * 100 > state.windowHeightWidth.width) {
-          state.pointerCoords.x = state.windowHeightWidth.width;
-        } else {
-          state.pointerCoords.x =
-            state.pointerCoords.x + action.payload.x * 100 < 0
-              ? 0
-              : state.pointerCoords.x + action.payload.x * 100;
-        }
-        if (state.pointerCoords.y + action.payload.y * 100 > state.windowHeightWidth.height) {
-          state.pointerCoords.y = state.windowHeightWidth.height;
-        } else {
-          state.pointerCoords.y =
-            state.pointerCoords.y + action.payload.y * 100 < 0
-              ? 0
-              : state.pointerCoords.y + action.payload.y * 100;
-        }
-      }
+      //   if (state.pointerCoords.x + action.payload.x * 100 > state.windowHeightWidth.width) {
+      //     state.pointerCoords.x = state.windowHeightWidth.width;
+      //   } else {
+      //     state.pointerCoords.x =
+      //       state.pointerCoords.x + action.payload.x * 100 < 0
+      //         ? 0
+      //         : state.pointerCoords.x + action.payload.x * 100;
+      //   }
+      //   if (state.pointerCoords.y + action.payload.y * 100 > state.windowHeightWidth.height) {
+      //     state.pointerCoords.y = state.windowHeightWidth.height;
+      //   } else {
+      //     state.pointerCoords.y =
+      //       state.pointerCoords.y + action.payload.y * 100 < 0
+      //         ? 0
+      //         : state.pointerCoords.y + action.payload.y * 100;
+      //   }
+      // }
 
       if (state.showInventory) return;
 

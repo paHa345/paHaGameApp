@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Inventory from "./Inventory";
 
 interface IInventoryMenuProps {
   isMobile: boolean;
@@ -61,64 +62,7 @@ const InventoryMenuMain = ({ isMobile }: IInventoryMenuProps) => {
           />
         </div>
         {/* Inventory */}
-
-        <div className=" inventoryContainer slot1 right-[282px] top-[182px] w-[50px] h-[50px] xl:right-[423px] xl:top-[273px]  xl:h-[77px] xl:w-[77px] absolute overflow-hidden ">
-          <img
-            className={` h-[500%] relative max-w-none bottom-[-5px] left-[2px] xl:h-[500%]  xl:top-[6px] xl:left-[5px]`}
-            src="/RPGUI/icons.png"
-            alt="icons"
-          />
-        </div>
-        <div className=" inventoryContainer slot2 right-[222px] top-[182px] w-[50px] h-[50px] xl:right-[332px] xl:top-[273px]  xl:h-[77px] xl:w-[77px] absolute overflow-hidden ">
-          <img
-            className={` h-[500%] relative max-w-none bottom-[-5px] left-[2px] xl:h-[500%]  xl:top-[6px] xl:left-[5px]`}
-            src="/RPGUI/icons.png"
-            alt="icons"
-          />
-        </div>
-        <div className=" inventoryContainer slot3 right-[157px] top-[182px] w-[50px] h-[50px] xl:right-[237px] xl:top-[273px]  xl:h-[77px] xl:w-[77px] absolute overflow-hidden ">
-          <img
-            className={` h-[500%] relative max-w-none bottom-[-5px] left-[2px] xl:h-[500%]  xl:top-[6px] xl:left-[5px]`}
-            src="/RPGUI/icons.png"
-            alt="icons"
-          />
-        </div>
-        <div className=" inventoryContainer slot4 right-[96px] top-[182px] w-[50px] h-[50px] xl:right-[143px] xl:top-[273px]  xl:h-[77px] xl:w-[77px] absolute overflow-hidden ">
-          <img
-            className={` h-[500%] relative max-w-none bottom-[-5px] left-[2px] xl:h-[500%]  xl:top-[6px] xl:left-[5px]`}
-            src="/RPGUI/icons.png"
-            alt="icons"
-          />
-        </div>
-
-        <div className=" inventoryContainer slot1 right-[282px] top-[245px] w-[50px] h-[50px] xl:right-[423px] xl:top-[273px]  xl:h-[77px] xl:w-[77px] absolute overflow-hidden ">
-          <img
-            className={` h-[500%] relative max-w-none bottom-[-5px] left-[2px] xl:h-[500%]  xl:top-[6px] xl:left-[5px]`}
-            src="/RPGUI/icons.png"
-            alt="icons"
-          />
-        </div>
-        <div className=" inventoryContainer slot2 right-[222px] top-[245px] w-[50px] h-[50px] xl:right-[332px] xl:top-[273px]  xl:h-[77px] xl:w-[77px] absolute overflow-hidden ">
-          <img
-            className={` h-[500%] relative max-w-none bottom-[-5px] left-[2px] xl:h-[500%]  xl:top-[6px] xl:left-[5px]`}
-            src="/RPGUI/icons.png"
-            alt="icons"
-          />
-        </div>
-        <div className=" inventoryContainer slot3 right-[157px] top-[245px] w-[50px] h-[50px] xl:right-[237px] xl:top-[273px]  xl:h-[77px] xl:w-[77px] absolute overflow-hidden ">
-          <img
-            className={` h-[500%] relative max-w-none bottom-[-5px] left-[2px] xl:h-[500%]  xl:top-[6px] xl:left-[5px]`}
-            src="/RPGUI/icons.png"
-            alt="icons"
-          />
-        </div>
-        <div className=" inventoryContainer slot4 right-[96px] top-[245px] w-[50px] h-[50px] xl:right-[143px] xl:top-[273px]  xl:h-[77px] xl:w-[77px] absolute overflow-hidden ">
-          <img
-            className={` h-[500%] relative max-w-none bottom-[-5px] left-[2px] xl:h-[500%]  xl:top-[6px] xl:left-[5px]`}
-            src="/RPGUI/icons.png"
-            alt="icons"
-          />
-        </div>
+        <Inventory></Inventory>
       </div>
     </div>
   );

@@ -1,0 +1,25 @@
+.element {
+  position: absolute;
+  overflow: hidden;
+  --numberCol: 0;
+  --numberRaw: 0;
+}
+
+@media (min-width: 800px) {
+  .element {
+    right: calc(282px - (63px * var(--numberCol)));
+    top: calc(182px + (63px * var(--numberRaw)));
+
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .element {
+    right: calc(423px - (91px * var(--numberCol)));
+    top: calc(273px + (90px * var(--numberRaw)));
+    height: 77px;
+    width: 77px;
+  }
+}

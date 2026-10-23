@@ -1,0 +1,122 @@
+.neonBorder {
+  border: 2px solid rgb(94, 181, 13);
+  border-radius: 8px;
+  box-shadow:
+    0 0 5px rgb(181, 173, 13),
+    0 0 15px rgb(181, 173, 13),
+    0 0 30px rgb(181, 173, 13),
+    inset 0 0 10px rgba(0, 255, 255, 0.3);
+  animation: neon-pulse 2s ease-in-out infinite alternate;
+  background-color: rgba(192, 233, 229, 0.915);
+}
+@keyframes neon-pulse {
+  from {
+    box-shadow:
+      0 0 5px rgb(181, 173, 13),
+      0 0 15px rgb(181, 173, 13),
+      inset 0 0 10px rgba(0, 255, 255, 0.3);
+  }
+  to {
+    box-shadow:
+      0 0 10px rgb(181, 173, 13),
+      0 0 40px rgb(181, 173, 13),
+      inset 0 0 20px rgba(0, 255, 255, 0.5);
+  }
+}
+
+.cornerBorder {
+  position: relative;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.4);
+}
+.cornerBorder::before,
+.cornerBorder::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #f0c040;
+  pointer-events: none;
+}
+.cornerBorder::before {
+  top: 0;
+  left: 0;
+  border-right: none;
+  border-bottom: none;
+}
+.cornerBorder::after {
+  bottom: 0;
+  right: 0;
+  border-left: none;
+  border-top: none;
+}
+
+.animatedBorder {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.animatedBorder::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(from 0deg, transparent 0 340deg, #f0c040 360deg);
+  animation: spin 3s linear infinite;
+}
+.animatedBorder::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background: #4d4d60;
+
+  border-radius: 10px;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.gradientBorder {
+  position: relative;
+  background: #1a1a2e;
+  border-radius: 12px;
+  padding: 2px; /* толщина рамки */
+}
+.gradientBorder::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, #f093fb, #f5576c, #4facfe);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.glass {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.pulseBorder {
+  border: 2px solid #f5576c;
+  border-radius: 10px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 87, 108, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(245, 87, 108, 0);
+  }
+}
