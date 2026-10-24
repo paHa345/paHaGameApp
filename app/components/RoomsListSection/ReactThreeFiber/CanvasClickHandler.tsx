@@ -14,7 +14,8 @@ const CanvasClickHandler = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const showInventoryMenuStatus = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.showInventory,
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.showInventory,
   );
 
   useEffect(() => {
@@ -33,6 +34,11 @@ const CanvasClickHandler = () => {
           // console.log(stack?.getAttribute("data-equipmenttype"));
           const result = await dispatch(getPointerCoords());
           console.log(result.payload);
+
+          // const stack = document.elementsFromPoint(pointerCoords.x, pointerCoords.y).find((el) => {
+          //   return el.classList.contains("equipmentContainer");
+          // });
+          // console.log(stack?.getAttribute("data-equipmenttype"));
         } else {
           dispatch(setStartAttackStatus({ page: 1, gameType: "werwer" }));
         }

@@ -79,7 +79,7 @@
 
 .gradientBorder {
   position: relative;
-  background: #1a1a2e;
+  background: #424257e8;
   border-radius: 12px;
   padding: 2px; /* толщина рамки */
 }
@@ -89,7 +89,7 @@
   inset: 0;
   border-radius: inherit;
   padding: 2px;
-  background: linear-gradient(135deg, #f093fb, #f5576c, #4facfe);
+  background: linear-gradient(135deg, #61150b, #865813, #124979);
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);

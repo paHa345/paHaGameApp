@@ -1,6 +1,10 @@
 import { useGLTF } from "@react-three/drei";
 import { createPortal, useThree } from "@react-three/fiber";
-import { CuboidCollider, RapierRigidBody, RigidBody } from "@react-three/rapier";
+import {
+  CuboidCollider,
+  RapierRigidBody,
+  RigidBody,
+} from "@react-three/rapier";
 import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useDispatch } from "react-redux";
@@ -27,7 +31,10 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const currentTarget = useRef<RapierRigidBody>(null);
 
-  const { scene, animations, nodes } = useGLTF("./models/characters/2/character-o.glb", true);
+  const { scene, animations, nodes } = useGLTF(
+    "./models/characters/2/character-o.glb",
+    true,
+  );
   for (const name in nodes) {
     nodes[name].castShadow = true;
   }
@@ -73,8 +80,15 @@ const AncientOrc = ({ position, id, rotationTimer }: IAncientOrcProps) => {
             dispose={null}
           ></primitive>
 
-          {createPortal(<RightHandWeapon></RightHandWeapon>, clonedNodes["arm-right"])}
-          <CuboidCollider mass={2} position={[0, 0.7, 0]} args={[0.4, 0.7, 0.3]} />
+          {createPortal(
+            <RightHandWeapon></RightHandWeapon>,
+            clonedNodes["arm-right"],
+          )}
+          <CuboidCollider
+            mass={2}
+            position={[0, 0.7, 0]}
+            args={[0.4, 0.7, 0.3]}
+          />
           <DynamicNPCHealthBar id={id}></DynamicNPCHealthBar>
         </RigidBody>
       </group>

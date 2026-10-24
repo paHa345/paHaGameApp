@@ -6,17 +6,21 @@ import PointerDragContainer from "./PointerDragContainer";
 
 const PointerMain = () => {
   const showInventory = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.showInventory,
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.showInventory,
   );
   const canvasHeight = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.canvasHeight,
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.canvasHeight,
   );
   const canvasWidht = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.canvasWidth,
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.canvasWidth,
   );
 
   const windowHeightWidth = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.windowHeightWidth,
+    (state: IReactThreeFiberGameSlice) =>
+      state.ReactThreeFiberGameState.windowHeightWidth,
   );
 
   const coordsRef = useRef({ x: 0, y: 0 });
@@ -31,7 +35,10 @@ const PointerMain = () => {
             y: (e.movementY / canvasWidht) * 2,
           };
 
-          if (coordsRef.current.x + mouseVector.x * 100 > windowHeightWidth.width) {
+          if (
+            coordsRef.current.x + mouseVector.x * 100 >
+            windowHeightWidth.width
+          ) {
             coordsRef.current.x = windowHeightWidth.width;
           } else {
             coordsRef.current.x =
@@ -39,7 +46,10 @@ const PointerMain = () => {
                 ? 0
                 : coordsRef.current.x + mouseVector.x * 100;
           }
-          if (coordsRef.current.y + mouseVector.y * 100 > windowHeightWidth.height) {
+          if (
+            coordsRef.current.y + mouseVector.y * 100 >
+            windowHeightWidth.height
+          ) {
             coordsRef.current.y = windowHeightWidth.height;
           } else {
             coordsRef.current.y =
@@ -56,6 +66,20 @@ const PointerMain = () => {
 
     window.addEventListener("mousemove", handleMove);
     return () => window.removeEventListener("mousemove", handleMove);
+  }, [showInventory]);
+
+  useEffect(() => {
+    if (!window) return;
+
+    const clickHandler = (e: MouseEvent) => {
+      if (showInventory) {
+        e.preventDefault();
+        console.log("Inventory click");
+      }
+    };
+
+    window.addEventListener("click", clickHandler);
+    return () => window.removeEventListener("click", clickHandler);
   }, [showInventory]);
 
   // useEffect(() => {
