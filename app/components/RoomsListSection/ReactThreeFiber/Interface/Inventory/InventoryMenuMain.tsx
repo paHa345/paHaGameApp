@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Inventory from "./Inventory";
+import { useSelector } from "react-redux";
+import { IReactThreeFiberGameSlice } from "@/app/store/ReactThreeFiberGameSlice";
 
 interface IInventoryMenuProps {
   isMobile: boolean;
 }
 
 const InventoryMenuMain = ({ isMobile }: IInventoryMenuProps) => {
+  const playersEquipment = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerItems.equipment,
+  );
+
   return (
     <div>
       <div className=" w-[400px] h-[330px]  lg:w-[500px] lg:h-[412px] xl:w-[600px] xl:h-[495px] overflow-hidden absolute top-[40px] right-[20px] lg:top-[60px] lg:right-[40px] ">
@@ -21,11 +27,30 @@ const InventoryMenuMain = ({ isMobile }: IInventoryMenuProps) => {
           data-equipmenttype="shield"
           className=" equipmentContainer right-[107px] top-[50px] w-[55px] h-[63px] absolute overflow-hidden xl:right-[160px] xl:top-[76px]  xl:h-[90px] xl:w-[80px]   "
         >
-          <img
-            className={` h-[500%] relative max-w-none top-[-255px] left-[-29px]  xl:h-[600%]  xl:top-[-444px] xl:left-[-58px]  `}
-            src="/RPGUI/InventoryMainMenu_002.png"
-            alt=""
-          />
+          {playersEquipment.shield.id ? (
+            <img
+              className={`
+    h-[500%] relative max-w-none xl:h-[500%]
+    top-[var(--top)] left-[var(--left)]
+    xl:top-[var(--xl-top)] xl:left-[var(--xl-left)]  `}
+              style={
+                {
+                  "--top": `${playersEquipment.shield.position.equipmentTop}px`,
+                  "--left": `${playersEquipment.shield.position.equipmentLeft}px`,
+                  "--xl-top": `${playersEquipment.shield.position.equipmentXlTop}px`,
+                  "--xl-left": `${playersEquipment.shield.position.equipmentXlLeft}px`,
+                } as React.CSSProperties
+              }
+              src="/RPGUI/icons.png"
+              alt="icons"
+            />
+          ) : (
+            <img
+              className={` h-[500%] relative max-w-none top-[-255px] left-[-29px]  xl:h-[600%]  xl:top-[-444px] xl:left-[-58px]  `}
+              src="/RPGUI/InventoryMainMenu_002.png"
+              alt=""
+            />
+          )}
         </div>
         {/* Sword */}
         <div

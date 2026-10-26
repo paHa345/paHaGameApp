@@ -1,26 +1,27 @@
-import { IReactThreeFiberGameSlice } from "@/app/store/ReactThreeFiberGameSlice";
+import {
+  IReactThreeFiberGameSlice,
+  ReactThreeFiberGameActions,
+} from "@/app/store/ReactThreeFiberGameSlice";
 import React, { useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Pointer from "./Pointer";
 import PointerDragContainer from "./PointerDragContainer";
+import { AppDispatch } from "@/app/store";
 
 const PointerMain = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const showInventory = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.showInventory,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.showInventory,
   );
   const canvasHeight = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.canvasHeight,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.canvasHeight,
   );
   const canvasWidht = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.canvasWidth,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.canvasWidth,
   );
 
   const windowHeightWidth = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.windowHeightWidth,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.windowHeightWidth,
   );
 
   const coordsRef = useRef({ x: 0, y: 0 });
@@ -35,10 +36,7 @@ const PointerMain = () => {
             y: (e.movementY / canvasWidht) * 2,
           };
 
-          if (
-            coordsRef.current.x + mouseVector.x * 100 >
-            windowHeightWidth.width
-          ) {
+          if (coordsRef.current.x + mouseVector.x * 100 > windowHeightWidth.width) {
             coordsRef.current.x = windowHeightWidth.width;
           } else {
             coordsRef.current.x =
@@ -46,10 +44,7 @@ const PointerMain = () => {
                 ? 0
                 : coordsRef.current.x + mouseVector.x * 100;
           }
-          if (
-            coordsRef.current.y + mouseVector.y * 100 >
-            windowHeightWidth.height
-          ) {
+          if (coordsRef.current.y + mouseVector.y * 100 > windowHeightWidth.height) {
             coordsRef.current.y = windowHeightWidth.height;
           } else {
             coordsRef.current.y =
@@ -71,15 +66,47 @@ const PointerMain = () => {
   useEffect(() => {
     if (!window) return;
 
-    const clickHandler = (e: MouseEvent) => {
-      if (showInventory) {
-        e.preventDefault();
-        console.log("Inventory click");
+    const pointerdownHandler = (e: MouseEvent) => {
+      if (!showInventory) return;
+      e.preventDefault();
+      console.log("Inventory click");
+      const stack = document
+        .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
+        .find((el) => {
+          return el.classList.contains("inventoryContainer");
+        });
+      console.log(stack?.getAttribute("data-index"));
+      if (!stack?.getAttribute("data-index")) return;
+      dispatch(
+        ReactThreeFiberGameActions.addInventoryItemToDragContainer({
+          dragItemIndex: Number(stack?.getAttribute("data-index")),
+        }),
+      );
+
+      // if(stack?.getAttribute("data-index")){
+      //   dispatch(ReactThreeFiberGameActions.addInventoryItemToDragContainer(Number(stack?.getAttribute("data-index"))))
+      // }
+    };
+
+    const pointerUpHandler = (e: MouseEvent) => {
+      if (!showInventory) return;
+      const pointerUpElement = document
+        .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
+        .find((el) => {
+          return el.classList.contains("equipmentContainer");
+        });
+      console.log(pointerUpElement?.getAttribute("data-equipmenttype"));
+      if (!pointerUpElement?.getAttribute("data-equipmenttype")) {
+        dispatch(ReactThreeFiberGameActions.addDragItemToInventory());
       }
     };
 
-    window.addEventListener("click", clickHandler);
-    return () => window.removeEventListener("click", clickHandler);
+    window.addEventListener("pointerdown", pointerdownHandler);
+    window.addEventListener("pointerup", pointerUpHandler);
+    return () => {
+      window.removeEventListener("pointerdown", pointerdownHandler);
+      window.removeEventListener("pointerup", pointerUpHandler);
+    };
   }, [showInventory]);
 
   // useEffect(() => {

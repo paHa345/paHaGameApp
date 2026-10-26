@@ -5,6 +5,7 @@ import { conditionPatternStatus } from "../types";
 import { useRapier, vec3 } from "@react-three/rapier";
 import * as rapier from "@dimforge/rapier3d-compat";
 import { RootState } from "@react-three/fiber";
+import { section } from "framer-motion/client";
 
 export const setStartAttackStatus = createAsyncThunk(
   "ReactThreeFiberGameState/setStartAttackStatus",
@@ -263,22 +264,96 @@ export interface IReactThreeFiberGameSlice {
 
     playerItems: {
       equipment: {
-        weapon: { name?: string; id?: string };
-        shield: { name?: string; id?: string };
-        helmet: { name?: string; id?: string };
-        armour: { name?: string; id?: string };
+        weapon: {
+          type: string;
+          name: string;
+          id: string;
+          position: {
+            top: number;
+            left: number;
+            xlTop: number;
+            xlLeft: number;
+            equipmentTop: number;
+            equipmentLeft: number;
+            equipmentXlTop: number;
+            equipmentXlLeft: number;
+          };
+        };
+        shield: {
+          type: string;
+          name: string;
+          id: string;
+          position: {
+            top: number;
+            left: number;
+            xlTop: number;
+            xlLeft: number;
+            equipmentTop: number;
+            equipmentLeft: number;
+            equipmentXlTop: number;
+            equipmentXlLeft: number;
+          };
+        };
+        helmet: {
+          type: string;
+          name: string;
+          id: string;
+          position: {
+            top: number;
+            left: number;
+            xlTop: number;
+            xlLeft: number;
+            equipmentTop: number;
+            equipmentLeft: number;
+            equipmentXlTop: number;
+            equipmentXlLeft: number;
+          };
+        };
+        armour: {
+          type: string;
+          name: string;
+          id: string;
+          position: {
+            top: number;
+            left: number;
+            xlTop: number;
+            xlLeft: number;
+            equipmentTop: number;
+            equipmentLeft: number;
+            equipmentXlTop: number;
+            equipmentXlLeft: number;
+          };
+        };
       };
       inventory: {
         type: string;
         name: string;
         id: string;
-        position: { top: number; left: number; xlTop: number; xlLeft: number };
+        position: {
+          top: number;
+          left: number;
+          xlTop: number;
+          xlLeft: number;
+          equipmentTop: number;
+          equipmentLeft: number;
+          equipmentXlTop: number;
+          equipmentXlLeft: number;
+        };
       }[];
       dragItem: {
-        type: string;
-        name: string;
-        id: string;
-        position: { top: number; left: number; xlTop: number; xlLeft: number };
+        type?: string;
+        name?: string;
+        id?: string;
+        position?: {
+          top: number;
+          left: number;
+          xlTop: number;
+          xlLeft: number;
+          equipmentTop: number;
+          equipmentLeft: number;
+          equipmentXlTop: number;
+          equipmentXlLeft: number;
+        };
       };
     };
 
@@ -417,22 +492,104 @@ interface IReactThreeFiberGameState {
 
   playerItems: {
     equipment: {
-      weapon: { name?: string; id?: string };
-      shield: { name?: string; id?: string };
-      helmet: { name?: string; id?: string };
-      armour: { name?: string; id?: string };
+      weapon:
+        | {
+            type: string;
+            name: string;
+            id: string;
+            position: {
+              top: number;
+              left: number;
+              xlTop: number;
+              xlLeft: number;
+              equipmentTop: number;
+              equipmentLeft: number;
+              equipmentXlTop: number;
+              equipmentXlLeft: number;
+            };
+          }
+        | {};
+      shield:
+        | {
+            type: string;
+            name: string;
+            id: string;
+            position: {
+              top: number;
+              left: number;
+              xlTop: number;
+              xlLeft: number;
+              equipmentTop: number;
+              equipmentLeft: number;
+              equipmentXlTop: number;
+              equipmentXlLeft: number;
+            };
+          }
+        | {};
+      helmet:
+        | {
+            type: string;
+            name: string;
+            id: string;
+            position: {
+              top: number;
+              left: number;
+              xlTop: number;
+              xlLeft: number;
+              equipmentTop: number;
+              equipmentLeft: number;
+              equipmentXlTop: number;
+              equipmentXlLeft: number;
+            };
+          }
+        | {};
+      armour:
+        | {
+            type: string;
+            name: string;
+            id: string;
+            position: {
+              top: number;
+              left: number;
+              xlTop: number;
+              xlLeft: number;
+              equipmentTop: number;
+              equipmentLeft: number;
+              equipmentXlTop: number;
+              equipmentXlLeft: number;
+            };
+          }
+        | {};
     };
     inventory: {
       type: string;
       name: string;
       id: string;
-      position: { top: number; left: number; xlTop: number; xlLeft: number };
+      position: {
+        top: number;
+        left: number;
+        xlTop: number;
+        xlLeft: number;
+        equipmentTop: number;
+        equipmentLeft: number;
+        equipmentXlTop: number;
+        equipmentXlLeft: number;
+      };
     }[];
     dragItem: {
-      type: string;
-      name: string;
-      id: string;
-      position: { top: number; left: number; xlTop: number; xlLeft: number };
+      type?: string;
+      name?: string;
+      id?: string;
+      position?: {
+        top: number;
+        left: number;
+        xlTop: number;
+        xlLeft: number;
+        equipmentTop: number;
+        equipmentLeft: number;
+        equipmentXlTop: number;
+        equipmentXlLeft: number;
+      };
     };
   };
   playerBlockStatus: boolean;
@@ -542,7 +699,21 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
   playerItems: {
     equipment: {
       weapon: {},
-      shield: {},
+      shield: {
+        type: "shield",
+        name: "shield1",
+        id: "shield1",
+        position: {
+          top: 5,
+          left: -44,
+          xlTop: 6,
+          xlLeft: -65,
+          equipmentTop: 5,
+          equipmentLeft: -59,
+          equipmentXlTop: 6,
+          equipmentXlLeft: -80,
+        },
+      },
       helmet: {},
       armour: {},
     },
@@ -556,6 +727,10 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
           left: 2,
           xlTop: 6,
           xlLeft: 5,
+          equipmentTop: 5,
+          equipmentLeft: 2,
+          equipmentXlTop: 6,
+          equipmentXlLeft: 5,
         },
       },
       {
@@ -567,6 +742,10 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
           left: -44,
           xlTop: 6,
           xlLeft: -65,
+          equipmentTop: 5,
+          equipmentLeft: -59,
+          equipmentXlTop: 6,
+          equipmentXlLeft: -80,
         },
       },
       {
@@ -578,6 +757,10 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
           left: 2,
           xlTop: -70,
           xlLeft: 5,
+          equipmentTop: -44,
+          equipmentLeft: 2,
+          equipmentXlTop: -70,
+          equipmentXlLeft: 5,
         },
       },
       {
@@ -589,6 +772,10 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
           left: -44,
           xlTop: -70,
           xlLeft: -65,
+          equipmentTop: -44,
+          equipmentLeft: -59,
+          equipmentXlTop: -70,
+          equipmentXlLeft: -80,
         },
       },
       {
@@ -600,19 +787,27 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
           left: -44,
           xlTop: -70,
           xlLeft: -65,
+          equipmentTop: -44,
+          equipmentLeft: -59,
+          equipmentXlTop: -70,
+          equipmentXlLeft: -80,
         },
       },
     ],
     dragItem: {
-      type: "sword",
-      name: "sword7",
-      id: "sword7",
-      position: {
-        top: -44,
-        left: -44,
-        xlTop: -70,
-        xlLeft: -65,
-      },
+      //   type: "sword",
+      //   name: "sword7",
+      //   id: "sword7",
+      //   position: {
+      //     top: -44,
+      //     left: -44,
+      //     xlTop: -70,
+      //     xlLeft: -65,
+      //     equipmentTop: -44,
+      //     equipmentLeft: -59,
+      //     equipmentXlTop: -70,
+      //     equipmentXlLeft: -80,
+      //   },
     },
   },
   playerBlockStatus: false,
@@ -1128,6 +1323,37 @@ export const ReactThreeFiberGameSlice = createSlice({
     setWindowHeightWidth(state, action) {
       state.windowHeightWidth.height = action.payload.height;
       state.windowHeightWidth.width = action.payload.width;
+    },
+    addInventoryItemToDragContainer(state, action) {
+      if (state.playerItems.dragItem.id) return;
+      const dragItem = state.playerItems.inventory[action.payload.dragItemIndex];
+      state.playerItems.dragItem = dragItem;
+      state.playerItems.inventory.splice(action.payload.dragItemIndex, 1);
+    },
+    addDragItemToInventory(state) {
+      if (
+        state.playerItems.dragItem.id &&
+        state.playerItems.dragItem.name &&
+        state.playerItems.dragItem.position &&
+        state.playerItems.dragItem.type
+      ) {
+        state.playerItems.inventory.push({
+          type: state.playerItems.dragItem.type,
+          name: state.playerItems.dragItem.name,
+          id: state.playerItems.dragItem.id,
+          position: {
+            top: state.playerItems.dragItem.position.top,
+            left: state.playerItems.dragItem.position.left,
+            xlTop: state.playerItems.dragItem.position.xlTop,
+            xlLeft: state.playerItems.dragItem.position.xlLeft,
+            equipmentTop: state.playerItems.dragItem.position.equipmentTop,
+            equipmentLeft: state.playerItems.dragItem.position.equipmentLeft,
+            equipmentXlTop: state.playerItems.dragItem.position.equipmentXlTop,
+            equipmentXlLeft: state.playerItems.dragItem.position.equipmentXlLeft,
+          },
+        });
+        state.playerItems.dragItem = {};
+      }
     },
   },
 });

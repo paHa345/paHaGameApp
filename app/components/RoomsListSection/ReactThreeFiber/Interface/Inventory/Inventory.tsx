@@ -16,6 +16,7 @@ const Inventory = () => {
       <div
         key={`${el.id}_${index}`}
         className={`${styles.element} inventoryContainer slot_${index}`}
+        data-index={`${index}`}
         style={
           {
             "--numberCol": `${numberCol}`,
