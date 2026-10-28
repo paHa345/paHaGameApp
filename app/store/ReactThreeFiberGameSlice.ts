@@ -1,7 +1,7 @@
 import { RapierRigidBody } from "@react-three/rapier";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import * as THREE from "three";
-import { conditionPatternStatus } from "../types";
+import { conditionPatternStatus, IInventoryItem, inventoryItemTypes } from "../types";
 import { useRapier, vec3 } from "@react-three/rapier";
 import * as rapier from "@dimforge/rapier3d-compat";
 import { RootState } from "@react-three/fiber";
@@ -264,96 +264,15 @@ export interface IReactThreeFiberGameSlice {
 
     playerItems: {
       equipment: {
-        weapon: {
-          type: string;
-          name: string;
-          id: string;
-          position: {
-            top: number;
-            left: number;
-            xlTop: number;
-            xlLeft: number;
-            equipmentTop: number;
-            equipmentLeft: number;
-            equipmentXlTop: number;
-            equipmentXlLeft: number;
-          };
-        };
-        shield: {
-          type: string;
-          name: string;
-          id: string;
-          position: {
-            top: number;
-            left: number;
-            xlTop: number;
-            xlLeft: number;
-            equipmentTop: number;
-            equipmentLeft: number;
-            equipmentXlTop: number;
-            equipmentXlLeft: number;
-          };
-        };
-        helmet: {
-          type: string;
-          name: string;
-          id: string;
-          position: {
-            top: number;
-            left: number;
-            xlTop: number;
-            xlLeft: number;
-            equipmentTop: number;
-            equipmentLeft: number;
-            equipmentXlTop: number;
-            equipmentXlLeft: number;
-          };
-        };
-        armour: {
-          type: string;
-          name: string;
-          id: string;
-          position: {
-            top: number;
-            left: number;
-            xlTop: number;
-            xlLeft: number;
-            equipmentTop: number;
-            equipmentLeft: number;
-            equipmentXlTop: number;
-            equipmentXlLeft: number;
-          };
-        };
+        weapon: IInventoryItem;
+        shield: IInventoryItem;
+        helmet: IInventoryItem;
+        armour: IInventoryItem;
       };
-      inventory: {
-        type: string;
-        name: string;
-        id: string;
-        position: {
-          top: number;
-          left: number;
-          xlTop: number;
-          xlLeft: number;
-          equipmentTop: number;
-          equipmentLeft: number;
-          equipmentXlTop: number;
-          equipmentXlLeft: number;
-        };
-      }[];
+      inventory: IInventoryItem[];
       dragItem: {
-        type?: string;
-        name?: string;
-        id?: string;
-        position?: {
-          top: number;
-          left: number;
-          xlTop: number;
-          xlLeft: number;
-          equipmentTop: number;
-          equipmentLeft: number;
-          equipmentXlTop: number;
-          equipmentXlLeft: number;
-        };
+        itemIndexInInventory: number;
+        item: IInventoryItem;
       };
     };
 
@@ -492,104 +411,15 @@ interface IReactThreeFiberGameState {
 
   playerItems: {
     equipment: {
-      weapon:
-        | {
-            type: string;
-            name: string;
-            id: string;
-            position: {
-              top: number;
-              left: number;
-              xlTop: number;
-              xlLeft: number;
-              equipmentTop: number;
-              equipmentLeft: number;
-              equipmentXlTop: number;
-              equipmentXlLeft: number;
-            };
-          }
-        | {};
-      shield:
-        | {
-            type: string;
-            name: string;
-            id: string;
-            position: {
-              top: number;
-              left: number;
-              xlTop: number;
-              xlLeft: number;
-              equipmentTop: number;
-              equipmentLeft: number;
-              equipmentXlTop: number;
-              equipmentXlLeft: number;
-            };
-          }
-        | {};
-      helmet:
-        | {
-            type: string;
-            name: string;
-            id: string;
-            position: {
-              top: number;
-              left: number;
-              xlTop: number;
-              xlLeft: number;
-              equipmentTop: number;
-              equipmentLeft: number;
-              equipmentXlTop: number;
-              equipmentXlLeft: number;
-            };
-          }
-        | {};
-      armour:
-        | {
-            type: string;
-            name: string;
-            id: string;
-            position: {
-              top: number;
-              left: number;
-              xlTop: number;
-              xlLeft: number;
-              equipmentTop: number;
-              equipmentLeft: number;
-              equipmentXlTop: number;
-              equipmentXlLeft: number;
-            };
-          }
-        | {};
+      weapon: IInventoryItem;
+      shield: IInventoryItem;
+      helmet: IInventoryItem;
+      armour: IInventoryItem;
     };
-    inventory: {
-      type: string;
-      name: string;
-      id: string;
-      position: {
-        top: number;
-        left: number;
-        xlTop: number;
-        xlLeft: number;
-        equipmentTop: number;
-        equipmentLeft: number;
-        equipmentXlTop: number;
-        equipmentXlLeft: number;
-      };
-    }[];
+    inventory: IInventoryItem[];
     dragItem: {
-      type?: string;
-      name?: string;
-      id?: string;
-      position?: {
-        top: number;
-        left: number;
-        xlTop: number;
-        xlLeft: number;
-        equipmentTop: number;
-        equipmentLeft: number;
-        equipmentXlTop: number;
-        equipmentXlLeft: number;
-      };
+      itemIndexInInventory: number;
+      item: IInventoryItem;
     };
   };
   playerBlockStatus: boolean;
@@ -700,7 +530,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
     equipment: {
       weapon: {},
       shield: {
-        type: "shield",
+        type: inventoryItemTypes.Shield,
         name: "shield1",
         id: "shield1",
         position: {
@@ -719,7 +549,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
     },
     inventory: [
       {
-        type: "shield",
+        type: inventoryItemTypes.Shield,
         name: "shield11",
         id: "shield11",
         position: {
@@ -734,7 +564,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
         },
       },
       {
-        type: "shield",
+        type: inventoryItemTypes.Shield,
         name: "shield1",
         id: "shield1",
         position: {
@@ -749,7 +579,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
         },
       },
       {
-        type: "sword",
+        type: inventoryItemTypes.Weapon,
         name: "sword23",
         id: "sword23",
         position: {
@@ -764,7 +594,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
         },
       },
       {
-        type: "sword",
+        type: inventoryItemTypes.Weapon,
         name: "sword7",
         id: "sword7",
         position: {
@@ -779,7 +609,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
         },
       },
       {
-        type: "sword",
+        type: inventoryItemTypes.Weapon,
         name: "sword7",
         id: "sword7",
         position: {
@@ -795,6 +625,8 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       },
     ],
     dragItem: {
+      itemIndexInInventory: -1,
+      item: {},
       //   type: "sword",
       //   name: "sword7",
       //   id: "sword7",
@@ -1325,34 +1157,88 @@ export const ReactThreeFiberGameSlice = createSlice({
       state.windowHeightWidth.width = action.payload.width;
     },
     addInventoryItemToDragContainer(state, action) {
-      if (state.playerItems.dragItem.id) return;
+      state.playerItems.dragItem.item = {};
+      if (state.playerItems.dragItem.item.id) return;
+      state.playerItems.dragItem.itemIndexInInventory = action.payload.dragItemIndex;
+
       const dragItem = state.playerItems.inventory[action.payload.dragItemIndex];
-      state.playerItems.dragItem = dragItem;
-      state.playerItems.inventory.splice(action.payload.dragItemIndex, 1);
+      state.playerItems.dragItem.item = dragItem;
+    },
+    addEquipmentItemToDragContainer(
+      state,
+      action: {
+        payload: { equipmentItemType: inventoryItemTypes };
+        type: string;
+      },
+    ) {
+      console.log(action.payload.equipmentItemType);
+      state.playerItems.dragItem.item = {};
+      state.playerItems.dragItem.item =
+        state.playerItems.equipment[action.payload.equipmentItemType];
+      state.playerItems.equipment[action.payload.equipmentItemType] = {};
+    },
+    clearDragItemContainer(state) {
+      if (
+        state.playerItems.dragItem.itemIndexInInventory !== -1 &&
+        state.playerItems.dragItem.item?.id
+      ) {
+        state.playerItems.dragItem.item = {};
+        state.playerItems.dragItem.itemIndexInInventory = -1;
+      }
+      if (
+        state.playerItems.dragItem.itemIndexInInventory === -1 &&
+        state.playerItems.dragItem.item?.id
+      ) {
+        const itemType = state.playerItems.dragItem.item.type as inventoryItemTypes;
+
+        state.playerItems.equipment[itemType] = state.playerItems.dragItem.item;
+
+        state.playerItems.dragItem.item = {};
+        state.playerItems.dragItem.itemIndexInInventory = -1;
+      }
+    },
+    addDragItemToEquipment(
+      state,
+      action: {
+        payload: { addedEquipmentType: inventoryItemTypes };
+        type: string;
+      },
+    ) {
+      if (state.playerItems.dragItem.item.type !== action.payload.addedEquipmentType) {
+        state.playerItems.dragItem.item = {};
+        state.playerItems.dragItem.itemIndexInInventory = -1;
+
+        return;
+      }
+
+      if (state.playerItems.dragItem.item.type === action.payload.addedEquipmentType) {
+        if (state.playerItems.equipment[action.payload.addedEquipmentType].id) {
+          state.playerItems.inventory.push(
+            state.playerItems.equipment[action.payload.addedEquipmentType],
+          );
+          state.playerItems.equipment[action.payload.addedEquipmentType] = {};
+        }
+
+        state.playerItems.equipment[action.payload.addedEquipmentType] =
+          state.playerItems.inventory[state.playerItems.dragItem.itemIndexInInventory];
+
+        state.playerItems.inventory.splice(state.playerItems.dragItem.itemIndexInInventory, 1);
+
+        state.playerItems.dragItem.item = {};
+        state.playerItems.dragItem.itemIndexInInventory = -1;
+      }
     },
     addDragItemToInventory(state) {
       if (
-        state.playerItems.dragItem.id &&
-        state.playerItems.dragItem.name &&
-        state.playerItems.dragItem.position &&
-        state.playerItems.dragItem.type
+        state.playerItems.dragItem.item.id &&
+        state.playerItems.dragItem.item.name &&
+        state.playerItems.dragItem.item.position &&
+        state.playerItems.dragItem.item.type &&
+        state.playerItems.dragItem.itemIndexInInventory === -1
       ) {
-        state.playerItems.inventory.push({
-          type: state.playerItems.dragItem.type,
-          name: state.playerItems.dragItem.name,
-          id: state.playerItems.dragItem.id,
-          position: {
-            top: state.playerItems.dragItem.position.top,
-            left: state.playerItems.dragItem.position.left,
-            xlTop: state.playerItems.dragItem.position.xlTop,
-            xlLeft: state.playerItems.dragItem.position.xlLeft,
-            equipmentTop: state.playerItems.dragItem.position.equipmentTop,
-            equipmentLeft: state.playerItems.dragItem.position.equipmentLeft,
-            equipmentXlTop: state.playerItems.dragItem.position.equipmentXlTop,
-            equipmentXlLeft: state.playerItems.dragItem.position.equipmentXlLeft,
-          },
-        });
-        state.playerItems.dragItem = {};
+        state.playerItems.inventory.push(state.playerItems.dragItem.item);
+        state.playerItems.dragItem.item = {};
+        state.playerItems.dragItem.itemIndexInInventory = -1;
       }
     },
   },

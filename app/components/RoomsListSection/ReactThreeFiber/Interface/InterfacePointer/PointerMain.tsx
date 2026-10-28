@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Pointer from "./Pointer";
 import PointerDragContainer from "./PointerDragContainer";
 import { AppDispatch } from "@/app/store";
+import { inventoryItemTypes } from "@/app/types";
 
 const PointerMain = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -70,18 +71,44 @@ const PointerMain = () => {
       if (!showInventory) return;
       e.preventDefault();
       console.log("Inventory click");
-      const stack = document
+      const inventoryContainer = document
         .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
         .find((el) => {
           return el.classList.contains("inventoryContainer");
         });
-      console.log(stack?.getAttribute("data-index"));
-      if (!stack?.getAttribute("data-index")) return;
-      dispatch(
-        ReactThreeFiberGameActions.addInventoryItemToDragContainer({
-          dragItemIndex: Number(stack?.getAttribute("data-index")),
-        }),
-      );
+      const equipmentContainer = document
+        .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
+        .find((el) => {
+          return el.classList.contains("equipmentContainer");
+        });
+
+      if (inventoryContainer?.classList.contains("inventoryContainer")) {
+        if (!inventoryContainer?.getAttribute("data-index")) return;
+        dispatch(
+          ReactThreeFiberGameActions.addInventoryItemToDragContainer({
+            dragItemIndex: Number(inventoryContainer?.getAttribute("data-index")),
+          }),
+        );
+      }
+
+      if (equipmentContainer?.classList.contains("equipmentContainer")) {
+        console.log("Equip right page down");
+        dispatch(
+          ReactThreeFiberGameActions.addEquipmentItemToDragContainer({
+            equipmentItemType: equipmentContainer?.getAttribute(
+              "data-equipmenttype",
+            ) as inventoryItemTypes,
+          }),
+        );
+        // addEquipmentItemToDragContainer
+        // console.log(stack?.getAttribute("data-index"));
+        // if (!stack?.getAttribute("data-index")) return;
+        // dispatch(
+        //   ReactThreeFiberGameActions.addInventoryItemToDragContainer({
+        //     dragItemIndex: Number(stack?.getAttribute("data-index")),
+        //   }),
+        // );
+      }
 
       // if(stack?.getAttribute("data-index")){
       //   dispatch(ReactThreeFiberGameActions.addInventoryItemToDragContainer(Number(stack?.getAttribute("data-index"))))
@@ -90,14 +117,31 @@ const PointerMain = () => {
 
     const pointerUpHandler = (e: MouseEvent) => {
       if (!showInventory) return;
-      const pointerUpElement = document
+      const pointerUpEquipmentElement = document
         .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
         .find((el) => {
           return el.classList.contains("equipmentContainer");
         });
-      console.log(pointerUpElement?.getAttribute("data-equipmenttype"));
-      if (!pointerUpElement?.getAttribute("data-equipmenttype")) {
+      const inventoryContainer = document
+        .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
+        .find((el) => {
+          return el.classList.contains("inventoryContainer");
+        });
+      console.log(inventoryContainer);
+      if (inventoryContainer) {
         dispatch(ReactThreeFiberGameActions.addDragItemToInventory());
+      }
+      if (!pointerUpEquipmentElement?.getAttribute("data-equipmenttype")) {
+        dispatch(ReactThreeFiberGameActions.clearDragItemContainer());
+      }
+      if (pointerUpEquipmentElement?.getAttribute("data-equipmenttype")) {
+        dispatch(
+          ReactThreeFiberGameActions.addDragItemToEquipment({
+            addedEquipmentType: pointerUpEquipmentElement?.getAttribute(
+              "data-equipmenttype",
+            ) as inventoryItemTypes,
+          }),
+        );
       }
     };
 
@@ -108,19 +152,6 @@ const PointerMain = () => {
       window.removeEventListener("pointerup", pointerUpHandler);
     };
   }, [showInventory]);
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (showInventory) {
-  //       const stack = document.elementsFromPoint(pointerCoords.x, pointerCoords.y).find((el) => {
-  //         return el.classList.contains("equipmentContainer");
-  //       });
-  //       console.log(stack?.getAttribute("data-equipmenttype"));
-  //     }
-  //   }, 1000);
-
-  //   return () => clearInterval(interval);
-  // }, [showInventory, pointerCoords]);
 
   return (
     <>

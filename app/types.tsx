@@ -552,3 +552,26 @@ export enum conditionPatternStatus {
   Rest = "rest",
   Attack = "attack",
 }
+
+export enum inventoryItemTypes {
+  Armour = "armour",
+  Weapon = "weapon",
+  Helmet = "helmet",
+  Shield = "shield",
+}
+
+export interface IInventoryItem {
+  type?: inventoryItemTypes;
+  name?: string;
+  id?: string;
+  position?: {
+    top: number;
+    left: number;
+    xlTop: number;
+    xlLeft: number;
+    equipmentTop: number;
+    equipmentLeft: number;
+    equipmentXlTop: number;
+    equipmentXlLeft: number;
+  };
+}

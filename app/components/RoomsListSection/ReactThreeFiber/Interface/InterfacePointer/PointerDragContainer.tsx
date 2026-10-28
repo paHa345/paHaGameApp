@@ -5,7 +5,7 @@ import styles from "./pointerDragContainer.module.css";
 
 const PointerDragContainer = () => {
   const dragItem = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerItems.dragItem,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerItems.dragItem.item,
   );
   return (
     <>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Inventory from "./Inventory";
 import { useSelector } from "react-redux";
 import { IReactThreeFiberGameSlice } from "@/app/store/ReactThreeFiberGameSlice";
+import { inventoryItemTypes } from "@/app/types";
 
 interface IInventoryMenuProps {
   isMobile: boolean;
@@ -24,10 +25,10 @@ const InventoryMenuMain = ({ isMobile }: IInventoryMenuProps) => {
 
         {/* Shield */}
         <div
-          data-equipmenttype="shield"
+          data-equipmenttype={`${inventoryItemTypes.Shield}`}
           className=" equipmentContainer right-[107px] top-[50px] w-[55px] h-[63px] absolute overflow-hidden xl:right-[160px] xl:top-[76px]  xl:h-[90px] xl:w-[80px]   "
         >
-          {playersEquipment.shield.id ? (
+          {playersEquipment.shield?.id ? (
             <img
               className={`
     h-[500%] relative max-w-none xl:h-[500%]
@@ -35,10 +36,10 @@ const InventoryMenuMain = ({ isMobile }: IInventoryMenuProps) => {
     xl:top-[var(--xl-top)] xl:left-[var(--xl-left)]  `}
               style={
                 {
-                  "--top": `${playersEquipment.shield.position.equipmentTop}px`,
-                  "--left": `${playersEquipment.shield.position.equipmentLeft}px`,
-                  "--xl-top": `${playersEquipment.shield.position.equipmentXlTop}px`,
-                  "--xl-left": `${playersEquipment.shield.position.equipmentXlLeft}px`,
+                  "--top": `${playersEquipment?.shield?.position?.equipmentTop}px`,
+                  "--left": `${playersEquipment?.shield?.position?.equipmentLeft}px`,
+                  "--xl-top": `${playersEquipment?.shield?.position?.equipmentXlTop}px`,
+                  "--xl-left": `${playersEquipment?.shield?.position?.equipmentXlLeft}px`,
                 } as React.CSSProperties
               }
               src="/RPGUI/icons.png"
@@ -54,7 +55,7 @@ const InventoryMenuMain = ({ isMobile }: IInventoryMenuProps) => {
         </div>
         {/* Sword */}
         <div
-          data-equipmenttype="sword"
+          data-equipmenttype={`${inventoryItemTypes.Weapon}`}
           className=" equipmentContainer right-[271px] top-[50px] w-[25px] h-[80px] absolute overflow-hidden xl:right-[407px] xl:top-[78px]  xl:h-[95px] xl:w-[35px]   "
         >
           {/* */}
@@ -66,7 +67,7 @@ const InventoryMenuMain = ({ isMobile }: IInventoryMenuProps) => {
         </div>
         {/* Helmet */}
         <div
-          data-equipmenttype="helmet"
+          data-equipmenttype={`${inventoryItemTypes.Helmet}`}
           className=" equipmentContainer right-[199px] top-[28px] w-[36px] h-[40px] xl:right-[300px] xl:top-[46px]  xl:h-[54px] xl:w-[50px]  absolute overflow-hidden "
         >
           <img
@@ -77,7 +78,7 @@ const InventoryMenuMain = ({ isMobile }: IInventoryMenuProps) => {
         </div>
         {/* Armour */}
         <div
-          data-equipmenttype="armour"
+          data-equipmenttype={`${inventoryItemTypes.Armour}`}
           className=" equipmentContainer right-[181px] top-[85px] w-[70px] h-[83px] xl:right-[270px] xl:top-[130px]  xl:h-[120px] xl:w-[110px] absolute overflow-hidden "
         >
           <img
