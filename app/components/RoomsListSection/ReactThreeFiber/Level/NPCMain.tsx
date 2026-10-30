@@ -29,6 +29,7 @@ const NPCMain = () => {
             id: enemyData.name,
             baseHP: 300,
             currentHP: 300,
+            baseDamage: enemyData.damage,
           }),
         ),
       );

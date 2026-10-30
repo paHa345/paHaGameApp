@@ -58,12 +58,30 @@ const InventoryMenuMain = ({ isMobile }: IInventoryMenuProps) => {
           data-equipmenttype={`${inventoryItemTypes.Weapon}`}
           className=" equipmentContainer right-[271px] top-[50px] w-[25px] h-[80px] absolute overflow-hidden xl:right-[407px] xl:top-[78px]  xl:h-[95px] xl:w-[35px]   "
         >
-          {/* */}
-          <img
-            className={` h-[500%] relative max-w-none top-[-330px] left-[-9px] xl:h-[600%]  xl:top-[-470px] xl:left-[-15px]  `}
-            src="/RPGUI/InventoryMainMenu_002.png"
-            alt=""
-          />
+          {playersEquipment.weapon?.id ? (
+            <img
+              className={`
+    h-[500%] relative max-w-none xl:h-[500%]
+    top-[var(--top)] left-[var(--left)]
+    xl:top-[var(--xl-top)] xl:left-[var(--xl-left)] -rotate-45 `}
+              style={
+                {
+                  "--top": `${playersEquipment?.weapon?.position?.equipmentTop}px`,
+                  "--left": `${playersEquipment?.weapon?.position?.equipmentLeft}px`,
+                  "--xl-top": `${playersEquipment?.weapon?.position?.equipmentXlTop}px`,
+                  "--xl-left": `${playersEquipment?.weapon?.position?.equipmentXlLeft}px`,
+                } as React.CSSProperties
+              }
+              src="/RPGUI/icons.png"
+              alt="icons"
+            />
+          ) : (
+            <img
+              className={` h-[500%] relative max-w-none top-[-330px] left-[-9px] xl:h-[600%]  xl:top-[-470px] xl:left-[-15px]  `}
+              src="/RPGUI/InventoryMainMenu_002.png"
+              alt=""
+            />
+          )}
         </div>
         {/* Helmet */}
         <div

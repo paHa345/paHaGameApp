@@ -1,9 +1,9 @@
 import { AppDispatch } from "@/app/store";
 import {
+  calculatePlayerAttackImpact,
   IReactThreeFiberGameSlice,
   NPCAttackImpact,
   ReactThreeFiberGameActions,
-  setStartAttackStatus,
 } from "@/app/store/ReactThreeFiberGameSlice";
 import { useThree } from "@react-three/fiber";
 import { useRapier, vec3 } from "@react-three/rapier";
@@ -17,18 +17,15 @@ import { castRayFromUser } from "@/app/utils/castRay";
 const AttackPlayerHandler = () => {
   const dispatch = useDispatch<AppDispatch>();
   const playerAttackStatus = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.playerAttackStatus,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerAttackStatus,
   );
 
   const player = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.playerBodyRef,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerBodyRef,
   );
 
   const enemyesRefs = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.enemyNPCRefs,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.enemyNPCRefs,
   );
 
   const { world } = useRapier();
@@ -60,10 +57,7 @@ const AttackPlayerHandler = () => {
      */
 
     // тут угол поворота на 180 градусов по вертикали
-    const deltaQuat = new THREE.Quaternion().setFromAxisAngle(
-      new THREE.Vector3(0, 1, 0),
-      Math.PI,
-    );
+    const deltaQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI);
     // прибавляем 180 град по вертикали к повороту модели
     const newQuat = quat.clone().multiply(deltaQuat);
 
@@ -174,8 +168,7 @@ const AttackPlayerHandler = () => {
         if (enemyUserData.type === "npc") {
           // получаем позицию игрока и этого врага
           const playerPos = player.translation();
-          const enemyPos =
-            enemyesRefs[enemyUserData.id].enemyBodyRef?.translation();
+          const enemyPos = enemyesRefs[enemyUserData.id].enemyBodyRef?.translation();
           if (!enemyPos) return;
 
           // Высчитываем направление вектора от игрока к врагу
@@ -185,17 +178,9 @@ const AttackPlayerHandler = () => {
             .normalize();
 
           // Направляем импульс по данному вектору, который отталкивает врага
-          enemyesRefs[enemyUserData.id].enemyBodyRef?.setLinvel(
-            direction.multiplyScalar(4),
-            true,
-          );
+          enemyesRefs[enemyUserData.id].enemyBodyRef?.setLinvel(direction.multiplyScalar(4), true);
 
-          dispatch(
-            ReactThreeFiberGameActions.setNPCReduceHP({
-              id: enemyUserData.id,
-              damage: 50,
-            }),
-          );
+          dispatch(calculatePlayerAttackImpact({ enemyObjectID: enemyUserData.id }));
           //   enemyesRefs[enemyUserData.id].enemyBodyRef?.setRotation(
           //     new THREE.Quaternion(0, 0, 0, 0),
           //     true,

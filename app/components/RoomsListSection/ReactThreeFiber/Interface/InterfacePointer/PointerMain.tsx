@@ -127,7 +127,7 @@ const PointerMain = () => {
         .find((el) => {
           return el.classList.contains("inventoryContainer");
         });
-      console.log(inventoryContainer);
+      console.log(pointerUpEquipmentElement);
       if (inventoryContainer) {
         dispatch(ReactThreeFiberGameActions.addDragItemToInventory());
       }

@@ -7,6 +7,28 @@ import * as rapier from "@dimforge/rapier3d-compat";
 import { RootState } from "@react-three/fiber";
 import { section } from "framer-motion/client";
 
+function calculatePlayerExtraStats(state: {
+  weapon: IInventoryItem;
+  shield: IInventoryItem;
+  helmet: IInventoryItem;
+  armour: IInventoryItem;
+}) {
+  const extraDamage =
+    (state.shield.damage ?? 0) +
+    (state.helmet.damage ?? 0) +
+    (state.armour.damage ?? 0) +
+    (state.weapon.damage ?? 0);
+  const extraDefense =
+    (state.shield.defense ?? 0) +
+    (state.helmet.defense ?? 0) +
+    (state.armour.defense ?? 0) +
+    (state.weapon.defense ?? 0);
+  return {
+    extraDamage: extraDamage,
+    extraDefense: extraDefense,
+  };
+}
+
 export const setStartAttackStatus = createAsyncThunk(
   "ReactThreeFiberGameState/setStartAttackStatus",
   async function (
@@ -21,6 +43,31 @@ export const setStartAttackStatus = createAsyncThunk(
 
       await new Promise((resolve) => setTimeout(resolve, 500));
       dispatch(ReactThreeFiberGameActions.setPlayerEndAttack());
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const calculatePlayerAttackImpact = createAsyncThunk(
+  "ReactThreeFiberGameState/calculatePlayerAttackImpact",
+  async function (
+    enemyObjectID: { enemyObjectID: string },
+    { rejectWithValue, dispatch, getState },
+  ) {
+    try {
+      const state = getState() as IReactThreeFiberGameSlice;
+      if (!state.ReactThreeFiberGameState.playerAttackStatus) return;
+      const playerDamage =
+        state.ReactThreeFiberGameState.playerStat.baseDamage +
+        state.ReactThreeFiberGameState.playerStat.extraDamage;
+
+      dispatch(
+        ReactThreeFiberGameActions.setNPCReduceHP({
+          id: enemyObjectID.enemyObjectID,
+          damage: playerDamage,
+        }),
+      );
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -88,7 +135,11 @@ export const NPCAttackImpact = createAsyncThunk(
       const state = getState() as IReactThreeFiberGameSlice;
 
       if (!state.ReactThreeFiberGameState.playerBlockStatus) {
-        dispatch(ReactThreeFiberGameActions.setCurrentPlayerReduceHP(50));
+        dispatch(
+          ReactThreeFiberGameActions.setCurrentPlayerReduceHP(
+            state.ReactThreeFiberGameState.enemyNPCStat[attackData.id].baseDamage,
+          ),
+        );
         return { attackInBlock: false };
       } else {
         dispatch(
@@ -169,9 +220,7 @@ export const throwBarrelAction = createAsyncThunk(
   async function (_, { rejectWithValue, dispatch, getState }) {
     try {
       const state = getState() as IReactThreeFiberGameSlice;
-      console.log("Throw");
-      console.log(state.ReactThreeFiberGameState.playerThrowBarrelStatus.status);
-      console.log(state.ReactThreeFiberGameState.playerPickedUpBarrel.id);
+
       if (state.ReactThreeFiberGameState.playerThrowBarrelStatus.status) return;
       if (!state.ReactThreeFiberGameState.playerPickedUpBarrel.id) return;
 
@@ -260,6 +309,10 @@ export interface IReactThreeFiberGameSlice {
     playerStat: {
       baseHP: number;
       currentHP: number;
+      baseDamage: number;
+      extraDamage: number;
+      baseDefence: number;
+      extraDefence: number;
     };
 
     playerItems: {
@@ -328,6 +381,7 @@ export interface IReactThreeFiberGameSlice {
 
     NPCArr: {
       name: string;
+      damage: number;
       position: { x: number; y: number; z: number };
       rotationTimer: number;
       animation: string;
@@ -352,6 +406,7 @@ export interface IReactThreeFiberGameSlice {
       [id: string]: {
         baseHP?: number;
         currentHP?: number;
+        baseDamage?: number;
       };
     };
     zombieWalkStatus: boolean;
@@ -407,6 +462,10 @@ interface IReactThreeFiberGameState {
   playerStat: {
     baseHP: number;
     currentHP: number;
+    baseDamage: number;
+    extraDamage: number;
+    baseDefence: number;
+    extraDefence: number;
   };
 
   playerItems: {
@@ -457,6 +516,8 @@ interface IReactThreeFiberGameState {
 
   NPCArr: {
     name: string;
+    damage: number;
+
     position: { x: number; y: number; z: number };
     rotationTimer: number;
     animation: string;
@@ -482,6 +543,7 @@ interface IReactThreeFiberGameState {
     [id: string]: {
       baseHP?: number;
       currentHP?: number;
+      baseDamage?: number;
     };
   };
 
@@ -524,6 +586,10 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
   playerStat: {
     baseHP: 500,
     currentHP: 500,
+    baseDamage: 50,
+    extraDamage: 0,
+    baseDefence: 0,
+    extraDefence: 0,
   },
 
   playerItems: {
@@ -533,6 +599,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
         type: inventoryItemTypes.Shield,
         name: "shield1",
         id: "shield1",
+        defense: 40,
         position: {
           top: 5,
           left: -44,
@@ -552,6 +619,8 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
         type: inventoryItemTypes.Shield,
         name: "shield11",
         id: "shield11",
+        defense: 40,
+
         position: {
           top: 5,
           left: 2,
@@ -567,6 +636,8 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
         type: inventoryItemTypes.Shield,
         name: "shield1",
         id: "shield1",
+        defense: 30,
+
         position: {
           top: 5,
           left: -44,
@@ -582,45 +653,49 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
         type: inventoryItemTypes.Weapon,
         name: "sword23",
         id: "sword23",
+        damage: 100,
         position: {
           top: -44,
           left: 2,
           xlTop: -70,
           xlLeft: 5,
-          equipmentTop: -44,
-          equipmentLeft: 2,
-          equipmentXlTop: -70,
-          equipmentXlLeft: 5,
+          equipmentTop: -332,
+          equipmentLeft: -52,
+          equipmentXlTop: -384,
+          equipmentXlLeft: -60,
         },
       },
       {
         type: inventoryItemTypes.Weapon,
         name: "sword7",
         id: "sword7",
+        damage: 30,
+
         position: {
           top: -44,
           left: -44,
           xlTop: -70,
           xlLeft: -65,
-          equipmentTop: -44,
-          equipmentLeft: -59,
-          equipmentXlTop: -70,
-          equipmentXlLeft: -80,
+          equipmentTop: -284,
+          equipmentLeft: -107,
+          equipmentXlTop: -328,
+          equipmentXlLeft: -128,
         },
       },
       {
         type: inventoryItemTypes.Weapon,
         name: "sword7",
         id: "sword7",
+        damage: 50,
         position: {
           top: -44,
           left: -44,
           xlTop: -70,
           xlLeft: -65,
-          equipmentTop: -44,
-          equipmentLeft: -59,
-          equipmentXlTop: -70,
-          equipmentXlLeft: -80,
+          equipmentTop: -284,
+          equipmentLeft: -107,
+          equipmentXlTop: -328,
+          equipmentXlLeft: -128,
         },
       },
     ],
@@ -667,6 +742,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
   NPCArr: [
     {
       name: "orc1",
+      damage: 50,
       position: { x: -5, y: 0, z: -2 },
       rotationTimer: 5,
       animation: "walk",
@@ -674,6 +750,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
     },
     {
       name: "orc2",
+      damage: 50,
       position: { x: 2, y: 0, z: -2 },
       rotationTimer: 8,
       animation: "walk",
@@ -681,6 +758,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
     },
     {
       name: "orc3",
+      damage: 50,
       position: { x: 5, y: 0, z: -2 },
       rotationTimer: 4,
       animation: "walk",
@@ -689,6 +767,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
 
     {
       name: "orc4",
+      damage: 50,
       position: { x: 15, y: 0, z: 20 },
       rotationTimer: 6,
       animation: "walk",
@@ -696,6 +775,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
     },
     {
       name: "orc5",
+      damage: 50,
       position: { x: 22, y: 0, z: 22 },
       rotationTimer: 7,
       animation: "walk",
@@ -883,7 +963,7 @@ export const ReactThreeFiberGameSlice = createSlice({
     setNPCStat(
       state,
       action: {
-        payload: { id: string; baseHP: number; currentHP: number };
+        payload: { id: string; baseHP: number; currentHP: number; baseDamage: number };
         type: string;
       },
     ) {
@@ -897,6 +977,10 @@ export const ReactThreeFiberGameSlice = createSlice({
         .currentHP
         ? state.enemyNPCStat[action.payload.id].currentHP
         : action.payload.currentHP;
+      state.enemyNPCStat[action.payload.id].baseDamage = state.enemyNPCStat[action.payload.id]
+        .baseDamage
+        ? state.enemyNPCStat[action.payload.id].baseDamage
+        : action.payload.baseDamage;
     },
     setCurrentEnemyConditionStatus(state, action) {
       state.enemyNPCData[action.payload.id].conditionPatternStatus =
@@ -992,7 +1076,10 @@ export const ReactThreeFiberGameSlice = createSlice({
       if (state.playerBlockStatus) {
         console.log(`Block NPC attack ${Date.now()}`);
       }
-      state.playerStat.currentHP = state.playerStat.currentHP - action.payload;
+      state.playerStat.currentHP =
+        state.playerStat.currentHP -
+        action.payload *
+          ((100 - (state.playerStat.baseDefence + state.playerStat.extraDefence)) / 100);
     },
 
     // {
@@ -1077,7 +1164,6 @@ export const ReactThreeFiberGameSlice = createSlice({
       )
         return;
 
-      console.log("Set Can Pick Up");
       state.playerCanPickUpBarrelStatus = {
         barrelID: action.payload.barrelID,
         canPickUp: action.payload.canPickUpStatus,
@@ -1171,7 +1257,6 @@ export const ReactThreeFiberGameSlice = createSlice({
         type: string;
       },
     ) {
-      console.log(action.payload.equipmentItemType);
       state.playerItems.dragItem.item = {};
       state.playerItems.dragItem.item =
         state.playerItems.equipment[action.payload.equipmentItemType];
@@ -1204,6 +1289,16 @@ export const ReactThreeFiberGameSlice = createSlice({
         type: string;
       },
     ) {
+      if (
+        state.playerItems.dragItem.itemIndexInInventory === -1 &&
+        state.playerItems.dragItem.item.type
+      ) {
+        state.playerItems.equipment[state.playerItems.dragItem.item?.type] =
+          state.playerItems.dragItem.item;
+        state.playerItems.dragItem.item = {};
+        state.playerItems.dragItem.itemIndexInInventory = -1;
+        return;
+      }
       if (state.playerItems.dragItem.item.type !== action.payload.addedEquipmentType) {
         state.playerItems.dragItem.item = {};
         state.playerItems.dragItem.itemIndexInInventory = -1;
@@ -1212,7 +1307,7 @@ export const ReactThreeFiberGameSlice = createSlice({
       }
 
       if (state.playerItems.dragItem.item.type === action.payload.addedEquipmentType) {
-        if (state.playerItems.equipment[action.payload.addedEquipmentType].id) {
+        if (state.playerItems.equipment[action.payload.addedEquipmentType]?.id) {
           state.playerItems.inventory.push(
             state.playerItems.equipment[action.payload.addedEquipmentType],
           );
@@ -1227,6 +1322,11 @@ export const ReactThreeFiberGameSlice = createSlice({
         state.playerItems.dragItem.item = {};
         state.playerItems.dragItem.itemIndexInInventory = -1;
       }
+
+      // calculate extra stats
+      const extraStats = calculatePlayerExtraStats(state.playerItems.equipment);
+      state.playerStat.extraDamage = extraStats.extraDamage;
+      state.playerStat.extraDefence = extraStats.extraDefense;
     },
     addDragItemToInventory(state) {
       if (
@@ -1239,6 +1339,11 @@ export const ReactThreeFiberGameSlice = createSlice({
         state.playerItems.inventory.push(state.playerItems.dragItem.item);
         state.playerItems.dragItem.item = {};
         state.playerItems.dragItem.itemIndexInInventory = -1;
+
+        // calculate extra stats
+        const extraStats = calculatePlayerExtraStats(state.playerItems.equipment);
+        state.playerStat.extraDamage = extraStats.extraDamage;
+        state.playerStat.extraDefence = extraStats.extraDefense;
       }
     },
   },
