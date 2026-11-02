@@ -2,7 +2,7 @@ import {
   IReactThreeFiberGameSlice,
   ReactThreeFiberGameActions,
 } from "@/app/store/ReactThreeFiberGameSlice";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Pointer from "./Pointer";
 import PointerDragContainer from "./PointerDragContainer";
@@ -10,6 +10,7 @@ import { AppDispatch } from "@/app/store";
 import { inventoryItemTypes } from "@/app/types";
 
 const PointerMain = () => {
+  // const [movePointerStatus, setMovePointerStatus] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const showInventory = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.showInventory,
@@ -23,6 +24,14 @@ const PointerMain = () => {
 
   const windowHeightWidth = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.windowHeightWidth,
+  );
+
+  const pointerClickCoords = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.pointerClickCoords,
+  );
+
+  const movePointerStatus = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.movePointerStatus,
   );
 
   const coordsRef = useRef({ x: 0, y: 0 });
@@ -53,6 +62,19 @@ const PointerMain = () => {
                 ? 0
                 : coordsRef.current.y + mouseVector.y * 100;
           }
+
+          if (
+            pointerClickCoords.x !== 0 &&
+            pointerClickCoords.y !== 0 &&
+            (Math.abs(Math.abs(coordsRef.current.x) - Math.abs(pointerClickCoords.x)) > 20 ||
+              Math.abs(Math.abs(coordsRef.current.y) - Math.abs(pointerClickCoords.y)) > 20)
+          ) {
+            if (!movePointerStatus) {
+              // setMovePointerStatus(true);
+              dispatch(ReactThreeFiberGameActions.setMovePointerStatus(true));
+            }
+          }
+
           if (pointerRef.current) {
             pointerRef.current.style.transform = `translate3d(${coordsRef.current.x}px, ${coordsRef.current.y}px, 0)`;
           }
@@ -62,12 +84,12 @@ const PointerMain = () => {
 
     window.addEventListener("mousemove", handleMove);
     return () => window.removeEventListener("mousemove", handleMove);
-  }, [showInventory]);
+  }, [showInventory, pointerClickCoords]);
 
   useEffect(() => {
     if (!window) return;
 
-    const pointerdownHandler = (e: MouseEvent) => {
+    const pointerDownHandler = (e: MouseEvent) => {
       if (!showInventory) return;
       e.preventDefault();
       console.log("Inventory click");
@@ -85,6 +107,12 @@ const PointerMain = () => {
       if (inventoryContainer?.classList.contains("inventoryContainer")) {
         if (!inventoryContainer?.getAttribute("data-index")) return;
         dispatch(
+          ReactThreeFiberGameActions.setPointerClickCoords({
+            x: coordsRef.current.x,
+            y: coordsRef.current.y,
+          }),
+        );
+        dispatch(
           ReactThreeFiberGameActions.addInventoryItemToDragContainer({
             dragItemIndex: Number(inventoryContainer?.getAttribute("data-index")),
           }),
@@ -94,28 +122,26 @@ const PointerMain = () => {
       if (equipmentContainer?.classList.contains("equipmentContainer")) {
         console.log("Equip right page down");
         dispatch(
+          ReactThreeFiberGameActions.setPointerClickCoords({
+            x: coordsRef.current.x,
+            y: coordsRef.current.y,
+          }),
+        );
+        dispatch(
           ReactThreeFiberGameActions.addEquipmentItemToDragContainer({
             equipmentItemType: equipmentContainer?.getAttribute(
               "data-equipmenttype",
             ) as inventoryItemTypes,
           }),
         );
-        // addEquipmentItemToDragContainer
-        // console.log(stack?.getAttribute("data-index"));
-        // if (!stack?.getAttribute("data-index")) return;
-        // dispatch(
-        //   ReactThreeFiberGameActions.addInventoryItemToDragContainer({
-        //     dragItemIndex: Number(stack?.getAttribute("data-index")),
-        //   }),
-        // );
       }
-
-      // if(stack?.getAttribute("data-index")){
-      //   dispatch(ReactThreeFiberGameActions.addInventoryItemToDragContainer(Number(stack?.getAttribute("data-index"))))
-      // }
     };
 
     const pointerUpHandler = (e: MouseEvent) => {
+      // setMovePointerStatus(false);
+      dispatch(ReactThreeFiberGameActions.setMovePointerStatus(false));
+
+      dispatch(ReactThreeFiberGameActions.setPointerClickCoords({ x: 0, y: 0 }));
       if (!showInventory) return;
       const pointerUpEquipmentElement = document
         .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
@@ -145,10 +171,18 @@ const PointerMain = () => {
       }
     };
 
-    window.addEventListener("pointerdown", pointerdownHandler);
+    // const pointerClickHandler = (e: MouseEvent) => {
+    //   e.preventDefault();
+    //   console.log(e.button);
+    //   console.log(coordsRef.current);
+    // };
+
+    // window.addEventListener("click", pointerClickHandler);
+    window.addEventListener("pointerdown", pointerDownHandler);
     window.addEventListener("pointerup", pointerUpHandler);
     return () => {
-      window.removeEventListener("pointerdown", pointerdownHandler);
+      // window.removeEventListener("click", pointerClickHandler);
+      window.removeEventListener("pointerdown", pointerDownHandler);
       window.removeEventListener("pointerup", pointerUpHandler);
     };
   }, [showInventory]);
@@ -162,7 +196,7 @@ const PointerMain = () => {
           className=" absolute "
         >
           <Pointer></Pointer>
-          <PointerDragContainer></PointerDragContainer>
+          {movePointerStatus && <PointerDragContainer></PointerDragContainer>}
         </div>
       )}
     </>

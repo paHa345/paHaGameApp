@@ -297,6 +297,8 @@ export interface IReactThreeFiberGameSlice {
 
     mouseCoords: { x: number; y: number };
     pointerCoords: { x: number; y: number };
+    pointerClickCoords: { x: number; y: number };
+    movePointerStatus: boolean;
 
     /**
      * Players
@@ -453,6 +455,8 @@ interface IReactThreeFiberGameState {
 
   mouseCoords: { x: number; y: number };
   pointerCoords: { x: number; y: number };
+  pointerClickCoords: { x: number; y: number };
+  movePointerStatus: boolean;
 
   playerBodyRef?: RapierRigidBody | null;
   playerMesh?: THREE.Mesh;
@@ -580,6 +584,8 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
 
   mouseCoords: { x: 0, y: 0 },
   pointerCoords: { x: 0, y: 0 },
+  pointerClickCoords: { x: 0, y: 0 },
+  movePointerStatus: false,
 
   playerAttackStatus: false,
   playerMoveStatus: false,
@@ -597,9 +603,10 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       weapon: {},
       shield: {
         type: inventoryItemTypes.Shield,
-        name: "shield1",
+        name: "Щит короля орков",
         id: "shield1",
         defense: 40,
+        description: "Щит короля орков",
         position: {
           top: 5,
           left: -44,
@@ -617,9 +624,10 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
     inventory: [
       {
         type: inventoryItemTypes.Shield,
-        name: "shield11",
+        name: "Военный щит",
         id: "shield11",
-        defense: 40,
+        defense: 20,
+        description: "Военный щит",
 
         position: {
           top: 5,
@@ -634,8 +642,9 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       },
       {
         type: inventoryItemTypes.Shield,
-        name: "shield1",
+        name: "Щит орков",
         id: "shield1",
+        description: "Щит орков",
         defense: 30,
 
         position: {
@@ -651,8 +660,10 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       },
       {
         type: inventoryItemTypes.Weapon,
-        name: "sword23",
+        name: "Зачарованный меч",
         id: "sword23",
+        description: "Зачарованный меч",
+
         damage: 100,
         position: {
           top: -44,
@@ -667,9 +678,11 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       },
       {
         type: inventoryItemTypes.Weapon,
-        name: "sword7",
+        name: "Длинный меч",
         id: "sword7",
         damage: 30,
+
+        description: "Длинный меч",
 
         position: {
           top: -44,
@@ -684,9 +697,10 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       },
       {
         type: inventoryItemTypes.Weapon,
-        name: "sword7",
+        name: "Длинный усиленный меч",
         id: "sword7",
-        damage: 50,
+        damage: 40,
+        description: "Длинный усиленный меч",
         position: {
           top: -44,
           left: -44,
@@ -1345,6 +1359,12 @@ export const ReactThreeFiberGameSlice = createSlice({
         state.playerStat.extraDamage = extraStats.extraDamage;
         state.playerStat.extraDefence = extraStats.extraDefense;
       }
+    },
+    setPointerClickCoords(state, action) {
+      state.pointerClickCoords = { x: action.payload.x, y: action.payload.y };
+    },
+    setMovePointerStatus(state, action) {
+      state.movePointerStatus = action.payload;
     },
   },
 });

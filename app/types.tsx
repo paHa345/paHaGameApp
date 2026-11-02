@@ -566,6 +566,7 @@ export interface IInventoryItem {
   id?: string;
   damage?: number;
   defense?: number;
+  description?: string;
 
   position?: {
     top: number;
