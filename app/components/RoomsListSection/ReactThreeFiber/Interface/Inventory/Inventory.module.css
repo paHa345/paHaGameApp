@@ -5,7 +5,7 @@
   --numberRaw: 0;
 }
 
-@media (min-width: 800px) {
+@media (min-width: 200px) {
   .element {
     right: calc(282px - (63px * var(--numberCol)));
     top: calc(182px + (63px * var(--numberRaw)));
@@ -26,7 +26,11 @@
 
 .selected {
   border-color: #7aee22;
-  background: radial-gradient(circle at center, rgba(34, 211, 238, 0.15), transparent 70%);
+  background: radial-gradient(
+    circle at center,
+    rgba(34, 211, 238, 0.15),
+    transparent 70%
+  );
   box-shadow:
     0 0 12px rgba(34, 211, 238, 0.5),
     inset 0 0 12px rgba(34, 211, 238, 0.2);
