@@ -6,27 +6,29 @@ import styles from "./Inventory.module.css";
 
 const Inventory = () => {
   const playerInventory = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.playerItems.inventory,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerItems.inventory,
   );
   const dragItemIndex = useSelector(
     (state: IReactThreeFiberGameSlice) =>
       state.ReactThreeFiberGameState.playerItems.dragItem.itemIndexInInventory,
   );
 
-  const windowWidth = useSelector(
+  const selectedInventoryItemIndex = useSelector(
     (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.windowHeightWidth.width,
+      state.ReactThreeFiberGameState.playerItems.selectedInventoryItem,
   );
 
-  // xl:right-[${423 - 91 * (index % 4)}px]
+  const windowWidth = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.windowHeightWidth.width,
+  );
+
   const slotContainers = playerInventory.map((el, index) => {
     const numberCol = index % 4;
     const numberRaw = Math.floor(index / 4);
     return (
       <div
         key={`${el.id}_${index}`}
-        className={`${styles.element} inventoryContainer slot_${index} ${dragItemIndex === index ? `${styles.selected}` : ""}`}
+        className={`${styles.element} inventoryContainer slot_${index} ${selectedInventoryItemIndex === index ? `${styles.selected}` : ""}`}
         data-index={`${index}`}
         style={
           {
@@ -48,20 +50,6 @@ const Inventory = () => {
                   left: `${el?.position?.left}px`,
                 }
           }
-          // style={
-          //   {
-          //     "--xl-top": `${el?.position?.xlTop}px`,
-          //     "--xl-left": `${el?.position?.xlLeft}px`,
-          //   } as React.CSSProperties
-          // }
-          // style={
-          //   {
-          //     "--xl-top": `${el?.position?.xlTop}px`,
-          //     "--xl-left": `${el?.position?.xlLeft}px`,
-          //     "--top": `${el?.position?.top}px`,
-          //     "--left": `${el?.position?.left}px`,
-          //   } as React.CSSProperties
-          // }
           className={` h-[500%] relative max-w-none xl:h-[500%] ]`}
           src="/RPGUI/icons.png"
           alt="icons"

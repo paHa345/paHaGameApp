@@ -329,6 +329,7 @@ export interface IReactThreeFiberGameSlice {
         itemIndexInInventory: number;
         item: IInventoryItem;
       };
+      selectedInventoryItem: number;
     };
 
     playerBlockStatus: boolean;
@@ -484,6 +485,7 @@ interface IReactThreeFiberGameState {
       itemIndexInInventory: number;
       item: IInventoryItem;
     };
+    selectedInventoryItem: number;
   };
   playerBlockStatus: boolean;
   playerCanPickUpBarrelStatus: {
@@ -716,20 +718,8 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
     dragItem: {
       itemIndexInInventory: -1,
       item: {},
-      //   type: "sword",
-      //   name: "sword7",
-      //   id: "sword7",
-      //   position: {
-      //     top: -44,
-      //     left: -44,
-      //     xlTop: -70,
-      //     xlLeft: -65,
-      //     equipmentTop: -44,
-      //     equipmentLeft: -59,
-      //     equipmentXlTop: -70,
-      //     equipmentXlLeft: -80,
-      //   },
     },
+    selectedInventoryItem: -1,
   },
   playerBlockStatus: false,
   playerCanPickUpBarrelStatus: {
@@ -1274,7 +1264,7 @@ export const ReactThreeFiberGameSlice = createSlice({
       state.playerItems.dragItem.item = {};
       state.playerItems.dragItem.item =
         state.playerItems.equipment[action.payload.equipmentItemType];
-      state.playerItems.equipment[action.payload.equipmentItemType] = {};
+      // state.playerItems.equipment[action.payload.equipmentItemType] = {};
     },
     clearDragItemContainer(state) {
       if (
@@ -1350,6 +1340,8 @@ export const ReactThreeFiberGameSlice = createSlice({
         state.playerItems.dragItem.item.type &&
         state.playerItems.dragItem.itemIndexInInventory === -1
       ) {
+        state.playerItems.equipment[state.playerItems.dragItem.item.type] = {};
+
         state.playerItems.inventory.push(state.playerItems.dragItem.item);
         state.playerItems.dragItem.item = {};
         state.playerItems.dragItem.itemIndexInInventory = -1;
@@ -1365,6 +1357,9 @@ export const ReactThreeFiberGameSlice = createSlice({
     },
     setMovePointerStatus(state, action) {
       state.movePointerStatus = action.payload;
+    },
+    setSelectedInventoryItem(state, action) {
+      state.playerItems.selectedInventoryItem = action.payload;
     },
   },
 });

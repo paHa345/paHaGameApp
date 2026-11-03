@@ -113,6 +113,11 @@ const PointerMain = () => {
           }),
         );
         dispatch(
+          ReactThreeFiberGameActions.setSelectedInventoryItem(
+            Number(inventoryContainer?.getAttribute("data-index")),
+          ),
+        );
+        dispatch(
           ReactThreeFiberGameActions.addInventoryItemToDragContainer({
             dragItemIndex: Number(inventoryContainer?.getAttribute("data-index")),
           }),
@@ -168,6 +173,7 @@ const PointerMain = () => {
             ) as inventoryItemTypes,
           }),
         );
+        dispatch(ReactThreeFiberGameActions.setSelectedInventoryItem(-1));
       }
     };
 
