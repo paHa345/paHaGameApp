@@ -1,7 +1,12 @@
 import { RapierRigidBody } from "@react-three/rapier";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import * as THREE from "three";
-import { conditionPatternStatus, IInventoryItem, inventoryItemTypes } from "../types";
+import {
+  conditionPatternStatus,
+  IInventoryItem,
+  inventoryItemTypes,
+  SelectedItemType,
+} from "../types";
 import { useRapier, vec3 } from "@react-three/rapier";
 import * as rapier from "@dimforge/rapier3d-compat";
 import { RootState } from "@react-three/fiber";
@@ -329,7 +334,7 @@ export interface IReactThreeFiberGameSlice {
         itemIndexInInventory: number;
         item: IInventoryItem;
       };
-      selectedInventoryItem: number;
+      selectedItem: SelectedItemType;
     };
 
     playerBlockStatus: boolean;
@@ -485,7 +490,7 @@ interface IReactThreeFiberGameState {
       itemIndexInInventory: number;
       item: IInventoryItem;
     };
-    selectedInventoryItem: number;
+    selectedItem: SelectedItemType;
   };
   playerBlockStatus: boolean;
   playerCanPickUpBarrelStatus: {
@@ -719,7 +724,10 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       itemIndexInInventory: -1,
       item: {},
     },
-    selectedInventoryItem: -1,
+    selectedItem: {
+      position: "inventory",
+      index: -1,
+    },
   },
   playerBlockStatus: false,
   playerCanPickUpBarrelStatus: {
@@ -1358,8 +1366,14 @@ export const ReactThreeFiberGameSlice = createSlice({
     setMovePointerStatus(state, action) {
       state.movePointerStatus = action.payload;
     },
-    setSelectedInventoryItem(state, action) {
-      state.playerItems.selectedInventoryItem = action.payload;
+    setSelectedItem(
+      state,
+      action: {
+        payload: SelectedItemType;
+        type: string;
+      },
+    ) {
+      state.playerItems.selectedItem = action.payload;
     },
   },
 });

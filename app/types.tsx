@@ -579,3 +579,15 @@ export interface IInventoryItem {
     equipmentXlLeft: number;
   };
 }
+
+interface InventorySelectedItem {
+  position: "inventory";
+  index: number;
+}
+
+interface EquipmentSelectedItem {
+  position: "equipment";
+  type: inventoryItemTypes;
+}
+
+export type SelectedItemType = InventorySelectedItem | EquipmentSelectedItem;

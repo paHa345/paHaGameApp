@@ -113,9 +113,10 @@ const PointerMain = () => {
           }),
         );
         dispatch(
-          ReactThreeFiberGameActions.setSelectedInventoryItem(
-            Number(inventoryContainer?.getAttribute("data-index")),
-          ),
+          ReactThreeFiberGameActions.setSelectedItem({
+            position: "inventory",
+            index: Number(inventoryContainer?.getAttribute("data-index")),
+          }),
         );
         dispatch(
           ReactThreeFiberGameActions.addInventoryItemToDragContainer({
@@ -125,13 +126,20 @@ const PointerMain = () => {
       }
 
       if (equipmentContainer?.classList.contains("equipmentContainer")) {
-        console.log("Equip right page down");
         dispatch(
           ReactThreeFiberGameActions.setPointerClickCoords({
             x: coordsRef.current.x,
             y: coordsRef.current.y,
           }),
         );
+
+        dispatch(
+          ReactThreeFiberGameActions.setSelectedItem({
+            position: "equipment",
+            type: equipmentContainer?.getAttribute("data-equipmenttype") as inventoryItemTypes,
+          }),
+        );
+
         dispatch(
           ReactThreeFiberGameActions.addEquipmentItemToDragContainer({
             equipmentItemType: equipmentContainer?.getAttribute(
@@ -173,21 +181,38 @@ const PointerMain = () => {
             ) as inventoryItemTypes,
           }),
         );
-        dispatch(ReactThreeFiberGameActions.setSelectedInventoryItem(-1));
+        dispatch(
+          ReactThreeFiberGameActions.setSelectedItem({
+            position: "inventory",
+            index: -1,
+          }),
+        );
       }
     };
 
-    // const pointerClickHandler = (e: MouseEvent) => {
-    //   e.preventDefault();
-    //   console.log(e.button);
-    //   console.log(coordsRef.current);
-    // };
+    const pointerClickHandler = (e: MouseEvent) => {
+      e.preventDefault();
+      const closeSelectedElMenuButton = document
+        .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
+        .find((el) => {
+          return el.classList.contains("closeSelectedElMenu");
+        });
 
-    // window.addEventListener("click", pointerClickHandler);
+      if (closeSelectedElMenuButton) {
+        dispatch(
+          ReactThreeFiberGameActions.setSelectedItem({
+            position: "inventory",
+            index: -1,
+          }),
+        );
+      }
+    };
+
+    window.addEventListener("click", pointerClickHandler);
     window.addEventListener("pointerdown", pointerDownHandler);
     window.addEventListener("pointerup", pointerUpHandler);
     return () => {
-      // window.removeEventListener("click", pointerClickHandler);
+      window.removeEventListener("click", pointerClickHandler);
       window.removeEventListener("pointerdown", pointerDownHandler);
       window.removeEventListener("pointerup", pointerUpHandler);
     };
