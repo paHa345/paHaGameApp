@@ -334,7 +334,7 @@ export interface IReactThreeFiberGameSlice {
         itemIndexInInventory: number;
         item: IInventoryItem;
       };
-      selectedItem: SelectedItemType;
+      selectedItem: { selectedItemData: SelectedItemType; id: string | null };
     };
 
     playerBlockStatus: boolean;
@@ -490,7 +490,7 @@ interface IReactThreeFiberGameState {
       itemIndexInInventory: number;
       item: IInventoryItem;
     };
-    selectedItem: SelectedItemType;
+    selectedItem: { selectedItemData: SelectedItemType; id: string | null };
   };
   playerBlockStatus: boolean;
   playerCanPickUpBarrelStatus: {
@@ -611,7 +611,8 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       shield: {
         type: inventoryItemTypes.Shield,
         name: "Щит короля орков",
-        id: "shield1",
+        modelName: "shield1",
+        id: "0011",
         defense: 40,
         description: "Щит короля орков",
         position: {
@@ -632,10 +633,10 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       {
         type: inventoryItemTypes.Shield,
         name: "Военный щит",
-        id: "shield11",
+        modelName: "shield11",
+        id: "0012",
         defense: 20,
         description: "Военный щит",
-
         position: {
           top: 5,
           left: 2,
@@ -650,10 +651,10 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       {
         type: inventoryItemTypes.Shield,
         name: "Щит орков",
-        id: "shield1",
+        modelName: "shield1",
+        id: "0013",
         description: "Щит орков",
         defense: 30,
-
         position: {
           top: 5,
           left: -44,
@@ -668,9 +669,9 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       {
         type: inventoryItemTypes.Weapon,
         name: "Зачарованный меч",
-        id: "sword23",
+        modelName: "sword23",
+        id: "0014",
         description: "Зачарованный меч",
-
         damage: 100,
         position: {
           top: -44,
@@ -686,11 +687,10 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       {
         type: inventoryItemTypes.Weapon,
         name: "Длинный меч",
-        id: "sword7",
+        modelName: "sword7",
+        id: "0015",
         damage: 30,
-
         description: "Длинный меч",
-
         position: {
           top: -44,
           left: -44,
@@ -705,7 +705,8 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       {
         type: inventoryItemTypes.Weapon,
         name: "Длинный усиленный меч",
-        id: "sword7",
+        modelName: "sword7",
+        id: "0016",
         damage: 40,
         description: "Длинный усиленный меч",
         position: {
@@ -725,8 +726,11 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       item: {},
     },
     selectedItem: {
-      position: "inventory",
-      index: -1,
+      selectedItemData: {
+        position: "inventory",
+        index: -1,
+      },
+      id: null,
     },
   },
   playerBlockStatus: false,
@@ -1373,7 +1377,52 @@ export const ReactThreeFiberGameSlice = createSlice({
         type: string;
       },
     ) {
-      state.playerItems.selectedItem = action.payload;
+      const getSelectedItemID = () => {
+        if (action.payload.position === "inventory") {
+          return state.playerItems.inventory[action.payload.index].id;
+        }
+        if (action.payload.position === "equipment") {
+          return state.playerItems.equipment[action.payload.type].id;
+        }
+      };
+
+      const selectedItemID = getSelectedItemID();
+
+      if (!selectedItemID) return;
+
+      state.playerItems.selectedItem = { selectedItemData: action.payload, id: selectedItemID };
+    },
+    clearSelectedItem(
+      state,
+      action: {
+        payload: { action: "closeButton" | "pointerUpButton"; type?: inventoryItemTypes };
+        type: string;
+      },
+    ) {
+      if (action.payload.action === "closeButton") {
+        state.playerItems.selectedItem = {
+          selectedItemData: {
+            position: "inventory",
+            index: -1,
+          },
+          id: null,
+        };
+      }
+
+      if (
+        action.payload.action === "pointerUpButton" &&
+        action.payload.type &&
+        state.playerItems.dragItem.item.id !== state.playerItems.equipment[action.payload?.type].id
+      ) {
+        console.log(state.playerItems.dragItem.item.id);
+        state.playerItems.selectedItem = {
+          selectedItemData: {
+            position: "inventory",
+            index: -1,
+          },
+          id: null,
+        };
+      }
     },
   },
 });

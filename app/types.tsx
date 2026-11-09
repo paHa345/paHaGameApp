@@ -563,6 +563,7 @@ export enum inventoryItemTypes {
 export interface IInventoryItem {
   type?: inventoryItemTypes;
   name?: string;
+  modelName?: string;
   id?: string;
   damage?: number;
   defense?: number;

@@ -166,7 +166,6 @@ const PointerMain = () => {
         .find((el) => {
           return el.classList.contains("inventoryContainer");
         });
-      console.log(pointerUpEquipmentElement);
       if (inventoryContainer) {
         dispatch(ReactThreeFiberGameActions.addDragItemToInventory());
       }
@@ -175,18 +174,28 @@ const PointerMain = () => {
       }
       if (pointerUpEquipmentElement?.getAttribute("data-equipmenttype")) {
         dispatch(
+          ReactThreeFiberGameActions.clearSelectedItem({
+            action: "pointerUpButton",
+            type: pointerUpEquipmentElement?.getAttribute(
+              "data-equipmenttype",
+            ) as inventoryItemTypes,
+          }),
+        );
+
+        dispatch(
           ReactThreeFiberGameActions.addDragItemToEquipment({
             addedEquipmentType: pointerUpEquipmentElement?.getAttribute(
               "data-equipmenttype",
             ) as inventoryItemTypes,
           }),
         );
-        dispatch(
-          ReactThreeFiberGameActions.setSelectedItem({
-            position: "inventory",
-            index: -1,
-          }),
-        );
+
+        // dispatch(
+        //   ReactThreeFiberGameActions.setSelectedItem({
+        //     position: "inventory",
+        //     index: -1,
+        //   }),
+        // );
       }
     };
 
@@ -199,12 +208,7 @@ const PointerMain = () => {
         });
 
       if (closeSelectedElMenuButton) {
-        dispatch(
-          ReactThreeFiberGameActions.setSelectedItem({
-            position: "inventory",
-            index: -1,
-          }),
-        );
+        dispatch(ReactThreeFiberGameActions.clearSelectedItem({ action: "closeButton" }));
       }
     };
 

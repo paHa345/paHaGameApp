@@ -6,8 +6,7 @@ import styles from "./Inventory.module.css";
 
 const Inventory = () => {
   const playerInventory = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.playerItems.inventory,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerItems.inventory,
   );
   const dragItemIndex = useSelector(
     (state: IReactThreeFiberGameSlice) =>
@@ -15,13 +14,11 @@ const Inventory = () => {
   );
 
   const selectedItem = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.playerItems.selectedItem,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerItems.selectedItem,
   );
 
   const windowWidth = useSelector(
-    (state: IReactThreeFiberGameSlice) =>
-      state.ReactThreeFiberGameState.windowHeightWidth.width,
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.windowHeightWidth.width,
   );
 
   const slotContainers = playerInventory.map((el, index) => {
@@ -31,7 +28,7 @@ const Inventory = () => {
       <div
         key={`${el.id}_${index}`}
         className={`${styles.element} inventoryContainer slot_${index}
-          ${selectedItem.position === "inventory" && selectedItem.index === index ? `${styles.selected}` : ""}
+          ${selectedItem.selectedItemData.position === "inventory" && selectedItem.selectedItemData.index === index ? `${styles.selected}` : ""}
          `}
         data-index={`${index}`}
         style={
