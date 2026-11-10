@@ -174,15 +174,6 @@ const PointerMain = () => {
       }
       if (pointerUpEquipmentElement?.getAttribute("data-equipmenttype")) {
         dispatch(
-          ReactThreeFiberGameActions.clearSelectedItem({
-            action: "pointerUpButton",
-            type: pointerUpEquipmentElement?.getAttribute(
-              "data-equipmenttype",
-            ) as inventoryItemTypes,
-          }),
-        );
-
-        dispatch(
           ReactThreeFiberGameActions.addDragItemToEquipment({
             addedEquipmentType: pointerUpEquipmentElement?.getAttribute(
               "data-equipmenttype",
@@ -190,12 +181,14 @@ const PointerMain = () => {
           }),
         );
 
-        // dispatch(
-        //   ReactThreeFiberGameActions.setSelectedItem({
-        //     position: "inventory",
-        //     index: -1,
-        //   }),
-        // );
+        dispatch(
+          ReactThreeFiberGameActions.setSelectedItem({
+            position: "equipment",
+            type: pointerUpEquipmentElement?.getAttribute(
+              "data-equipmenttype",
+            ) as inventoryItemTypes,
+          }),
+        );
       }
     };
 

@@ -614,7 +614,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
         modelName: "shield1",
         id: "0011",
         defense: 40,
-        description: "Щит короля орков",
+        description: "Этот щит принадлежал легендарному королю орков - Арргху",
         position: {
           top: 5,
           left: -44,
@@ -636,7 +636,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
         modelName: "shield11",
         id: "0012",
         defense: 20,
-        description: "Военный щит",
+        description: "Такой щит обычно носят люди-воины",
         position: {
           top: 5,
           left: 2,
@@ -653,7 +653,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
         name: "Щит орков",
         modelName: "shield1",
         id: "0013",
-        description: "Щит орков",
+        description: "Обычный щит, который носят орки-солдаты",
         defense: 30,
         position: {
           top: 5,
@@ -671,7 +671,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
         name: "Зачарованный меч",
         modelName: "sword23",
         id: "0014",
-        description: "Зачарованный меч",
+        description: "Это разломанный меч теперь зачарован магией",
         damage: 100,
         position: {
           top: -44,
@@ -690,7 +690,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
         modelName: "sword7",
         id: "0015",
         damage: 30,
-        description: "Длинный меч",
+        description: "Самый простой длинный меч",
         position: {
           top: -44,
           left: -44,
@@ -708,7 +708,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
         modelName: "sword7",
         id: "0016",
         damage: 40,
-        description: "Длинный усиленный меч",
+        description: "Самый простой длинный меч с усиленной рукояткой",
         position: {
           top: -44,
           left: -44,
@@ -1352,11 +1352,20 @@ export const ReactThreeFiberGameSlice = createSlice({
         state.playerItems.dragItem.item.type &&
         state.playerItems.dragItem.itemIndexInInventory === -1
       ) {
+        const dragItemID = state.playerItems.dragItem.item.id;
         state.playerItems.equipment[state.playerItems.dragItem.item.type] = {};
 
         state.playerItems.inventory.push(state.playerItems.dragItem.item);
         state.playerItems.dragItem.item = {};
         state.playerItems.dragItem.itemIndexInInventory = -1;
+
+        state.playerItems.selectedItem = {
+          selectedItemData: {
+            position: "inventory",
+            index: state.playerItems.inventory.length - 1,
+          },
+          id: dragItemID,
+        };
 
         // calculate extra stats
         const extraStats = calculatePlayerExtraStats(state.playerItems.equipment);
@@ -1387,6 +1396,7 @@ export const ReactThreeFiberGameSlice = createSlice({
       };
 
       const selectedItemID = getSelectedItemID();
+      console.log(selectedItemID);
 
       if (!selectedItemID) return;
 
