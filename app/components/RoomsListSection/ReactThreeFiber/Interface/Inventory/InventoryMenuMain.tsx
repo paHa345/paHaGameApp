@@ -5,6 +5,7 @@ import { IReactThreeFiberGameSlice } from "@/app/store/ReactThreeFiberGameSlice"
 import { inventoryItemTypes } from "@/app/types";
 import EquipmentMain from "./EquipmentMain";
 import SelectedItemMenuMain from "./SelectedItemMenuMain";
+import PlayerStats from "./PlayerStats";
 
 interface IInventoryMenuProps {
   isMobile: boolean;
@@ -20,6 +21,8 @@ const InventoryMenuMain = ({ isMobile }: IInventoryMenuProps) => {
           src="/RPGUI/InventoryMainMenu_002.png"
           alt=""
         />
+        {/* Player Stats */}
+        <PlayerStats></PlayerStats>
         {/* Equipment */}
         <EquipmentMain></EquipmentMain>
 

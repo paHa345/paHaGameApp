@@ -30,6 +30,7 @@ const NPCMain = () => {
             baseHP: 300,
             currentHP: 300,
             baseDamage: enemyData.damage,
+            experience: 50,
           }),
         ),
       );

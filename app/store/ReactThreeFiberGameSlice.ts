@@ -5,6 +5,7 @@ import {
   conditionPatternStatus,
   IInventoryItem,
   inventoryItemTypes,
+  IPLayerStat,
   SelectedItemType,
 } from "../types";
 import { useRapier, vec3 } from "@react-three/rapier";
@@ -67,12 +68,66 @@ export const calculatePlayerAttackImpact = createAsyncThunk(
         state.ReactThreeFiberGameState.playerStat.baseDamage +
         state.ReactThreeFiberGameState.playerStat.extraDamage;
 
-      dispatch(
-        ReactThreeFiberGameActions.setNPCReduceHP({
-          id: enemyObjectID.enemyObjectID,
+      // dispatch(
+      //   ReactThreeFiberGameActions.setNPCReduceHP({
+      //     id: enemyObjectID.enemyObjectID,
+      //     damage: playerDamage,
+      //   }),
+      // );
+      const NPCReduceHP = await dispatch(
+        setNPCReduceHP({
+          enemyObjectID: enemyObjectID.enemyObjectID,
           damage: playerDamage,
         }),
+      ).unwrap();
+
+      if (NPCReduceHP?.isDeleteNPC) {
+        // если NPC удаляется после атаки пользователя,
+        // то добавляем ему XP
+        // console.log("DeleteNPC");
+        // console.log(NPCReduceHP.enemyXP);
+        dispatch(ReactThreeFiberGameActions.increasePlayerExperience(NPCReduceHP.enemyXP));
+      }
+      if (!NPCReduceHP?.isDeleteNPC) {
+        console.log("NOTDeleteNPC");
+      }
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const setNPCReduceHP = createAsyncThunk(
+  "ReactThreeFiberGameState/setNPCReduceHP",
+  async function (
+    reduceHPData: {
+      enemyObjectID: string;
+      damage: number;
+    },
+    { rejectWithValue, dispatch, getState },
+  ) {
+    try {
+      let isDeleteNPC = false;
+      const state = getState() as IReactThreeFiberGameSlice;
+
+      dispatch(
+        ReactThreeFiberGameActions.setNPCReduceHP({
+          id: reduceHPData.enemyObjectID,
+          damage: reduceHPData.damage,
+        }),
       );
+
+      const currentHP =
+        state.ReactThreeFiberGameState.enemyNPCStat[reduceHPData.enemyObjectID].currentHP;
+
+      if (currentHP && currentHP - reduceHPData.damage <= 0) {
+        isDeleteNPC = true;
+      }
+
+      return {
+        isDeleteNPC: isDeleteNPC,
+        enemyXP: state.ReactThreeFiberGameState.enemyNPCStat[reduceHPData.enemyObjectID].experience,
+      };
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -313,14 +368,7 @@ export interface IReactThreeFiberGameSlice {
     playerMesh?: THREE.Mesh;
     playerAttackStatus: boolean;
     playerMoveStatus: boolean;
-    playerStat: {
-      baseHP: number;
-      currentHP: number;
-      baseDamage: number;
-      extraDamage: number;
-      baseDefence: number;
-      extraDefence: number;
-    };
+    playerStat: IPLayerStat;
 
     playerItems: {
       equipment: {
@@ -415,6 +463,7 @@ export interface IReactThreeFiberGameSlice {
         baseHP?: number;
         currentHP?: number;
         baseDamage?: number;
+        experience?: number;
       };
     };
     zombieWalkStatus: boolean;
@@ -469,14 +518,7 @@ interface IReactThreeFiberGameState {
 
   playerAttackStatus: boolean;
   playerMoveStatus: boolean;
-  playerStat: {
-    baseHP: number;
-    currentHP: number;
-    baseDamage: number;
-    extraDamage: number;
-    baseDefence: number;
-    extraDefence: number;
-  };
+  playerStat: IPLayerStat;
 
   playerItems: {
     equipment: {
@@ -555,6 +597,7 @@ interface IReactThreeFiberGameState {
       baseHP?: number;
       currentHP?: number;
       baseDamage?: number;
+      experience?: number;
     };
   };
 
@@ -603,6 +646,10 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
     extraDamage: 0,
     baseDefence: 0,
     extraDefence: 0,
+    level: 1,
+    minLevelExperience: 0,
+    maxLevelExperience: 100,
+    currentExperience: 0,
   },
 
   playerItems: {
@@ -657,13 +704,13 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
         defense: 30,
         position: {
           top: 5,
-          left: -44,
+          left: -93,
           xlTop: 6,
-          xlLeft: -65,
+          xlLeft: -138,
           equipmentTop: 5,
-          equipmentLeft: -59,
+          equipmentLeft: -119,
           equipmentXlTop: 6,
-          equipmentXlLeft: -80,
+          equipmentXlLeft: -170,
         },
       },
       {
@@ -687,19 +734,19 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       {
         type: inventoryItemTypes.Weapon,
         name: "Длинный меч",
-        modelName: "sword7",
+        modelName: "sword2",
         id: "0015",
         damage: 30,
         description: "Самый простой длинный меч",
         position: {
           top: -44,
-          left: -44,
+          left: -93,
           xlTop: -70,
-          xlLeft: -65,
-          equipmentTop: -284,
-          equipmentLeft: -107,
-          equipmentXlTop: -328,
-          equipmentXlLeft: -128,
+          xlLeft: -138,
+          equipmentTop: -239,
+          equipmentLeft: -160,
+          equipmentXlTop: -269,
+          equipmentXlLeft: -187,
         },
       },
       {
@@ -979,13 +1026,23 @@ export const ReactThreeFiberGameSlice = createSlice({
     setNPCStat(
       state,
       action: {
-        payload: { id: string; baseHP: number; currentHP: number; baseDamage: number };
+        payload: {
+          id: string;
+          baseHP: number;
+          currentHP: number;
+          baseDamage: number;
+          experience: number;
+        };
         type: string;
       },
     ) {
       if (!state.enemyNPCStat[action.payload.id]) {
         state.enemyNPCStat[action.payload.id] = {};
       }
+      state.enemyNPCStat[action.payload.id].experience = state.enemyNPCStat[action.payload.id]
+        .experience
+        ? state.enemyNPCStat[action.payload.id].experience
+        : action.payload.experience;
       state.enemyNPCStat[action.payload.id].baseHP = state.enemyNPCStat[action.payload.id].baseHP
         ? state.enemyNPCStat[action.payload.id].baseHP
         : action.payload.baseHP;
@@ -1432,6 +1489,23 @@ export const ReactThreeFiberGameSlice = createSlice({
           },
           id: null,
         };
+      }
+    },
+    calculatePlayerExtraStats(state) {
+      // calculate extra stats
+      const extraStats = calculatePlayerExtraStats(state.playerItems.equipment);
+      state.playerStat.extraDamage = extraStats.extraDamage;
+      state.playerStat.extraDefence = extraStats.extraDefense;
+    },
+    increasePlayerExperience(state, action) {
+      console.log(action.payload);
+      state.playerStat.currentExperience = state.playerStat.currentExperience + action.payload;
+
+      if (state.playerStat.currentExperience >= state.playerStat.maxLevelExperience) {
+        state.playerStat.level = state.playerStat.level + 1;
+        state.playerStat.minLevelExperience = state.playerStat.maxLevelExperience;
+        state.playerStat.maxLevelExperience =
+          state.playerStat.maxLevelExperience + state.playerStat.level * 100;
       }
     },
   },

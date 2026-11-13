@@ -4,20 +4,23 @@ import { polygon } from "framer-motion/client";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import * as THREE from "three";
+import PlayerExperienceBar from "./PlayerExperienceBar";
 
 const PlayerHealthPanel = () => {
   const [texture, setTexture] = useState<THREE.CanvasTexture | null>(null);
 
   const [health, setHealth] = useState(100);
 
-  const playerStat = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerStat,
+  const playerCurrentHP = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerStat.currentHP,
+  );
+  const playerBaseHP = useSelector(
+    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.playerStat.baseHP,
   );
 
   useEffect(() => {
-    setHealth((playerStat.currentHP / playerStat.baseHP) * 100);
-    console.log(health);
-  }, [playerStat]);
+    setHealth((playerCurrentHP / playerBaseHP) * 100);
+  }, [playerCurrentHP, playerBaseHP]);
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -28,60 +31,60 @@ const PlayerHealthPanel = () => {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  useEffect(() => {
-    setHealth((playerStat.currentHP / playerStat.baseHP) * 100);
+  // useEffect(() => {
+  //   setHealth((playerStat.currentHP / playerStat.baseHP) * 100);
 
-    const canvas = document.createElement("canvas");
-    canvas.width = 550;
-    canvas.height = 250;
-    const ctx = canvas.getContext("2d");
+  //   const canvas = document.createElement("canvas");
+  //   canvas.width = 550;
+  //   canvas.height = 250;
+  //   const ctx = canvas.getContext("2d");
 
-    console.log(window.innerWidth);
-    // Функция отрисовки
-    function drawIcon() {
-      if (!ctx) return;
-      // Очищаем canvas
-      ctx.clearRect(0, 0, 550, 250);
+  //   console.log(window.innerWidth);
+  //   // Функция отрисовки
+  //   function drawIcon() {
+  //     if (!ctx) return;
+  //     // Очищаем canvas
+  //     ctx.clearRect(0, 0, 550, 250);
 
-      const img = new Image();
-      img.src = "/RPGUI/PlayerHealthPanel.png";
+  //     const img = new Image();
+  //     img.src = "/RPGUI/PlayerHealthPanel.png";
 
-      img.onload = () => {
-        // Отрисовываем изображение на canvas
-        ctx.drawImage(
-          img,
-          0,
-          0,
-          window.innerWidth < 1024 ? 530 / 2 : 530,
-          window.innerWidth < 1024 ? 230 / 2 : 230,
-          0,
-          0,
-          window.innerWidth < 1024 ? 530 / 2 : 530,
-          window.innerWidth < 1024 ? 230 / 2 : 230,
-        );
-        // Создаем текстуру
-        const newTexture = new THREE.CanvasTexture(canvas);
-        newTexture.needsUpdate = true;
-        setTexture(newTexture);
-      };
+  //     img.onload = () => {
+  //       // Отрисовываем изображение на canvas
+  //       ctx.drawImage(
+  //         img,
+  //         0,
+  //         0,
+  //         window.innerWidth < 1024 ? 530 / 2 : 530,
+  //         window.innerWidth < 1024 ? 230 / 2 : 230,
+  //         0,
+  //         0,
+  //         window.innerWidth < 1024 ? 530 / 2 : 530,
+  //         window.innerWidth < 1024 ? 230 / 2 : 230,
+  //       );
+  //       // Создаем текстуру
+  //       const newTexture = new THREE.CanvasTexture(canvas);
+  //       newTexture.needsUpdate = true;
+  //       setTexture(newTexture);
+  //     };
 
-      // Обновляем текстуру
-      if (texture) {
-        texture.needsUpdate = true;
-      }
-    }
+  //     // Обновляем текстуру
+  //     if (texture) {
+  //       texture.needsUpdate = true;
+  //     }
+  //   }
 
-    // Создаем текстуру
-    const newTexture = new THREE.CanvasTexture(canvas);
-    setTexture(newTexture);
+  //   // Создаем текстуру
+  //   const newTexture = new THREE.CanvasTexture(canvas);
+  //   setTexture(newTexture);
 
-    // Рисуем первый раз
-    drawIcon();
+  //   // Рисуем первый раз
+  //   drawIcon();
 
-    return () => {
-      newTexture.dispose();
-    };
-  }, []);
+  //   return () => {
+  //     newTexture.dispose();
+  //   };
+  // }, []);
   return (
     <>
       <div
@@ -91,6 +94,7 @@ const PlayerHealthPanel = () => {
         className="  lg:w-52 lg:h-52 w-[112px] h-[112px]  absolute bottom-[6px] left-[3px] lg:bottom-[15px] lg:left-[14.5px] rounded-full bg-red-900  "
       ></div>
       <div className=" absolute bottom-[-140px] lg:bottom-[-280px] left-0">
+        <PlayerExperienceBar></PlayerExperienceBar>
         <img
           height={isMobile ? 530 / 2 : 530}
           width={isMobile ? 550 / 2 : 550}

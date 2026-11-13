@@ -112,6 +112,10 @@ const Experience = () => {
     );
   }, [gl.domElement.clientHeight, gl.domElement.clientWidth]);
 
+  useEffect(() => {
+    dispatch(ReactThreeFiberGameActions.calculatePlayerExtraStats());
+  });
+
   const blocksCount = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.blocksCount,
   );

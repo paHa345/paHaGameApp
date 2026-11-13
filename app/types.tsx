@@ -592,3 +592,16 @@ interface EquipmentSelectedItem {
 }
 
 export type SelectedItemType = InventorySelectedItem | EquipmentSelectedItem;
+
+export interface IPLayerStat {
+  baseHP: number;
+  currentHP: number;
+  baseDamage: number;
+  extraDamage: number;
+  baseDefence: number;
+  extraDefence: number;
+  level: number;
+  minLevelExperience: number;
+  maxLevelExperience: number;
+  currentExperience: number;
+}
