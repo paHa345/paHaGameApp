@@ -128,7 +128,11 @@ const Experience = () => {
 
       {/* <color args={["#bdedfc"]} attach={"background"}></color> */}
       <Sky sunPosition={[20, 20, 0]}></Sky>
-      <Physics debug={debugPhysics}>
+      <Physics
+        //  timeStep={1 / 60} interpolate={true}
+        // timeStep={"vary"}
+        debug={debugPhysics}
+      >
         <Lights />
         {/* <Level count={blocksCount} seed={blocksSeed}></Level> */}
         <ForestLevel></ForestLevel>

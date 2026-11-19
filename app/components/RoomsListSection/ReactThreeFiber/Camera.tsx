@@ -22,11 +22,6 @@ const Camera = () => {
       position={cameraPosition}
     >
       {gamePauseStatus && <OrbitControls />}
-
-      {/* <PointerLockControls
-        ref={controls}
-        makeDefault={true}
-      ></PointerLockControls> */}
     </PerspectiveCamera>
   );
 };

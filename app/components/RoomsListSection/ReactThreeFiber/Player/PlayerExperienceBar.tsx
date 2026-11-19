@@ -15,9 +15,6 @@ const PlayerExperienceBar = () => {
     (state: IReactThreeFiberGameSlice) =>
       state.ReactThreeFiberGameState.playerStat.minLevelExperience,
   );
-  console.log(((playerCurrentXP - playerMinLevelXP) / (playerMaxLevelXP - playerMinLevelXP)) * 100);
-  console.log(playerMaxLevelXP);
-  console.log(playerMinLevelXP);
 
   return (
     <div className=" absolute left-[43%] top-[18.8%] h-[3px] w-[56%]">

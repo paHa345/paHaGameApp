@@ -29,24 +29,24 @@ const Controls = () => {
     }
   }, [gamePauseStatus]);
 
-  useEffect(() => {
-    const canvas = gl.domElement;
+  // useEffect(() => {
+  //   const canvas = gl.domElement;
 
-    const handleMouseMove = (e: MouseEvent) => {
-      if (document.pointerLockElement && document) {
-        const mouseVector = {
-          x: (e.movementX / canvas.height) * 2,
-          y: (e.movementY / canvas.width) * 2,
-        };
-        dispatch(ReactThreeFiberGameActions.setMouseCoords(mouseVector));
-      }
-    };
+  //   const handleMouseMove = (e: MouseEvent) => {
+  //     if (document.pointerLockElement && document) {
+  //       const mouseVector = {
+  //         x: (e.movementX / canvas.height) * 2,
+  //         y: (e.movementY / canvas.width) * 2,
+  //       };
+  //       dispatch(ReactThreeFiberGameActions.setMouseCoords(mouseVector));
+  //     }
+  //   };
 
-    canvas.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      canvas.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, [gl]);
+  //   canvas.addEventListener("mousemove", handleMouseMove);
+  //   return () => {
+  //     canvas.removeEventListener("mousemove", handleMouseMove);
+  //   };
+  // }, [gl]);
 
   return <></>;
   // <PointerLockControls ref={controls} />;

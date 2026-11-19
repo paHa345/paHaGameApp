@@ -1,7 +1,7 @@
 import { IReactThreeFiberGameSlice } from "@/app/store/ReactThreeFiberGameSlice";
 import { useFrame } from "@react-three/fiber";
 import { RapierRigidBody } from "@react-three/rapier";
-import React, { useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import { useSelector } from "react-redux";
 import * as THREE from "three";
 
@@ -43,7 +43,6 @@ const UpdateMouseCoordsAndCameraPosition = ({
   );
 
   useFrame((state) => {
-    // console.log(mouseCoords);
     if (gamePauseStatus) {
       state.camera.position.set(0, 10, 0);
       return;
@@ -87,9 +86,10 @@ const UpdateMouseCoordsAndCameraPosition = ({
 
     dir.current.applyQuaternion(rotatQuat);
     desiredPos.current.copy(targetPos.current).add(dir.current);
-    state.camera.position.lerp(desiredPos.current, 0.15);
-    // state.camera.position.set(desiredPos.current.x, desiredPos.current.y, desiredPos.current.z);
-    // dispatch(ReactThreeFiberGameActions.setCameraPosition(desiredPos.current));
+    // если убрать lerp то подёргивания камеры при движении вбок
+    // пропадут, решить как сделать с lerp
+    // state.camera.position.lerp(desiredPos.current, 0.15);
+    state.camera.position.set(desiredPos.current.x, desiredPos.current.y, desiredPos.current.z);
     if (!cameraPoint.current) return;
     state.camera.lookAt(
       new THREE.Vector3(targetPos.current.x, targetPos.current.y + 1.5, targetPos.current.z),
