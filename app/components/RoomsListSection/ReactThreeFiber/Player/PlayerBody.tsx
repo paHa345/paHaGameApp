@@ -21,11 +21,6 @@ interface IPlayerBodyProps {
     THREE.Material | THREE.Material[],
     THREE.Object3DEventMap
   > | null>;
-  cameraPoint: React.RefObject<THREE.Mesh<
-    THREE.BufferGeometry<THREE.NormalBufferAttributes, THREE.BufferGeometryEventMap>,
-    THREE.Material | THREE.Material[],
-    THREE.Object3DEventMap
-  > | null>;
   body: React.RefObject<RapierRigidBody | null>;
   playerModelRef: React.RefObject<THREE.Mesh<
     THREE.BufferGeometry<THREE.NormalBufferAttributes, THREE.BufferGeometryEventMap>,
@@ -35,17 +30,9 @@ interface IPlayerBodyProps {
   player: GLTF & ObjectMap;
 }
 
-const PlayerBody = ({ userMain, cameraPoint, body, playerModelRef, player }: IPlayerBodyProps) => {
-  const gamePauseStatus = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.gamePauseStatus,
-  );
+const PlayerBody = ({ userMain, body, playerModelRef, player }: IPlayerBodyProps) => {
   return (
     <group ref={userMain}>
-      <mesh ref={cameraPoint}>
-        <mesh position={[0, 8, 0]} rotation-x={-Math.PI / 2}>
-          {gamePauseStatus && <GameMenu></GameMenu>}
-        </mesh>
-      </mesh>
       <RigidBody
         userData={{ type: "player", id: "player" }}
         ref={body}
@@ -55,12 +42,12 @@ const PlayerBody = ({ userMain, cameraPoint, body, playerModelRef, player }: IPl
         restitution={0}
         linearDamping={0.1}
         angularDamping={0.5}
-        friction={0}
+        friction={0.1}
         type="dynamic"
         enabledRotations={[false, true, false]}
       >
         <CuboidCollider
-          friction={0}
+          friction={1}
           frictionCombineRule={CoefficientCombineRule.Min}
           mass={1}
           position={[0, 0.6, 0]}

@@ -6,7 +6,7 @@ import {
 import { useKeyboardControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { RapierRigidBody, useRapier } from "@react-three/rapier";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
 
@@ -46,9 +46,9 @@ const PlayerMoveController = ({
   const gamePauseStatus = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.gamePauseStatus,
   );
-  const MAX_SPEED = 12; // максимальная скорость
-  const ACCEL = 12; // скорость набора скорости, 1/сек
-  const STEER_STRENGTH = 3;
+  const MAX_SPEED = useRef(12); // максимальная скорость
+  const ACCEL = useRef(12); // скорость набора скорости, 1/сек
+  const STEER_STRENGTH = useRef(3);
   const [subscribeKeys, getKeys] = useKeyboardControls();
   const { rapier, world } = useRapier();
 
@@ -143,13 +143,13 @@ const PlayerMoveController = ({
     // это вариант с использованием приложения силы для движения
 
     const vel = body.current.linvel();
-    const targetVX = isMoving ? moveDir.x * MAX_SPEED : 0;
-    const targetVZ = isMoving ? moveDir.z * MAX_SPEED : 0;
+    const targetVX = isMoving ? moveDir.x * MAX_SPEED.current : 0;
+    const targetVZ = isMoving ? moveDir.z * MAX_SPEED.current : 0;
 
     // Сила = масса × коэффициент × (желаемая скорость − текущая)
     const mass = body.current.mass();
-    const forceX = mass * STEER_STRENGTH * (targetVX - vel.x);
-    const forceZ = mass * STEER_STRENGTH * (targetVZ - vel.z);
+    const forceX = mass * STEER_STRENGTH.current * (targetVX - vel.x);
+    const forceZ = mass * STEER_STRENGTH.current * (targetVZ - vel.z);
 
     body.current.addForce({ x: forceX, y: 0, z: forceZ }, true);
 

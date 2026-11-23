@@ -22,6 +22,7 @@ import PlayerBody from "./PlayerBody";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import PlayerMoveController from "./PlayerMoveController";
 import ChaseCamera from "./ChaseCamera";
+import MouseCoordsHandler from "./MouseCoordsHandler";
 
 const Player = () => {
   // const Scratches005Color = useTexture("./textures/Moss002/Moss002Color.jpg");
@@ -33,7 +34,6 @@ const Player = () => {
   // Scratches005Color.needsUpdate = true;
 
   const body = useRef<RapierRigidBody>(null);
-  const cameraPoint = useRef<THREE.Mesh>(null);
   const userMain = useRef<THREE.Mesh>(null);
   const playerModelRef = useRef<THREE.Mesh>(null);
   const meshRef = useRef<THREE.Mesh>(null);
@@ -56,8 +56,6 @@ const Player = () => {
   const _flipQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI);
   const lastAnim: any = useRef(null);
 
-  const { gl } = useThree();
-
   const player = useGLTF("./models/characters/2/character-a.glb", true);
   for (const name in player.nodes) {
     player.nodes[name].castShadow = true;
@@ -65,16 +63,10 @@ const Player = () => {
   // const playerTexture = useTexture("./models/characters/2/texture-a.png");
   // playerTexture.flipY = false;
 
-  const gamePauseStatus = useSelector(
-    (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.gamePauseStatus,
-  );
-
   const dispatch = useDispatch<AppDispatch>();
   const phase = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.phase,
   );
-
-  const [subscribeKeys, getKeys] = useKeyboardControls();
 
   useEffect(() => {
     if (body.current !== null) {
@@ -121,37 +113,11 @@ const Player = () => {
     }
   }, [phase]);
 
-  // переиспользуемые векторы — вне useFrame, через useMemo
-
-  function SetMouseCoords() {
-    useEffect(() => {
-      const canvas = gl.domElement;
-
-      const handleMouseMove = (e: MouseEvent) => {
-        if (document.pointerLockElement && document) {
-          const mouseVector = {
-            x: (e.movementX / canvas.height) * 2,
-            y: (e.movementY / canvas.width) * 2,
-          };
-          yaw.current = yaw.current - mouseVector.x;
-          pitch.current = pitch.current + mouseVector.y;
-        }
-      };
-
-      canvas.addEventListener("mousemove", handleMouseMove);
-      return () => {
-        canvas.removeEventListener("mousemove", handleMouseMove);
-      };
-    }, [gl]);
-    return null;
-  }
-
   return (
     <>
       <Suspense fallback={null}>
         <PlayerBody
           userMain={userMain}
-          cameraPoint={cameraPoint}
           body={body}
           playerModelRef={playerModelRef}
           player={player as unknown as GLTF & ObjectMap}
@@ -179,7 +145,7 @@ const Player = () => {
           smoothLook={smoothLook}
           cameraInitialized={cameraInitialized}
         ></ChaseCamera>
-        <SetMouseCoords></SetMouseCoords>
+        <MouseCoordsHandler yaw={yaw} pitch={pitch}></MouseCoordsHandler>
         {/* <UpdateMouseCoordsAndCameraPosition
           cameraPoint={cameraPoint}
           dir={dir}

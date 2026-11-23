@@ -6,6 +6,7 @@ import { inventoryItemTypes } from "@/app/types";
 import EquipmentMain from "./EquipmentMain";
 import SelectedItemMenuMain from "./SelectedItemMenuMain";
 import PlayerStats from "./PlayerStats";
+import LevelUpIcon from "./LevelUpIcon";
 
 interface IInventoryMenuProps {
   isMobile: boolean;
@@ -23,6 +24,8 @@ const InventoryMenuMain = ({ isMobile }: IInventoryMenuProps) => {
         />
         {/* Player Stats */}
         <PlayerStats></PlayerStats>
+        {/* Level Up Icon */}
+        <LevelUpIcon></LevelUpIcon>
         {/* Equipment */}
         <EquipmentMain></EquipmentMain>
 

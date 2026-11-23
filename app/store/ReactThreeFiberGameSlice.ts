@@ -647,6 +647,8 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
     baseDefence: 0,
     extraDefence: 0,
     level: 1,
+    levelPoints: 0,
+    temporalLevelPoints: 0,
     minLevelExperience: 0,
     maxLevelExperience: 100,
     currentExperience: 0,
@@ -1503,6 +1505,7 @@ export const ReactThreeFiberGameSlice = createSlice({
 
       if (state.playerStat.currentExperience >= state.playerStat.maxLevelExperience) {
         state.playerStat.level = state.playerStat.level + 1;
+        state.playerStat.levelPoints = state.playerStat.levelPoints + 1;
         state.playerStat.minLevelExperience = state.playerStat.maxLevelExperience;
         state.playerStat.maxLevelExperience =
           state.playerStat.maxLevelExperience + state.playerStat.level * 100;

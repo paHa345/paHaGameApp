@@ -604,4 +604,6 @@ export interface IPLayerStat {
   minLevelExperience: number;
   maxLevelExperience: number;
   currentExperience: number;
+  levelPoints: number;
+  temporalLevelPoints: number;
 }

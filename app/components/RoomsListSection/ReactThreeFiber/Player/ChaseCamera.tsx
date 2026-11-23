@@ -1,7 +1,7 @@
 import { IReactThreeFiberGameSlice } from "@/app/store/ReactThreeFiberGameSlice";
 import { useFrame, useThree } from "@react-three/fiber";
 import { RapierRigidBody } from "@react-three/rapier";
-import React from "react";
+import React, { useRef } from "react";
 import { useSelector } from "react-redux";
 import * as THREE from "three";
 
@@ -24,9 +24,9 @@ const ChaseCamera = ({
   cameraInitialized,
 }: IChaseCameraProps) => {
   const { camera } = useThree();
-  const camDistance = 2; // расстояние от игрока
-  const baseHeight = 2; // базовая высота камеры над игроком
-  const posLerp = 12; // скорость сглаживания позиции
+  const camDistance = useRef(2); // расстояние от игрока
+  const baseHeight = useRef(2); // базовая высота камеры над игроком
+  const posLerp = useRef(12); // скорость сглаживания позиции
   const gamePauseStatus = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.gamePauseStatus,
   );
@@ -42,12 +42,12 @@ const ChaseCamera = ({
 
     const y = yaw.current;
     const pv = pitch.current;
-    const hDist = camDistance * Math.cos(pv);
-    const vDist = camDistance * Math.sin(pv);
+    const hDist = camDistance.current * Math.cos(pv);
+    const vDist = camDistance.current * Math.sin(pv);
 
     _targetPos.set(
       bodyPos.x + Math.sin(y) * hDist,
-      bodyPos.y + baseHeight + vDist,
+      bodyPos.y + baseHeight.current + vDist,
       bodyPos.z + Math.cos(y) * hDist,
     );
 
@@ -60,7 +60,7 @@ const ChaseCamera = ({
       smoothLook.current.copy(_rawLook);
       cameraInitialized.current = true;
     } else {
-      const t = 1 - Math.exp(-delta * posLerp);
+      const t = 1 - Math.exp(-delta * posLerp.current);
       camera.position.lerp(_targetPos, t);
       smoothLook.current.lerp(_rawLook, t);
     }
