@@ -1,6 +1,7 @@
 import { IReactThreeFiberGameSlice } from "@/app/store/ReactThreeFiberGameSlice";
 import React from "react";
 import { useSelector } from "react-redux";
+import styles from "./LevelUpIcon.module.css";
 
 const LevelUpIcon = () => {
   const currentLevel = useSelector(
@@ -14,9 +15,11 @@ const LevelUpIcon = () => {
   return (
     <>
       {levelPoints > 0 && (
-        <div className=" absolute overflow-hidden  h-[50px] w-[50px] top-[5%] left-[10%]">
+        <div
+          className={` levelUpIcon rounded-full ${styles.gradientBorder}  absolute overflow-hidden  h-[40px] w-[40px]  xl:h-[60px] xl:w-[60px]  top-[5%] left-[10%]`}
+        >
           <img
-            className={` h-[700%] relative max-w-none top-[-286px] left-[-240px]  xl:h-[600%]  xl:top-[-444px] xl:left-[-58px]  `}
+            className={` h-[1000%] absolute max-w-none bottom-[-63%] left-[-715%]  xl:h-[1000%]  xl:bottom-[-63%] xl:left-[-715%]  `}
             src="/RPGUI/InventoryMainMenu_002.png"
             alt=""
           />

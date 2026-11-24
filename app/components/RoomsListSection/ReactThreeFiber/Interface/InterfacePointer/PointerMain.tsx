@@ -104,6 +104,18 @@ const PointerMain = () => {
           return el.classList.contains("equipmentContainer");
         });
 
+      const levelUpButtonContainer = document
+        .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
+        .find((el) => {
+          return el.classList.contains("levelUpIcon");
+        });
+
+      console.log(levelUpButtonContainer);
+
+      if (levelUpButtonContainer) {
+        dispatch(ReactThreeFiberGameActions.setShowLevelUpMenuStatus(true));
+      }
+
       if (inventoryContainer?.classList.contains("inventoryContainer")) {
         if (!inventoryContainer?.getAttribute("data-index")) return;
         dispatch(
@@ -200,8 +212,21 @@ const PointerMain = () => {
           return el.classList.contains("closeSelectedElMenu");
         });
 
+      const closeLevelUpMenu = document
+        .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
+        .find((el) => {
+          return el.classList.contains("closeLevelUpMenu");
+        });
+
+      console.log(document.elementsFromPoint(coordsRef.current.x, coordsRef.current.y));
+
       if (closeSelectedElMenuButton) {
         dispatch(ReactThreeFiberGameActions.clearSelectedItem({ action: "closeButton" }));
+      }
+
+      if (closeLevelUpMenu) {
+        console.log("closeLevelUpMenu");
+        dispatch(ReactThreeFiberGameActions.setShowLevelUpMenuStatus(false));
       }
     };
 

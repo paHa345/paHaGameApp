@@ -1,5 +1,5 @@
 import { IReactThreeFiberGameSlice } from "@/app/store/ReactThreeFiberGameSlice";
-import { useFrame, useThree } from "@react-three/fiber";
+import { ReactThreeFiber, useFrame, useThree } from "@react-three/fiber";
 import { RapierRigidBody } from "@react-three/rapier";
 import React, { useRef } from "react";
 import { useSelector } from "react-redux";
@@ -30,6 +30,7 @@ const ChaseCamera = ({
   const gamePauseStatus = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.gamePauseStatus,
   );
+
   useFrame((state, delta) => {
     if (gamePauseStatus) {
       state.camera.position.set(0, 10, 0);

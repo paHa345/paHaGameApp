@@ -7,6 +7,7 @@ import EquipmentMain from "./EquipmentMain";
 import SelectedItemMenuMain from "./SelectedItemMenuMain";
 import PlayerStats from "./PlayerStats";
 import LevelUpIcon from "./LevelUpIcon";
+import LevelUpMenuMain from "../LevelUpMenu/LevelUpMenuMain";
 
 interface IInventoryMenuProps {
   isMobile: boolean;
@@ -34,6 +35,9 @@ const InventoryMenuMain = ({ isMobile }: IInventoryMenuProps) => {
       </div>
       {/* Selected Item Menu */}
       <SelectedItemMenuMain></SelectedItemMenuMain>
+
+      {/* Level Up Menu */}
+      <LevelUpMenuMain></LevelUpMenuMain>
     </div>
   );
 };

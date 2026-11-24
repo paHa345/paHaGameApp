@@ -13,6 +13,7 @@ import ThrowObjectComponent from "./ThrowObjectComponent";
 import InventoryMain from "./Inventory/InventoryMain";
 import PointerMain from "./InterfacePointer/PointerMain";
 import MoveButtonElMain from "./MoveButtonEl/MoveButtonElMain";
+import LevelUpMenuMain from "./LevelUpMenu/LevelUpMenuMain";
 
 const BebasNeue = localFont({
   src: "../../../../../public/fonts/BebasNeue-Regular.ttf",

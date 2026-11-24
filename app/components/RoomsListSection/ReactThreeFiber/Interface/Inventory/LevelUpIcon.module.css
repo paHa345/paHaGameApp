@@ -1,0 +1,30 @@
+/* .animatedBg {
+  min-height: 40px;
+  background: repeating-linear-gradient(45deg, #dceb50 0, #deeb26 20px, #2a985a 20px, #39982a 40px);
+  background-size: 200% 200%;
+  animation: stripesMove 3s linear infinite;
+}
+
+@keyframes stripesMove {
+  from {
+    background-position: 56.56px 56.56px;
+  }
+  to {
+    background-position: 0 0;
+  } /* 40 * √2 ≈ 56.56 */
+/* } */
+
+.gradientBorder {
+  border: 2px solid #e6eaa4;
+  animation: pulseBorder 6s ease-in-out infinite;
+}
+
+@keyframes pulseBorder {
+  0%,
+  100% {
+    border-color: #e3f666;
+  }
+  50% {
+    border-color: rgba(240, 251, 92, 0.359);
+  }
+}

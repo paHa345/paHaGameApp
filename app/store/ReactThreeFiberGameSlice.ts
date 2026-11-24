@@ -494,6 +494,7 @@ export interface IReactThreeFiberGameSlice {
      * UI
      */
     showInventory: boolean;
+    showLevelUpMenu: boolean;
   };
 }
 
@@ -619,6 +620,7 @@ interface IReactThreeFiberGameState {
     position: THREE.Vector3;
   }[];
   showInventory: boolean;
+  showLevelUpMenu: boolean;
 }
 
 const initReactThreeFiberGameState: IReactThreeFiberGameState = {
@@ -886,6 +888,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
     },
   ],
   showInventory: false,
+  showLevelUpMenu: false,
 };
 
 export const ReactThreeFiberGameSlice = createSlice({
@@ -1510,6 +1513,9 @@ export const ReactThreeFiberGameSlice = createSlice({
         state.playerStat.maxLevelExperience =
           state.playerStat.maxLevelExperience + state.playerStat.level * 100;
       }
+    },
+    setShowLevelUpMenuStatus(state, action) {
+      state.showLevelUpMenu = action.payload;
     },
   },
 });
