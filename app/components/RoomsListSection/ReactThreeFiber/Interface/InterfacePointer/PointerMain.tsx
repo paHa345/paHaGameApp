@@ -7,10 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import Pointer from "./Pointer";
 import PointerDragContainer from "./PointerDragContainer";
 import { AppDispatch } from "@/app/store";
-import { inventoryItemTypes } from "@/app/types";
+import { inventoryItemTypes, StatType } from "@/app/types";
 
 const PointerMain = () => {
   // const [movePointerStatus, setMovePointerStatus] = useState(false);
+
+  const setStatButtonContainerRef = useRef<HTMLElement>(null);
+
   const dispatch = useDispatch<AppDispatch>();
   const showInventory = useSelector(
     (state: IReactThreeFiberGameSlice) => state.ReactThreeFiberGameState.showInventory,
@@ -110,7 +113,24 @@ const PointerMain = () => {
           return el.classList.contains("levelUpIcon");
         });
 
-      console.log(levelUpButtonContainer);
+      const setStatButtonContainer = document
+        .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
+        .find((el): el is HTMLElement => {
+          return el.classList.contains("setStatButton");
+        });
+
+      setStatButtonContainerRef.current = setStatButtonContainer || null;
+
+      if (setStatButtonContainerRef.current) {
+        const type = setStatButtonContainerRef.current.dataset.type as StatType;
+        const action = setStatButtonContainerRef.current.dataset.action as "increase" | "decrease";
+        dispatch(
+          ReactThreeFiberGameActions.setLevelUpPlayerStat({
+            statType: type,
+            statAction: action,
+          }),
+        );
+      }
 
       if (levelUpButtonContainer) {
         dispatch(ReactThreeFiberGameActions.setShowLevelUpMenuStatus(true));
@@ -217,8 +237,6 @@ const PointerMain = () => {
         .find((el) => {
           return el.classList.contains("closeLevelUpMenu");
         });
-
-      console.log(document.elementsFromPoint(coordsRef.current.x, coordsRef.current.y));
 
       if (closeSelectedElMenuButton) {
         dispatch(ReactThreeFiberGameActions.clearSelectedItem({ action: "closeButton" }));

@@ -596,14 +596,23 @@ export type SelectedItemType = InventorySelectedItem | EquipmentSelectedItem;
 export interface IPLayerStat {
   baseHP: number;
   currentHP: number;
+  temporalHP: number;
   baseDamage: number;
   extraDamage: number;
+  temporalDamage: number;
   baseDefence: number;
   extraDefence: number;
+  temporalDefence: number;
   level: number;
   minLevelExperience: number;
   maxLevelExperience: number;
   currentExperience: number;
   levelPoints: number;
   temporalLevelPoints: number;
+}
+
+export enum StatType {
+  Defence = "defence",
+  Damage = "damage",
+  HP = "HP",
 }

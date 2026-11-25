@@ -13,6 +13,7 @@ import {
   faCheckCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { StatType } from "@/app/types";
 
 const LevelUpMenuMain = () => {
   const showLevelUpMenuStatus = useSelector(
@@ -48,33 +49,75 @@ const LevelUpMenuMain = () => {
           <div className=" absolute top-[20%] left-[6%] w-[65%] ">
             <div className=" flex flex-col gap-2 ">
               <div className=" flex flex-row items-center gap-1 text-center justify-center text-slate-100 text-xs lg:text-xl">
-                <FontAwesomeIcon className=" fa-2xl  " icon={faSquareMinus} />
+                {playerStat.temporalDamage > 0 && (
+                  <FontAwesomeIcon
+                    data-type={StatType.Damage}
+                    data-action="decrease"
+                    className=" fa-2xl setStatButton "
+                    icon={faSquareMinus}
+                  />
+                )}
                 <FontAwesomeIcon className="" icon={faWandSparkles} />
                 <p>
                   {
-                    playerStat.baseDamage
+                    playerStat.baseDamage + playerStat.temporalDamage
                     //    + playerStat.extraDamage
                   }
                 </p>
-                <FontAwesomeIcon className=" fa-2xl  " icon={faSquarePlus} />
+                {playerStat.levelPoints > 0 && (
+                  <FontAwesomeIcon
+                    data-type={StatType.Damage}
+                    data-action="increase"
+                    className=" fa-2xl setStatButton "
+                    icon={faSquarePlus}
+                  />
+                )}
               </div>
 
               <div className=" flex flex-row items-center gap-1 text-center justify-center text-slate-100 text-xs lg:text-xl">
-                <FontAwesomeIcon className=" fa-2xl  " icon={faSquareMinus} />
+                {playerStat.temporalDefence > 0 && (
+                  <FontAwesomeIcon
+                    data-type={StatType.Defence}
+                    data-action="decrease"
+                    className=" fa-2xl setStatButton  "
+                    icon={faSquareMinus}
+                  />
+                )}
                 <FontAwesomeIcon className="" icon={faShieldHalved} />
-                <p>{playerStat.baseDefence}</p>
-                <FontAwesomeIcon className=" fa-2xl  " icon={faSquarePlus} />
+                <p>{playerStat.baseDefence + playerStat.temporalDefence}</p>
+                {playerStat.levelPoints > 0 && (
+                  <FontAwesomeIcon
+                    data-type={StatType.Defence}
+                    data-action="increase"
+                    className=" fa-2xl setStatButton "
+                    icon={faSquarePlus}
+                  />
+                )}
               </div>
 
               <div className=" flex flex-row items-center gap-1 text-center justify-center text-slate-100 text-xs lg:text-xl">
-                <FontAwesomeIcon className=" fa-2xl  " icon={faSquareMinus} />
+                {playerStat.temporalHP > 0 && (
+                  <FontAwesomeIcon
+                    data-type={StatType.HP}
+                    data-action="decrease"
+                    className=" fa-2xl setStatButton "
+                    icon={faSquareMinus}
+                  />
+                )}
                 <FontAwesomeIcon className="" icon={faShieldHalved} />
-                <p>{playerStat.baseHP}</p>
-                <FontAwesomeIcon className=" fa-2xl  " icon={faSquarePlus} />
+                <p>{playerStat.baseHP + playerStat.temporalHP}</p>
+                {playerStat.levelPoints > 0 && (
+                  <FontAwesomeIcon
+                    data-type={StatType.HP}
+                    data-action="increase"
+                    className=" fa-2xl setStatButton "
+                    icon={faSquarePlus}
+                  />
+                )}
               </div>
             </div>
             <div className=" absolute bottom-[-60%] left-[6%] w-[85%] ">
-              <div className=" flex flex-row items-center gap-1 text-center justify-between ">
+              <div className=" flex flex-row items-center gap-1 text-center justify-evenly ">
                 <FontAwesomeIcon className=" fa-2xl text-green-400 " icon={faCheckCircle} />
                 <FontAwesomeIcon className=" fa-2xl text-rose-400 " icon={faSquareXmark} />
               </div>

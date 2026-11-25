@@ -7,6 +7,7 @@ import {
   inventoryItemTypes,
   IPLayerStat,
   SelectedItemType,
+  StatType,
 } from "../types";
 import { useRapier, vec3 } from "@react-three/rapier";
 import * as rapier from "@dimforge/rapier3d-compat";
@@ -644,12 +645,15 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
   playerStat: {
     baseHP: 500,
     currentHP: 500,
+    temporalHP: 0,
     baseDamage: 50,
     extraDamage: 0,
+    temporalDamage: 0,
     baseDefence: 0,
     extraDefence: 0,
+    temporalDefence: 0,
     level: 1,
-    levelPoints: 0,
+    levelPoints: 3,
     temporalLevelPoints: 0,
     minLevelExperience: 0,
     maxLevelExperience: 100,
@@ -1516,6 +1520,73 @@ export const ReactThreeFiberGameSlice = createSlice({
     },
     setShowLevelUpMenuStatus(state, action) {
       state.showLevelUpMenu = action.payload;
+    },
+    setLevelUpPlayerStat(
+      state,
+      action: {
+        payload: {
+          statType: StatType;
+          statAction: "increase" | "decrease";
+        };
+        type: string;
+      },
+    ) {
+      console.log(action.payload);
+      //смотрим есть ли свободные очки опыта
+      // изменяем конкретную характеристику
+      // при этом изменяем временное temporal значение характеристики
+      // так же свободное очко опыта уменьшаем на 1
+      // а временное temporal очки увеличиваем
+      // при уменьшении характеристики уменьшаем только временное значение
+      // и очко из временного переносим в постоянное
+      if (state.playerStat.levelPoints === 0 && state.playerStat.temporalLevelPoints === 0) return;
+
+      const setPlayerStat = ({
+        statType,
+        statAction,
+      }: {
+        statType: StatType;
+        statAction: "increase" | "decrease";
+      }) => {
+        let statName: "temporalDamage" | "temporalDefence" | "temporalHP" | null = null;
+        if (statType === StatType.Damage) statName = "temporalDamage";
+        if (statType === StatType.Defence) statName = "temporalDefence";
+        if (statType === StatType.HP) statName = "temporalHP";
+        if (!statName) return;
+
+        if (statAction === "increase" && state.playerStat.levelPoints > 0) {
+          if (statName === "temporalHP") {
+            state.playerStat[statName] += 25;
+          } else {
+            state.playerStat[statName] += 5;
+          }
+          state.playerStat.levelPoints -= 1;
+          state.playerStat.temporalLevelPoints += 1;
+        }
+        if (statAction === "decrease" && state.playerStat[statName] > 0) {
+          if (statName === "temporalHP") {
+            state.playerStat[statName] -= 25;
+          } else {
+            state.playerStat[statName] -= 5;
+          }
+          state.playerStat.levelPoints += 1;
+          state.playerStat.temporalLevelPoints -= 1;
+        }
+      };
+
+      setPlayerStat({
+        statAction: action.payload.statAction,
+        statType: action.payload.statType,
+      });
+    },
+    applyPlayersStatChange(state) {
+      state.playerStat.temporalLevelPoints = 0;
+      state.playerStat.baseDamage += state.playerStat.temporalDamage;
+      state.playerStat.temporalDamage = 0;
+      state.playerStat.baseDefence += state.playerStat.temporalDefence;
+      state.playerStat.temporalDefence = 0;
+      state.playerStat.baseHP += state.playerStat.temporalHP;
+      state.playerStat.temporalHP = 0;
     },
   },
 });
