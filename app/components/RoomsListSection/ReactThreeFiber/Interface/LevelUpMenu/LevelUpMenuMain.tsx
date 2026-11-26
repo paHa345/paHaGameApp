@@ -118,8 +118,16 @@ const LevelUpMenuMain = () => {
             </div>
             <div className=" absolute bottom-[-60%] left-[6%] w-[85%] ">
               <div className=" flex flex-row items-center gap-1 text-center justify-evenly ">
-                <FontAwesomeIcon className=" fa-2xl text-green-400 " icon={faCheckCircle} />
-                <FontAwesomeIcon className=" fa-2xl text-rose-400 " icon={faSquareXmark} />
+                <FontAwesomeIcon
+                  data-applylevelupstatus={true}
+                  className=" applyCancelLevelUp fa-2xl text-green-400 "
+                  icon={faCheckCircle}
+                />
+                <FontAwesomeIcon
+                  data-applylevelupstatus={false}
+                  className=" applyCancelLevelUp fa-2xl text-rose-400 "
+                  icon={faSquareXmark}
+                />
               </div>
             </div>
           </div>

@@ -6,7 +6,7 @@ import {
   RigidBody,
   CoefficientCombineRule,
 } from "@react-three/rapier";
-import React from "react";
+import React, { Suspense } from "react";
 import { createPortal } from "@react-three/fiber";
 import { useSelector } from "react-redux";
 import * as THREE from "three";
@@ -66,9 +66,10 @@ const PlayerBody = ({ userMain, body, playerModelRef, player }: IPlayerBodyProps
             >
               {/* <meshBasicMaterial map={playerTexture} /> */}
             </primitive>
-
-            {createPortal(<RightHandWeapon></RightHandWeapon>, player.nodes["arm-right"])}
-            {createPortal(<LeftHandShield></LeftHandShield>, player.nodes["arm-left"])}
+            <Suspense fallback={null}>
+              {createPortal(<RightHandWeapon></RightHandWeapon>, player.nodes["arm-right"])}
+              {createPortal(<LeftHandShield></LeftHandShield>, player.nodes["arm-left"])}
+            </Suspense>
           </group>
         </CuboidCollider>
       </RigidBody>

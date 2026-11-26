@@ -12,7 +12,8 @@ import { inventoryItemTypes, StatType } from "@/app/types";
 const PointerMain = () => {
   // const [movePointerStatus, setMovePointerStatus] = useState(false);
 
-  const setStatButtonContainerRef = useRef<HTMLElement>(null);
+  const pointerDownContainerElRef = useRef<HTMLElement>(null);
+  const pointerDownContainerTypeRef = useRef<String>(null);
 
   const dispatch = useDispatch<AppDispatch>();
   const showInventory = useSelector(
@@ -98,46 +99,14 @@ const PointerMain = () => {
       console.log("Inventory click");
       const inventoryContainer = document
         .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
-        .find((el) => {
+        .find((el): el is HTMLElement => {
           return el.classList.contains("inventoryContainer");
         });
-      const equipmentContainer = document
-        .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
-        .find((el) => {
-          return el.classList.contains("equipmentContainer");
-        });
 
-      const levelUpButtonContainer = document
-        .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
-        .find((el) => {
-          return el.classList.contains("levelUpIcon");
-        });
+      if (inventoryContainer) {
+        pointerDownContainerElRef.current = inventoryContainer;
 
-      const setStatButtonContainer = document
-        .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
-        .find((el): el is HTMLElement => {
-          return el.classList.contains("setStatButton");
-        });
-
-      setStatButtonContainerRef.current = setStatButtonContainer || null;
-
-      if (setStatButtonContainerRef.current) {
-        const type = setStatButtonContainerRef.current.dataset.type as StatType;
-        const action = setStatButtonContainerRef.current.dataset.action as "increase" | "decrease";
-        dispatch(
-          ReactThreeFiberGameActions.setLevelUpPlayerStat({
-            statType: type,
-            statAction: action,
-          }),
-        );
-      }
-
-      if (levelUpButtonContainer) {
-        dispatch(ReactThreeFiberGameActions.setShowLevelUpMenuStatus(true));
-      }
-
-      if (inventoryContainer?.classList.contains("inventoryContainer")) {
-        if (!inventoryContainer?.getAttribute("data-index")) return;
+        if (!pointerDownContainerElRef.current.getAttribute("data-index")) return;
         dispatch(
           ReactThreeFiberGameActions.setPointerClickCoords({
             x: coordsRef.current.x,
@@ -147,38 +116,107 @@ const PointerMain = () => {
         dispatch(
           ReactThreeFiberGameActions.setSelectedItem({
             position: "inventory",
-            index: Number(inventoryContainer?.getAttribute("data-index")),
+            index: Number(pointerDownContainerElRef.current.getAttribute("data-index")),
           }),
         );
         dispatch(
           ReactThreeFiberGameActions.addInventoryItemToDragContainer({
-            dragItemIndex: Number(inventoryContainer?.getAttribute("data-index")),
+            dragItemIndex: Number(pointerDownContainerElRef.current.getAttribute("data-index")),
           }),
         );
+
+        return;
       }
 
-      if (equipmentContainer?.classList.contains("equipmentContainer")) {
+      const equipmentContainer = document
+        .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
+        .find((el): el is HTMLElement => {
+          return el.classList.contains("equipmentContainer");
+        });
+
+      if (equipmentContainer) {
+        pointerDownContainerElRef.current = equipmentContainer;
+
+        if (pointerDownContainerElRef.current.classList.contains("equipmentContainer")) {
+          dispatch(
+            ReactThreeFiberGameActions.setPointerClickCoords({
+              x: coordsRef.current.x,
+              y: coordsRef.current.y,
+            }),
+          );
+
+          dispatch(
+            ReactThreeFiberGameActions.setSelectedItem({
+              position: "equipment",
+              type: pointerDownContainerElRef.current.getAttribute(
+                "data-equipmenttype",
+              ) as inventoryItemTypes,
+            }),
+          );
+
+          dispatch(
+            ReactThreeFiberGameActions.addEquipmentItemToDragContainer({
+              equipmentItemType: pointerDownContainerElRef.current.getAttribute(
+                "data-equipmenttype",
+              ) as inventoryItemTypes,
+            }),
+          );
+        }
+
+        return;
+      }
+
+      const levelUpButtonContainer = document
+        .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
+        .find((el): el is HTMLElement => {
+          return el.classList.contains("levelUpIcon");
+        });
+
+      if (levelUpButtonContainer) {
+        pointerDownContainerElRef.current = levelUpButtonContainer;
+
+        dispatch(ReactThreeFiberGameActions.setShowLevelUpMenuStatus(true));
+        return;
+      }
+
+      const setStatButtonContainer = document
+        .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
+        .find((el): el is HTMLElement => {
+          return el.classList.contains("setStatButton");
+        });
+
+      if (setStatButtonContainer) {
+        pointerDownContainerElRef.current = setStatButtonContainer;
+        const type = pointerDownContainerElRef.current.dataset.type as StatType;
+        const action = pointerDownContainerElRef.current.dataset.action as "increase" | "decrease";
         dispatch(
-          ReactThreeFiberGameActions.setPointerClickCoords({
-            x: coordsRef.current.x,
-            y: coordsRef.current.y,
+          ReactThreeFiberGameActions.setLevelUpPlayerStat({
+            statType: type,
+            statAction: action,
           }),
         );
 
-        dispatch(
-          ReactThreeFiberGameActions.setSelectedItem({
-            position: "equipment",
-            type: equipmentContainer?.getAttribute("data-equipmenttype") as inventoryItemTypes,
-          }),
-        );
+        return;
+      }
 
-        dispatch(
-          ReactThreeFiberGameActions.addEquipmentItemToDragContainer({
-            equipmentItemType: equipmentContainer?.getAttribute(
-              "data-equipmenttype",
-            ) as inventoryItemTypes,
-          }),
-        );
+      const applyCancelLevelUpContainer = document
+        .elementsFromPoint(coordsRef.current.x, coordsRef.current.y)
+        .find((el): el is HTMLElement => {
+          return el.classList.contains("applyCancelLevelUp");
+        });
+
+      if (applyCancelLevelUpContainer) {
+        pointerDownContainerElRef.current = applyCancelLevelUpContainer;
+        const applylevelupstatus = pointerDownContainerElRef.current.dataset.applylevelupstatus;
+
+        if (applylevelupstatus === "true") {
+          dispatch(ReactThreeFiberGameActions.applyPlayersStatChange());
+        }
+        if (applylevelupstatus === "false") {
+          dispatch(ReactThreeFiberGameActions.deniedPlayersStatChange());
+        }
+
+        return;
       }
     };
 

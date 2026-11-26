@@ -724,7 +724,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       {
         type: inventoryItemTypes.Weapon,
         name: "Зачарованный меч",
-        modelName: "sword23",
+        modelName: "sword_23",
         id: "0014",
         description: "Это разломанный меч теперь зачарован магией",
         damage: 100,
@@ -742,7 +742,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       {
         type: inventoryItemTypes.Weapon,
         name: "Длинный меч",
-        modelName: "sword2",
+        modelName: "sword_2",
         id: "0015",
         damage: 30,
         description: "Самый простой длинный меч",
@@ -760,7 +760,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       {
         type: inventoryItemTypes.Weapon,
         name: "Длинный усиленный меч",
-        modelName: "sword7",
+        modelName: "sword_7",
         id: "0016",
         damage: 40,
         description: "Самый простой длинный меч с усиленной рукояткой",
@@ -1586,6 +1586,13 @@ export const ReactThreeFiberGameSlice = createSlice({
       state.playerStat.baseDefence += state.playerStat.temporalDefence;
       state.playerStat.temporalDefence = 0;
       state.playerStat.baseHP += state.playerStat.temporalHP;
+      state.playerStat.temporalHP = 0;
+    },
+    deniedPlayersStatChange(state) {
+      state.playerStat.levelPoints += state.playerStat.temporalLevelPoints;
+      state.playerStat.temporalLevelPoints = 0;
+      state.playerStat.temporalDamage = 0;
+      state.playerStat.temporalDefence = 0;
       state.playerStat.temporalHP = 0;
     },
   },

@@ -27,6 +27,7 @@ const page = () => {
     "./models/Hammers/hammer_13.glb",
     "./models/Swords/sword_7.glb",
     "./models/Swords/sword_23.glb",
+    "./models/Houses/house_20.glb",
   ]),
     modelPaths.forEach((path) => useFBX.preload(path));
 
