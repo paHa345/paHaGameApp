@@ -46,9 +46,9 @@ const RightHandWeapon = () => {
       state.ReactThreeFiberGameState.playerItems.equipment.weapon.modelName,
   );
 
-  // Хуки вызваны безусловно, а сама загрузка — только когда есть имя
   if (!swordModelName) return null;
 
+  // key на КОМПОНЕНТЕ, а не на primitive
   return <RightHandWeaponModel key={swordModelName} modelName={swordModelName} />;
 };
 
@@ -58,17 +58,10 @@ const RightHandWeaponModel = ({ modelName }: WeaponModelProps) => {
   const { scene } = useGLTF(`./models/Swords/${modelName}.glb`);
   const colorMap = useTexture("./models/Swords/Texture_MAp_sword.png");
 
-  // Клонируем сцену один раз, а не каждый рендер
   const mesh = useMemo(() => scene.clone(), [scene]);
-
-  // Материал создаём один раз
   const material = useMemo(() => new THREE.MeshStandardMaterial({ map: colorMap }), [colorMap]);
 
-  useEffect(() => {
-    return () => {
-      material.dispose();
-    };
-  }, [material]);
+  useEffect(() => () => material.dispose(), [material]);
 
   return (
     <primitive

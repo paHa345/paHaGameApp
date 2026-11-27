@@ -1,4 +1,5 @@
 import { useFBX, useGLTF, useTexture } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
 import { InstancedRigidBodies } from "@react-three/rapier";
 import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
@@ -108,6 +109,8 @@ const HOUSES_ARRAY = [
 
 const Houses = () => {
   const { scene } = useGLTF("./models/Houses/house_20.glb");
+  const instancedMeshRef = useRef<THREE.InstancedMesh>(null);
+  const sphereComputed = useRef(false);
 
   const { geometry, material } = useMemo(() => {
     if (!scene) return { geometry: null, material: null };
@@ -153,7 +156,26 @@ const Houses = () => {
       scale: 1,
       "rotation-y": Math.random() * 4,
     }));
-  }, []); // HOUSES_ARRAY теперь константа модуля
+  }, []);
+
+  const framesToWait = useRef(3); // подождать 3 кадра
+
+  useFrame(() => {
+    if (framesToWait.current < 0) return;
+    if (framesToWait.current > 0) {
+      framesToWait.current -= 1;
+      return;
+    }
+    if (instancedMeshRef.current) {
+      instancedMeshRef.current.computeBoundingSphere();
+      instancedMeshRef.current.computeBoundingBox();
+      framesToWait.current = -1; // больше не вычислять
+    }
+  });
+
+  useEffect(() => {
+    framesToWait.current = 3; // пересчитать через 3 кадра
+  }, [instances]);
 
   if (!material || !geometry) return null;
 
@@ -161,6 +183,7 @@ const Houses = () => {
     <InstancedRigidBodies instances={instances} colliders="hull" type="fixed">
       <instancedMesh
         // frustumCulled={false}
+        ref={instancedMeshRef}
         args={[geometry, material, HOUSES_ARRAY.length]}
         castShadow
         receiveShadow

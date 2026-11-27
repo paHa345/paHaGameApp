@@ -666,7 +666,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       shield: {
         type: inventoryItemTypes.Shield,
         name: "Щит короля орков",
-        modelName: "shield1",
+        modelName: "shield_1",
         id: "0011",
         defense: 40,
         description: "Этот щит принадлежал легендарному королю орков - Арргху",
@@ -688,7 +688,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       {
         type: inventoryItemTypes.Shield,
         name: "Военный щит",
-        modelName: "shield11",
+        modelName: "shield_13",
         id: "0012",
         defense: 20,
         description: "Такой щит обычно носят люди-воины",
@@ -706,7 +706,7 @@ const initReactThreeFiberGameState: IReactThreeFiberGameState = {
       {
         type: inventoryItemTypes.Shield,
         name: "Щит орков",
-        modelName: "shield1",
+        modelName: "shield_4",
         id: "0013",
         description: "Обычный щит, который носят орки-солдаты",
         defense: 30,
